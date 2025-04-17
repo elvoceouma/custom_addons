@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_medical_root" name="Medical" sequence="10"/>
+
+        <!-- Hospital Management -->
+        <menuitem id="menu_medical_hospital" name="Hospitals" parent="menu_medical_root" action="action_medical_hospital" sequence="10"/>
+        <menuitem id="menu_medical_department" name="Departments" parent="menu_medical_root" action="action_medical_department" sequence="20"/>
+
+        <!-- Doctor Management -->
+        <menuitem id="menu_medical_doctor" name="Doctors" parent="menu_medical_root" action="action_medical_doctor" sequence="30"/>
+        <menuitem id="menu_medical_schedule" name="Schedules" parent="menu_medical_root" action="action_doctor_schedule" sequence="40"/>
+
+        <!-- Patient Management -->
+        <menuitem id="menu_medical_patient" name="Patients" parent="menu_medical_root" action="action_medical_patient" sequence="50"/>
+        <menuitem id="menu_medical_case" name="Medical Cases" parent="menu_medical_root" action="action_medical_case" sequence="60"/>
+        <menuitem id="menu_medical_treatment" name="Treatments" parent="menu_medical_root" action="action_medical_treatment" sequence="70"/>
+
+        <!-- Pharmacy -->
+        <menuitem id="menu_medical_pharmacy" name="Pharmacy" parent="menu_medical_root" sequence="80"/>
+        <menuitem id="menu_medical_medication" name="Medications" parent="menu_medical_pharmacy" action="action_medical_medication" sequence="10"/>
+        <menuitem id="menu_medical_prescription" name="Prescriptions" parent="menu_medical_pharmacy" action="action_medical_prescription" sequence="20"/>
+
+        <!-- Billing -->
+        <menuitem id="menu_medical_payment" name="Payments" parent="menu_medical_root" action="action_medical_payment" sequence="90"/>
+
+        <!-- Configuration -->
+        <menuitem id="menu_medical_config" name="Configuration" parent="menu_medical_root" sequence="100"/>
+        <menuitem id="menu_medical_treatment_type" name="Treatment Types" parent="menu_medical_config" action="action_medical_treatment_types" sequence="10"/>
+    </data>
+</odoo>

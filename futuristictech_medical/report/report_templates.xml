@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_patient">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Patient Report</h2>
+                    <div class="row mt16 mb16">
+                        <div class="col-6">
+                            <strong>Patient:</strong>
+                            <p t-field="object.partner_id"/>
+                            <strong>Registration Number:</strong>
+                            <p t-field="object.registration_number"/>
+                            <strong>Blood Group:</strong>
+                            <p t-field="object.blood_group"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Department:</strong>
+                            <p t-field="object.department_id"/>
+                            <strong>Hospital:</strong>
+                            <p t-field="object.hospital_id"/>
+                            <strong>Emergency Contact:</strong>
+                            <p t-field="object.emergency_contact"/>
+                        </div>
+                    </div>
+                    <h3>Medical Cases</h3>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Case</th>
+                                <th>Doctor</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="object.case_ids" t-as="case">
+                                <td t-field="case.name"/>
+                                <td t-field="case.doctor_id"/>
+                                <td t-field="case.state"/>
+                                <td t-field="case.date_start"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_prescription">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Prescription Report</h2>
+                    <div class="row mt16 mb16">
+                        <div class="col-6">
+                            <strong>Prescription:</strong>
+                            <p t-field="object.name"/>
+                            <strong>Patient:</strong>
+                            <p t-field="object.patient_id"/>
+                            <strong>Doctor:</strong>
+                            <p t-field="object.doctor_id"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Date:</strong>
+                            <p t-field="object.date"/>
+                            <strong>Status:</strong>
+                            <p t-field="object.state"/>
+                        </div>
+                    </div>
+                    <h3>Medications</h3>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Frequency</th>
+                                <th>Duration</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="object.medication_lines" t-as="line">
+                                <td t-field="line.medication_id"/>
+                                <td t-field="line.dosage"/>
+                                <td t-field="line.frequency"/>
+                                <td t-field="line.duration"/>
+                                <td t-field="line.quantity"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div t-if="object.notes">
+                        <h3>Notes</h3>
+                        <p t-field="object.notes"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

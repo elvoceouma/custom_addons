@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_medical_patient_tree" model="ir.ui.view">
+        <field name="name">medical.patient.tree</field>
+        <field name="model">medical.patient</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="registration_number"/>
+                <field name="department_id"/>
+                <field name="blood_group"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_patient_form" model="ir.ui.view">
+        <field name="name">medical.patient.form</field>
+        <field name="model">medical.patient</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_view_cases" type="object" string="Cases" class="oe_highlight"/>
+                    <button name="action_view_appointments" type="object" string="Appointments"/>
+                    <button name="action_view_prescriptions" type="object" string="Prescriptions"/>
+                    <button name="action_view_payments" type="object" string="Payments"/>
+                    <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="registration_number"/>
+                            <field name="department_id"/>
+                            <field name="hospital_id"/>
+                            <field name="blood_group"/>
+                        </group>
+                        <group>
+                            <field name="emergency_contact"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medical Information">
+                            <field name="case_ids" mode="kanban,tree,form">
+                                <kanban>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click">
+                                                <div class="oe_kanban_content">
+                                                    <div class="oe_kanban_card">
+                                                        <strong><field name="name"/></strong>
+                                                        <div>
+                                                            <field name="state"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_medical_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">medical.patient</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_medical_treatment_tree" model="ir.ui.view">
+        <field name="name">medical.treatment.tree</field>
+        <field name="model">medical.treatment</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'planned'" 
+                  decoration-warning="state == 'in_progress'" 
+                  decoration-success="state == 'completed'" 
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_type_id"/>
+                <field name="date"/>
+                <field name="duration"/>
+                <field name="cost" sum="Total Cost"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_form" model="ir.ui.view">
+        <field name="name">medical.treatment.form</field>
+        <field name="model">medical.treatment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="Start Treatment" type="object" 
+                            class="oe_highlight" invisible="state != 'planned'"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state not in ('planned', 'in_progress')"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="planned,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="case_id"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="doctor_id" readonly="1"/>
+                            <field name="treatment_type_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="duration"/>
+                            <field name="cost"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Enter treatment description..."/>
+                        </page>
+                        <page string="Payments">
+                            <field name="payment_ids" mode="tree">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="amount" sum="Total Paid"/>
+                                    <field name="payment_date"/>
+                                    <field name="payment_method"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_search" model="ir.ui.view">
+        <field name="name">medical.treatment.search</field>
+        <field name="model">medical.treatment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="treatment_type_id"/>
+                <field name="description"/>
+                <filter string="Planned" name="planned" domain="[('state', '=', 'planned')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Today" name="today" 
+                        domain="[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+                                ('date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                <filter string="This Week" name="this_week" 
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                ('date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Case" name="group_case" context="{'group_by': 'case_id'}"/>
+                    <filter string="Patient" name="group_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Doctor" name="group_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Treatment Type" name="group_type" context="{'group_by': 'treatment_type_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Treatment Type Views -->
+    <record id="view_medical_treatment_type_tree" model="ir.ui.view">
+        <field name="name">medical.treatment.type.tree</field>
+        <field name="model">medical.treatment.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <!-- <field name="default_cost"/> -->
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_type_form" model="ir.ui.view">
+        <field name="name">medical.treatment.type.form</field>
+        <field name="model">medical.treatment.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <!-- <field name="default_cost"/> -->
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_type_search" model="ir.ui.view">
+        <field name="name">medical.treatment.type.search</field>
+        <field name="model">medical.treatment.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+                <group expand="0" string="Group By">
+                    <!-- <filter string="Default Cost" name="group_cost" context="{'group_by': 'default_cost'}"/> -->
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_calendar" model="ir.ui.view">
+        <field name="name">medical.treatment.calendar</field>
+        <field name="model">medical.treatment</field>
+        <field name="arch" type="xml">
+            <calendar string="Treatments" date_start="date" color="treatment_type_id" mode="month">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="duration"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_medical_treatment_pivot" model="ir.ui.view">
+        <field name="name">medical.treatment.pivot</field>
+        <field name="model">medical.treatment</field>
+        <field name="arch" type="xml">
+            <pivot string="Treatment Analysis">
+                <field name="treatment_type_id" type="row"/>
+                <field name="doctor_id" type="col"/>
+                <field name="cost" type="measure"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_medical_treatment" model="ir.actions.act_window">
+        <field name="name">Treatments</field>
+        <field name="res_model">medical.treatment</field>
+        <field name="view_mode">tree,form,calendar,pivot</field>
+        <field name="search_view_id" ref="view_medical_treatment_search"/>
+        <field name="context">{'search_default_planned': 1, 'search_default_in_progress': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first treatment!
+            </p>
+            <p>
+                Create a new treatment to track medical procedures performed for a patient.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sequences for medical treatment -->
+    <record id="seq_medical_treatment" model="ir.sequence">
+        <field name="name">Medical Treatment</field>
+        <field name="code">medical.treatment</field>
+        <field name="prefix">TRT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Report for medical treatment -->
+    <record id="action_medical_treatment_report" model="ir.actions.report">
+        <field name="name">Medical Treatment Report</field>
+        <field name="model">medical.treatment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_medical.report_medical_treatment</field>
+        <field name="report_file">futuristictech_medical.report_medical_treatment</field>
+        <field name="binding_model_id" ref="model_medical_treatment"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Treatment Report - %s' % (object.name)</field>
+    </record>
+
+    <!-- Action for treatment types -->
+    <record id="action_medical_treatment_types" model="ir.actions.act_window">
+        <field name="name">Treatment Types</field>
+        <field name="res_model">medical.treatment.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_medical_treatment_type_search"/>
+    </record>
+</odoo>

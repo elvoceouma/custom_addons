@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- First create a hospital -->
+        <record id="medical_hospital_main" model="medical.hospital">
+            <field name="name">General Hospital</field>
+            <field name="registration_number">GH12345</field>
+            <field name="license_number">LIC78901</field>
+            <field name="partner_id" ref="base.main_partner"/>
+            <field name="phone">+1 (555) 123-4567</field>
+            <field name="email">info@generalhospital.com</field>
+        </record>
+        
+        <!-- Treatment Types -->
+        <record id="medical_treatment_type_consultation" model="medical.treatment.type">
+            <field name="name">Consultation</field>
+            <field name="code">CONSULT</field>
+            <!-- <field name="default_cost">50.0</field> -->
+        </record>
+
+        <record id="medical_treatment_type_surgery" model="medical.treatment.type">
+            <field name="name">Surgery</field>
+            <field name="code">SURGERY</field>
+            <!-- <field name="default_cost">2000.0</field> -->
+        </record>
+
+        <record id="medical_treatment_type_physical_therapy" model="medical.treatment.type">
+            <field name="name">Physical Therapy</field>
+            <field name="code">PHYSIO</field>
+            <!-- <field name="default_cost">75.0</field> -->
+        </record>
+
+        <record id="medical_treatment_type_lab_test" model="medical.treatment.type">
+            <field name="name">Laboratory Test</field>
+            <field name="code">LABTEST</field>
+            <!-- <field name="default_cost">120.0</field> -->
+        </record>
+
+        <!-- Departments with required hospital_id -->
+        <record id="medical_department_cardiology" model="medical.department">
+            <field name="name">Cardiology</field>
+            <field name="code">CARDIO</field>
+            <field name="hospital_id" ref="medical_hospital_main"/>
+        </record>
+
+        <record id="medical_department_neurology" model="medical.department">
+            <field name="name">Neurology</field>
+            <field name="code">NEURO</field>
+            <field name="hospital_id" ref="medical_hospital_main"/>
+        </record>
+        
+        <record id="medical_department_orthopedics" model="medical.department">
+            <field name="name">Orthopedics</field>
+            <field name="code">ORTHO</field>
+            <field name="hospital_id" ref="medical_hospital_main"/>
+        </record>
+        
+        <record id="medical_department_pediatrics" model="medical.department">
+            <field name="name">Pediatrics</field>
+            <field name="code">PEDI</field>
+            <field name="hospital_id" ref="medical_hospital_main"/>
+        </record>
+    </data>
+</odoo>

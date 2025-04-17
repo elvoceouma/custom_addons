@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_medical_case_tree" model="ir.ui.view">
+        <field name="name">medical.case.tree</field>
+        <field name="model">medical.case</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" 
+                  decoration-success="state == 'completed'" 
+                  decoration-warning="state == 'in_progress'" 
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="department_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_case_form" model="ir.ui.view">
+        <field name="name">medical.case.form</field>
+        <field name="model">medical.case</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="Start Case" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state not in ('draft', 'in_progress')"/>
+                    <button name="action_reset" string="Reset to Draft" type="object" 
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="hospital_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end" invisible="date_end == False"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medical Information">
+                            <group>
+                                <field name="symptoms" placeholder="Describe patient symptoms..."/>
+                                <field name="diagnosis" placeholder="Enter diagnosis..." 
+                                       readonly="state == 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Treatments" invisible="state == 'draft'">
+                            <field name="treatment_ids" mode="tree,form">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="treatment_type_id"/>
+                                    <field name="date"/>
+                                    <field name="cost"/>
+                                    <field name="state"/>
+                                </tree>
+                                <form>
+                                    <header>
+                                        <button name="action_start" string="Start" type="object" class="oe_highlight" states="planned"/>
+                                        <button name="action_complete" string="Complete" type="object" class="oe_highlight" states="in_progress"/>
+                                        <button name="action_cancel" string="Cancel" type="object" states="planned,in_progress"/>
+                                        <field name="state" widget="statusbar" statusbar_visible="planned,in_progress,completed"/>
+                                    </header>
+                                    <group>
+                                        <group>
+                                            <field name="treatment_type_id"/>
+                                            <field name="date"/>
+                                            <field name="duration"/>
+                                            <field name="cost"/>
+                                        </group>
+                                        <group>
+                                            <field name="description"/>
+                                            <field name="notes"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Prescriptions" invisible="state == 'draft'">
+                            <field name="prescription_ids" mode="tree">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_medical_case_search" model="ir.ui.view">
+        <field name="name">medical.case.search</field>
+        <field name="model">medical.case</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="symptoms"/>
+                <field name="diagnosis"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Created Today" name="created_today" 
+                        domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Doctor" name="group_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Hospital" name="group_hospital" context="{'group_by': 'hospital_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by': 'date_start:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_medical_case" model="ir.actions.act_window">
+        <field name="name">Medical Cases</field>
+        <field name="res_model">medical.case</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_medical_case_search"/>
+        <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medical case!
+            </p>
+            <p>
+                Create a new medical case to track patient diagnosis and treatments.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sequences for medical case -->
+    <record id="seq_medical_case" model="ir.sequence">
+        <field name="name">Medical Case</field>
+        <field name="code">medical.case</field>
+        <field name="prefix">CASE/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

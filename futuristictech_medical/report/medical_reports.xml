@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_medical_patient_report" model="ir.actions.report">
+        <field name="name">Patient Report</field>
+        <field name="model">medical.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_medical.report_patient</field>
+        <field name="report_file">futuristictech_medical.report_patient</field>
+        <field name="print_report_name">'Patient Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_medical_patient"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_medical_prescription_report" model="ir.actions.report">
+        <field name="name">Prescription Report</field>
+        <field name="model">medical.prescription</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_medical.report_prescription</field>
+        <field name="report_file">futuristictech_medical.report_prescription</field>
+        <field name="print_report_name">'Prescription Report - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_medical_prescription"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

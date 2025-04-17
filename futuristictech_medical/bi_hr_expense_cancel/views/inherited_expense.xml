@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Users Inherit Form View to Modify it -->
+        <record id="view_hr_expense_view_form_inherit" model="ir.ui.view">
+            <field name="name">hr.expense.sheet.form.cancel.inherit</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_reset_expense_sheets']" position="after">
+                    <button name="action_cancel" 
+                            type="object"
+                            string="Cancel"
+                            invisible="not is_cancel or state in ['draft', 'cancel']"/>
+                    <button name="action_reset" 
+                            type="object"
+                            string="Reset to Draft"
+                            invisible="not is_reset or state not in ['cancel']"/>
+                    <button name="action_unlink" 
+                            type="object"
+                            string="Delete"
+                            invisible="not is_delete or state not in ['draft']"/>
+                </xpath>
+                <button name="action_reset_expense_sheets" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <field name="name" position="after">
+                    <field name="is_cancel" invisible="1"/>
+                    <field name="is_reset" invisible="1"/>
+                    <field name="is_delete" invisible="1"/>
+                </field>
+            </field>
+        </record>
+        <record id="mass_cancel_expense_action_server" model="ir.actions.server">
+            <field name="name">Cancel</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="binding_model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="groups_id" eval="[(4, ref('bi_hr_expense_cancel.group_cancel_expense'))]"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.action_mass_cancel()</field>
+        </record>
+        <record id="mass_draft_expense_action_server" model="ir.actions.server">
+            <field name="name">Cancel &amp; Reset to Draft</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="binding_model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="groups_id" eval="[(4, ref('bi_hr_expense_cancel.group_cancel_expense'))]"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.action_mass_reset()</field>
+        </record>
+        <record id="mass_delete_expense_action_server" model="ir.actions.server">
+            <field name="name">Cancel &amp; Delete</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="binding_model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="groups_id" eval="[(4, ref('bi_hr_expense_cancel.group_cancel_expense'))]"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.action_mass_delete()</field>
+        </record>
+    </data>
+</odoo>

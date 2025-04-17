@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_medical_hospital" model="ir.sequence">
+        <field name="name">Hospital Reference</field>
+        <field name="code">medical.hospital</field>
+        <field name="prefix">HOSP/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_medical_patient" model="ir.sequence">
+        <field name="name">Patient Registration</field>
+        <field name="code">medical.patient</field>
+        <field name="prefix">PAT/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_medical_case" model="ir.sequence">
+        <field name="name">Medical Case</field>
+        <field name="code">medical.case</field>
+        <field name="prefix">CASE/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_medical_treatment" model="ir.sequence">
+        <field name="name">Medical Treatment</field>
+        <field name="code">medical.treatment</field>
+        <field name="prefix">TRT/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_medical_prescription" model="ir.sequence">
+        <field name="name">Medical Prescription</field>
+        <field name="code">medical.prescription</field>
+        <field name="prefix">PRES/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_medical_payment" model="ir.sequence">
+        <field name="name">Medical Payment</field>
+        <field name="code">medical.payment</field>
+        <field name="prefix">PAY/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

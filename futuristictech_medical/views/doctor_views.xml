@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_medical_doctor_tree" model="ir.ui.view">
+        <field name="name">medical.doctor.tree</field>
+        <field name="model">medical.doctor</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="specialization"/>
+                <field name="license_number"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_doctor_form" model="ir.ui.view">
+        <field name="name">medical.doctor.form</field>
+        <field name="model">medical.doctor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_view_schedules" type="object" string="Schedules" class="oe_highlight"/>
+                    <button name="action_view_appointments" type="object" string="Appointments"/>
+                    <button name="action_view_cases" type="object" string="Cases"/>
+                    <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="employee_id"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="department_id"/>
+                            <field name="hospital_id"/>
+                            <field name="specialization"/>
+                            <field name="license_number"/>
+                        </group>
+                        <group>
+                            <field name="employee_id" widget="hr_employee"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Schedules">
+                            <field name="schedule_ids" mode="tree,form">
+                                <tree>
+                                    <field name="day_of_week"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="is_working_day"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_medical_doctor" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">medical.doctor</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
