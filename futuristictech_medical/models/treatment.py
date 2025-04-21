@@ -30,6 +30,7 @@ class MedicalTreatment(models.Model):
     cost = fields.Float(string='Cost')
     payment_ids = fields.One2many(
         'medical.payment', 'treatment_id', string='Payments')
+    
 
     @api.model
     def create(self, vals):

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Doctor Form View -->
+    <record id="view_doctor_form" model="ir.ui.view">
+        <field name="name">res.partner.doctor.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_schedules" type="object" 
+                        class="oe_stat_button" icon="fa-clock-o"
+                        invisible="not is_doctor">
+                    <field name="schedule_ids" widget="statinfo" string="Schedules"/>
+                </button>
+                <button name="action_view_appointments" type="object" 
+                        class="oe_stat_button" icon="fa-calendar"
+                        invisible="not is_doctor">
+                    <field name="doctor_appointment_ids" widget="statinfo" string="Appointments"/>
+                </button>
+                <button name="action_view_cases" type="object" 
+                        class="oe_stat_button" icon="fa-heartbeat"
+                        invisible="not is_doctor">
+                    <field name="doctor_case_ids" widget="statinfo" string="Cases"/>
+                </button>
+            </xpath>
+            
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Medical Practice" name="medical_practice" invisible="not is_doctor">
+                    <group>
+                        <group>
+                            <field name="is_doctor" />
+                            <!-- <field name="doctor_department_id"
+                                   invisible="not is_doctor"/> -->
+                            <field name="doctor_hospital_id"
+                                   invisible="not is_doctor"/>
+                            <field name="specialization"
+                                   invisible="not is_doctor"/>
+                        </group>
+                    </group>
+                    <field name="doctor_note" placeholder="Additional practice notes..."
+                           invisible="not is_doctor"/>
+                    <field name="schedule_ids" invisible="not is_doctor">
+                        <tree editable="bottom">
+                            <field name="day_of_week"/>
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                            <field name="is_working_day"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Doctor Tree View -->
+    <record id="view_doctor_tree" model="ir.ui.view">
+        <field name="name">res.partner.doctor.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="doctor_license_number"/>
+                <!-- <field name="doctor_department_id"/> -->
+                <field name="specialization"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+
+       <record id="view_doctor_form" model="ir.ui.view">
+        <field name="name">res.partner.doctor.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Medical Practice" name="medical_practice" invisible="not is_doctor">
+                    <group>
+                        <group>
+                            <field name="is_doctor" />
+                            <field name="doctor_hospital_id"
+                                   invisible="not is_doctor"/>
+                            <field name="specialization"
+                                   invisible="not is_doctor"/>
+                        </group>
+                    </group>
+                    <field name="doctor_note" placeholder="Additional practice notes..."
+                           invisible="not is_doctor"/>
+                    <notebook invisible="not is_doctor">
+                        <page string="Schedule">
+                            <field name="schedule_ids">
+                                <tree editable="bottom">
+                                    <field name="day_of_week"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="is_working_day"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Products">
+                            <field name="doctor_product_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="default_code"/>
+                                    <field name="list_price"/>
+                                    <field name="type"/>
+                                    <field name="uom_id"/>
+                                    <field name="taxes_id" widget="many2many_tags"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Doctor Action -->
+    <record id="action_medical_doctor" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_doctor', '=', True)]</field>
+        <field name="context">{
+            'default_is_doctor': True,
+            'default_supplier_rank': 1
+        }</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_doctor_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_doctor_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first doctor!
+            </p>
+        </field>
+    </record>
+</odoo>

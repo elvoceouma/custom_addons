@@ -7,8 +7,10 @@ class DoctorSchedule(models.Model):
     _description = 'Doctor Schedule'
     _order = 'day_of_week, start_time'
 
+    # Changed field to support both models with a reference field
     doctor_id = fields.Many2one(
-        'medical.doctor', string='Doctor', required=True, ondelete='cascade')
+        'res.partner', string='Doctor', required=True, ondelete='cascade',
+        domain=[('is_doctor', '=', True)])
     day_of_week = fields.Selection([
         ('0', 'Monday'),
         ('1', 'Tuesday'),

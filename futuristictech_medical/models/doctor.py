@@ -26,11 +26,6 @@ class MedicalDoctor(models.Model):
         'medical.case', 'doctor_id', string='Medical Cases')
     note = fields.Text(string='Notes')
 
-    _sql_constraints = [
-        ('license_number_unique',
-         'UNIQUE(license_number)',
-         'Doctor license number must be unique!'),
-    ]
 
     @api.model
     def create(self, vals):

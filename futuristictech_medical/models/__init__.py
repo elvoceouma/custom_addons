@@ -8,3 +8,5 @@ from . import treatment
 from . import pharmacy
 from . import payment
 from . import medical_appointment
+from . import  res_partners
+from . import res_config_settings

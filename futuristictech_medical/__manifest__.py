@@ -17,10 +17,12 @@
         'views/treatment_views.xml',
         'views/pharmacy_views.xml',
         'views/payment_views.xml',
+        'views/res_partners.xml',
         'data/sequence.xml',
         'data/medical_data.xml',
         'report/medical_reports.xml',
         'report/report_templates.xml',
+
         'views/menu_views.xml',
     ],
     'installable': True,
