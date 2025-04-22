@@ -68,6 +68,7 @@ class MedicalPrescription(models.Model):
         ('cancelled', 'Cancelled')],
         string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
+    consultation_id = fields.Many2one('medical.consultation', string='Consultation')
 
     @api.model
     def create(self, vals):

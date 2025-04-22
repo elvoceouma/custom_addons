@@ -3,14 +3,14 @@
     <data noupdate="1">
         <!-- First create a hospital -->
         <record id="medical_hospital_main" model="medical.hospital">
-            <field name="name">General Hospital</field>
-            <field name="registration_number">GH12345</field>
-            <field name="license_number">LIC78901</field>
+            <field name="name">Campus  Branch</field>
+            <field name="registration_number">GH12346</field>
+            <field name="license_number">LIC701</field>
             <field name="partner_id" ref="base.main_partner"/>
             <field name="phone">+1 (555) 123-4567</field>
             <field name="email">info@generalhospital.com</field>
         </record>
-        
+
         <!-- Treatment Types -->
         <record id="medical_treatment_type_consultation" model="medical.treatment.type">
             <field name="name">Consultation</field>

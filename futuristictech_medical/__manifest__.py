@@ -4,7 +4,7 @@
     'summary': 'Comprehensive Medical Management System',
     'description': 'Module for managing hospitals, patients, doctors, and medical cases',
     'author': 'Elvice Ouma',
-    'depends': ['base', 'mail', 'stock', 'account', 'hr'],
+    'depends': ['base', 'mail', 'stock', 'account', 'hr', 'crm'],
     'data': [
         'security/medical_security.xml',
         'security/ir.model.access.csv',
@@ -18,6 +18,7 @@
         'views/pharmacy_views.xml',
         'views/payment_views.xml',
         'views/res_partners.xml',
+        'views/crm_lead_views.xml',
         'data/sequence.xml',
         'data/medical_data.xml',
         'report/medical_reports.xml',

@@ -47,4 +47,29 @@
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
+    <!-- Sequence for Clinical Trail -->
+    <record id="seq_medical_clinical_trail" model="ir.sequence">
+        <field name="name">Medical Clinical Trail</field>
+        <field name="code">medical.clinical.trail</field>
+        <field name="prefix">CT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for Medical Consultation -->
+    <record id="seq_medical_consultation" model="ir.sequence">
+        <field name="name">Medical Consultation</field>
+        <field name="code">medical.consultation</field>
+        <field name="prefix">CONS/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_crm_lead_reference" model="ir.sequence">
+        <field name="name">CRM Lead Reference</field>
+        <field name="code">crm.lead.reference</field>
+        <field name="prefix">REF/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

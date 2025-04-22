@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add sequences for reference numbers -->
+    <record id="seq_crm_lead_reference" model="ir.sequence">
+        <field name="name">CRM Lead Reference</field>
+        <field name="code">crm.lead.reference</field>
+        <field name="prefix">REF/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="view_crm_lead_patient_form" model="ir.ui.view">
+        <field name="name">crm.lead.patient.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <field name="type" invisible="1"/>
+            </xpath>
+            <!-- Replace the original header -->
+            <xpath expr="//form/header" position="replace">
+                <header>
+                    <button name="action_proceed_to_admission" string="Proceed to Admission" type="object"/>
+                    <button name="action_book_appointment" string="Book Appointment" type="object"/>
+                    <button name="action_book_package" string="Book Package" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="lead,warm_lead,hot_lead,opportunity,customer,dead_lead,hibernation"/>
+                </header>
+            </xpath>
+
+            <!-- Add smart buttons in the button_box -->
+            <xpath expr="//div[@name='button_box']" position="replace">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="appointment_count"/>
+                            </span>
+                            <span class="o_stat_text">Appointments</span>
+                        </div>
+                    </button>
+                    <button name="action_view_registration_form" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Registration Form</span>
+                        </div>
+                    </button>
+                    <button name="action_view_visits" type="object" class="oe_stat_button" icon="fa-user">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="visit_count"/>
+                            </span>
+                            <span class="o_stat_text">Visits</span>
+                        </div>
+                    </button>
+                    <button name="action_view_case_history" type="object" class="oe_stat_button" icon="fa-history">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Case History</span>
+                        </div>
+                    </button>
+                    <button name="action_view_booked_package" type="object" class="oe_stat_button" icon="fa-cubes">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Booked Package</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+
+          
+
+            <!-- Modify existing notebook to add our custom pages -->
+            <xpath expr="//notebook" position="replace">
+                <notebook>
+                    <page string="Internal Notes" name="internal_notes">
+                        <field name="description" placeholder="Add a description..." nolabel="1"/>
+                    </page>
+                    <page string="Extra Information" name="extra_information">
+                        <group>
+                            <group string="Customer Information">
+                                <field name="partner_id"/>
+                                <field name="email_from" widget="email"/>
+                                <field name="phone" widget="phone"/>
+                            </group>
+                            <group string="Marketing">
+                                <field name="campaign_id"/>
+                                <field name="medium_id"/>
+                                <field name="source_id"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Patient Information" name="patient_information">
+                        <group>
+                            <group>
+                                <field name="patient_name"/>
+                                <field name="patient_age"/>
+                                <field name="patient_sex"/>
+                                <field name="date_of_birth"/>
+                            </group>
+                            <group>
+                                <field name="patient_mobile"/>
+                                <field name="patient_email" widget="email"/>
+                                <field name="blood_group"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Previous Treatment History" name="previous_treatment_history">
+                        <group>
+                            <h2 class="text-danger">Previous Treatment History</h2>
+                            <group>
+                                <field name="bool_1" string="Consulted Psychiatrist"/>
+                                <field name="psychiatrist_psychologist" invisible="not bool_1"/>
+                                <field name="bool_2" string="Consulted Counsellor / Psychologist"/>
+                                <field name="counseller_psychologist" invisible="not bool_2"/>
+                                <field name="bool_3" string="Treated at Hospitals"/>
+                                <field name="hospital_1" invisible="not bool_3"/>
+                                <field name="hospital_2" invisible="not bool_3"/>
+                                <field name="hospital_3" invisible="not bool_3"/>
+                                <field name="bool_4" string="Managed at home with proxy consultation and medicines"/>
+                                <field name="treated_in_rehab" string="Treated in a rehab"/>
+                            </group>
+                            <group>
+                                <field name="referral" widget="radio" string="Referral"/>
+                                <field name="physical_condition" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Clinical Trail" name="clinical_trail">
+                        <field name="clinical_trail_ids">
+                            <tree editable="bottom">
+                                <field name="date"/>
+                                <field name="points_of_discussion"/>
+                                <field name="remarks"/>
+                                <field name="employee_id"/>
+                                <field name="created_on"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Activities" name="activities">
+                        <field name="visit_activities_ids">
+                            <tree editable="bottom">
+                                <field name="activity_type"/>
+                                <field name="activity_date"/>
+                                <field name="activity_owner"/>
+                                <field name="activity_status"/>
+                                <field name="rescheduled_date"/>
+                                <field name="reschedule_reason"/>
+                                <field name="activity_description"/>
+                                <field name="clinical_trail"/>
+                                <field name="events"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Customer Activity" name="customer_activity">
+                        <field name="customer_activity_ids">
+                            <tree>
+                                <field name="reference_id"/>
+                                <field name="patient_internal_id"/>
+                                <field name="campus_id"/>
+                                <field name="reference"/>
+                                <field name="date"/>
+                                <field name="mrn_no"/>
+                                <field name="type"/>
+                                <field name="state"/>
+                                <field name="value"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Extra Info" name="extra_info">
+                        <group>
+                            <group>
+                                <field name="do_not_call"/>
+                                <field name="latest_consulting_doctor"/>
+                            </group>
+                            <group>
+                                <field name="whatsapp_updates"/>
+                                <field name="aadhar_verification"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Registration Form Details" name="registration_form_details">
+                        <group>
+                            <group>
+                                <field name="registration_form_id"/>
+                                <field name="nationality"/>
+                                <field name="religion"/>
+                                <field name="languages_known" widget="many2many_tags"/>
+                                <field name="marital_status"/>
+                                <field name="have_child"/>
+                                <field name="no_child" invisible="have_child != 'Yes'"/>
+                            </group>
+                            <group>
+                                <field name="education_qualification"/>
+                                <field name="occupation"/>
+                                <field name="concerns_problems"/>
+                                <field name="physical_condition" widget="many2many_tags"/>
+                                <field name="service_id"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Consultation Information" name="consultation_information">
+                        <group>
+                            <group>
+                                <field name="total_consultations"/>
+                                <field name="in_person_consultations"/>
+                                <field name="virtual_consultations"/>
+                                <field name="home_consultations"/>
+                                <field name="free_screening"/>
+                            </group>
+                            <group>
+                                <field name="consultations_missed"/>
+                                <field name="consultations_rescheduled"/>
+                                <field name="consultations_cancelled"/>
+                                <field name="aggregate_feedback"/>
+                            </group>
+                        </group>
+                        <separator string="Slot Links"/>
+                        <field name="slot_link_ids">
+                            <tree editable="bottom">
+                                <field name="appointment_subject"/>
+                                <field name="doctor_id"/>
+                                <field name="campus_id"/>
+                                <field name="speciality"/>
+                                <field name="consultation_type"/>
+                                <field name="free_screening"/>
+                                <field name="start_datetime"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Lead Activity Data" name="lead_activity_data">
+                        <group>
+                            <group>
+                                <field name="first_contacted"/>
+                                <field name="last_contacted"/>
+                                <field name="last_heard_from"/>
+                                <field name="last_opened_email"/>
+                                <field name="last_clicked_link"/>
+                                <field name="subscription_opt_outs"/>
+                                <field name="subscription_opt_ins"/>
+                                <field name="whatsapp_sessions"/>
+                                <field name="lead_score"/>
+                            </group>
+                            <group>
+                                <field name="emails_opened"/>
+                                <field name="unsubscribed_emails"/>
+                                <field name="documents_downloaded"/>
+                                <field name="helpline_calls"/>
+                                <field name="events_attended"/>
+                                <field name="webinars_attended"/>
+                                <field name="videos_watched"/>
+                                <field name="blogs_read"/>
+                                <field name="account_deleted"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Admission Information" name="admission_information">
+                        <group>
+                            <h2 class="text-danger">Admission Information</h2>
+                            <group>
+                                <field name="lead_to_rehab"/>
+                                <field name="lead_to_hyderabad"/>
+                                <field name="lead_to_mindtalk"/>
+                            </group>
+                        </group>
+                        <separator string="Email"/>
+                        <separator string="Opportunity"/>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+    <!-- Clinical Trail views -->
+    <record id="view_medical_clinical_trail_tree" model="ir.ui.view">
+        <field name="name">medical.clinical.trail.tree</field>
+        <field name="model">medical.clinical.trail</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="lead_id"/>
+                <field name="patient_id"/>
+                <field name="points_of_discussion"/>
+                <field name="employee_id"/>
+                <field name="created_on"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_medical_clinical_trail_form" model="ir.ui.view">
+        <field name="name">medical.clinical.trail.form</field>
+        <field name="model">medical.clinical.trail</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="patient_id"/>
+                            <field name="date"/>
+                            <field name="employee_id"/>
+                        </group>
+                        <group>
+                            <field name="created_on"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Points of Discussion">
+                            <field name="points_of_discussion" nolabel="1"/>
+                        </page>
+                        <page string="Remarks">
+                            <field name="remarks" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Visits Activities views -->
+    <record id="view_visits_activities_tree" model="ir.ui.view">
+        <field name="name">visits.activities.tree</field>
+        <field name="model">visits.activities</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="lead_id"/>
+                <field name="activity_type"/>
+                <field name="activity_date"/>
+                <field name="activity_owner"/>
+                <field name="activity_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_visits_activities_form" model="ir.ui.view">
+        <field name="name">visits.activities.form</field>
+        <field name="model">visits.activities</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="activity_type"/>
+                            <field name="activity_date"/>
+                            <field name="activity_owner"/>
+                            <field name="activity_status"/>
+                        </group>
+                        <group>
+                            <field name="rescheduled_date" invisible="activity_status != 'rescheduled'"/>
+                            <field name="reschedule_reason" invisible="activity_status != 'rescheduled'"/>
+                            <field name="clinical_trail"/>
+                            <field name="events"/>
+                        </group>
+                    </group>
+                    <field name="activity_description" placeholder="Activity Description..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Customer Activity views -->
+    <record id="view_customer_activity_tree" model="ir.ui.view">
+        <field name="name">customer.activity.tree</field>
+        <field name="model">customer.activity</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="lead_id"/>
+                <field name="reference_id"/>
+                <field name="patient_internal_id"/>
+                <field name="campus_id"/>
+                <field name="date"/>
+                <field name="type"/>
+                <field name="state"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_customer_activity_form" model="ir.ui.view">
+        <field name="name">customer.activity.form</field>
+        <field name="model">customer.activity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="reference_id"/>
+                            <field name="patient_internal_id"/>
+                            <field name="campus_id"/>
+                            <field name="reference"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="mrn_no"/>
+                            <field name="type"/>
+                            <field name="state"/>
+                            <field name="value"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Appointment Slot Link views -->
+    <record id="view_appointment_slot_link_tree" model="ir.ui.view">
+        <field name="name">appointment.slot.link.tree</field>
+        <field name="model">appointment.slot.link</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="lead_id"/>
+                <field name="appointment_subject"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="speciality"/>
+                <field name="consultation_type"/>
+                <field name="start_datetime"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_appointment_slot_link_form" model="ir.ui.view">
+        <field name="name">appointment.slot.link.form</field>
+        <field name="model">appointment.slot.link</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="appointment_subject"/>
+                            <field name="doctor_id"/>
+                            <field name="campus_id"/>
+                        </group>
+                        <group>
+                            <field name="speciality"/>
+                            <field name="consultation_type"/>
+                            <field name="free_screening"/>
+                            <field name="start_datetime"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_medical_clinical_trail" model="ir.actions.act_window">
+        <field name="name">Clinical Trails</field>
+        <field name="res_model">medical.clinical.trail</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_visits_activities" model="ir.actions.act_window">
+        <field name="name">Visit Activities</field>
+        <field name="res_model">visits.activities</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_customer_activity" model="ir.actions.act_window">
+        <field name="name">Customer Activities</field>
+        <field name="res_model">customer.activity</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_appointment_slot_link" model="ir.actions.act_window">
+        <field name="name">Appointment Slot Links</field>
+        <field name="res_model">appointment.slot.link</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_medical_clinical_trail" name="Clinical Trails" parent="crm.crm_menu_root" action="action_medical_clinical_trail" sequence="15"/>
+
+    <menuitem id="menu_visits_activities" name="Visit Activities" parent="crm.crm_menu_root" action="action_visits_activities" sequence="16"/>
+
+    <menuitem id="menu_customer_activity" name="Customer Activities" parent="crm.crm_menu_root" action="action_customer_activity" sequence="17"/>
+
+    <menuitem id="menu_appointment_slot_link" name="Appointment Slot Links" parent="crm.crm_menu_root" action="action_appointment_slot_link" sequence="18"/>
+</odoo>

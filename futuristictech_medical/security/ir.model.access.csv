@@ -29,3 +29,19 @@ access_medical_payment_manager,medical.payment.manager,model_medical_payment,gro
 access_doctor_schedule_user,doctor.schedule.user,model_doctor_schedule,group_medical_user,1,0,0,0
 access_doctor_schedule_doctor,doctor.schedule.doctor,model_doctor_schedule,group_medical_doctor,1,1,1,1
 access_doctor_schedule_manager,doctor.schedule.manager,model_doctor_schedule,group_medical_manager,1,1,1,1
+
+access_medical_clinical_trail_user,medical.clinical.trail.user,model_medical_clinical_trail,futuristictech_medical.group_medical_user,1,1,1,0
+access_medical_clinical_trail_doctor,medical.clinical.trail.doctor,model_medical_clinical_trail,futuristictech_medical.group_medical_doctor,1,1,1,0
+access_medical_clinical_trail_manager,medical.clinical.trail.manager,model_medical_clinical_trail,futuristictech_medical.group_medical_manager,1,1,1,1
+access_medical_consultation_user,medical.consultation.user,model_medical_consultation,futuristictech_medical.group_medical_user,1,1,1,0
+access_medical_consultation_doctor,medical.consultation.doctor,model_medical_consultation,futuristictech_medical.group_medical_doctor,1,1,1,0
+access_medical_consultation_manager,medical.consultation.manager,model_medical_consultation,futuristictech_medical.group_medical_manager,1,1,1,1
+
+access_primary_tag_user,primary.tag user,model_primary_tag,base.group_user,1,0,0,0
+access_primary_tag_manager,primary.tag manager,model_primary_tag,base.group_system,1,1,1,1
+access_secondary_tag_user,secondary.tag user,model_secondary_tag,base.group_user,1,0,0,0
+access_secondary_tag_manager,secondary.tag manager,model_secondary_tag,base.group_system,1,1,1,1
+access_tertiary_tag_user,tertiary.tag user,model_tertiary_tag,base.group_user,1,0,0,0
+access_tertiary_tag_manager,tertiary.tag manager,model_tertiary_tag,base.group_system,1,1,1,1
+access_discard_tag_user,discard.tag user,model_discard_tag,base.group_user,1,0,0,0
+access_discard_tag_manager,discard.tag manager,model_discard_tag,base.group_system,1,1,1,1

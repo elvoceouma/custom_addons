@@ -6,11 +6,17 @@ class ResPartner(models.Model):
 
     is_doctor = fields.Boolean(string='Is Doctor', default=False)
     # Patient fields
+    
     avalara_show_address_validation = fields.Boolean(string='Show Address Validation', default=False)
     avatax_unique_code = fields.Char(string='Unique Code')
     avalara_partner_code = fields.Char(string='Avalara Partner Code')
     avalara_exemption_id = fields.Char(string='Avalara Exemption ID')
-    
+    language_preference = fields.Many2many('language.master',
+    'res_partner_language_rel',  
+    'partner_id',  
+    'language_id',  
+    string="Language Preference")
+
     # Doctor fields
     doctor_license_number = fields.Char(string='Doctor License Number', required=False)
     doctor_department_id = fields.Many2one('medical.department', string='Department')
@@ -50,11 +56,22 @@ class ResPartner(models.Model):
     doctor_external_id = fields.Char('Doctor External ID')
     campus_ids = fields.Many2many('campus.master','res_partner_campus_rel','partner_id','campus_id',string="Campus")
     lead_id = fields.Many2one('crm.lead','Lead')
-    language_preference = fields.Many2many('language.master','doctor_lang_rel', string="Language Preference", store=True)
     track_uid = fields.Char("Track UID", store=True)
-    illness_treated = fields.Many2many('primary.tag', 'doctor_primary_rel', string="Illness Treated", store=True)
+    illness_treated = fields.Many2many(
+    'primary.tag', 
+    'res_partner_primary_rel',  
+    'partner_id',  
+    'primary_id',  
+    string="Illness Treated"
+)
     gender_aff = fields.Selection([('yes','Yes'),('no','No')], string="Gender Affirmation", store=True)
-    cns_preference = fields.Many2many('cns.preference','doctor_cns_relation', string="CNS")
+    cns_preference = fields.Many2many(
+    'cns.preference',
+    'res_partner_cns_rel',  
+    'partner_id',  
+    'cns_id',     
+    string="CNS"
+)
     age_preference = fields.Many2many('age.preference','doctor_age_rel', string="Age Preference")
 
     def action_view_cases(self):
