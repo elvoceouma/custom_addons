@@ -73,4 +73,20 @@ class HrEmployee(models.Model):
     is_emergency_contact = fields.Boolean(string='Is Emergency Contact', default=False)
     doctor_ids = fields.One2many(
         'medical.doctor', 'employee_id', string='Doctors')
-    
+
+
+
+class MedicalSpeciality(models.Model):
+    _name = 'medical.speciality'
+    _description = 'Medical Speciality'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Description', help="ie, Addiction Psychiatry", required=True, tracking=True)
+    code = fields.Char(string='Speciality Code', help="ie, ADP", required=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
+
+    _sql_constraints = [
+        ('code_unique', 
+         'UNIQUE(code)',
+         'Speciality code must be unique!')
+    ]

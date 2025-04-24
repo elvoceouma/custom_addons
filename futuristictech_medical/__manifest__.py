@@ -8,9 +8,13 @@
     'data': [
         'security/medical_security.xml',
         'security/ir.model.access.csv',
+        'data/sequence.xml',
+        'data/mail_template_data.xml',
+        'data/medical_data.xml',
         'views/hospital_views.xml',
         'views/department_views.xml',
         'views/doctor_views.xml',
+        'views/medical_speciality_views.xml',
         'views/patient_views.xml',
         'views/medical_case_views.xml',
         'views/doctor_schedule_views.xml',
@@ -19,13 +23,20 @@
         'views/payment_views.xml',
         'views/res_partners.xml',
         'views/crm_lead_views.xml',
-        'data/sequence.xml',
-        'data/medical_data.xml',
+        'views/consultation_views.xml',
+        'views/medical_labtest_types_views.xml',
         'report/medical_reports.xml',
         'report/report_templates.xml',
-
         'views/menu_views.xml',
     ],
+      'demo': [
+        'demo/consultation_demo.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            # 'medical_consultation/static/src/scss/consultation.scss',
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,

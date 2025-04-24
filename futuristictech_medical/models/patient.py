@@ -186,8 +186,7 @@ class MedicalConsultation(models.Model):
         ('4', '4 - Good'),
         ('5', '5 - Excellent')], string='Feedback Score')
     subject = fields.Char(string='Subject')
-    speciality = fields.Many2one(
-        'speciality.master', string='Speciality', required=True)
+    speciality = fields.Many2one('medical.speciality', string='Speciality', required=True)
     is_free_screening = fields.Boolean(string='Free Screening', default=False)
     consultation_date = fields.Datetime(string='Consultation Date', default=fields.Datetime.now)
     duration = fields.Float(string='Duration (in minutes)')

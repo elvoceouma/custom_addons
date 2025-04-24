@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo data will depend on other modules being present -->
+        <!-- This is just a placeholder structure -->
+        
+        <!-- Create a consultation type -->
+        <record id="followup_type_psychiatric_evaluation" model="followup.type">
+            <field name="name">Psychiatric Evaluation</field>
+            <field name="type">ip</field>
+            <field name="team_role">psychiatrist</field>
+            <field name="payout" eval="True"/>
+            <field name="billable" eval="True"/>
+        </record>
+        
+        <record id="followup_type_psychological_assessment" model="followup.type">
+            <field name="name">Psychological Assessment</field>
+            <field name="type">op</field>
+            <field name="team_role">clinical_psychologist</field>
+            <field name="payout" eval="True"/>
+            <field name="billable" eval="True"/>
+        </record>
+        
+        <record id="followup_type_counseling_session" model="followup.type">
+            <field name="name">Counseling Session</field>
+            <field name="type">op</field>
+            <field name="team_role">counsellor</field>
+            <field name="payout" eval="True"/>
+            <field name="billable" eval="True"/>
+        </record>
+        
+        <!-- Sample scale types -->
+        <record id="cp_purpose_anxiety" model="cp.purpose">
+            <field name="name">Anxiety Assessment</field>
+        </record>
+        
+        <record id="cp_purpose_depression" model="cp.purpose">
+            <field name="name">Depression Assessment</field>
+        </record>
+        
+        <record id="cp_purpose_addiction" model="cp.purpose">
+            <field name="name">Addiction Assessment</field>
+        </record>
+    </data>
+</odoo>

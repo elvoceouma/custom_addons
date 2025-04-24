@@ -1,0 +1,70 @@
+/**
+ * Consultation module custom styling
+ */
+
+ .o_form_view.o_consultation_form {
+    .o_notebook {
+        .nav-link.active {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #875A7B;
+        }
+    }
+    
+    // Style for the vitals section
+    .o_group.o_inner_group.vitals {
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        padding: 10px;
+        
+        .o_field_number {
+            font-weight: bold;
+        }
+    }
+    
+    // Style for sarathy AI iframe
+    .sarathy-iframe {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        min-height: 500px;
+    }
+    
+    // Style for prescription lines
+    .o_field_one2many.o_field_widget.consultation_prescription_line_ids {
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        
+        .o_list_table {
+            thead tr th {
+                background-color: #f7f7f7;
+            }
+            
+            tbody tr.o_data_row:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+        }
+    }
+}
+
+// Status colors for consultation
+.o_status {
+    &.o_status_draft {
+        color: #6c757d;  // grey
+    }
+    
+    &.o_status_started {
+        color: #007bff;  // blue
+    }
+    
+    &.o_status_ended {
+        color: #fd7e14;  // orange
+    }
+    
+    &.o_status_completed {
+        color: #28a745;  // green
+    }
+}
+
+// Add some spacing for buttons in header
+.o_form_view .o_form_statusbar > .o_statusbar_buttons > .btn {
+    margin-right: 4px;
+}

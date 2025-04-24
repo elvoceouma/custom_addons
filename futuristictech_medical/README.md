@@ -241,4 +241,4 @@ def create_patient(self, **kwargs):
 
 This module is licensed under [LGPL-3.0](LICENSE)
 
-```./odoo-bin -c odoo.conf -d futuristictech_medical -u futuristictech_medical```
+```.```/odoo-bin -c odoo.conf -d futuristictech_medical -u futuristictech_medical

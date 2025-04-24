@@ -27,5 +27,7 @@
         <!-- Configuration -->
         <menuitem id="menu_medical_config" name="Configuration" parent="menu_medical_root" sequence="100"/>
         <menuitem id="menu_medical_treatment_type" name="Treatment Types" parent="menu_medical_config" action="action_medical_treatment_types" sequence="10"/>
+        <menuitem id="menu_medical_speciality" name="Specialities" parent="menu_medical_config" action="action_medical_speciality" sequence="20"/>
+        <menuitem id="menu_medical_labtest_types" name="Lab Test Types" parent="menu_medical_config" action="action_medical_labtest_types" sequence="30"/>
     </data>
 </odoo>

@@ -72,4 +72,12 @@
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
+
+    <record id="seq_consultation_consultation" model="ir.sequence">
+        <field name="name">Consultation</field>
+        <field name="code">consultation.consultation</field>
+        <field name="prefix">CN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Mail template for consultation feedback -->
+        <record id="mail_template_consultation_feedback" model="mail.template">
+            <field name="name">Consultation: Feedback Request</field>
+            <field name="model_id" ref="model_consultation_consultation"/>
+            <field name="subject">Feedback Request: {{ object.name }}</field>
+            <field name="partner_to">{{ object.patient_id.partner_id.id }}</field>
+            <field name="email_from">{{ (user.email_formatted) }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear <t t-out="object.patient_id.partner_id.name or ''">Patient</t>,
+                        <br/>
+                        <br/>
+        Thank you for your recent consultation with <t t-out="object.psychiatrist_id.name or ''">Doctor</t> on <t t-out="object.date or ''">Date</t>.
+                        <br/>
+                        <br/>
+        We would greatly appreciate your feedback on your experience. This will help us improve our services and ensure we're providing the best possible care.
+                        <br/>
+                        <br/>
+        Please take a moment to complete our short feedback form by clicking the button below:
+                        <br/>
+                        <br/>
+                        <center>
+                            <a t-att-href="'https://hospital.example.com/feedback?id=%s' % (object.id)" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                Provide Feedback
+                            </a>
+                        </center>
+                        <br/>
+                        <br/>
+        Thank you for your time.
+                        <br/>
+                        <br/>
+        Regards,<br/>
+                    <t t-out="user.signature or ''">Signature</t>
+                    <br/>
+                    <t t-out="user.company_id.name or ''">Company</t>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.patient_id.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</data>
+</odoo>

@@ -23,4 +23,12 @@ from . import medical_package
 from . import crm_visits
 from . import crm_lead
 from .import crm_tags
+from . import consultation
+from . import consultation_prescription_line
+from . import cross_consultation
+from . import admission_models
+from . import advice_models
+from . import followup_wizard
+from . import medical_labtest
 from . import res_config_settings
+from . import hr_employee
