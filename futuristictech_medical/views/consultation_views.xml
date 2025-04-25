@@ -261,7 +261,7 @@
             <tree>
                 <field name="name" />
                 <field name="date" />
-                <field name="psychiatrist_id" />
+                <field name="psychiatrist_id" options= "{'no_create': True, 'no_open': True}" />
                 <field name="team_role" invisible="1" />
                 <field name="patient_id" />
                 <field name="state" />

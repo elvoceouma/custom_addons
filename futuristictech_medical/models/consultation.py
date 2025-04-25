@@ -52,15 +52,15 @@ class Consultation(models.Model):
     psychiatrist_id = fields.Many2one('hr.employee', string='Consultant', required=True, tracking=True)
     team_role = fields.Selection(TEAM_ROLE, related='psychiatrist_id.team_role', readonly=True, store=True, string='Team Role')
     type = fields.Selection([('ip', 'IP'), ('op', 'OP')], string='Type', required=True, default='ip', tracking=True)
-    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', tracking=True)
-    op_visit_id = fields.Many2one('op.visits', string='OP Reference', tracking=True)
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', tracking=True, ondelete='set null')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference', tracking=True, ondelete='set null')
     age = fields.Integer(string='Age', tracking=True)
     sex = fields.Selection([('male','Male'),
                             ('female','Female'),
                             ('other','Other')],
                             string="Sex"
                             )
-    patient_id = fields.Many2one('oeh.medical.patient', compute='_compute_patient', string='Patient', store=True, tracking=True)
+    patient_id = fields.Many2one('oeh.medical.patient', compute='_compute_patient', string='Patient', store=True, tracking=True, ondelete='set null')
     date = fields.Date(string='Date', default=fields.Date.context_today, tracking=True)
     start_datetime = fields.Datetime(string='Start Time', tracking=True)
     end_datetime = fields.Datetime(string='End Time', tracking=True)
@@ -203,7 +203,7 @@ class Consultation(models.Model):
                 record.patient_id = False
                 record.op_visit_id = False
                 record.inpatient_admission_id = False
-                
+
     @api.onchange('bed_type_id')
     def _onchange_bed_type_id(self):
         if self.bed_type_id:
