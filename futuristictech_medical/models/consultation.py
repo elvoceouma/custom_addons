@@ -1006,23 +1006,7 @@ class Consultation(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('consultation.consultation') or 'New'
         return super(Consultation, self).create(vals)
     
-    def action_consultation_followup(self):
-        return {
-            'name': _('Consultation Follow-up'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'consultation.followup',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_consultation_id': self.id,
-                'default_is_sos': self.is_sos,
-                'default_next_followup_date': self.next_followup_date,
-                'default_doctor_advice': self.doctor_advice,
-                'default_precautions': self.precautions,
-                'default_todo': self.todo
-            }
-        }
-    
+  
     def action_clinical_psychologist_session(self):
         return {
             'name': _('Clinical Psychologist Session'),
