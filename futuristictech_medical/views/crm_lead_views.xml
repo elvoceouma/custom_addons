@@ -154,7 +154,7 @@
                         <field name="description" placeholder="Add a description..." nolabel="1"/>
                     </page>
                     <page string="Extra Information" name="extra_information">
-                        <group>
+                                <group>
                             <group string="Customer Information">
                                 <field name="partner_id"/>
                                 <field name="email_from" widget="email"/>

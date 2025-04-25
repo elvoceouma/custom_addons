@@ -2,14 +2,13 @@
 <odoo>
     <!-- Consultation Form View -->
 
-
-        <!-- Followup Action -->
+    <!-- Followup Action -->
     <record id="action_consultation_followup" model="ir.actions.act_window">
         <field name="name">Next Follow-up</field>
         <field name="res_model">consultation.followup</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-    </record> 
+    </record>
 
     <record id="view_consultation_form" model="ir.ui.view">
         <field name="name">consultation.consultation.form</field>
@@ -17,77 +16,85 @@
         <field name="arch" type="xml">
             <form string="Consultation">
                 <header>
-                    <button name="action_check_vitals" groups="program_scheduler.group_check_vitals,base.group_erp_manager" string="Vitals Checked" type="object" class="oe_highlight" invisible="vitals_checked_on or state != 'draft'" />
-                    <button name="action_start" string="Check In" type="object" class="oe_highlight" invisible="state != 'draft'" />
-                    <button name="action_end" string="Check Out" type="object" class="oe_highlight" invisible="state != 'started'" />
-                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="state != 'ended'" />
-                    <button name="send_feedback_form" string="Send Feedback Form" type="object" class="oe_highlight" invisible="state != 'completed'"/>
-                    <!-- <button name="action_consultation_followup" string="Next Follow-up" type="object" class="oe_highlight" invisible="next_followup or state != 'ended'" /> -->
-                    <field name="state" widget="statusbar" statusbar_visible="draft,started,ended,completed" />
+                    <button name="action_check_vitals" string="Vitals Checked" type="object" class="oe_highlight" />
+                    <button name="action_start" string="Check In" type="object" class="oe_highlight" />
+                    <button name="action_end" string="Check Out" type="object" class="oe_highlight"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,started,ended,completed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button type="object" class="oe_stat_button" string="Doctor Consultation" name="view_doctor_consultation" icon="fa-user-md">
+                        <button type="object" class="oe_stat_button" name="view_doctor_consultation" icon="fa-user-md">
+                            <span>Doctor Consultation</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="CP Consultation" name="action_clinical_psychologist_session" context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" icon="fa-brain"/>
-                        <button type="object" class="oe_stat_button" string="Screening" name="action_clinical_psychologist_screening" context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" icon="fa-clipboard-check" />
-
-                        <button type="object" class="oe_stat_button" string="Counsellor Session" name="counsellor_session_action" context="{'search_default_resident_id': [patient_id],'default_resident_id': patient_id}" icon="fa-comments">
+                        <button type="object" class="oe_stat_button" name="action_clinical_psychologist_session" icon="fa-brain">
+                            <span>CP Consultation</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="Lab Tests" name="oeh_medical_lab_test_action_tree" context="{'search_default_patient': [patient_id],'default_patient': patient_id}" icon="fa-flask" />
-                        <button type="object" class="oe_stat_button" string="Cross Consultation" name="action_outside_consultation" context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" icon="fa-random">
+                        <button type="object" class="oe_stat_button" name="action_clinical_psychologist_screening" icon="fa-clipboard-check">
+                            <span>Screening</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="Psychiatrist Evaluation" context="{'default_psychiatrist_id':psychiatrist_id,'default_type':type,'default_inpatient_admission_id':inpatient_admission_id,'default_op_visit_id':op_visit_id,'default_patient_id':patient_id,'default_followup_type_id':followup_type_id,'default_consultation_id': id }" name="view_psychiatrist_evaluation_form" icon="fa-clipboard-list">
+                        <button type="object" class="oe_stat_button" name="counsellor_session_action" icon="fa-comments">
+                            <span>Counsellor Session</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="Prescriptions" name="view_prescriptions" icon="fa-pills">
+                        <button type="object" class="oe_stat_button" name="oeh_medical_lab_test_action_tree" icon="fa-flask">
+                            <span>Lab Tests</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="CRM Notes" name="action_crm_simple_registration" context="{'search_default_patient_id': [patient_id], 'default_patient_id': patient_id}" icon="fa-sticky-note">
+                        <button type="object" class="oe_stat_button" name="action_outside_consultation" icon="fa-random">
+                            <span>Cross Consultation</span>
                         </button>
-                        <button type="object" class="oe_stat_button" string="Patient Documents" name="view_patient_document" icon="fa-file-medical" />
+                        <button type="object" class="oe_stat_button" name="view_psychiatrist_evaluation_form" icon="fa-clipboard-list">
+                            <span>Psychiatrist Evaluation</span>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="view_prescriptions" icon="fa-pills">
+                            <span>Prescriptions</span>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="action_crm_simple_registration" icon="fa-sticky-note">
+                            <span>CRM Notes</span>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="view_patient_document" icon="fa-file-medical">
+                            <span>Patient Documents</span>
+                        </button>
+                        <button type="object" class="oe_stat_button" name="send_feedback_form" icon="fa-comment">
+                            <span>Feedback Form</span>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1" />
+                            <field name="name" readonly="1"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="type" readonly="state != 'draft'" />
-                            <field name="inpatient_admission_id" options="{'no_create':True,'no_open':True}" invisible="type == 'op'" required="type == 'ip'" readonly="state != 'draft'" />
-                            <field name="op_visit_id" options="{'no_create':True,'no_open':True}" invisible="type == 'ip'" required="type == 'op'" readonly="state != 'draft'"/>
-                            <field name="patient_id" options="{'no_create':True,'no_open':True}" />
-                            <field name="followup_type_id" options="{'no_create':True,'no_open':True}" readonly="state != 'draft'" required="0" />
-                            <field name="prescription_status" invisible="not consultation_prescription_line_ids" />
-                            <field name="team_role" invisible="0" />
+                            <field name="type" readonly="state != 'draft'"/>
+                            <field name="inpatient_admission_id" options="{'no_create':True}" invisible="type != 'ip'" required="type == 'ip'" readonly="state != 'draft'"/>
+                            <field name="patient_id" options="{'no_create':True}"/>
+                            <field name="age"/>
+                            <field name="sex"/>
+                            <field name="prescription_status" invisible="not consultation_prescription_line_ids"/>
+                            <field name="team_role"/>
                         </group>
                         <group>
-                            <field name="psychiatrist_id" options="{'no_create':True,'no_open':True}" domain="[('team_role','in',['psychiatrist','senior_registrar','physician'])]" readonly="state != 'draft'" />
-                            <field name="date" readonly="state != 'draft'" />
-                            <field name="start_datetime" readonly="state == 'completed'" />
-                            <field name="end_datetime" readonly="state == 'completed'" />
-                            <field name="prescription_id" invisible="1" />
+                            <field name="consultant" required="1" options="{'no_create':True}"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="start_datetime" readonly="state == 'completed'"/>
+                            <field name="end_datetime" readonly="state == 'completed'"/>
+                            <field name="consultation_type" options="{'no_create':True}" readonly="state != 'draft'"/>
                         </group>
                     </group>
                     <group>
                         <group>
-                            <label for="bp" />
+                            <label for="bp"/>
                             <div class="o_row">
-                                <field name="bp" readonly="state == 'completed'" />
+                                <field name="bp" readonly="state == 'completed'"/>
                                 <span>/</span>
-                                <field name="bp2" readonly="state == 'completed'" />
+                                <field name="bp2" readonly="state == 'completed'"/>
                             </div>
-                            <field name="wt" readonly="state == 'completed'" />
-                            <field name="grbs" readonly="state == 'completed'" />
+                            <field name="wt" readonly="state == 'completed'"/>
+                            <field name="grbs" readonly="state == 'completed'"/>
                         </group>
                         <group>
-                            <field name="spo2" readonly="state == 'completed'" />
-                            <field name="pulse" readonly="state == 'completed'" />
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="vitals_checked_user_id" readonly="1" options="{'no_create':True,'no_open':True}" invisible="not vitals_checked_user_id" />
-                            <field name="vitals_checked_on" readonly="1" invisible="not vitals_checked_on" />
+                            <field name="spo2" readonly="state == 'completed'"/>
+                            <field name="pulse" readonly="state == 'completed'"/>
                         </group>
                     </group>
                     <notebook>
@@ -119,7 +126,7 @@
                             </group>
                         </page>
                         <page string="Current Medication">
-                            <field name="consultation_prescription_line_ids" context="{'psychiatrist_id':psychiatrist_id}" readonly="state == 'completed'">
+                            <field name="consultation_prescription_line_ids" readonly="state == 'completed'">
                                 <tree editable="bottom">
                                     <field name="consultation_id" invisible="1" />
                                     <field name="doctor" domain="[('active_doctor','=',True),('doctor','=',True), ('active','=',True), ('waiting_approval', '=', False)]" options="{'no_create':True,'no_open':True}" />
@@ -159,12 +166,6 @@
                                         <field name="doctor_id" options="{'no_create':True}" />
                                     </tree>
                                 </field>
-                                <!-- <field name="consultation_type_ids" readonly="state == 'completed'">
-                                    <tree>
-                                        <field name="consultation_id" invisible="1"/>
-                                        <field name="consultation_type" string="Type"/>
-                                    </tree>
-                                </field> -->
                             </group>
                         </page>
                         <page string="Admission Referral">
@@ -284,7 +285,7 @@
                 <field name="inpatient_admission_id" />
                 <field name="followup_type_id" />
                 <field name="team_role" />
-                <filter string="My Consultation" name="my_consultation" domain="[('psychiatrist_id.user_id','=',uid)]" />
+                <filter string="My Consultation" name="my_consultation" />
                 <filter string="Today" name="today" domain="[('date','=', context_today().strftime('%Y-%m-%d'))]" />
                 <filter string="This Week" name="this_week" domain="[('date','&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]" />
                 <filter string="This Month" name="this_month" domain="[('date','&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),
@@ -300,72 +301,19 @@
         </field>
     </record>
 
-    <!-- Consultation Action -->
-    <record model="ir.actions.act_window" id="action_consultation">
-        <field name="name">Consultation</field>
+    <record model="ir.actions.act_window" id="action_consultation_new">
+        <field name="name">New Consultation</field>
         <field name="res_model">consultation.consultation</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{"search_default_my_consultation": 1, "search_default_today": 1}</field>
-        <field name="search_view_id" ref="view_consultation_filter" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_consultation_form"/>
+        <field name="target">current</field>
+        <field name="context">{'default_state': 'draft'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first consultation!
+            Create a new consultation for a patient!
             </p>
         </field>
     </record>
 
 
-
-    <!-- Cross Consultation Links -->
-    <act_window id="act_assist_consultations" name="ASSIST - WHO" res_model="assist.consultations" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_basis_consultation" name="BASIS - 32" res_model="basis.consultation" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_dtcq_consultation" name="DTCQ - Alcohol" res_model="dtcq.consultation" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_dtcq_consultation_drugs" name="DTCQ - Drugs" res_model="dtcq.consultation.drugs" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_socrates_consultation" name="SOCRATES" res_model="socrates.consultation" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_pss_consultation" name="PSS" res_model="pss.consultation" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_treament_entry" name="Treatment Entry" res_model="treatment.entry" binding_model="consultation.consultation" binding_views="form" context="{'search_default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_inpatient_id': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_cross_cutting_symptoms" name="Cross-Cutting Symptom Measure" res_model="cross.cutting.symptoms" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_dissability_who_proxy" name="Disability Assessment WHO Proxy" res_model="dissability.who.proxy" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_dissability_who_self" name="Disability Assessment WHO Self" res_model="dissaility.assessment.who.self" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_mania_adult_dsm" name="Mania Adult - DSM" res_model="mania.adult.dsm" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_personality_inventory_brief_self" name="Personality Inventory Brief Self" res_model="personality.inventory.brief.self" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_repititive_thoughts" name="Repetitive Thoughts and Behaviors" res_model="repititive.thoughts" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_depression_adult_dsm" name="Depression - Adult DSM" res_model="depression.adult.dsm" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                 'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_psychosis_symptom" name="Psychosis Symptom Severity" res_model="psychosis.symptom" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <act_window id="act_casig_therapist" name="CASIG Therapist" res_model="casig.therapist" binding_model="consultation.consultation" binding_views="form" context="{'search_default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False, 
-                  'default_ip_number': active_id == inpatient_admission_id ? inpatient_admission_id : False}" />
-
-    <!-- Menu Items -->
-    <menuitem id="menu_consultation_root" name="Consultation" parent="menu_medical_root" sequence="80"/>
-    <menuitem id="menu_consultation" name="Consultations" parent="menu_consultation_root" action="action_consultation" sequence="10"/>
 </odoo>

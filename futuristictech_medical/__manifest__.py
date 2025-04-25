@@ -27,6 +27,7 @@
         'views/medical_labtest_types_views.xml',
         'report/medical_reports.xml',
         'report/report_templates.xml',
+        # 'views/actions.xml',
         'views/menu_views.xml',
     ],
       'demo': [

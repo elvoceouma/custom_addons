@@ -65,8 +65,14 @@ class Consultation(models.Model):
     type = fields.Selection([('ip', 'IP'), ('op', 'OP')], string='Type', required=True, default='ip', tracking=True)
     inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', tracking=True)
     op_visit_id = fields.Many2one('op.visits', string='OP Reference', tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    sex = fields.Selection([('male','Male'),
+                            ('female','Female'),
+                            ('other','Other')],
+                            string="Sex"
+                            )
     patient_id = fields.Many2one('oeh.medical.patient', compute='_compute_patient', string='Patient', store=True, tracking=True)
-    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    date = fields.Date(string='Date', default=fields.Date.context_today, tracking=True)
     start_datetime = fields.Datetime(string='Start Time', tracking=True)
     end_datetime = fields.Datetime(string='End Time', tracking=True)
     general_observation = fields.Text(string='General Observations', tracking=True)
@@ -91,7 +97,13 @@ class Consultation(models.Model):
         'labtest_type_id',
         string='Lab Tests'
     )
+    consultation_type = fields.Selection([
+        ('psychiatrist', 'Psychiatrist'),
+        ('clinical_psychologist', 'Clinical Psychologist'),
+        ('counsellor', 'Counsellor')
+    ], string='Consultation Type', tracking=True)
     doctor_id = fields.Many2one('res.partner', string='Doctor', tracking=True)
+    consultant = fields.Many2one('res.partner', string='Consultant', tracking=True)
     cross_consultation = fields.Text(string='Cross Consultation', tracking=True)
     speciality_id = fields.Many2one('medical.speciality', string='Speciality', tracking=True)
     speciality_ids = fields.Many2many(
@@ -102,6 +114,7 @@ class Consultation(models.Model):
     string='Speciality', 
     tracking=True
 )
+    psychiatrist_id = fields.Many2one('hr.employee', string='Psychiatrist', tracking=True)
     priority = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('emergency', 'Emergency')], string='Priority', tracking=True)
     current_medication = fields.Text(string='Current Medication', tracking=True)
     active_prescription_ids = fields.Many2many('oeh.medical.prescription', 'consultation_prescription_rel', 'consultation_id', 'prescription_id', string='Active Prescriptions')

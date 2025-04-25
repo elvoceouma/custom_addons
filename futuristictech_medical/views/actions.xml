@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Psychiatrist Consultation Action -->
+    <record id="action_psychiatrist_consultation" model="ir.actions.act_window">
+        <field name="name">Psychiatrist Consultations</field>
+        <field name="res_model">consultation.consultation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('team_role', '=', 'psychiatrist')]</field>
+        <field name="context">{"search_default_my_consultation": 1}</field>
+        <field name="search_view_id" ref="view_consultation_filter" />
+        <field name="views">[(view_consultation_tree,tree), (view_consultation_form,form)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No psychiatrist consultations found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Counsellor Session List Action -->
+    <record id="action_counsellor_session_list" model="ir.actions.act_window">
+        <field name="name">Counsellor Sessions</field>
+        <field name="res_model">consultation.counsellor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No counsellor sessions found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Outside Consultation List Action -->
+    <record id="action_outside_consultation_list" model="ir.actions.act_window">
+        <field name="name">Cross Consultations</field>
+        <field name="res_model">consultation.outside</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No cross consultations found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Lab Test List Action -->
+    <record id="action_medical_lab_test_list" model="ir.actions.act_window">
+        <field name="name">Lab Tests</field>
+        <field name="res_model">oeh.medical.lab.test</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No lab tests found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Lab Test Request Action -->
+    <record id="action_medical_lab_request" model="ir.actions.act_window">
+        <field name="name">Test Requests</field>
+        <field name="res_model">oeh.medical.lab.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No lab test requests found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Lab Test Results Action -->
+    <record id="action_medical_lab_results" model="ir.actions.act_window">
+        <field name="name">Test Results</field>
+        <field name="res_model">oeh.medical.lab.results</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No lab test results found!
+            </p>
+        </field>
+    </record>
+
+    <!-- Configuration Actions -->
+    <record id="action_counsellor_purpose" model="ir.actions.act_window">
+        <field name="name">Counsellor Purposes</field>
+        <field name="res_model">consultation.counsellor.purpose</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create your first counsellor purpose!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_cp_purpose" model="ir.actions.act_window">
+        <field name="name">CP Purposes</field>
+        <field name="res_model">consultation.cp.purpose</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create your first clinical psychologist purpose!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bed_type" model="ir.actions.act_window">
+        <field name="name">Bed Types</field>
+        <field name="res_model">consultation.bed.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create your first bed type!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_referral_config" model="ir.actions.act_window">
+        <field name="name">Referral Configs</field>
+        <field name="res_model">consultation.referral.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create your first referral configuration!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_provisional_diagnosis" model="ir.actions.act_window">
+        <field name="name">Provisional Diagnoses</field>
+        <field name="res_model">consultation.provisional.diagnosis</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create your first provisional diagnosis!
+            </p>
+        </field>
+    </record>
+</odoo>

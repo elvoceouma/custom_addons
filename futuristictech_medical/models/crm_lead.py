@@ -299,7 +299,7 @@ class CrmLead(models.Model):
             'email': self.patient_email,
             'is_patient': True,
         }
-        
+            
         if self.patient_mobile or self.patient_email:
             domain = []
             if self.patient_mobile:

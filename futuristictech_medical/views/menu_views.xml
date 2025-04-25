@@ -29,5 +29,18 @@
         <menuitem id="menu_medical_treatment_type" name="Treatment Types" parent="menu_medical_config" action="action_medical_treatment_types" sequence="10"/>
         <menuitem id="menu_medical_speciality" name="Specialities" parent="menu_medical_config" action="action_medical_speciality" sequence="20"/>
         <menuitem id="menu_medical_labtest_types" name="Lab Test Types" parent="menu_medical_config" action="action_medical_labtest_types" sequence="30"/>
+        
+           <!-- Menu Items for Consultation -->
+    <menuitem id="menu_consultation_root" 
+              name="Consultation" 
+              parent="menu_medical_root" 
+              sequence="80"/>
+              
+    <menuitem id="menu_consultation" 
+              name="Consultations" 
+              parent="menu_consultation_root" 
+              action="action_consultation" 
+              sequence="10"/>
+    
     </data>
 </odoo>

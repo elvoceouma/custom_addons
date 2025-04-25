@@ -66,3 +66,4 @@ access_advice_counsellor_user,advice.counsellor.user,model_advice_counsellor,gro
 access_advice_counsellor_manager,advice.counsellor.manager,model_advice_counsellor,group_consultation_manager,1,1,1,1
 access_advice_clinical_psychologist_user,advice.clinical.psychologist.user,model_advice_clinical_psychologist,group_consultation_user,1,1,1,0
 access_advice_clinical_psychologist_manager,advice.clinical.psychologist.manager,model_advice_clinical_psychologist,group_consultation_manager,1,1,1,1
+access_medical_appointment_user,medical.appointment.user,model_medical_appointment,base.group_user,1,1,1,1
