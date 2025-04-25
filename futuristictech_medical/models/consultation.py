@@ -114,7 +114,7 @@ class Consultation(models.Model):
     string='Speciality', 
     tracking=True
 )
-    psychiatrist_id = fields.Many2one('hr.employee', string='Psychiatrist', tracking=True)
+    # psychiatrist_id = fields.Many2one('hr.employee', string='Psychiatrist', tracking=True)
     priority = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('emergency', 'Emergency')], string='Priority', tracking=True)
     current_medication = fields.Text(string='Current Medication', tracking=True)
     active_prescription_ids = fields.Many2many('oeh.medical.prescription', 'consultation_prescription_rel', 'consultation_id', 'prescription_id', string='Active Prescriptions')
