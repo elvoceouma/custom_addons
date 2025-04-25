@@ -47,18 +47,7 @@ class Consultation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
     
-    @api.depends('type', 'inpatient_admission_id', 'op_visit_id')
-    def _compute_patient(self):
-        for record in self:
-            if record.type == 'ip' and record.inpatient_admission_id:
-                record.patient_id = record.inpatient_admission_id.patient.id
-                record.op_visit_id = False
-            elif record.type == 'op' and record.op_visit_id:
-                record.patient_id = record.op_visit_id.patient_id.id
-                record.inpatient_admission_id = False
-            else:
-                record.patient_id = False
-    
+   
     name = fields.Char(string='Name', required=True, default='New', tracking=True)
     psychiatrist_id = fields.Many2one('hr.employee', string='Consultant', required=True, tracking=True)
     team_role = fields.Selection(TEAM_ROLE, related='psychiatrist_id.team_role', readonly=True, store=True, string='Team Role')
@@ -200,6 +189,21 @@ class Consultation(models.Model):
         'consultation_id', 
         string='Admission Scales'
     )
+
+    @api.depends('type', 'inpatient_admission_id', 'op_visit_id')
+    def _compute_patient(self):
+        for record in self:
+            if record.type == 'ip' and record.inpatient_admission_id:
+                record.patient_id = record.inpatient_admission_id.patient.id
+                record.op_visit_id = False
+            elif record.type == 'op' and record.op_visit_id:
+                record.patient_id = record.op_visit_id.patient_id.id
+                record.inpatient_admission_id = False
+            else:
+                record.patient_id = False
+                record.op_visit_id = False
+                record.inpatient_admission_id = False
+                
     @api.onchange('bed_type_id')
     def _onchange_bed_type_id(self):
         if self.bed_type_id:
