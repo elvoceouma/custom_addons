@@ -212,25 +212,43 @@ class Consultation(models.Model):
 
     @api.onchange('referral_config_id')
     def _onchange_referral_config_id(self):
-        self.admission_consultation_ids = self.admission_room_type_ids = self.admission_misc_item_ids = None
-        self.admission_scale_ids = self.admission_labtest_ids = False
+    # Clear one2many fields properly
+        self.admission_consultation_ids = [(5, 0, 0)]  # Clear the field
+        self.admission_room_type_ids = [(5, 0, 0)]
+        self.admission_misc_item_ids = [(5, 0, 0)]
+        
+        # Clear many2many fields properly
+        self.admission_scale_ids = [(5, 0, 0)]
+        self.admission_labtest_ids = [(5, 0, 0)]
+        
         admission_labtest_ids = []
         if self.referral_config_id:
             referral_items = self.env['admission.referral.items'].search([('referral_config_id', '=', self.referral_config_id.id)])
             for line in referral_items:
+                # Check if the product_id exists and is not False
+                if not line.product_id:
+                    continue
+                    
                 followup_type_id = self.env['followup.type'].search([('product_id', '=', line.product_id.id)], limit=1)
                 labtest_type_id = self.env['oeh.medical.labtest.types'].search([('product_id', '=', line.product_id.id)], limit=1)
-                bed_id = self.env['oeh.medical.health.center.beds'].search([
-                    ('product_id', '=', line.product_id.id), 
-                    ('ward', '=', self.bed_type_id.id)
-                ])
+                
+                # Add guard for bed_type_id
+                if self.bed_type_id:
+                    bed_id = self.env['oeh.medical.health.center.beds'].search([
+                        ('product_id', '=', line.product_id.id), 
+                        ('ward', '=', self.bed_type_id.id)
+                    ])
+                else:
+                    bed_id = False
+                    
+                # Process based on found record
                 if followup_type_id:
                     vals = {
                         'followup_type_id': followup_type_id.id,
                         'quantity': line.quantity,
                         'unit_price': line.unit_price
                     }
-                    self.admission_consultation_ids = [(0, 0, vals)]
+                    self.write({'admission_consultation_ids': [(0, 0, vals)]})
                 elif labtest_type_id:
                     admission_labtest_ids.append(labtest_type_id.id)
                 elif bed_id:
@@ -239,20 +257,24 @@ class Consultation(models.Model):
                         'quantity': line.quantity,
                         'unit_price': line.unit_price
                     }
-                    self.admission_room_type_ids = [(0, 0, vals)]
+                    self.write({'admission_room_type_ids': [(0, 0, vals)]})
                 else:
                     vals = {
                         'product_id': line.product_id.id,
                         'quantity': line.quantity,
                         'unit_price': line.unit_price
                     }
-                    self.admission_misc_item_ids = [(0, 0, vals)]
+                    self.write({'admission_misc_item_ids': [(0, 0, vals)]})
             
-            for scale_type_id in self.referral_config_id.scale_ids:
-                self.admission_scale_ids = [(0, 0, {'scale_type': scale_type_id.scale_type})]
-                
-            self.admission_labtest_ids = [(6, 0, admission_labtest_ids)]
-    
+            # Process scales
+            if self.referral_config_id.scale_ids:
+                for scale_type_id in self.referral_config_id.scale_ids:
+                    self.write({'admission_scale_ids': [(0, 0, {'scale_type': scale_type_id.scale_type})]})
+                    
+            # Set many2many field correctly
+            if admission_labtest_ids:
+                self.admission_labtest_ids = [(6, 0, admission_labtest_ids)]
+
     @api.onchange('patient_id')
     def _onchange_patient_id(self):
         if self.patient_id:
