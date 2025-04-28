@@ -204,4 +204,21 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_consultation_manager'))]"/>
     </record>
+
+    <record id="medical_group_laboratory" model="res.groups">
+        <field name="name">Medical / Laboratory</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="medical_group_doctor" model="res.groups">
+        <field name="name">Medical / Doctor</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="medical_group_manager" model="res.groups">
+        <field name="name">Medical / Manager</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('medical_group_laboratory')), (4, ref('medical_group_doctor'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
 </odoo>

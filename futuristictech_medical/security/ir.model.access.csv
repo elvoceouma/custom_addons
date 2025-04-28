@@ -154,3 +154,8 @@ access_crm_simple_registration_user,crm.simple.registration user,model_crm_simpl
 access_crm_simple_registration_admin,crm.simple.registration admin,model_crm_simple_registration,base.group_system,1,1,1,1
 access_scale_type_user,scale.type user,model_scale_type,base.group_user,1,1,1,1
 access_scale_type_admin,scale.type admin,model_scale_type,base.group_system,1,1,1,1
+
+access_medical_labtest_types_all,medical.labtest.types all users,model_medical_labtest_types,base.group_user,1,0,0,0
+access_medical_labtest_types_laboratory,medical.labtest.types laboratory,model_medical_labtest_types,medical_group_laboratory,1,1,1,0
+access_medical_labtest_types_doctor,medical.labtest.types doctor,model_medical_labtest_types,medical_group_doctor,1,1,0,0
+access_medical_labtest_types_manager,medical.labtest.types manager,model_medical_labtest_types,medical_group_manager,1,1,1,1
