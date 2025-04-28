@@ -32,3 +32,4 @@ from . import followup_wizard
 from . import medical_labtest
 from . import res_config_settings
 from . import hr_employee
+# from . import moh_models    
