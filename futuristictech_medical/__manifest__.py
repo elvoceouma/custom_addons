@@ -6,11 +6,16 @@
     'author': 'Elvice Ouma',
     'depends': ['base', 'mail', 'stock', 'account', 'hr', 'crm'],
     'data': [
+        # Security
         'security/medical_security.xml',
         'security/ir.model.access.csv',
+        
+        # Data files
         'data/sequence.xml',
         'data/mail_template_data.xml',
         'data/medical_data.xml',
+        
+        # Main views
         'views/hospital_views.xml',
         'views/department_views.xml',
         'views/doctor_views.xml',
@@ -21,24 +26,40 @@
         'views/treatment_views.xml',
         'views/pharmacy_views.xml',
         'views/payment_views.xml',
+        
+        # Partner and CRM related views
         'views/res_partners.xml',
         'views/crm_lead_views.xml',
+        
+        # Additional medical views
         'views/consultation_views.xml',
         'views/medical_labtest_types_views.xml',
+        'views/hospital_billing_views.xml',
+        'views/evaluation_document_views.xml',
+        'views/lab_test_speciality_views.xml',
+        'views/oeh_inpatient_views.xml',
+        'views/op_visit_views.xml',
+        'views/session_assesment_views.xml',
+        'views/vitals_specification_views.xml',
+        
+        # Actions and menus
+        'views/actions.xml',
+        'views/menu_views.xml',
+        
+        # Reports
         'report/medical_reports.xml',
         'report/report_templates.xml',
-        # 'views/actions.xml',
-        'views/menu_views.xml',
     ],
-      'demo': [
+    'demo': [
         'demo/consultation_demo.xml',
     ],
     'assets': {
         'web.assets_backend': [
-            # 'medical_consultation/static/src/scss/consultation.scss',
+            # 'futuristictech_medical/static/src/scss/consultation.scss',
         ],
     },
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

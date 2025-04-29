@@ -26,6 +26,24 @@ class OehMedicalInpatient(models.Model):
     ], string='Status', default='Draft', tracking=True)
     consultation_ids = fields.One2many('consultation.consultation', 'inpatient_admission_id', string='Consultations')
     vital_assessment_ids = fields.One2many('vital.physical.assessment', 'name', string='Vital Assessments')
+
+    def  action_view_consultations(self):
+        return {
+            'name': 'Consultations',
+            'view_mode': 'tree,form',
+            'res_model': 'consultation.consultation',
+            'type': 'ir.actions.act_window',
+            'domain': [('inpatient_admission_id', '=', self.id)],
+        }
+    
+    def action_view_vitals(self):
+        return {
+            'name': 'Vital Assessments',
+            'view_mode': 'tree,form',
+            'res_model': 'vital.physical.assessment',
+            'type': 'ir.actions.act_window',
+            'domain': [('name', '=', self.id)],
+        }
     
     @api.model
     def create(self, vals):
@@ -605,3 +623,566 @@ class OehMedicalHealthCenterWard(models.Model):
     notes = fields.Text(string='Notes')
     beds = fields.One2many('oeh.medical.health.center.beds', 'ward', string='Beds')
 
+    def action_view_beds(self):
+        return {
+            'name': 'Beds',
+            'view_mode': 'tree,form',
+            'res_model': 'oeh.medical.health.center.beds',
+            'type': 'ir.actions.act_window',
+            'domain': [('ward', '=', self.id)],
+        }
+
+
+class OehMedicalHealthCenterBeds(models.Model):
+    _name = 'oeh.medical.health.center.beds'
+    _description = 'Hospital Beds'
+    
+    name = fields.Char(string='Bed Number', required=True)
+    ward = fields.Many2one('oeh.medical.health.center.ward', string='Ward', required=True)
+    building = fields.Many2one('oeh.medical.health.center.building', related='ward.building', store=True, string='Building')
+    institution = fields.Many2one('oeh.medical.health.center', related='building.institution', store=True, string='Institution')
+    product_id = fields.Many2one('product.product', string='Service', domain=[('type', '=', 'service')])
+    bed_type = fields.Selection([
+        ('gatch', 'Gatch Bed'),
+        ('electric', 'Electric'),
+        ('stretcher', 'Stretcher'),
+        ('low', 'Low Bed'),
+        ('low_air_loss', 'Low Air Loss'),
+        ('air_fluidized', 'Air Fluidized'),
+        ('circular', 'Circular Bed'),
+        ('clinitron', 'Clinitron'),
+        ('floatation', 'Floatation'),
+        ('kinair', 'Kinair'),
+        ('stryker_frame', 'Stryker Frame'),
+        ('homecare', 'Homecare Bed'),
+        ('other', 'Other')
+    ], string='Bed Type', default='gatch')
+    telephone_number = fields.Char(string='Telephone Number')
+    state = fields.Selection([
+        ('free', 'Free'),
+        ('reserved', 'Reserved'),
+        ('occupied', 'Occupied'),
+        ('na', 'Not Available')
+    ], string='Status', default='free')
+    extra_info = fields.Text(string='Extra Info')
+
+
+class OehMedicalHealthCenterBuilding(models.Model):
+    _name = 'oeh.medical.health.center.building'
+    _description = 'Medical Buildings'
+    
+    name = fields.Char(string='Name', required=True)
+    institution = fields.Many2one('oeh.medical.health.center', string='Health Center', required=True)
+    code = fields.Char(string='Code')
+    extra_info = fields.Text(string='Extra Info')
+    wards = fields.One2many('oeh.medical.health.center.ward', 'building', string='Wards')
+
+    def action_view_wards(self):
+        return {
+            'name': 'Wards',
+            'view_mode': 'tree,form',
+            'res_model': 'oeh.medical.health.center.ward',
+            'type': 'ir.actions.act_window',
+            'domain': [('building', '=', self.id)],
+        }
+
+class OehMedicalHealthCenter(models.Model):
+    _name = 'oeh.medical.health.center'
+    _description = 'Health Centers'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    institution_type = fields.Selection([
+        ('doctor_office', 'Doctor Office'),
+        ('primary_care', 'Primary Care Center'),
+        ('clinic', 'Clinic'),
+        ('hospital', 'Hospital'),
+        ('nursing_home', 'Nursing Home'),
+        ('other', 'Other')
+    ], string='Type', default='hospital')
+    extra_info = fields.Text(string='Extra Info')
+    buildings = fields.One2many('oeh.medical.health.center.building', 'institution', string='Buildings')
+
+    def action_view_buildings(self):
+        return {
+            'name': 'Buildings',
+            'view_mode': 'tree,form',
+            'res_model': 'oeh.medical.health.center.building',
+            'type': 'ir.actions.act_window',
+            'domain': [('institution', '=', self.id)],
+        }
+    
+    def action_view_wards(self):
+        return {
+            'name': 'Wards',
+            'view_mode': 'tree,form',
+            'res_model': 'oeh.medical.health.center.ward',
+            'type': 'ir.actions.act_window',
+            'domain': [('building.institution', '=', self.id)],
+        }
+    
+
+
+
+class MedicalLabtest(models.Model):
+    _name = 'medical.labtest'
+    _description = 'Medical Lab Test Results'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Test ID', readonly=True, default=lambda self: _('New'))
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True, tracking=True)
+    test_type_id = fields.Many2one('medical.labtest.types', string='Test Type', required=True, tracking=True)
+    date_requested = fields.Datetime(string='Date Requested', default=fields.Datetime.now)
+    date_analysis = fields.Datetime(string='Date of Analysis')
+    pathologist = fields.Many2one('res.partner', string='Pathologist', domain=[('doctor', '=', True)])
+    requesting_physician = fields.Many2one('res.partner', string='Requesting Physician', domain=[('doctor', '=', True)])
+    results = fields.Text(string='Results')
+    diagnosis = fields.Text(string='Diagnosis')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('tested', 'Tested'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('medical.labtest') or _('New')
+        return super(MedicalLabtest, self).create(vals)
+    
+    def action_test_complete(self):
+        self.state = 'tested'
+        self.date_analysis = fields.Datetime.now()
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class PayoutConfig(models.Model):
+    _name = 'payout.config'
+    _description = 'Doctor Payout Configuration'
+    
+    partner_id = fields.Many2one('res.partner', string='Doctor', domain=[('doctor', '=', True)], required=True)
+    product_category_id = fields.Many2one('product.category', string='Service Category', required=True)
+    type = fields.Selection([
+        ('base', 'Base Price'),
+        ('matrix', 'Price Matrix')
+    ], string='Payout Type', default='base', required=True)
+    consultation_percentage = fields.Float(string='Consultation Percentage (%)')
+    referral_percentage = fields.Float(string='Referral Percentage (%)')
+    active = fields.Boolean(string='Active', default=True)
+
+
+class DoctorPayout(models.Model):
+    _name = 'doctor.payout'
+    _description = 'Doctor Payout'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    doctor_id = fields.Many2one('res.partner', string='Doctor', required=True, domain=[('doctor', '=', True)])
+    start_date = fields.Date(string='Start Date', required=True)
+    end_date = fields.Date(string='End Date', required=True)
+    payout_line_ids = fields.One2many('doctor.payout.line', 'doctor_payout_id', string='Payout Lines')
+    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
+    state = fields.Selection([
+        ('new', 'New'),
+        ('confirmed', 'Confirmed'),
+        ('paid', 'Paid'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='new', tracking=True)
+    payment_date = fields.Date(string='Payment Date')
+    notes = fields.Text(string='Notes')
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('doctor.payout') or _('New')
+        return super(DoctorPayout, self).create(vals)
+    
+    @api.depends('payout_line_ids.price_subtotal')
+    def _compute_total_amount(self):
+        for payout in self:
+            payout.total_amount = sum(line.price_subtotal for line in payout.payout_line_ids)
+    
+    def action_confirm(self):
+        self.state = 'confirmed'
+    
+    def action_pay(self):
+        self.state = 'paid'
+        self.payment_date = fields.Date.today()
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class DoctorPayoutLine(models.Model):
+    _name = 'doctor.payout.line'
+    _description = 'Doctor Payout Line'
+    
+    doctor_payout_id = fields.Many2one('doctor.payout', string='Payout', ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Service', required=True)
+    name = fields.Char(string='Description')
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient')
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    date = fields.Date(string='Date', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price', required=True)
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    reference = fields.Char(string='Reference')
+    internal_reference = fields.Char(string='Internal Reference')
+    type = fields.Selection([
+        ('credit', 'Credit'),
+        ('debit', 'Debit')
+    ], string='Type', default='credit')
+    
+    @api.depends('quantity', 'price_unit', 'type')
+    def _compute_price_subtotal(self):
+        for line in self:
+            subtotal = line.quantity * line.price_unit
+            if line.type == 'debit':
+                subtotal = -subtotal
+            line.price_subtotal = subtotal
+
+
+class DebitNote(models.Model):
+    _name = 'debit.note'
+    _description = 'Debit Note'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', required=True)
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', related='inpatient_admission_id.patient', store=True)
+    start_date = fields.Date(string='Start Date', required=True)
+    end_date = fields.Date(string='End Date', required=True)
+    bed_id = fields.Many2one('oeh.medical.health.center.beds', string='Bed')
+    ward_id = fields.Many2one('oeh.medical.health.center.ward', string='Ward')
+    building_id = fields.Many2one('oeh.medical.health.center.building', string='Building')
+    health_center_id = fields.Many2one('oeh.medical.health.center', string='Health Center')
+    debit_line_ids = fields.One2many('debit.note.line', 'debit_id', string='Debit Lines')
+    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('invoiced', 'Invoiced'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    invoice_id = fields.Many2one('account.move', string='Invoice')
+    notes = fields.Text(string='Notes')
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('debit.note') or _('New')
+        return super(DebitNote, self).create(vals)
+    
+    @api.depends('debit_line_ids.price_subtotal')
+    def _compute_total_amount(self):
+        for debit in self:
+            debit.total_amount = sum(line.price_subtotal for line in debit.debit_line_ids)
+    
+    def action_confirm(self):
+        self.state = 'confirmed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+    
+    def action_create_invoice(self):
+        # Invoice creation logic
+        self.state = 'invoiced'
+
+
+class DebitNoteLine(models.Model):
+    _name = 'debit.note.line'
+    _description = 'Debit Note Line'
+    
+    debit_id = fields.Many2one('debit.note', string='Debit Note', ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Service', required=True)
+    name = fields.Char(string='Description', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price', required=True)
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    reference = fields.Char(string='Reference')
+    date = fields.Date(string='Date', required=True)
+    internal_category_id = fields.Many2one('product.category', string='Internal Category')
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+
+
+class BillEstimation(models.Model):
+    _name = 'bill.estimation'
+    _description = 'Bill Estimation'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    bed_type = fields.Many2one('oeh.medical.health.center.ward', string='Bed Category')
+    rate_plan = fields.Many2one('product.pricelist', string='Rate Plan')
+    estimation_date = fields.Date(string='Estimation Date', default=fields.Date.context_today)
+    estimation_line_ids = fields.One2many('bill.estimation.line', 'bill_estimation_id', string='Estimation Lines')
+    total_estimated = fields.Float(string='Total Estimated Amount', compute='_compute_total_estimated', store=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    notes = fields.Text(string='Notes')
+    
+    @api.depends('estimation_line_ids.subtotal')
+    def _compute_total_estimated(self):
+        for estimation in self:
+            estimation.total_estimated = sum(line.subtotal for line in estimation.estimation_line_ids)
+    
+    def action_confirm(self):
+        self.state = 'confirmed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class BillEstimationLine(models.Model):
+    _name = 'bill.estimation.line'
+    _description = 'Bill Estimation Line'
+    
+    bill_estimation_id = fields.Many2one('bill.estimation', string='Bill Estimation', ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Service', required=True)
+    description = fields.Char(string='Description')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    unit_price = fields.Float(string='Unit Price')
+    discount = fields.Float(string='Discount (%)')
+    subtotal = fields.Float(string='Subtotal', compute='_compute_subtotal', store=True)
+    
+    @api.depends('quantity', 'unit_price', 'discount')
+    def _compute_subtotal(self):
+        for line in self:
+            line.subtotal = line.quantity * line.unit_price * (1 - line.discount / 100)
+    
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.product_id:
+            pricelist = self.bill_estimation_id.rate_plan
+            if pricelist:
+                self.unit_price = self.product_id.with_context(pricelist=pricelist.id).price
+            else:
+                self.unit_price = self.product_id.list_price
+            self.description = self.product_id.name
+
+
+class AssistConsultations(models.Model):
+    _name = 'assist.consultations'
+    _description = 'ASSIST WHO Scale'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    type = fields.Selection([
+        ('ip', 'IP'),
+        ('op', 'OP')
+    ], string='Type', required=True, default='op')
+    inpatient_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference')
+    counsellor = fields.Many2one('hr.employee', string='Counsellor')
+    datetime = fields.Datetime(string='Date & Time', default=fields.Datetime.now)
+    tobacco_use = fields.Integer(string='Tobacco Use')
+    alcohol_use = fields.Integer(string='Alcohol Use')
+    cannabis_use = fields.Integer(string='Cannabis Use')
+    cocaine_use = fields.Integer(string='Cocaine Use')
+    amphetamine_use = fields.Integer(string='Amphetamine Use')
+    inhalants_use = fields.Integer(string='Inhalants Use')
+    sedatives_use = fields.Integer(string='Sedatives Use')
+    hallucinogens_use = fields.Integer(string='Hallucinogens Use')
+    opioids_use = fields.Integer(string='Opioids Use')
+    other_use = fields.Integer(string='Other Substance Use')
+    other_substance = fields.Char(string='Specify Other Substance')
+    notes = fields.Text(string='Notes')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    
+    def action_complete(self):
+        self.state = 'completed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class ClinicalPsychologistSession(models.Model):
+    _name = 'clinical.psychologist.session'
+    _description = 'Clinical Psychologist Session'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    consultation_id = fields.Many2one('consultation.consultation', string='Consultation')
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference')
+    psychologist_id = fields.Many2one('hr.employee', string='Clinical Psychologist', domain=[('team_role', '=', 'clinical_psychologist')])
+    session_date = fields.Datetime(string='Session Date', default=fields.Datetime.now)
+    duration = fields.Float(string='Duration (hours)')
+    problems_identified = fields.Text(string='Problems Identified')
+    intervention = fields.Text(string='Intervention')
+    outcome = fields.Text(string='Outcome')
+    recommendations = fields.Text(string='Recommendations')
+    next_session_plan = fields.Text(string='Next Session Plan')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    type = fields.Selection([
+        ('individual', 'Individual Session'),
+        ('group', 'Group Session'),
+        ('op', 'OP Session'),
+        ('family', 'Family Session'),
+        ('crisis', 'Crisis Intervention'),
+        ('other', 'Other')
+    ], string='Session Type', default='individual')
+
+    notes = fields.Text(string='Notes')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('clinical.psychologist.session') or _('New')
+        return super(ClinicalPsychologistSession, self).create(vals)
+    
+    def action_complete(self):
+        self.state = 'completed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class ClinicalPsychologistScreening(models.Model):
+    _name = 'clinical.psychologist.screening'
+    _description = 'Clinical Psychologist Screening'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    consultation_id = fields.Many2one('consultation.consultation', string='Consultation')
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference')
+    psychologist_id = fields.Many2one('hr.employee', string='Clinical Psychologist', domain=[('team_role', '=', 'clinical_psychologist')])
+    screening_date = fields.Datetime(string='Screening Date', default=fields.Datetime.now)
+    chief_complaint = fields.Text(string='Chief Complaint')
+    history = fields.Text(string='History')
+    mental_status = fields.Text(string='Mental Status')
+    impression = fields.Text(string='Impression')
+    recommendations = fields.Text(string='Recommendations')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    type = fields.Selection([
+        ('individual', 'Individual Screening'),
+        ('group', 'Group Screening'),
+        ('family', 'Family Screening'),
+        ('crisis', 'Crisis Screening'),
+        ('other', 'Other')
+    ], string='Screening Type', default='individual')
+    notes = fields.Text(string='Notes')
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('clinical.psychologist.screening') or _('New')
+        return super(ClinicalPsychologistScreening, self).create(vals)
+    
+    def action_complete(self):
+        self.state = 'completed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class CounsellorSession(models.Model):
+    _name = 'counsellor.session'
+    _description = 'Counsellor Session'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    consultation_id = fields.Many2one('consultation.consultation', string='Consultation')
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference')
+    counsellor_id = fields.Many2one('hr.employee', string='Counsellor', domain=[('team_role', '=', 'counsellor')])
+    session_date = fields.Datetime(string='Session Date', default=fields.Datetime.now)
+    duration = fields.Float(string='Duration (hours)')
+    session_type = fields.Selection([
+        ('individual', 'Individual Counselling'),
+        ('group', 'Group Counselling'),
+        ('family', 'Family Counselling'),
+        ('crisis', 'Crisis Intervention'),
+        ('other', 'Other')
+    ], string='Session Type', default='individual')
+    present_concerns = fields.Text(string='Present Concerns')
+    intervention = fields.Text(string='Intervention')
+    progress = fields.Text(string='Progress')
+    plan = fields.Text(string='Plan')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    type = fields.Selection([
+        ('individual', 'Individual Session'),
+        ('group', 'Group Session'),
+        ('family', 'Family Session'),
+        ('crisis', 'Crisis Intervention'),
+        ('other', 'Other')
+    ], string='Session Type', default='individual')
+    notes = fields.Text(string='Notes')
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('counsellor.session') or _('New')
+        return super(CounsellorSession, self).create(vals)
+    
+    def action_complete(self):
+        self.state = 'completed'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'
+
+
+class CRMSimpleRegistration(models.Model):
+    _name = 'crm.simple.registration'
+    _description = 'CRM Simple Registration'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True)
+    consultation_id = fields.Many2one('consultation.consultation', string='Consultation')
+    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number')
+    op_visit_id = fields.Many2one('op.visits', string='OP Reference')
+    registration_date = fields.Date(string='Registration Date', default=fields.Date.context_today)
+    notes = fields.Text(string='Notes')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('registered', 'Registered'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    type = fields.Selection([
+        ('individual', 'Individual Registration'),
+        ('group', 'Group Registration'),
+        ('family', 'Family Registration'),
+        ('crisis', 'Crisis Registration'),
+        ('other', 'Other')
+    ], string='Registration Type', default='individual')
+    notes = fields.Text(string='Notes')
+
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('crm.simple.registration') or _('New')
+        return super(CRMSimpleRegistration, self).create(vals)
+    
+    def action_register(self):
+        self.state = 'registered'
+    
+    def action_cancel(self):
+        self.state = 'cancelled'

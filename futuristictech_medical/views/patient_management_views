@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- OEH Medical Patient Views -->
+    <record id="view_oeh_medical_patient_tree" model="ir.ui.view">
+        <field name="name">oeh.medical.patient.tree</field>
+        <field name="model">oeh.medical.patient</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="identification_code"/>
+                <field name="name"/>
+                <field name="gender"/>
+                <field name="age"/>
+                <field name="blood_group"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_oeh_medical_patient_form" model="ir.ui.view">
+        <field name="name">oeh.medical.patient.form</field>
+        <field name="model">oeh.medical.patient</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_consultations" type="object" 
+                                class="oe_stat_button" icon="fa-stethoscope">
+                            <field name="consultation_ids" widget="statinfo" string="Consultations"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="identification_code" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="gender"/>
+                            <field name="date_of_birth"/>
+                            <field name="age"/>
+                            <field name="blood_group"/>
+                            <field name="marital_status"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="referred_by"/>
+                            <field name="nationality"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Personal Information">
+                            <group>
+                                <group string="Contact Information" name="contact_info">
+                                    <field name="partner_id" invisible="1"/>
+                                    <field name="partner_id.phone" string="Phone"/>
+                                    <field name="partner_id.email" string="Email"/>
+                                    <field name="partner_id.street" string="Street"/>
+                                    <field name="partner_id.city" string="City"/>
+                                    <field name="partner_id.state_id" string="State"/>
+                                    <field name="partner_id.country_id" string="Country"/>
+                                </group>
+                                <group string="Additional Information">
+                                    <field name="has_allergies"/>
+                                    <field name="has_children"/>
+                                    <field name="number_of_children" invisible="not has_children"/> 
+                                    <field name="education_qualification"/>
+                                    <field name="occupation"/>
+                                    <field name="languages_known" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                            <group string="Communication Preferences">
+                                <field name="do_not_call"/>
+                                <field name="whatsapp_updates"/>
+                                <field name="aadhar_verification"/>
+                                <field name="aadhar_number" invisible="not aadhar_verification"/>
+                            </group>
+                        </page>
+                        <page string="Treatment History">
+                            <group>
+                                <field name="previous_treatment_history"/>
+                                <field name="consulted_psychiatrist"/>
+                                <field name="consulted_counsellor"/>
+                                <field name="treated_at_hospitals" widget="many2many_tags"/>
+                                <field name="managed_at_home"/>
+                                <field name="managed_at_home_details" invisible="not managed_at_home"/>
+                                <field name="treated_in_rehab"/>
+                                <field name="referral"/>
+                            </group>
+                        </page>
+                        <page string="Consultations">
+                            <field name="consultation_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="psychiatrist_id"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_oeh_medical_patient_search" model="ir.ui.view">
+        <field name="name">oeh.medical.patient.search</field>
+        <field name="model">oeh.medical.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="identification_code"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="gender"/>
+                <field name="age"/>
+                <separator/>
+                <filter string="Male" name="male" domain="[('gender', '=', 'male')]"/>
+                <filter string="Female" name="female" domain="[('gender', '=', 'female')]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Gender" name="group_gender" context="{'group_by':'gender'}"/>
+                    <filter string="Blood Group" name="group_blood" context="{'group_by':'blood_group'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_oeh_medical_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">oeh.medical.patient</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_oeh_medical_patient_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first patient!
+            </p>
+        </field>
+    </record>
+</odoo>

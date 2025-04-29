@@ -17,7 +17,7 @@
     </record>
 
     <!-- Counsellor Session List Action -->
-    <record id="action_counsellor_session_list" model="ir.actions.act_window">
+    <!-- <record id="action_counsellor_session_list" model="ir.actions.act_window">
         <field name="name">Counsellor Sessions</field>
         <field name="res_model">consultation.counsellor</field>
         <field name="view_mode">tree,form</field>
@@ -26,10 +26,10 @@
             No counsellor sessions found!
             </p>
         </field>
-    </record>
+    </record> -->
 
     <!-- Outside Consultation List Action -->
-    <record id="action_outside_consultation_list" model="ir.actions.act_window">
+    <!-- <record id="action_outside_consultation_list" model="ir.actions.act_window">
         <field name="name">Cross Consultations</field>
         <field name="res_model">consultation.outside</field>
         <field name="view_mode">tree,form</field>
@@ -38,10 +38,10 @@
             No cross consultations found!
             </p>
         </field>
-    </record>
+    </record> -->
 
     <!-- Lab Test List Action -->
-    <record id="action_medical_lab_test_list" model="ir.actions.act_window">
+    <!-- <record id="action_medical_lab_test_list" model="ir.actions.act_window">
         <field name="name">Lab Tests</field>
         <field name="res_model">oeh.medical.lab.test</field>
         <field name="view_mode">tree,form</field>
@@ -50,10 +50,10 @@
             No lab tests found!
             </p>
         </field>
-    </record>
+    </record> -->
 
     <!-- Lab Test Request Action -->
-    <record id="action_medical_lab_request" model="ir.actions.act_window">
+    <!-- <record id="action_medical_lab_request" model="ir.actions.act_window">
         <field name="name">Test Requests</field>
         <field name="res_model">oeh.medical.lab.request</field>
         <field name="view_mode">tree,form</field>
@@ -62,10 +62,10 @@
             No lab test requests found!
             </p>
         </field>
-    </record>
+    </record> -->
 
     <!-- Lab Test Results Action -->
-    <record id="action_medical_lab_results" model="ir.actions.act_window">
+    <!-- <record id="action_medical_lab_results" model="ir.actions.act_window">
         <field name="name">Test Results</field>
         <field name="res_model">oeh.medical.lab.results</field>
         <field name="view_mode">tree,form</field>
@@ -74,10 +74,10 @@
             No lab test results found!
             </p>
         </field>
-    </record>
+    </record> -->
 
     <!-- Configuration Actions -->
-    <record id="action_counsellor_purpose" model="ir.actions.act_window">
+    <!-- <record id="action_counsellor_purpose" model="ir.actions.act_window">
         <field name="name">Counsellor Purposes</field>
         <field name="res_model">consultation.counsellor.purpose</field>
         <field name="view_mode">tree,form</field>
@@ -86,9 +86,9 @@
             Create your first counsellor purpose!
             </p>
         </field>
-    </record>
+    </record> -->
 
-    <record id="action_cp_purpose" model="ir.actions.act_window">
+    <!-- <record id="action_cp_purpose" model="ir.actions.act_window">
         <field name="name">CP Purposes</field>
         <field name="res_model">consultation.cp.purpose</field>
         <field name="view_mode">tree,form</field>
@@ -97,8 +97,8 @@
             Create your first clinical psychologist purpose!
             </p>
         </field>
-    </record>
-
+    </record> -->
+<!-- 
     <record id="action_bed_type" model="ir.actions.act_window">
         <field name="name">Bed Types</field>
         <field name="res_model">consultation.bed.type</field>
@@ -108,9 +108,9 @@
             Create your first bed type!
             </p>
         </field>
-    </record>
+    </record> -->
 
-    <record id="action_referral_config" model="ir.actions.act_window">
+    <!-- <record id="action_referral_config" model="ir.actions.act_window">
         <field name="name">Referral Configs</field>
         <field name="res_model">consultation.referral.config</field>
         <field name="view_mode">tree,form</field>
@@ -119,8 +119,8 @@
             Create your first referral configuration!
             </p>
         </field>
-    </record>
-
+    </record> -->
+<!-- 
     <record id="action_provisional_diagnosis" model="ir.actions.act_window">
         <field name="name">Provisional Diagnoses</field>
         <field name="res_model">consultation.provisional.diagnosis</field>
@@ -130,5 +130,5 @@
             Create your first provisional diagnosis!
             </p>
         </field>
-    </record>
+    </record> -->
 </odoo>
