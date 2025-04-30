@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medical Prescription Tree View -->
+    <record id="view_medical_prescription_tree" model="ir.ui.view">
+        <field name="name">medical.prescription.tree</field>
+        <field name="model">medical.prescription</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" 
+                  decoration-success="state == 'dispensed'" 
+                  decoration-warning="state == 'confirmed'" 
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="date"/>
+                <field name="case_id" optional="hide"/>
+                <field name="consultation_id" optional="hide"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Form View -->
+    <record id="view_medical_prescription_form" model="ir.ui.view">
+        <field name="name">medical.prescription.form</field>
+        <field name="model">medical.prescription</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_dispense" string="Dispense" type="object" 
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state not in ('draft', 'confirmed')"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,confirmed,dispensed,cancelled"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_case" type="object" class="oe_stat_button" 
+                                icon="fa-heartbeat" invisible="not case_id">
+                            <field name="case_id" invisible="1"/>
+                            <span class="o_stat_text">Case</span>
+                        </button>
+                        <button name="action_print_prescription" type="object" 
+                                class="oe_stat_button" icon="fa-print" 
+                                string="Print" invisible="state == 'draft'"/>
+                        <!-- Buttons added in extension views -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" options="{'no_create': True}"/>
+                            <field name="doctor_id" options="{'no_create': True}"/>
+                            <field name="date"/>
+                            <field name="case_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="consultation_id" options="{'no_create': True}"/>
+                            <!-- <field name="appointment_id" options="{'no_create': True}"/> -->
+                            <field name="pharmacy_notes" placeholder="Notes for pharmacy..."/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medications">
+                            <field name="medication_lines" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="medication_id" options="{'no_create': True}"/>
+                                    <field name="dosage" placeholder="e.g. 500mg"/>
+                                    <field name="frequency" placeholder="e.g. 3 times daily"/>
+                                    <field name="duration" placeholder="e.g. 5 days"/>
+                                    <field name="quantity"/>
+                                    <field name="morning" optional="show"/>
+                                    <field name="afternoon" optional="show"/>
+                                    <field name="evening" optional="show"/>
+                                    <field name="night" optional="show"/>
+                                    <field name="take_with_food" optional="show"/>
+                                    <field name="special_instructions" optional="hide"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="medication_id" options="{'no_create': True}"/>
+                                                <field name="dosage" placeholder="e.g. 500mg"/>
+                                                <field name="frequency" placeholder="e.g. 3 times daily"/>
+                                                <field name="duration" placeholder="e.g. 5 days"/>
+                                                <field name="quantity"/>
+                                            </group>
+                                            <group>
+                                                <field name="morning"/>
+                                                <field name="afternoon"/>
+                                                <field name="evening"/>
+                                                <field name="night"/>
+                                                <field name="take_with_food"/>
+                                            </group>
+                                        </group>
+                                        <group string="Special Instructions">
+                                            <field name="special_instructions" nolabel="1" placeholder="Any special instructions for this medication..."/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Patient History" invisible="not patient_id">
+                            <field name="patient_history" readonly="1"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Search View -->
+    <record id="view_medical_prescription_search" model="ir.ui.view">
+        <field name="name">medical.prescription.search</field>
+        <field name="model">medical.prescription</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="medication_lines" filter_domain="[('medication_lines.medication_id.name', 'ilike', self)]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Dispensed" name="dispensed" domain="[('state', '=', 'dispensed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Today" name="today" 
+                        domain="[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+                                ('date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                <filter string="This Week" name="this_week" 
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                ('date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient" context="{'group_by':'patient_id'}"/>
+                    <filter string="Doctor" name="doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <filter string="Date" name="date" context="{'group_by':'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Pivot View -->
+    <record id="view_medical_prescription_pivot" model="ir.ui.view">
+        <field name="name">medical.prescription.pivot</field>
+        <field name="model">medical.prescription</field>
+        <field name="arch" type="xml">
+            <pivot string="Prescription Analysis">
+                <field name="doctor_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="date" interval="month" type="col"/>
+                <!-- <field name="__count" type="measure"/> -->
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Graph View -->
+    <record id="view_medical_prescription_graph" model="ir.ui.view">
+        <field name="name">medical.prescription.graph</field>
+        <field name="model">medical.prescription</field>
+        <field name="arch" type="xml">
+            <graph string="Prescription Analysis">
+                <field name="doctor_id"/>
+                <field name="state"/>
+                <!-- <field name="__count" type="measure"/> -->
+            </graph>
+        </field>
+    </record>
+
+    <!-- Medical Medication Lines Tree View -->
+    <record id="view_medical_prescription_line_tree" model="ir.ui.view">
+        <field name="name">medical.prescription.line.tree</field>
+        <field name="model">medical.prescription.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="prescription_id"/>
+                <field name="medication_id"/>
+                <field name="dosage"/>
+                <field name="frequency"/>
+                <field name="duration"/>
+                <field name="quantity"/>
+                <field name="notes"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medical Medication Lines Form View -->
+    <record id="view_medical_prescription_line_form" model="ir.ui.view">
+        <field name="name">medical.prescription.line.form</field>
+        <field name="model">medical.prescription.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="prescription_id" options="{'no_create': True}"/>
+                            <field name="medication_id" options="{'no_create': True}"/>
+                            <field name="dosage" placeholder="e.g. 500mg"/>
+                            <field name="frequency" placeholder="e.g. 3 times daily"/>
+                            <field name="duration" placeholder="e.g. 5 days"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="morning"/>
+                            <field name="afternoon"/>
+                            <field name="evening"/>
+                            <field name="night"/>
+                            <field name="take_with_food"/>
+                        </group>
+                    </group>
+                    <group string="Special Instructions">
+                        <field name="special_instructions" nolabel="1" placeholder="Any special instructions for this medication..."/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Action -->
+    <record id="action_medical_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">medical.prescription</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_medical_prescription_search"/>
+        <field name="context">{'search_default_today': 1, 'search_default_draft': 1, 'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first prescription!
+            </p>
+            <p>
+                Create a new prescription to provide medication orders for a patient.
+            </p>
+        </field>
+    </record>
+
+    <!-- Medical Prescription Line Action -->
+    <record id="action_medical_prescription_line" model="ir.actions.act_window">
+        <field name="name">Prescription Lines</field>
+        <field name="res_model">medical.prescription.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No prescription lines found!
+            </p>
+            <p>
+                Prescription lines will be created automatically when you create new prescriptions.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sequences for medical prescription -->
+    <record id="seq_medical_prescription" model="ir.sequence">
+        <field name="name">Medical Prescription</field>
+        <field name="code">medical.prescription</field>
+        <field name="prefix">PRES/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Medical Prescription Print Report Action -->
+    <record id="action_report_prescription" model="ir.actions.report">
+        <field name="name">Prescription</field>
+        <field name="model">medical.prescription</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_medical.report_prescription</field>
+        <field name="report_file">futuristictech_medical.report_prescription</field>
+        <field name="binding_model_id" ref="model_medical_prescription"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Prescription - %s' % (object.name)</field>
+    </record>
+
+    <!-- Patient History Compute Method for Prescriptions -->
+    <!-- <record id="prescription_patient_history_compute" model="ir.actions.server">
+        <field name="name">Compute Patient History for Prescription</field>
+        <field name="model_id" ref="model_medical_prescription"/>
+        <field name="state">code</field>
+        <field name="code">
+            for record in records:
+                if record.patient_id:
+                    history = "&lt;h3&gt;Patient History&lt;/h3&gt;&lt;ul&gt;"
+                    
+                    # Get past medical cases
+                    cases = env['medical.case'].search([
+                        ('patient_id', '=', record.patient_id.id),
+                        ('id', '!=', record.case_id.id if record.case_id else False)
+                    ], limit=5, order='date_start desc')
+                    
+                    if cases:
+                        history += "&lt;li&gt;&lt;strong&gt;Past Medical Cases:&lt;/strong&gt;&lt;ul&gt;"
+                        for case in cases:
+                            history += f"&lt;li&gt;{case.name} - {case.diagnosis or 'No diagnosis'} ({case.date_start})&lt;/li&gt;"
+                        history += "&lt;/ul&gt;&lt;/li&gt;"
+                    
+                    # Get past prescriptions
+                    prescriptions = env['medical.prescription'].search([
+                        ('patient_id', '=', record.patient_id.id),
+                        ('id', '!=', record.id)
+                    ], limit=5, order='date desc')
+                    
+                    if prescriptions:
+                        history += "&lt;li&gt;&lt;strong&gt;Past Prescriptions:&lt;/strong&gt;&lt;ul&gt;"
+                        for prescription in prescriptions:
+                            history += f"&lt;li&gt;{prescription.name} - {prescription.doctor_id.name} ({prescription.date})&lt;/li&gt;"
+                        history += "&lt;/ul&gt;&lt;/li&gt;"
+                    
+                    # Get allergies if they exist
+                    if record.patient_id.has_allergies:
+                        history += "&lt;li&gt;&lt;strong&gt;Allergies:&lt;/strong&gt; {record.patient_id.allergies}&lt;/li&gt;"
+                    
+                    history += "&lt;/ul&gt;"
+                    record.patient_history = history
+                else:
+                    record.patient_history = False
+        </field>
+    </record> -->
+
+    <!-- Drug Interaction Warning Action -->
+    <!-- <record id="action_check_drug_interactions" model="ir.actions.server">
+        <field name="name">Check Drug Interactions</field>
+        <field name="model_id" ref="model_medical_prescription"/>
+        <field name="binding_model_id" ref="model_medical_prescription"/>
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">
+            for prescription in records:
+                # This is a placeholder for drug interaction checking
+                # In a real system, you would implement logic to check for drug interactions
+                # between medications in the current prescription and the patient's active medications
+                
+                # For demonstration purposes, we'll show a notification
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': _('Drug Interaction Check'),
+                        'message': _('No drug interactions found for the current medications.'),
+                        'sticky': False,
+                        'type': 'info',
+                    }
+                }
+        </field>
+    </record> -->
+</odoo>

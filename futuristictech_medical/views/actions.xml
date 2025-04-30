@@ -8,7 +8,7 @@
         <field name="domain">[('team_role', '=', 'psychiatrist')]</field>
         <field name="context">{"search_default_my_consultation": 1}</field>
         <field name="search_view_id" ref="view_consultation_filter" />
-        <field name="views">[(view_consultation_tree,tree), (view_consultation_form,form)]</field>
+        <!-- <field name="views">[(view_consultation_tree,tree), (view_consultation_form,form)]</field> -->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             No psychiatrist consultations found!
@@ -16,119 +16,325 @@
         </field>
     </record>
 
-    <!-- Counsellor Session List Action -->
-    <!-- <record id="action_counsellor_session_list" model="ir.actions.act_window">
-        <field name="name">Counsellor Sessions</field>
-        <field name="res_model">consultation.counsellor</field>
+    <!-- Dashboard Actions -->
+    <record id="action_sales_dashboard" model="ir.actions.act_window">
+        <field name="name">Sales Dashboard</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban</field>
+        <field name="context">{'search_default_assigned_to_me': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to your Sales Dashboard!
+            </p>
+            <p>
+                Monitor your key performance indicators and activities.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sales Actions -->
+    <record id="action_sales_quick_search" model="ir.actions.act_window">
+        <field name="name">Quick Search</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">search</field>
+        <field name="context">{'search_default_all': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Search for leads, opportunities, or customers
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_leads" model="ir.actions.act_window">
+        <field name="name">Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="domain">[('type', '=', 'lead')]</field>
+        <field name="context">{'default_type': 'lead'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lead
+            </p>
+            <p>
+                Track and manage your sales leads from initial contact to conversion.
+            </p>
+        </field>
+    </record>
+
+    <!-- Replace the problematic action with one using an existing model -->
+    <record id="action_sales_visits" model="ir.actions.act_window">
+        <field name="name">Visits</field>
+        <field name="res_model">crm.visits</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-            No counsellor sessions found!
+                Schedule your first visit
+            </p>
+            <p>
+                Plan and track customer visits and meetings.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_registration_forms" model="ir.actions.act_window">
+        <field name="name">Registration Forms</field>
+        <field name="res_model">medical.registration.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first registration form
+            </p>
+            <p>
+                Design and manage customer registration forms.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_customers" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('customer_rank', '>', 0)]</field>
+        <field name="context">{'default_customer_rank': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new customer
+            </p>
+            <p>
+                Manage your customers and their contact information.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_pipeline" model="ir.actions.act_window">
+        <field name="name">Your Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,tree,form,calendar,pivot,graph</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'default_type': 'opportunity'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first opportunity
+            </p>
+            <p>
+                Track and manage your sales pipeline from leads to closing deals.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_next_activities" model="ir.actions.act_window">
+        <field name="name">Next Activities</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'search_default_future_activities': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No activities scheduled
+            </p>
+            <p>
+                Plan and track your next activities with customers and leads.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_activity_watchlist" model="ir.actions.act_window">
+        <field name="name">Activity Watchlist</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="domain">[('res_model', 'in', ['crm.lead', 'res.partner']), ('date_deadline', '&lt;=', context_today())]</field>
+        <field name="context">{'search_default_overdue': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No activities on your watchlist
+            </p>
+            <p>
+                Monitor important activities that require your attention.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_booked_packages" model="ir.actions.act_window">
+        <field name="name">Booked Packages</field>
+        <field name="res_model">medical.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No booked packages yet
+            </p>
+            <p>
+                Track and manage packages booked by your customers.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_doctors" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">medical.doctor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No doctors registered yet
+            </p>
+            <p>
+                Create and manage doctor profiles in your system.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_doctors_approval" model="ir.actions.act_window">
+        <field name="name">Doctors Waiting Approval</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_doctor', '=', True), ('active_doctor', '=', False), ('waiting_approval', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No doctors waiting for approval
+            </p>
+            <p>
+                Review and approve doctor applications.
+            </p>
+        </field>
+    </record>
+
+    <!-- Appointment Actions -->
+    <record id="action_sales_time_slots" model="ir.actions.act_window">
+        <field name="name">Create Time Slots</field>
+        <field name="res_model">doctor.schedule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first time slot
+            </p>
+            <p>
+                Define available time slots for doctor appointments.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_appointments_list" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">medical.appointment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first appointment
+            </p>
+            <p>
+                Create and manage patient appointments with doctors.
+            </p>
+        </field>
+    </record>
+
+    <!-- Removed "action_sales_cancellation_policy" as it seems to reference a non-existent model -->
+
+    <!-- Marketing Actions -->
+    <record id="action_sales_schedule_meeting" model="ir.actions.act_window">
+        <field name="name">Schedule Meeting</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="context">{'default_event_type': 'meeting'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first marketing meeting
+            </p>
+            <p>
+                Plan and organize marketing activities and customer meetings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Packages Actions -->
+    <record id="action_sales_all_packages" model="ir.actions.act_window">
+        <field name="name">All Packages</field>
+        <field name="res_model">medical.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first package
+            </p>
+            <p>
+                Define treatment and service packages for your patients.
+            </p>
+        </field>
+    </record>
+
+    <!-- Reports Actions -->
+    <record id="action_report_pipeline" model="ir.actions.act_window">
+        <field name="name">Pipeline Analysis</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'search_default_group_by_stage': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+            <p>
+                Track and analyze your sales pipeline performance.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_report_leads" model="ir.actions.act_window">
+        <field name="name">Leads Analysis</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('type', '=', 'lead')]</field>
+        <field name="context">{'search_default_group_by_source': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+            <p>
+                Track and analyze your lead generation performance.
+            </p>
+        </field>
+    </record>
+
+    <!-- <record id="action_report_activities" model="ir.actions.act_window">
+        <field name="name">Activities Analysis</field>
+        <field name="res_model">mail.activity.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+            <p>
+                Track and analyze your team's activities and performance.
             </p>
         </field>
     </record> -->
 
-    <!-- Outside Consultation List Action -->
-    <!-- <record id="action_outside_consultation_list" model="ir.actions.act_window">
-        <field name="name">Cross Consultations</field>
-        <field name="res_model">consultation.outside</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            No cross consultations found!
-            </p>
-        </field>
-    </record> -->
+    <!-- Removed configuration actions that might reference non-existent models -->
 
-    <!-- Lab Test List Action -->
-    <!-- <record id="action_medical_lab_test_list" model="ir.actions.act_window">
-        <field name="name">Lab Tests</field>
-        <field name="res_model">oeh.medical.lab.test</field>
+    <!-- Define the medical actions used in Hospital Sales -->
+    <record id="action_medical_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">medical.patient</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-            No lab tests found!
+                Register your first patient
+            </p>
+            <p>
+                Create and manage patient records.
             </p>
         </field>
-    </record> -->
+    </record>
 
-    <!-- Lab Test Request Action -->
-    <!-- <record id="action_medical_lab_request" model="ir.actions.act_window">
-        <field name="name">Test Requests</field>
-        <field name="res_model">oeh.medical.lab.request</field>
+    <record id="action_medical_doctor" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">medical.doctor</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-            No lab test requests found!
+                Register your first doctor
+            </p>
+            <p>
+                Create and manage doctor profiles and schedules.
             </p>
         </field>
-    </record> -->
+    </record>
 
-    <!-- Lab Test Results Action -->
-    <!-- <record id="action_medical_lab_results" model="ir.actions.act_window">
-        <field name="name">Test Results</field>
-        <field name="res_model">oeh.medical.lab.results</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            No lab test results found!
-            </p>
-        </field>
-    </record> -->
-
-    <!-- Configuration Actions -->
-    <!-- <record id="action_counsellor_purpose" model="ir.actions.act_window">
-        <field name="name">Counsellor Purposes</field>
-        <field name="res_model">consultation.counsellor.purpose</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Create your first counsellor purpose!
-            </p>
-        </field>
-    </record> -->
-
-    <!-- <record id="action_cp_purpose" model="ir.actions.act_window">
-        <field name="name">CP Purposes</field>
-        <field name="res_model">consultation.cp.purpose</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Create your first clinical psychologist purpose!
-            </p>
-        </field>
-    </record> -->
-<!-- 
-    <record id="action_bed_type" model="ir.actions.act_window">
-        <field name="name">Bed Types</field>
-        <field name="res_model">consultation.bed.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Create your first bed type!
-            </p>
-        </field>
-    </record> -->
-
-    <!-- <record id="action_referral_config" model="ir.actions.act_window">
-        <field name="name">Referral Configs</field>
-        <field name="res_model">consultation.referral.config</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Create your first referral configuration!
-            </p>
-        </field>
-    </record> -->
-<!-- 
-    <record id="action_provisional_diagnosis" model="ir.actions.act_window">
-        <field name="name">Provisional Diagnoses</field>
-        <field name="res_model">consultation.provisional.diagnosis</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Create your first provisional diagnosis!
-            </p>
-        </field>
-    </record> -->
 </odoo>

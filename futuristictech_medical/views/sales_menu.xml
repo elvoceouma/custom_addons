@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Extend the existing Sales menu -->
+    <menuitem id="sale_menu_root" position="after">
+        <!-- Add your new Hospital Sales submenu -->
+        <menuitem id="menu_medical_sales" 
+            name="Hospital Sales" 
+            sequence="80" 
+            groups="sales_team.group_sale_salesman"/>
+            
+        <menuitem id="menu_medical_hospital_sales" 
+            name="Hospital Sales" 
+            parent="menu_medical_sales" 
+            action="action_orders" 
+            sequence="10"/>
+            
+        <menuitem id="menu_medical_patient_sales" 
+            name="Patient Sales" 
+            parent="menu_medical_sales" 
+            action="action_medical_patient" 
+            sequence="20"/>
+            
+        <menuitem id="menu_medical_doctor_sales" 
+            name="Doctor Sales" 
+            parent="menu_medical_sales" 
+            action="action_medical_doctor" 
+            sequence="30"/>
+    </menuitem>
+
+    <!-- If you need to add items to existing submenus, use their IDs -->
+    <menuitem id="product_menu_catalog" position="inside">
+        <!-- Additional product-related menu items would go here -->
+    </menuitem>
+</odoo>

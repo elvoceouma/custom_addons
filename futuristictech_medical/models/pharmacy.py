@@ -25,7 +25,8 @@ class MedicalMedication(models.Model):
         string='Stock Quantity', compute='_compute_stock_quantity', store=True)
     reorder_level = fields.Float(string='Reorder Level')
     note = fields.Text(string='Notes')
-
+    appointment_id = fields.Many2one(
+        'medical.appointment', string='Appointment') 
     _sql_constraints = [
         ('code_unique',
          'UNIQUE(code)',
@@ -68,7 +69,12 @@ class MedicalPrescription(models.Model):
         ('cancelled', 'Cancelled')],
         string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
+    pharmacy_notes = fields.Text(string='Pharmacy Notes')
     consultation_id = fields.Many2one('medical.consultation', string='Consultation')
+    appointment_id = fields.Many2one(
+        'medical.appointment', string='Appointment') 
+    patient_history = fields.Text(string='Patient History')
+    __count = fields.Integer(string='Count', compute='_compute_count')
 
     @api.model
     def create(self, vals):
@@ -85,6 +91,37 @@ class MedicalPrescription(models.Model):
     def action_cancel(self):
         self.write({'state': 'cancelled'})
 
+    def action_view_case(self):
+        self.ensure_one()
+        action = self.env.ref('futuristictech_medical.action_medical_case_form').read()[0]
+        action['res_id'] = self.case_id.id
+        action['views'] = [(self.env.ref('futuristictech_medical.view_medical_case_form').id, 'form')]
+        return action
+    
+    def action_view_medication(self):
+        self.ensure_one()
+        action = self.env.ref('futuristictech_medical.action_medical_medication_form').read()[0]
+        action['res_id'] = self.medication_lines[0].medication_id.id
+        action['views'] = [(self.env.ref('futuristictech_medical.view_medical_medication_form').id, 'form')]
+        return action
+    
+    def action_print_prescription(self):
+        self.ensure_one()
+        return self.env.ref('futuristictech_medical.action_report_medical_prescription').report_action(self)
+    def action_send_prescription(self):
+        self.ensure_one()
+        template_id = self.env.ref('futuristictech_medical.email_template_medical_prescription').id
+        template = self.env['mail.template'].browse(template_id)
+        if not template:
+            raise ValidationError(_('Email template not found.'))
+        template.send_mail(self.id, force_send=True)
+        return True
+    
+    def _compute_count(self):
+        for record in self:
+            record.__count = len(record.medication_lines)
+    
+
 class MedicalPrescriptionLine(models.Model):
     _name = 'medical.prescription.line'
     _description = 'Prescription Line'
@@ -98,3 +135,10 @@ class MedicalPrescriptionLine(models.Model):
     duration = fields.Char(string='Duration', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
     notes = fields.Text(string='Notes')
+    morning = fields.Boolean(string='Morning')
+    afternoon = fields.Boolean(string='Afternoon')
+    evening = fields.Boolean(string='Evening')
+    night = fields.Boolean(string='Night')
+    is_dispensed = fields.Boolean(string='Is Dispensed', default=False)
+    take_with_food = fields.Boolean(string='Take with Food')
+    special_instructions = fields.Text(string='Special Instructions')

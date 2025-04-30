@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create Hospital Sale Wizard Form View -->
+    <record id="view_create_hospital_sale_wizard_form" model="ir.ui.view">
+        <field name="name">create.hospital.sale.wizard.form</field>
+        <field name="model">create.hospital.sale.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Hospital Sale">
+                <group>
+                    <group>
+                        <field name="partner_id" options="{'no_create': True}"/>
+                        <field name="patient_id" options="{'no_create': True}" domain="patient_domain"/>
+                        <button name="action_create_patient" type="object" 
+                                string="Create Patient" class="btn-link mb-2"
+                                invisible="patient_id"/>
+                        <field name="doctor_id" options="{'no_create': True}" domain="doctor_domain"/>
+                        <field name="campus_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="service_type"/>
+                        <field name="appointment_id" options="{'no_create': True}" 
+                               domain="appointment_domain"
+                               invisible="service_type != 'consultation'"
+                               required="service_type == 'consultation'"/>
+                        <field name="case_id" options="{'no_create': True}" 
+                               domain="case_domain"
+                               invisible="service_type != 'treatment'"
+                               required="service_type == 'treatment'"/>
+                        <field name="prescription_id" options="{'no_create': True}" 
+                               domain="prescription_domain"
+                               invisible="service_type != 'medication'"
+                               required="service_type == 'medication'"/>
+                    </group>
+                </group>
+                
+                <field name="patient_domain" invisible="1"/>
+                <field name="doctor_domain" invisible="1"/>
+                <field name="appointment_domain" invisible="1"/>
+                <field name="case_domain" invisible="1"/>
+                <field name="prescription_domain" invisible="1"/>
+                
+                <footer>
+                    <button name="action_create_hospital_sale" string="Create Sale Order" 
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Create Hospital Sale Wizard Action -->
+    <record id="action_create_hospital_sale_wizard" model="ir.actions.act_window">
+        <field name="name">Create Hospital Sale</field>
+        <field name="res_model">create.hospital.sale.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- Add action to Sales menu -->
+    <menuitem id="menu_create_hospital_sale" 
+              name="Create Hospital Sale" 
+              action="action_create_hospital_sale_wizard"
+              parent="menu_medical_sales"
+              sequence="5"
+              groups="futuristictech_medical.group_medical_user,sales_team.group_sale_salesman"/>
+</odoo>

@@ -159,3 +159,4 @@ access_medical_labtest_types_all,medical.labtest.types all users,model_medical_l
 access_medical_labtest_types_laboratory,medical.labtest.types laboratory,model_medical_labtest_types,medical_group_laboratory,1,1,1,0
 access_medical_labtest_types_doctor,medical.labtest.types doctor,model_medical_labtest_types,medical_group_doctor,1,1,0,0
 access_medical_labtest_types_manager,medical.labtest.types manager,model_medical_labtest_types,medical_group_manager,1,1,1,1
+

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Hospital Sales Analysis Report View -->
+    <!-- <record id="view_hospital_sales_analysis_pivot" model="ir.ui.view">
+        <field name="name">hospital.sales.analysis.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_pivot"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="service_type"/>
+                <field name="is_hospital_sale" invisible="1"/>
+            </field>
+        </field>
+    </record> -->
+    
+    <!-- Hospital Sales Analysis Report Search View -->
+    <!-- <record id="view_hospital_sales_analysis_search" model="ir.ui.view">
+        <field name="name">hospital.sales.analysis.search</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="service_type"/>
+            </field>
+            <filter name="Customer" position="after">
+                <filter string="Patient" name="patient" context="{'group_by':'patient_id'}"/>
+                <filter string="Doctor" name="doctor" context="{'group_by':'doctor_id'}"/>
+                <filter string="Campus" name="campus" context="{'group_by':'campus_id'}"/>
+                <filter string="Service Type" name="service_type" context="{'group_by':'service_type'}"/>
+            </filter>
+            <filter name="Customer" position="before">
+                <filter string="Hospital Sales" name="is_hospital_sale" domain="[('is_hospital_sale', '=', True)]"/>
+            </filter>
+        </field>
+    </record> -->
+    
+    <!-- Extend Sale Report Model -->
+    <!-- <record id="sale_report_hospital_fields" model="ir.model">
+        <field name="name">Sales Analysis Report</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="service_type"/>
+            </field>
+        </field>
+    </record> -->
+    
+    <!-- Hospital Sales Analysis Report Action -->
+    <record id="action_hospital_sales_analysis_report" model="ir.actions.act_window">
+        <field name="name">Hospital Sales Analysis</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_sales_analysis_search"/>
+        <field name="domain">[('is_hospital_sale', '=', True)]</field>
+        <field name="context">{'search_default_Sales': 1, 'search_default_filter_date': 1}</field>
+        <field name="help">This report performs analysis on your hospital sales.</field>
+    </record>
+    
+    <!-- Hospital Sales by Doctor Report Action -->
+    <record id="action_hospital_sales_by_doctor_report" model="ir.actions.act_window">
+        <field name="name">Sales by Doctor</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_sales_analysis_search"/>
+        <field name="domain">[('is_hospital_sale', '=', True)]</field>
+        <field name="context">{'search_default_doctor': 1, 'search_default_filter_date': 1}</field>
+        <field name="help">This report performs analysis on sales by doctor.</field>
+    </record>
+    
+    <!-- Hospital Sales by Campus Report Action -->
+    <record id="action_hospital_sales_by_campus_report" model="ir.actions.act_window">
+        <field name="name">Sales by Campus</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_sales_analysis_search"/>
+        <field name="domain">[('is_hospital_sale', '=', True)]</field>
+        <field name="context">{'search_default_campus': 1, 'search_default_filter_date': 1}</field>
+        <field name="help">This report performs analysis on sales by campus.</field>
+    </record>
+    
+    <!-- Hospital Sales by Service Type Report Action -->
+    <record id="action_hospital_sales_by_service_report" model="ir.actions.act_window">
+        <field name="name">Sales by Service Type</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_sales_analysis_search"/>
+        <field name="domain">[('is_hospital_sale', '=', True)]</field>
+        <field name="context">{'search_default_service_type': 1, 'search_default_filter_date': 1}</field>
+        <field name="help">This report performs analysis on sales by service type.</field>
+    </record>
+    
+    <!-- Menu Items for Reports -->
+    <menuitem id="menu_hospital_sales_reporting" 
+              name="Hospital Sales Reporting"
+              parent="sale.menu_sale_report"
+              sequence="5"
+            />
+              
+    <menuitem id="menu_hospital_sales_analysis_report" 
+              name="Hospital Sales Analysis"
+              action="action_hospital_sales_analysis_report"
+              parent="menu_hospital_sales_reporting"
+              sequence="10"/>
+              
+    <menuitem id="menu_hospital_sales_by_doctor_report" 
+              name="Sales by Doctor"
+              action="action_hospital_sales_by_doctor_report"
+              parent="menu_hospital_sales_reporting"
+              sequence="20"/>
+              
+    <menuitem id="menu_hospital_sales_by_campus_report" 
+              name="Sales by Campus"
+              action="action_hospital_sales_by_campus_report"
+              parent="menu_hospital_sales_reporting"
+              sequence="30"/>
+              
+    <menuitem id="menu_hospital_sales_by_service_report" 
+              name="Sales by Service Type"
+              action="action_hospital_sales_by_service_report"
+              parent="menu_hospital_sales_reporting"
+              sequence="40"/>
+</odoo>

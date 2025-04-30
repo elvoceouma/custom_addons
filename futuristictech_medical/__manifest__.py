@@ -4,7 +4,7 @@
     'summary': 'Comprehensive Medical Management System',
     'description': 'Module for managing hospitals, patients, doctors, and medical cases',
     'author': 'Elvice Ouma',
-    'depends': ['base', 'mail', 'stock', 'account', 'hr', 'crm'],
+    'depends': ['base', 'mail', 'stock', 'account', 'hr', 'crm', 'sale'],
     'data': [
         # Security
         'security/medical_security.xml',
@@ -26,10 +26,15 @@
         'views/treatment_views.xml',
         'views/pharmacy_views.xml',
         'views/payment_views.xml',
+        'views/medical_appointment_views.xml',
         
         # Partner and CRM related views
         'views/res_partners.xml',
         'views/crm_lead_views.xml',
+        'views/sale_order_views.xml',
+        'views/medical_case_views.xml',
+        'views/medical_prescription_views.xml',
+        # 'views/hospital_sales_reporting.xml',
         
         # Additional medical views
         'views/consultation_views.xml',
@@ -41,10 +46,14 @@
         'views/op_visit_views.xml',
         'views/session_assesment_views.xml',
         'views/vitals_specification_views.xml',
+
+        # Wizards
+        'wizard/create_hospital_sale_wizard_views.xml',
         
         # Actions and menus
         'views/actions.xml',
         'views/menu_views.xml',
+        # 'views/sales_menu.xml',
         
         # Reports
         'report/medical_reports.xml',

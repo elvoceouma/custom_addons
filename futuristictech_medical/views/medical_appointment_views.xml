@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medical Appointment Tree View -->
+    <record id="view_medical_appointment_tree" model="ir.ui.view">
+        <field name="name">medical.appointment.tree</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state == 'confirmed'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="department_id"/>
+                <field name="appointment_date"/>
+                <field name="purpose" optional="hide"/>
+                <field name="duration" optional="hide"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Form View -->
+    <record id="view_medical_appointment_form" model="ir.ui.view">
+        <field name="name">medical.appointment.form</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_check_availability_ui" string="Check Availability" type="object" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancelled"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_case" type="object" class="oe_stat_button" icon="fa-heartbeat" invisible="not case_id">
+                            <field name="case_id" invisible="1"/>
+                            <span class="o_stat_text">Case</span>
+                        </button>
+                        <!-- Buttons added in extension views -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" options="{'no_create': True}"/>
+                            <field name="doctor_id" options="{'no_create': True}"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="hospital_id" readonly="1"/>
+                            <field name="lead_id" options="{'no_create': True}" invisible="not lead_id"/>
+                        </group>
+                        <group>
+                            <field name="appointment_date"/>
+                            <field name="end_time"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="campus_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Appointment Details">
+                            <group>
+                                <field name="purpose" placeholder="Appointment purpose..."/>
+                                <field name="notes" placeholder="Additional notes..."/>
+                            </group>
+                        </page>
+                        <page string="Medical Case" invisible="not case_id">
+                            <group>
+                                <field name="case_id" readonly="1" invisible="not case_id"/>
+                            </group>
+                            <field name="symptoms" readonly="1" invisible="not case_id"/>
+                            <field name="diagnosis" readonly="1" invisible="not case_id"/>
+                        </page>
+                        <page string="Patient History" invisible="not patient_id">
+                            <field name="patient_history" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Calendar View -->
+    <record id="view_medical_appointment_calendar" model="ir.ui.view">
+        <field name="name">medical.appointment.calendar</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <calendar string="Appointments" date_start="appointment_date" date_stop="end_time" color="doctor_id">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="purpose"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Search View -->
+    <record id="view_medical_appointment_search" model="ir.ui.view">
+        <field name="name">medical.appointment.search</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="purpose"/>
+                <field name="campus_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Today" name="today" domain="[('appointment_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+                                ('appointment_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                <filter string="Tomorrow" name="tomorrow" domain="[('appointment_date', '&gt;=', datetime.datetime.combine(context_today()+datetime.timedelta(days=1), datetime.time(0,0,0))),
+                                ('appointment_date', '&lt;=', datetime.datetime.combine(context_today()+datetime.timedelta(days=1), datetime.time(23,59,59)))]"/>
+                <filter string="This Week" name="this_week" domain="[('appointment_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                ('appointment_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient" context="{'group_by':'patient_id'}"/>
+                    <filter string="Doctor" name="doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Department" name="department" context="{'group_by':'department_id'}"/>
+                    <filter string="Hospital" name="hospital" context="{'group_by':'hospital_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <filter string="Date" name="date" context="{'group_by':'appointment_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Gantt View (if you have the appropriate module) -->
+    <record id="view_medical_appointment_gantt" model="ir.ui.view">
+        <field name="name">medical.appointment.gantt</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <gantt date_start="appointment_date" date_stop="end_time" color="doctor_id" string="Appointments">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+            </gantt>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Pivot View -->
+    <record id="view_medical_appointment_pivot" model="ir.ui.view">
+        <field name="name">medical.appointment.pivot</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <pivot string="Appointment Analysis">
+                <field name="doctor_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="appointment_date" interval="month" type="col"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Graph View -->
+    <record id="view_medical_appointment_graph" model="ir.ui.view">
+        <field name="name">medical.appointment.graph</field>
+        <field name="model">medical.appointment</field>
+        <field name="arch" type="xml">
+            <graph string="Appointment Analysis">
+                <field name="doctor_id"/>
+                <field name="state"/>
+                <field name="duration" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Medical Appointment Action -->
+    <record id="action_medical_appointment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">medical.appointment</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_medical_appointment_search"/>
+        <field name="context">{'search_default_today': 1, 'search_default_draft': 1, 'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first appointment!
+            </p>
+            <p>
+                Create a new appointment to schedule a consultation or procedure for a patient.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sequences for medical appointment -->
+    <record id="seq_medical_appointment" model="ir.sequence">
+        <field name="name">Medical Appointment</field>
+        <field name="code">medical.appointment</field>
+        <field name="prefix">APP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

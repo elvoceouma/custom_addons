@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Sale Order Form -->
+    <record id="view_order_form_medical" model="ir.ui.view">
+        <field name="name">sale.order.form.medical</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add buttons for medical actions -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_appointment" type="object" class="oe_stat_button" icon="fa-calendar" invisible="not is_hospital_sale or not appointment_id">
+                    <field name="appointment_id" invisible="1"/>
+                    <span class="o_stat_text">Appointment</span>
+                </button>
+                <button name="action_view_case" type="object" class="oe_stat_button" icon="fa-heartbeat" invisible="not is_hospital_sale or not case_id">
+                    <field name="case_id" invisible="1"/>
+                    <span class="o_stat_text">Medical Case</span>
+                </button>
+            </xpath>
+
+            <!-- Add medical specific fields to header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_patient" type="object" string="Create Patient" class="btn-primary" invisible="not is_hospital_sale or patient_id" />
+                <button name="action_create_appointment" type="object" string="Create Appointment" invisible="not is_hospital_sale or not patient_id or appointment_id" />
+                <button name="action_create_case" type="object" string="Create Case" invisible="not is_hospital_sale or not patient_id or case_id" />
+            </xpath>
+
+            <!-- Add is_hospital_sale checkbox in partner section -->
+            <xpath expr="//group[@name='partner_details']" position="inside">
+                <field name="is_hospital_sale"/>
+            </xpath>
+
+            <!-- Add medical information notebook page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Medical Information" invisible="not is_hospital_sale">
+                    <group>
+                        <group>
+                            <field name="patient_id" options="{'no_create': True}" required="is_hospital_sale"/>
+                            <field name="patient_registration" readonly="1" invisible="not patient_id"/>
+                            <field name="doctor_id" options="{'no_create': True}" required="is_hospital_sale"/>
+                            <field name="campus_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="appointment_id" options="{'no_create': True}"/>
+                            <field name="case_id" options="{'no_create': True}"/>
+                            <field name="prescription_id" options="{'no_create': True}"/>
+                            <field name="service_type"/>
+                            <field name="lead_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <field name="patient_history" invisible="not patient_id" readonly="1"/>
+                </page>
+            </xpath>
+
+            <!-- Add medical information to order lines -->
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                <field name="doctor_id" options="{'no_create': True}" column_invisible="not parent.is_hospital_sale"/>
+                <field name="is_medication" invisible="1"/>
+                <field name="is_treatment" invisible="1"/>
+                <field name="is_consultation" invisible="1"/>
+                <field name="is_lab_test" invisible="1"/>
+            </xpath>
+
+            <!-- Inherit Sale Order Line Form -->
+            <xpath expr="//field[@name='order_line']/form//field[@name='price_unit']" position="after">
+                <field name="doctor_id" options="{'no_create': True}" invisible="not parent.is_hospital_sale"/>
+                <field name="is_medication" invisible="1"/>
+                <field name="is_treatment" invisible="1"/>
+                <field name="is_consultation" invisible="1"/>
+                <field name="is_lab_test" invisible="1"/>
+                <field name="prescription_line_id" options="{'no_create': True}" invisible="not parent.is_hospital_sale or not is_medication"/>
+                <field name="treatment_id" options="{'no_create': True}" invisible="not parent.is_hospital_sale or not is_treatment"/>
+                <field name="lab_test_id" options="{'no_create': True}" invisible="not parent.is_hospital_sale or not is_lab_test"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Sale Order Tree View -->
+    <record id="view_order_tree_medical" model="ir.ui.view">
+        <field name="name">sale.order.tree.medical</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id" optional="show"/>
+                <field name="doctor_id" optional="show"/>
+                <field name="is_hospital_sale" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Inherit Sale Order Search View -->
+    <record id="view_sales_order_filter_medical" model="ir.ui.view">
+        <field name="name">sale.order.list.select.medical</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="appointment_id"/>
+                <field name="case_id"/>
+                <field name="prescription_id"/>
+            </field>
+            <filter name="my_sale_orders_filter" position="after">
+                <filter string="Hospital Sales" name="hospital_sales" domain="[('is_hospital_sale', '=', True)]"/>
+            </filter>
+            <group position="inside">
+                <filter string="Patient" name="patient" domain="[]" context="{'group_by': 'patient_id'}"/>
+                <filter string="Doctor" name="doctor" domain="[]" context="{'group_by': 'doctor_id'}"/>
+                <filter string="Campus" name="campus" domain="[]" context="{'group_by': 'campus_id'}"/>
+                <filter string="Service Type" name="service_type" domain="[]" context="{'group_by': 'service_type'}"/>
+            </group>
+        </field>
+    </record>
+
+    <!-- Inherit Medical Appointment Form -->
+    <record id="view_medical_appointment_form_sale" model="ir.ui.view">
+        <field name="name">medical.appointment.form.sale</field>
+        <field name="model">medical.appointment</field>
+        <field name="inherit_id" ref="view_medical_appointment_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_sale_orders" type="object" class="oe_stat_button" icon="fa-dollar" invisible="not sale_count">
+                    <field name="sale_count" widget="statinfo" string="Sales"/>
+                </button>
+                <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_count">
+                    <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                </button>
+            </div>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_sale_order" type="object" string="Create Sale Order" groups="sales_team.group_sale_salesman" class="btn-primary" invisible="state not in ['confirmed', 'done']"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Define the Medical Case View (was trying to inherit previously) -->
+    <record id="view_medical_case_form_sale" model="ir.ui.view">
+        <field name="name">medical.case.form.sale</field>
+        <field name="model">medical.case</field>
+        <field name="inherit_id" ref="futuristictech_medical.view_medical_case_form"/>
+        <field name="arch" type="xml">
+            <!-- Using a safer approach with xpath -->
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box" invisible="not id">
+                    <button name="action_view_sale_orders" type="object" class="oe_stat_button" icon="fa-dollar" invisible="not sale_count">
+                        <field name="sale_count" widget="statinfo" string="Sales"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_sale_order" type="object" string="Create Sale Order" groups="sales_team.group_sale_salesman" class="btn-primary" invisible="state not in ['in_progress', 'completed']"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Define the Medical Prescription View (was trying to inherit previously) -->
+    <record id="view_medical_prescription_form_sale" model="ir.ui.view">
+        <field name="name">medical.prescription.form.sale</field>
+        <field name="model">medical.prescription</field>
+        <field name="inherit_id" ref="futuristictech_medical.view_medical_prescription_form"/>
+        <field name="arch" type="xml">
+            <!-- Using a safer approach with xpath -->
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box" invisible="not id">
+                    <button name="action_view_sale_orders" type="object" class="oe_stat_button" icon="fa-dollar" invisible="not sale_count">
+                        <field name="sale_count" widget="statinfo" string="Sales"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_sale_order" type="object" string="Create Sale Order" groups="sales_team.group_sale_salesman" class="btn-primary" invisible="state != 'confirmed'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hospital Sales Menu Items -->
+    <menuitem id="menu_medical_sales" name="Hospital Sales" parent="sale.sale_menu_root" sequence="10" groups="futuristictech_medical.group_medical_user,sales_team.group_sale_salesman"/>
+
+    <menuitem id="menu_medical_hospital_sales" name="Hospital Sales" parent="menu_medical_sales" action="sale.action_orders" sequence="10"/>
+
+    <menuitem id="menu_medical_patient_sales" name="Patient Sales" parent="menu_medical_sales" action="futuristictech_medical.action_medical_patient" sequence="20"/>
+
+    <menuitem id="menu_medical_doctor_sales" name="Doctor Sales" parent="menu_medical_sales" action="futuristictech_medical.action_medical_doctor" sequence="30"/>
+
+    <!-- <menuitem id="menu_medical_campus_sales" name="Campus Sales" parent="menu_medical_sales" action="futuristictech_medical.action_medical_campus" sequence="40"/> -->
+    <!-- <menuitem id="menu_medical_service_sales" name="Service Sales" parent="menu_medical_sales" action="futuristictech_medical.action_medical_service" sequence="50"/>
+    <menuitem id="menu_medical_sales_report" name="Sales Report" parent="menu_medical_sales" action="futuristictech_medical.action_medical_sales_report" sequence="60"/>
+    <menuitem id="menu_medical_sales_analysis" name="Sales Analysis" parent="menu_medical_sales" action="futuristictech_medical.action_medical_sales_analysis" sequence="70"/>
+    <menuitem id="menu_medical_sales_by_doctor" name="Sales by Doctor" parent="menu_medical_sales" action="futuristictech_medical.action_medical_sales_by_doctor" sequence="80"/>
+    <menuitem id="menu_medical_sales_by_campus" name="Sales by Campus" parent="menu_medical_sales" action="futuristictech_medical.action_medical_sales_by_campus" sequence="90"/>
+    <menuitem id="menu_medical_sales_by_service" name="Sales by Service" parent="menu_medical_sales" action="futuristictech_medical.action_medical_sales_by_service" sequence="100"/> -->
+</odoo>
