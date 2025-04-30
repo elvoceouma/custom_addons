@@ -6,7 +6,7 @@
         
         <!-- You need to define these actions in your actions.xml file before using them in menus -->
         <!-- Commenting out menu items with undefined actions until you define them -->
-        
+        <!-- 
         <menuitem id="menu_sales_quick_search" name="Quick Search" action="action_sales_quick_search" parent="menu_sales_dashboard" sequence="1"/>
         <menuitem id="menu_sales_leads" name="Leads" action="action_sales_leads" parent="menu_sales_dashboard" sequence="2"/>
         <menuitem id="menu_sales_visits" name="Visits" action="action_sales_visits" parent="menu_sales_dashboard" sequence="3"/>
@@ -18,7 +18,7 @@
         <menuitem id="menu_sales_booked_packages" name="Booked Packages" action="action_sales_booked_packages" parent="menu_sales_dashboard" sequence="9"/>
         <menuitem id="menu_sales_doctors" name="Doctors" action="action_sales_doctors" parent="menu_sales_dashboard" sequence="10"/>
         <menuitem id="menu_sales_doctors_approval" name="Doctors Waiting Approval" action="action_sales_doctors_approval" parent="menu_sales_dashboard" sequence="11"/>
-       
+        -->
 
         <!-- Original Orders Menu - Preserved using proper Odoo inheritance -->
         <record id="sale_order_menu_inherit" model="ir.ui.menu">
@@ -31,26 +31,26 @@
         <menuitem id="menu_sales_appointments" name="Appointments" parent="sale.sale_menu_root" sequence="3"/>
         
         <!-- Commenting out undefined actions -->
-        
+        <!--
         <menuitem id="menu_sales_time_slots" name="Create Time Slots" action="action_sales_time_slots" parent="menu_sales_appointments" sequence="1"/>
         <menuitem id="menu_sales_appointments_list" name="Appointments" action="action_sales_appointments_list" parent="menu_sales_appointments" sequence="2"/>
-       
+        -->
 
         <!-- Marketing Menu -->
         <menuitem id="menu_sales_marketing" name="Marketing" parent="sale.sale_menu_root" sequence="4"/>
         
         <!-- Commenting out undefined actions -->
-        
+        <!--
         <menuitem id="menu_sales_schedule_meeting" name="Schedule Meeting" action="action_sales_schedule_meeting" parent="menu_sales_marketing" sequence="1"/>
-       
+        -->
 
         <!-- Packages Menu -->
         <menuitem id="menu_sales_packages" name="Packages" parent="sale.sale_menu_root" sequence="5"/>
         
         <!-- Commenting out undefined actions -->
-        
+        <!--
         <menuitem id="menu_sales_all_packages" name="All Packages" action="action_sales_all_packages" parent="menu_sales_packages" sequence="1"/>
-       
+        -->
 
         <!-- Configuration Menu - Adding a dummy action to avoid errors -->
         <menuitem id="menu_database_connections" name="Database Connections" parent="sale.menu_sale_config" sequence="60"/>
