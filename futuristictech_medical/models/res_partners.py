@@ -73,7 +73,14 @@ class ResPartner(models.Model):
     'cns_id',     
     string="CNS"
 )
-    age_preference = fields.Many2many('age.preference','doctor_age_rel', string="Age Preference")
+    # age_preference = fields.Many2many('age.preference','doctor_age_rel', string="Age Preference")
+    age_preference = fields.Many2many(
+        'age.preference',
+        'doctor_age_rel',
+        'res_partner_id',  # Use the existing column name
+        '_unknown_id',  # Use the existing column name
+        string='Age Preferences'
+    )
 
     def action_view_cases(self):
         self.ensure_one()

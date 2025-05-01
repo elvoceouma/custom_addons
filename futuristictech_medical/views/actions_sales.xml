@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Actions -->
+    <record id="action_hospital_sales_dashboard" model="ir.actions.act_window">
+        <field name="name">Sales Dashboard</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban</field>
+        <field name="context">{'search_default_assigned_to_me': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to your Sales Dashboard!
+            </p>
+            <p>
+                Monitor your key performance indicators and activities.
+            </p>
+        </field>
+    </record>
+
+    <!-- Lead & Sales Related Actions -->
+    <record id="action_sales_quick_search" model="ir.actions.act_window">
+        <field name="name">Quick Search</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">search</field>
+        <field name="context">{'search_default_all': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Search for leads, opportunities, or customers
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_leads" model="ir.actions.act_window">
+        <field name="name">Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="domain">[('type', '=', 'lead')]</field>
+        <field name="context">{'default_type': 'lead'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lead
+            </p>
+            <p>
+                Track and manage your sales leads from initial contact to conversion.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_visits" model="ir.actions.act_window">
+        <field name="name">Visits</field>
+        <field name="res_model">crm.visits</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first visit
+            </p>
+            <p>
+                Plan and track customer visits and meetings.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_registration_forms" model="ir.actions.act_window">
+        <field name="name">Registration Forms</field>
+        <field name="res_model">medical.registration.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first registration form
+            </p>
+            <p>
+                Design and manage customer registration forms.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_pipeline" model="ir.actions.act_window">
+        <field name="name">Your Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,tree,form,calendar,pivot,graph</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'default_type': 'opportunity'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first opportunity
+            </p>
+            <p>
+                Track and manage your sales pipeline from leads to closing deals.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_next_activities" model="ir.actions.act_window">
+        <field name="name">Next Activities</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'search_default_future_activities': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No activities scheduled
+            </p>
+            <p>
+                Plan and track your next activities with customers and leads.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_activity_watchlist" model="ir.actions.act_window">
+        <field name="name">Activity Watchlist</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="domain">[('res_model', 'in', ['crm.lead', 'res.partner']), ('date_deadline', '&lt;=', context_today())]</field>
+        <field name="context">{'search_default_overdue': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No activities on your watchlist
+            </p>
+            <p>
+                Monitor important activities that require your attention.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_booked_packages" model="ir.actions.act_window">
+        <field name="name">Booked Packages</field>
+        <field name="res_model">medical.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No booked packages yet
+            </p>
+            <p>
+                Track and manage packages booked by your customers.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_doctors" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">medical.doctor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No doctors registered yet
+            </p>
+            <p>
+                Create and manage doctor profiles in your system.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_doctors_approval" model="ir.actions.act_window">
+        <field name="name">Doctors Waiting Approval</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_doctor', '=', True), ('active_doctor', '=', False), ('waiting_approval', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No doctors waiting for approval
+            </p>
+            <p>
+                Review and approve doctor applications.
+            </p>
+        </field>
+    </record>
+
+    <!-- Appointment Actions -->
+    <record id="action_sales_time_slots" model="ir.actions.act_window">
+        <field name="name">Create Time Slots</field>
+        <field name="res_model">doctor.schedule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first time slot
+            </p>
+            <p>
+                Define available time slots for doctor appointments.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sales_appointments_list" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">medical.appointment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first appointment
+            </p>
+            <p>
+                Create and manage patient appointments with doctors.
+            </p>
+        </field>
+    </record>
+
+    <!-- Marketing Actions -->
+    <record id="action_sales_schedule_meeting" model="ir.actions.act_window">
+        <field name="name">Schedule Meeting</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="context">{'default_event_type': 'meeting'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first marketing meeting
+            </p>
+            <p>
+                Plan and organize marketing activities and customer meetings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Packages Actions -->
+    <record id="action_sales_all_packages" model="ir.actions.act_window">
+        <field name="name">All Packages</field>
+        <field name="res_model">medical.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first package
+            </p>
+            <p>
+                Define treatment and service packages for your patients.
+            </p>
+        </field>
+    </record>
+
+    <!-- Reports Actions -->
+    <record id="action_report_pipeline" model="ir.actions.act_window">
+        <field name="name">Pipeline Analysis</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'search_default_group_by_stage': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+            <p>
+                Track and analyze your sales pipeline performance.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_report_leads" model="ir.actions.act_window">
+        <field name="name">Leads Analysis</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('type', '=', 'lead')]</field>
+        <field name="context">{'search_default_group_by_source': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data to analyze yet
+            </p>
+            <p>
+                Track and analyze your lead generation performance.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_report_activities" model="ir.actions.act_window">
+        <field name="name">Activities Analysis</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No activity data to analyze yet
+            </p>
+            <p>
+                Track and analyze your team's activity performance.
+            </p>
+        </field>
+    </record>
+
+    <!-- Configuration Actions -->
+    <record id="action_hospital_sales_config_contact_tags" model="ir.actions.act_window">
+        <field name="name">Contact Tags</field>
+        <field name="res_model">res.partner.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first contact tag
+            </p>
+            <p>
+                Organize your contacts with tags for easy filtering and grouping.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_contact_titles" model="ir.actions.act_window">
+        <field name="name">Contact Titles</field>
+        <field name="res_model">res.partner.title</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first contact title
+            </p>
+            <p>
+                Define titles for your contacts such as Dr., Prof., etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- Lead & Opportunity Configuration Actions -->
+    <record id="action_hospital_sales_config_lead_stages" model="ir.actions.act_window">
+        <field name="name">Lead Stages</field>
+        <field name="res_model">crm.stage</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lead stage
+            </p>
+            <p>
+                Define stages for your sales pipeline to track progress.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_lead_tags" model="ir.actions.act_window">
+        <field name="name">Lead Tags</field>
+        <field name="res_model">crm.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lead tag
+            </p>
+            <p>
+                Use tags to categorize your leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_services" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="res_model">service.list</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service
+            </p>
+            <p>
+                Define the services offered by your hospital.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_campus" model="ir.actions.act_window">
+        <field name="name">Campus</field>
+        <field name="res_model">campus.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first campus
+            </p>
+            <p>
+                Define different hospital campuses or locations.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_languages" model="ir.actions.act_window">
+        <field name="name">Languages</field>
+        <field name="res_model">language.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first language
+            </p>
+            <p>
+                Define languages for doctors and patients.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_speciality" model="ir.actions.act_window">
+        <field name="name">Speciality</field>
+        <field name="res_model">medical.speciality</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first speciality
+            </p>
+            <p>
+                Define medical specialities for doctors.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_primary_tags" model="ir.actions.act_window">
+        <field name="name">Primary Tags</field>
+        <field name="res_model">crm.primary.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first primary tag
+            </p>
+            <p>
+                Define primary tags for leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_secondary_tags" model="ir.actions.act_window">
+        <field name="name">Secondary Tags</field>
+        <field name="res_model">crm.secondary.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first secondary tag
+            </p>
+            <p>
+                Define secondary tags for leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_tertiary_tags" model="ir.actions.act_window">
+        <field name="name">Tertiary Tags</field>
+        <field name="res_model">crm.tertiary.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first tertiary tag
+            </p>
+            <p>
+                Define tertiary tags for leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_discard_tags" model="ir.actions.act_window">
+        <field name="name">Discard Tags</field>
+        <field name="res_model">crm.discard.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first discard tag
+            </p>
+            <p>
+                Define tags for discarded leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_cns_master" model="ir.actions.act_window">
+        <field name="name">CNS Master</field>
+        <field name="res_model">cns.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first CNS entry
+            </p>
+            <p>
+                Configure central nervous system related entries.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_age_preference" model="ir.actions.act_window">
+        <field name="name">Age Preference</field>
+        <field name="res_model">age.preference</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first age preference
+            </p>
+            <p>
+                Define age preferences for doctor specialization and treatment.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_physical_health" model="ir.actions.act_window">
+        <field name="name">Physical Health Condition</field>
+        <field name="res_model">physical.condition</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first physical health condition
+            </p>
+            <p>
+                Define physical health conditions for better patient management.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_service_lists" model="ir.actions.act_window">
+        <field name="name">Service Lists</field>
+        <field name="res_model">service.list</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service list
+            </p>
+            <p>
+                Define service lists to organize medical services.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_sources" model="ir.actions.act_window">
+        <field name="name">Sources</field>
+        <field name="res_model">utm.source</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lead source
+            </p>
+            <p>
+                Define different sources of leads and opportunities.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_lost_reasons" model="ir.actions.act_window">
+        <field name="name">Lost Reasons</field>
+        <field name="res_model">crm.lost.reason</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lost reason
+            </p>
+            <p>
+                Define reasons for lost opportunities to improve sales process.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_medium" model="ir.actions.act_window">
+        <field name="name">Medium</field>
+        <field name="res_model">utm.medium</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first marketing medium
+            </p>
+            <p>
+                Define marketing mediums to track campaign effectiveness.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_sales_config_relationship" model="ir.actions.act_window">
+        <field name="name">Relationship</field>
+        <field name="res_model">relationship.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first relationship type
+            </p>
+            <p>
+                Define relationship types for patient connections.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,98 +1,286 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-        <!-- Dashboard Menu -->
-        <menuitem id="menu_sales_dashboard" name="Dashboard Sales" parent="sale.sale_menu_root" sequence="1"/>
-        
-        <!-- You need to define these actions in your actions.xml file before using them in menus -->
-        <!-- Commenting out menu items with undefined actions until you define them -->
-        <!-- 
-        <menuitem id="menu_sales_quick_search" name="Quick Search" action="action_sales_quick_search" parent="menu_sales_dashboard" sequence="1"/>
-        <menuitem id="menu_sales_leads" name="Leads" action="action_sales_leads" parent="menu_sales_dashboard" sequence="2"/>
-        <menuitem id="menu_sales_visits" name="Visits" action="action_sales_visits" parent="menu_sales_dashboard" sequence="3"/>
-        <menuitem id="menu_sales_registration_forms" name="Registration Forms" action="action_sales_registration_forms" parent="menu_sales_dashboard" sequence="4"/>
-        <menuitem id="menu_sales_customers" name="Customers" action="action_sales_customers" parent="menu_sales_dashboard" sequence="5"/>
-        <menuitem id="menu_sales_pipeline" name="Your Pipeline" action="action_sales_pipeline" parent="menu_sales_dashboard" sequence="6"/>
-        <menuitem id="menu_sales_next_activities" name="Next Activities" action="action_sales_next_activities" parent="menu_sales_dashboard" sequence="7"/>
-        <menuitem id="menu_sales_activity_watchlist" name="Activity Watchlist" action="action_sales_activity_watchlist" parent="menu_sales_dashboard" sequence="8"/>
-        <menuitem id="menu_sales_booked_packages" name="Booked Packages" action="action_sales_booked_packages" parent="menu_sales_dashboard" sequence="9"/>
-        <menuitem id="menu_sales_doctors" name="Doctors" action="action_sales_doctors" parent="menu_sales_dashboard" sequence="10"/>
-        <menuitem id="menu_sales_doctors_approval" name="Doctors Waiting Approval" action="action_sales_doctors_approval" parent="menu_sales_dashboard" sequence="11"/>
-        -->
-
-        <!-- Original Orders Menu - Preserved using proper Odoo inheritance -->
-        <record id="sale_order_menu_inherit" model="ir.ui.menu">
-            <field name="name">Orders</field>
-            <field name="sequence">2</field>
-            <field name="id" ref="sale.sale_order_menu"/>
-        </record>
-
-        <!-- Appointments Menu -->
-        <menuitem id="menu_sales_appointments" name="Appointments" parent="sale.sale_menu_root" sequence="3"/>
-        
-        <!-- Commenting out undefined actions -->
-        <!--
-        <menuitem id="menu_sales_time_slots" name="Create Time Slots" action="action_sales_time_slots" parent="menu_sales_appointments" sequence="1"/>
-        <menuitem id="menu_sales_appointments_list" name="Appointments" action="action_sales_appointments_list" parent="menu_sales_appointments" sequence="2"/>
-        -->
-
-        <!-- Marketing Menu -->
-        <menuitem id="menu_sales_marketing" name="Marketing" parent="sale.sale_menu_root" sequence="4"/>
-        
-        <!-- Commenting out undefined actions -->
-        <!--
-        <menuitem id="menu_sales_schedule_meeting" name="Schedule Meeting" action="action_sales_schedule_meeting" parent="menu_sales_marketing" sequence="1"/>
-        -->
-
-        <!-- Packages Menu -->
-        <menuitem id="menu_sales_packages" name="Packages" parent="sale.sale_menu_root" sequence="5"/>
-        
-        <!-- Commenting out undefined actions -->
-        <!--
-        <menuitem id="menu_sales_all_packages" name="All Packages" action="action_sales_all_packages" parent="menu_sales_packages" sequence="1"/>
-        -->
-
-        <!-- Configuration Menu - Adding a dummy action to avoid errors -->
-        <menuitem id="menu_database_connections" name="Database Connections" parent="sale.menu_sale_config" sequence="60"/>
-        <menuitem id="menu_aws_file_type" name="Aws File Type" parent="sale.menu_sale_config" sequence="65"/>
-
-        <!-- Contacts Section -->
-        <menuitem id="menu_contacts_config" name="Contacts" parent="sale.menu_sale_config" sequence="70"/>
-        <menuitem id="menu_contact_tags" name="Contact Tags" parent="menu_contacts_config" sequence="1"/>
-        <menuitem id="menu_contact_titles" name="Contact Titles" parent="menu_contacts_config" sequence="2"/>
-        <menuitem id="menu_localization" name="Localization" parent="menu_contacts_config" sequence="3"/>
-        <menuitem id="menu_country" name="Countries" parent="menu_localization" sequence="1"/>
-        <menuitem id="menu_country_state" name="Fed. States" parent="menu_localization" sequence="2"/>
-        <menuitem id="menu_country_city" name="City" parent="menu_localization" sequence="3"/>
-        <menuitem id="menu_country_group" name="Country Group" parent="menu_localization" sequence="4"/>
-        <menuitem id="menu_bank_accounts" name="Bank Accounts" parent="menu_contacts_config" sequence="4"/>
-        <menuitem id="menu_res_bank" name="Banks" parent="menu_bank_accounts" sequence="1"/>
-        <menuitem id="menu_res_partner_bank" name="Bank Accounts" parent="menu_bank_accounts" sequence="2"/>
-
-        <!-- Leads & Opportunities Section -->
-        <menuitem id="menu_crm_config" name="Leads &amp; Opportunities" parent="sale.menu_sale_config" sequence="75"/>
-        <menuitem id="menu_crm_stages" name="Stages" parent="menu_crm_config" sequence="1"/>
-        <menuitem id="menu_crm_tags" name="Lead Tags" parent="menu_crm_config" sequence="2"/>
-        <menuitem id="menu_services" name="Services" parent="menu_crm_config" sequence="3"/>
-        <menuitem id="menu_campus" name="Campus" parent="menu_crm_config" sequence="4"/>
-        <menuitem id="menu_languages" name="Languages" parent="menu_crm_config" sequence="5"/>
-        <menuitem id="menu_speciality" name="Speciality" parent="menu_crm_config" sequence="6"/>
-        <menuitem id="menu_relationship" name="Relationship" parent="menu_crm_config" sequence="7"/>
-        <menuitem id="menu_physical_condition" name="Physical Health Condition" parent="menu_crm_config" sequence="8"/>
-        <menuitem id="menu_service_lists" name="Service Lists" parent="menu_crm_config" sequence="9"/>
-        <menuitem id="menu_lead_sources" name="Sources" parent="menu_crm_config" sequence="10"/>
-        <menuitem id="menu_lost_reasons" name="Lost Reasons" parent="menu_crm_config" sequence="11"/>
-        <menuitem id="menu_primary_tags" name="Primary Tags" parent="menu_crm_config" sequence="12"/>
-        <menuitem id="menu_secondary_tags" name="Secondary Tags" parent="menu_crm_config" sequence="13"/>
-        <menuitem id="menu_tertiary_tags" name="Tertiary Tags" parent="menu_crm_config" sequence="14"/>
-        <menuitem id="menu_lead_activities" name="Activities" parent="menu_crm_config" sequence="15"/>
-        <menuitem id="menu_crm_medium" name="Medium" parent="menu_crm_config" sequence="16"/>
-        <menuitem id="menu_discard_tags" name="Discard Tags" parent="menu_crm_config" sequence="17"/>
-        <menuitem id="menu_cns_master" name="CNS Master" parent="menu_crm_config" sequence="18"/>
-        <menuitem id="menu_age_preference" name="Age Preference" parent="menu_crm_config" sequence="19"/>
-
-        <!-- Additional Configuration Items -->
-        <menuitem id="menu_sales_teams_config" name="Sales Teams" parent="sale.menu_sale_config" sequence="80"/>
-        <menuitem id="menu_leadsquared_access" name="LeadSquared Access Key" parent="sale.menu_sale_config" sequence="85"/>
-    </data>
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_hospital_sales_dashboard" 
+        name="Dashboard" 
+        parent="sale.sale_menu_root"
+        action="action_hospital_sales_dashboard"
+        sequence="5"/>
+    
+    <!-- Sales Menu (No need to create parent as it already exists) -->
+    <menuitem id="menu_hospital_sales_quick_search" 
+        name="Quick Search" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_quick_search" 
+        sequence="5"/>
+    
+    <menuitem id="menu_hospital_sales_leads" 
+        name="Leads" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_leads" 
+        sequence="7"/>
+    
+    <menuitem id="menu_hospital_sales_visits" 
+        name="Visits" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_visits" 
+        sequence="8"/>
+    
+    <menuitem id="menu_hospital_sales_registration_forms" 
+        name="Registration Forms" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_registration_forms" 
+        sequence="9"/>
+    
+    <menuitem id="menu_hospital_sales_pipeline" 
+        name="Your Pipeline" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_pipeline" 
+        sequence="11"/>
+    
+    <menuitem id="menu_hospital_sales_next_activities" 
+        name="Next Activities" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_next_activities" 
+        sequence="15"/>
+    
+    <menuitem id="menu_hospital_sales_activity_watchlist" 
+        name="Activity Watchlist" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_activity_watchlist" 
+        sequence="25"/>
+    
+    <menuitem id="menu_hospital_sales_booked_packages" 
+        name="Booked Packages" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_booked_packages" 
+        sequence="35"/>
+    
+    <menuitem id="menu_hospital_sales_doctors" 
+        name="Doctors" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_doctors" 
+        sequence="45"/>
+    
+    <menuitem id="menu_hospital_sales_doctors_approval" 
+        name="Doctors Waiting Approval" 
+        parent="sale.sale_order_menu" 
+        action="action_sales_doctors_approval" 
+        sequence="46"/>
+    
+    <!-- Appointments Menu -->
+    <menuitem id="menu_hospital_sales_appointments" 
+        name="Appointments" 
+        parent="sale.sale_menu_root" 
+        sequence="25"/>
+    
+    <menuitem id="menu_hospital_sales_time_slots" 
+        name="Create Time Slots" 
+        parent="menu_hospital_sales_appointments" 
+        action="action_sales_time_slots" 
+        sequence="10"/>
+    
+    <menuitem id="menu_hospital_sales_appointments_list" 
+        name="Appointments" 
+        parent="menu_hospital_sales_appointments" 
+        action="action_sales_appointments_list" 
+        sequence="20"/>
+    
+    <menuitem id="menu_hospital_sales_cancellation_policy" 
+        name="Cancellation Policy" 
+        parent="menu_hospital_sales_appointments" 
+        sequence="30"/>
+    
+    <!-- Marketing Menu -->
+    <menuitem id="menu_hospital_sales_marketing" 
+        name="Marketing" 
+        parent="sale.sale_menu_root" 
+        sequence="35"/>
+    
+    <menuitem id="menu_hospital_sales_schedule_meeting" 
+        name="Schedule Meeting" 
+        parent="menu_hospital_sales_marketing" 
+        action="action_sales_schedule_meeting" 
+        sequence="10"/>
+    
+    <!-- Packages Menu -->
+    <menuitem id="menu_hospital_sales_packages" 
+        name="Packages" 
+        parent="sale.sale_menu_root" 
+        sequence="40"/>
+    
+    <menuitem id="menu_hospital_sales_all_packages" 
+        name="All Packages" 
+        parent="menu_hospital_sales_packages" 
+        action="action_sales_all_packages" 
+        sequence="10"/>
+    
+    <!-- Reports Menu (Extending existing) -->
+    <menuitem id="menu_hospital_sales_report_pipeline" 
+        name="Pipeline" 
+        parent="sale.menu_sale_report" 
+        action="action_report_pipeline" 
+        sequence="5"/>
+    
+    <menuitem id="menu_hospital_sales_report_leads" 
+        name="Leads" 
+        parent="sale.menu_sale_report" 
+        action="action_report_leads" 
+        sequence="7"/>
+    
+    <menuitem id="menu_hospital_sales_report_activities" 
+        name="Activities" 
+        parent="sale.menu_sale_report" 
+        sequence="9"/>
+    
+    <!-- Configuration Menu Extensions -->
+    
+    <!-- Database & AWS Configuration -->
+    <menuitem id="menu_hospital_sales_config_database" 
+        name="Database Connections" 
+        parent="sale.menu_sale_config" 
+        sequence="55"/>
+    
+    <menuitem id="menu_hospital_sales_config_aws" 
+        name="AWS File Type" 
+        parent="sale.menu_sale_config" 
+        sequence="56"/>
+    
+    <!-- Contacts Configuration -->
+    <menuitem id="menu_hospital_sales_config_contacts" 
+        name="Contacts" 
+        parent="sale.menu_sale_config" 
+        sequence="57"/>
+    
+    <menuitem id="menu_hospital_sales_config_contact_tags" 
+        name="Contact Tags" 
+        parent="menu_hospital_sales_config_contacts" 
+        action="action_hospital_sales_config_contact_tags"
+        sequence="10"/>
+    
+    <menuitem id="menu_hospital_sales_config_contact_titles" 
+        name="Contact Titles" 
+        parent="menu_hospital_sales_config_contacts" 
+        action="action_hospital_sales_config_contact_titles"
+        sequence="20"/>
+    
+    <menuitem id="menu_hospital_sales_config_localization" 
+        name="Localization" 
+        parent="menu_hospital_sales_config_contacts" 
+        sequence="30"/>
+    
+    <menuitem id="menu_hospital_sales_config_bank_accounts" 
+        name="Bank Accounts" 
+        parent="menu_hospital_sales_config_contacts" 
+        sequence="40"/>
+    
+    <!-- Leads & Opportunities Configuration -->
+    <menuitem id="menu_hospital_sales_config_leads" 
+        name="Leads &amp; Opportunities" 
+        parent="sale.menu_sale_config" 
+        sequence="58"/>
+    
+    <menuitem id="menu_hospital_sales_config_lead_stages" 
+        name="Stages" 
+        parent="menu_hospital_sales_config_leads" 
+        action="action_hospital_sales_config_lead_stages"
+        sequence="10"/>
+    
+    <menuitem id="menu_hospital_sales_config_lead_tags" 
+        name="Lead Tags" 
+        parent="menu_hospital_sales_config_leads" 
+        action="action_hospital_sales_config_lead_tags"
+        sequence="20"/>
+    
+    <menuitem id="menu_hospital_sales_config_services" 
+        name="Services" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="30"/>
+    
+    <menuitem id="menu_hospital_sales_config_campus" 
+        name="Campus" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="40"/>
+    
+    <menuitem id="menu_hospital_sales_config_languages" 
+        name="Languages" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="50"/>
+    
+    <menuitem id="menu_hospital_sales_config_speciality" 
+        name="Speciality" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="60"/>
+    
+    <menuitem id="menu_hospital_sales_config_relationship" 
+        name="Relationship" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="70"/>
+    
+    <menuitem id="menu_hospital_sales_config_physical_health" 
+        name="Physical Health Condition" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="80"/>
+    
+    <menuitem id="menu_hospital_sales_config_service_lists" 
+        name="Service Lists" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="90"/>
+    
+    <menuitem id="menu_hospital_sales_config_sources" 
+        name="Sources" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="100"/>
+    
+    <menuitem id="menu_hospital_sales_config_lost_reasons" 
+        name="Lost Reasons" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="110"/>
+    
+    <menuitem id="menu_hospital_sales_config_primary_tags" 
+        name="Primary Tags" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="120"/>
+    
+    <menuitem id="menu_hospital_sales_config_secondary_tags" 
+        name="Secondary Tags" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="130"/>
+    
+    <menuitem id="menu_hospital_sales_config_tertiary_tags" 
+        name="Tertiary Tags" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="140"/>
+    
+    <menuitem id="menu_hospital_sales_config_activities" 
+        name="Activities" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="150"/>
+    
+    <menuitem id="menu_hospital_sales_config_medium" 
+        name="Medium" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="160"/>
+    
+    <menuitem id="menu_hospital_sales_config_discard_tags" 
+        name="Discard Tags" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="170"/>
+    
+    <menuitem id="menu_hospital_sales_config_cns_master" 
+        name="CNS Master" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="180"/>
+    
+    <menuitem id="menu_hospital_sales_config_age_preference" 
+        name="Age Preference" 
+        parent="menu_hospital_sales_config_leads" 
+        sequence="190"/>
+    
+    <!-- Sales Teams Configuration (Already exists, but adding as requested) -->
+    <!-- <menuitem id="menu_hospital_sales_config_sales_teams" 
+        name="Sales Teams" 
+        parent="sale.menu_sale_config" 
+        action="sales_team.crm_team_action_config" 
+        sequence="59"/> -->
 </odoo>

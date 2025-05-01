@@ -109,7 +109,7 @@ class CrmLead(models.Model):
     latest_consulting_doctor = fields.Many2one('res.partner', string='Latest Consulting Doctor', domain="[('is_doctor', '=', True)]")
 
     
-    # Previous treatment history fields
+    # Previous tr   eatment history fields
     bool_1 = fields.Boolean(string='Consulted Psychiatrist')
     psychiatrist_psychologist = fields.Char(string='Psychiatrist / Psychologist')
     bool_2 = fields.Boolean(string='Consulted Counsellor / Psychologist')

@@ -1186,3 +1186,170 @@ class CRMSimpleRegistration(models.Model):
     
     def action_cancel(self):
         self.state = 'cancelled'
+
+class ServiceList(models.Model):
+    _name = 'service.list'
+    _description = 'Service List'
+    _order = 'sequence, name'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+    sequence = fields.Integer(default=10)
+    
+    # Optional fields for integration with products
+    product_id = fields.Many2one('product.product', string='Related Product')
+    price = fields.Float(string='Price', related='product_id.list_price', readonly=True)
+    
+    # Optional categorization fields
+    category_id = fields.Many2one('service.list.category', string='Category')
+    
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'Service name must be unique!'),
+        ('code_unique', 'unique(code)', 'Service code must be unique!')
+    ]
+
+
+class ServiceListCategory(models.Model):
+    _name = 'service.list.category'
+    _description = 'Service List Category'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+    
+    service_ids = fields.One2many('service.list', 'category_id', string='Services')
+    service_count = fields.Integer(compute='_compute_service_count', string='Service Count')
+    
+    @api.depends('service_ids')
+    def _compute_service_count(self):
+        for category in self:
+            category.service_count = len(category.service_ids)
+    
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'Category name must be unique!'),
+        ('code_unique', 'unique(code)', 'Category code must be unique!')
+    ]
+
+
+class CrmPrimaryTag(models.Model):
+    _name = 'crm.primary.tag'
+    _description = 'CRM Primary Tag'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    color = fields.Integer(string='Color Index')
+    active = fields.Boolean(default=True)
+    description = fields.Text(string='Description')
+    
+    lead_ids = fields.Many2many('crm.lead', 'crm_lead_primary_tag_rel', 'tag_id', 'lead_id', string='Leads')
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+    ]
+
+
+class CrmSecondaryTag(models.Model):
+    _name = 'crm.secondary.tag'
+    _description = 'CRM Secondary Tag'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    color = fields.Integer(string='Color Index')
+    active = fields.Boolean(default=True)
+    description = fields.Text(string='Description')
+    
+    lead_ids = fields.Many2many('crm.lead', 'crm_lead_secondary_tag_rel', 'tag_id', 'lead_id', string='Leads')
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+    ]
+
+
+class CrmTertiaryTag(models.Model):
+    _name = 'crm.tertiary.tag'
+    _description = 'CRM Tertiary Tag'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    color = fields.Integer(string='Color Index')
+    active = fields.Boolean(default=True)
+    description = fields.Text(string='Description')
+    
+    lead_ids = fields.Many2many('crm.lead', 'crm_lead_tertiary_tag_rel', 'tag_id', 'lead_id', string='Leads')
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+    ]
+
+
+class CrmDiscardTag(models.Model):
+    _name = 'crm.discard.tag'
+    _description = 'CRM Discard Tag'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    color = fields.Integer(string='Color Index')
+    active = fields.Boolean(default=True)
+    description = fields.Text(string='Description')
+    
+    lead_ids = fields.Many2many('crm.lead', 'crm_lead_discard_tag_rel', 'tag_id', 'lead_id', string='Leads')
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', "Tag name already exists!"),
+    ]
+
+
+
+class CnsMaster(models.Model):
+    _name = 'cns.master'
+    _description = 'CNS Master'
+    _order = 'name'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+    
+    # You can add more fields specific to your CNS master requirements
+    sequence = fields.Integer(default=10, help='Used to order CNS items')
+    
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'CNS name must be unique!'),
+        ('code_unique', 'unique(code)', 'CNS code must be unique!')
+    ]
+
+
+class AgePreference(models.Model):
+    _name = 'age.preference'
+    _description = 'Age Preference'
+    _order = 'sequence, name'
+    
+    name = fields.Char(string='Name', required=True)
+    min_age = fields.Integer(string='Minimum Age')
+    max_age = fields.Integer(string='Maximum Age')
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+    sequence = fields.Integer(default=10)
+    
+    doctor_ids = fields.Many2many(
+        'res.partner', 
+        'doctor_age_rel',
+        '_unknown_id',  # Use the existing column name
+        'res_partner_id',  # Use the existing column name
+        string='Doctors'
+    )
+    
+    # Optional: Add validation to ensure min_age < max_age if both provided
+    @api.constrains('min_age', 'max_age')
+    def _check_age_range(self):
+        for record in self:
+            if record.min_age and record.max_age and record.min_age > record.max_age:
+                raise models.ValidationError(_('Minimum age must be less than maximum age'))
+    
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'Age preference name must be unique!')
+    ]

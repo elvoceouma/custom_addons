@@ -15,6 +15,8 @@
         'data/mail_template_data.xml',
         'data/medical_data.xml',
         
+        'views/actions.xml',
+        'views/actions_sales.xml',
         # Main views
         'views/hospital_views.xml',
         'views/department_views.xml',
@@ -51,7 +53,6 @@
         'wizard/create_hospital_sale_wizard_views.xml',
         
         # Actions and menus
-        'views/actions.xml',
         'views/menu_views.xml',
         'views/sales_menu.xml',
         
