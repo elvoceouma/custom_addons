@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Psychiatrist Consultation Action -->
-    <record id="action_psychiatrist_consultation" model="ir.actions.act_window">
+    <!-- <record id="action_psychiatrist_consultation" model="ir.actions.act_window">
         <field name="name">Psychiatrist Consultations</field>
         <field name="res_model">consultation.consultation</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('team_role', '=', 'psychiatrist')]</field>
         <field name="context">{"search_default_my_consultation": 1}</field>
         <field name="search_view_id" ref="view_consultation_filter" />
-        <!-- <field name="views">[(view_consultation_tree,tree), (view_consultation_form,form)]</field> -->
+        <field name="views">[(view_consultation_tree,tree), (view_consultation_form,form)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
             No psychiatrist consultations found!
-            </p>
+            </p>action_psychiatrist_consultation
         </field>
-    </record>
+    </record> -->
 
     <!-- Dashboard Actions -->
     <record id="action_sales_dashboard" model="ir.actions.act_window">
