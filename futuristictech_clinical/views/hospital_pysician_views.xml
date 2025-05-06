@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Physician Form View -->
+    <record id="view_hospital_physician_form" model="ir.ui.view">
+        <field name="name">hospital.physician.form</field>
+        <field name="model">hospital.physician</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_save" string="Save" type="object" class="oe_highlight" 
+                            special="save" invisible="1"/>
+                    <button name="action_discard" string="Discard" type="object" 
+                            special="cancel" invisible="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="appointment_count" widget="statinfo" string="Appointments"/>
+                        </button>
+                        <button name="action_view_prescriptions" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="prescription_count" widget="statinfo" string="Prescriptions"/>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Physician Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="degree_ids" widget="many2many_tags" placeholder="Degrees..."/>
+                            <field name="speciality_id" placeholder="Speciality"/>
+                        </group>
+                        <group>
+                            <field name="consultancy_type"/>
+                            <field name="consultancy_charge"/>
+                            <field name="licence_id" placeholder="License ID"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="graduation_institute" placeholder="Institution where doctor works"/>
+                            <field name="is_pharmacist"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="General" name="general">
+                            <group string="Contact Information">
+                                <group>
+                                    <field name="working_institution" placeholder="Working Institution"/>
+                                    <field name="work_mobile" placeholder="Work Mobile"/>
+                                    <field name="work_email" placeholder="Work Email"/>
+                                </group>
+                                <group>
+                                    <field name="responsible" placeholder="Responsible"/>
+                                    <field name="work_phone" placeholder="Work Phone"/>
+                                    <field name="work_location" placeholder="Cadabams Hospital"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Weekly Availability" name="weekly_availability">
+                            <field name="availability_ids">
+                                <tree editable="bottom">
+                                    <field name="day"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="day"/>
+                                        <field name="start_time" widget="float_time"/>
+                                        <field name="end_time" widget="float_time"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Extra Info" name="extra_info">
+                            <group>
+                                <field name="user_id"/>
+                                <field name="partner_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="active"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Physician Tree View -->
+    <record id="view_hospital_physician_tree" model="ir.ui.view">
+        <field name="name">hospital.physician.tree</field>
+        <field name="model">hospital.physician</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="licence_id"/>
+                <field name="working_address"/>
+                <field name="speciality_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Physician Search View -->
+    <record id="view_hospital_physician_search" model="ir.ui.view">
+        <field name="name">hospital.physician.search</field>
+        <field name="model">hospital.physician</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="licence_id"/>
+                <field name="speciality_id"/>
+                <field name="consultancy_type"/>
+                <separator/>
+                <filter string="Residential" name="residential" domain="[('consultancy_type', '=', 'residential')]"/>
+                <filter string="Visiting" name="visiting" domain="[('consultancy_type', '=', 'visiting')]"/>
+                <filter string="Consultant" name="consultant" domain="[('consultancy_type', '=', 'consultant')]"/>
+                <filter string="Honorary" name="honorary" domain="[('consultancy_type', '=', 'honorary')]"/>
+                <separator/>
+                <filter string="Pharmacist" name="pharmacist" domain="[('is_pharmacist', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Speciality" name="group_by_speciality" context="{'group_by': 'speciality_id'}"/>
+                    <filter string="Consultancy Type" name="group_by_consultancy_type" context="{'group_by': 'consultancy_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Physician Action -->
+    <record id="action_hospital_physician" model="ir.actions.act_window">
+        <field name="name">Physicians</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_physician_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first physician!
+            </p>
+            <p>
+                Create physicians to manage doctors and specialists.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Physician "My Profile" Action -->
+    <record id="action_hospital_physician_my_profile" model="ir.actions.act_window">
+        <field name="name">My Profile</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician</field>
+        <field name="view_mode">form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                You don't have a physician profile yet!
+            </p>
+            <p>
+                Please contact the administrator to create your physician profile.
+            </p>
+        </field>
+    </record>
+</odoo>

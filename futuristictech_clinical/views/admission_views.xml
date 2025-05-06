@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hospital Admission Views -->
+    <!-- <record id="view_hospital_admission_form" model="ir.ui.view">
+        <field name="name">hospital.admission.form</field>
+        <field name="model">hospital.admission</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm_admission" string="Confirm Admission" type="object" class="oe_highlight" invisible="[('state', '!=', 'draft')]"/>
+                    <button name="action_initiate_discharge" string="Initiate Discharge" type="object" class="oe_highlight" invisible="[('state', 'not in', ['admission_confirmed', 'invoiced', 'completed'])]"/>
+                    <button name="action_complete_discharge" string="Complete Discharge" type="object" class="oe_highlight" invisible="[('state', '!=', 'discharge_initiated')]"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,admission_confirmed,invoiced,completed,discharge_initiated,discharged"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <filed name='campus_id' />
+                            <field name="patient_id"/>
+                            <field name="patient_title"/>
+                            <field name="admitting_person"/>
+                        </group>
+                        <group>
+                            <field name="campus_id"/>
+                            <field name="block_id"/>
+                            <field name="room_id"/>
+                            <field name="bed_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Dates" name="dates">
+                            <group>
+                                <group>
+                                    <field name="admission_date"/>
+                                    <field name="next_bill_date"/>
+                                </group>
+                                <group>
+                                    <field name="discharge_date"/>
+                                    <field name="advised_discharge_date"/>
+                                    <field name="advice_for_discharge"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Team" name="team">
+                            <group>
+                                <group>
+                                    <field name="psychiatrist_id"/>
+                                    <field name="clinical_psychologist_id"/>
+                                    <field name="physician_id"/>
+                                </group>
+                                <group>
+                                    <field name="counsellor_id"/>
+                                    <field name="acting_counsellor_id"/>
+                                    <field name="caretaker_id"/>
+                                    <field name="family_therapist_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record> -->
+    
+    <record id="view_hospital_admission_tree" model="ir.ui.view">
+        <field name="name">hospital.admission.tree</field>
+        <field name="model">hospital.admission</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-success="state == 'admission_confirmed'" decoration-warning="state == 'discharge_initiated'" decoration-muted="state == 'discharged'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <!-- <field name="campus_id"/> -->
+                <field name="block_id"/>
+                <field name="room_id"/>
+                <field name="bed_id"/>
+                <field name="admission_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_hospital_admission_search" model="ir.ui.view">
+        <field name="name">hospital.admission.search</field>
+        <field name="model">hospital.admission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <!-- <field name="campus_id"/> -->
+                <field name="block_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Admission Confirmed" name="admission_confirmed" domain="[('state', '=', 'admission_confirmed')]"/>
+                <filter string="Discharge Initiated" name="discharge_initiated" domain="[('state', '=', 'discharge_initiated')]"/>
+                <filter string="Discharged" name="discharged" domain="[('state', '=', 'discharged')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <!-- <filter string="Campus" name="group_by_campus" context="{'group_by': 'campus_id'}"/> -->
+                    <filter string="Block" name="group_by_block" context="{'group_by': 'block_id'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    
+</odoo>

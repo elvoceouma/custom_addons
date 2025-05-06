@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Physician Speciality Views -->
+    <record id="view_hospital_physician_speciality_form" model="ir.ui.view">
+        <field name="name">hospital.physician.speciality.form</field>
+        <field name="model">hospital.physician.speciality</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Speciality Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_physician_speciality_tree" model="ir.ui.view">
+        <field name="name">hospital.physician.speciality.tree</field>
+        <field name="model">hospital.physician.speciality</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Physician Degree Views -->
+    <record id="view_hospital_physician_degree_form" model="ir.ui.view">
+        <field name="name">hospital.physician.degree.form</field>
+        <field name="model">hospital.physician.degree</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Degree Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_physician_degree_tree" model="ir.ui.view">
+        <field name="name">hospital.physician.degree.tree</field>
+        <field name="model">hospital.physician.degree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    
+
+    <!-- Illness Tag Views -->
+    <record id="view_hospital_illness_tag_form" model="ir.ui.view">
+        <field name="name">hospital.illness.tag.form</field>
+        <field name="model">hospital.illness.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Illness Tag Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="active"/>
+                        <field name="color"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_illness_tag_tree" model="ir.ui.view">
+        <field name="name">hospital.illness.tag.tree</field>
+        <field name="model">hospital.illness.tag</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="active"/>
+                <field name="color"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Document Type Views -->
+    <record id="view_hospital_document_type_form" model="ir.ui.view">
+        <field name="name">hospital.document.type.form</field>
+        <field name="model">hospital.document.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Document Type Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_document_type_tree" model="ir.ui.view">
+        <field name="name">hospital.document.type.tree</field>
+        <field name="model">hospital.document.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    
+
+    <!-- Vaccine Views -->
+    <record id="view_hospital_vaccine_form" model="ir.ui.view">
+        <field name="name">hospital.vaccine.form</field>
+        <field name="model">hospital.vaccine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Vaccine Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_vaccine_tree" model="ir.ui.view">
+        <field name="name">hospital.vaccine.tree</field>
+        <field name="model">hospital.vaccine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    
+</odoo>

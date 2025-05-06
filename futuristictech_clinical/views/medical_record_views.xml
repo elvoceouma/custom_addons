@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Initial Assessment Views -->
+    <record id="view_hospital_initial_assessment_form" model="ir.ui.view">
+        <field name="name">hospital.initial.assessment.form</field>
+        <field name="model">hospital.initial.assessment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="assessment_date"/>
+                        </group>
+                        <group>
+                            <field name="physician_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="History" name="history">
+                            <group>
+                                <field name="chief_complaint" placeholder="Chief Complaint"/>
+                                <field name="history_present_illness" placeholder="History of Present Illness"/>
+                                <field name="past_medical_history" placeholder="Past Medical History"/>
+                                <field name="family_history" placeholder="Family History"/>
+                                <field name="social_history" placeholder="Social History"/>
+                            </group>
+                        </page>
+                        <page string="Assessment" name="assessment_page">
+                            <group>
+                                <field name="allergies" placeholder="Allergies"/>
+                                <field name="current_medications" placeholder="Current Medications"/>
+                                <field name="physical_examination" placeholder="Physical Examination"/>
+                                <field name="assessment" placeholder="Assessment"/>
+                                <field name="plan" placeholder="Plan"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_initial_assessment_tree" model="ir.ui.view">
+        <field name="name">hospital.initial.assessment.tree</field>
+        <field name="model">hospital.initial.assessment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="admission_id"/>
+                <field name="assessment_date"/>
+                <field name="physician_id"/>
+            </tree>
+        </field>
+    </record>
+    
+    
+    <record id="action_hospital_initial_assessment" model="ir.actions.act_window">
+        <field name="name">Initial Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.initial.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Vital Chart Views -->
+    <record id="view_hospital_vital_chart_form" model="ir.ui.view">
+        <field name="name">hospital.vital.chart.form</field>
+        <field name="model">hospital.vital.chart</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="datetime"/>
+                            <field name="recorded_by"/>
+                        </group>
+                        <group>
+                            <field name="temperature"/>
+                            <field name="pulse"/>
+                            <field name="respiratory_rate"/>
+                            <field name="blood_pressure_systolic"/>
+                            <field name="blood_pressure_diastolic"/>
+                            <field name="oxygen_saturation"/>
+                            <field name="pain_score"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Additional notes about the vital signs"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_vital_chart_tree" model="ir.ui.view">
+        <field name="name">hospital.vital.chart.tree</field>
+        <field name="model">hospital.vital.chart</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="datetime"/>
+                <field name="temperature"/>
+                <field name="pulse"/>
+                <field name="blood_pressure_systolic"/>
+                <field name="blood_pressure_diastolic"/>
+                <field name="recorded_by"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_vital_chart" model="ir.actions.act_window">
+        <field name="name">Vital Charts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vital.chart</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Mental Status Examination Views -->
+    <record id="view_hospital_mental_status_examination_form" model="ir.ui.view">
+        <field name="name">hospital.mental.status.examination.form</field>
+        <field name="model">hospital.mental.status.examination</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="date"/>
+                            <field name="examiner_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Examination" name="examination">
+                            <group>
+                                <field name="appearance" placeholder="Appearance"/>
+                                <field name="behavior" placeholder="Behavior"/>
+                                <field name="attitude" placeholder="Attitude"/>
+                                <field name="mood" placeholder="Mood"/>
+                                <field name="affect" placeholder="Affect"/>
+                                <field name="speech" placeholder="Speech"/>
+                                <field name="thought_process" placeholder="Thought Process"/>
+                                <field name="thought_content" placeholder="Thought Content"/>
+                                <field name="perception" placeholder="Perception"/>
+                                <field name="cognition" placeholder="Cognition"/>
+                                <field name="insight" placeholder="Insight"/>
+                                <field name="judgment" placeholder="Judgment"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_mental_status_examination_tree" model="ir.ui.view">
+        <field name="name">hospital.mental.status.examination.tree</field>
+        <field name="model">hospital.mental.status.examination</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="date"/>
+                <field name="examiner_id"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_mental_status_examination" model="ir.actions.act_window">
+        <field name="name">Mental Status Examinations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.mental.status.examination</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Care Plan Views -->
+    <record id="view_hospital_care_plan_form" model="ir.ui.view">
+        <field name="name">hospital.care.plan.form</field>
+        <field name="model">hospital.care.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="created_by"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Plan Details" name="plan_details">
+                            <field name="problems" placeholder="List of identified problems"/>
+                            <field name="goals" placeholder="Treatment goals"/>
+                            <field name="interventions" placeholder="Planned interventions"/>
+                            <field name="evaluation" placeholder="Evaluation criteria"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_care_plan_tree" model="ir.ui.view">
+        <field name="name">hospital.care.plan.tree</field>
+        <field name="model">hospital.care.plan</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+                <field name="created_by"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_care_plan" model="ir.actions.act_window">
+        <field name="name">Care Plans</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.care.plan</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Nurse Assessment Views -->
+    <record id="view_hospital_nurse_assessment_form" model="ir.ui.view">
+        <field name="name">hospital.nurse.assessment.form</field>
+        <field name="model">hospital.nurse.assessment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="assessment_date"/>
+                            <field name="nurse_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assessment" name="assessment">
+                            <field name="vital_signs" placeholder="Vital signs observations"/>
+                            <field name="general_appearance" placeholder="General appearance notes"/>
+                            <field name="neurological" placeholder="Neurological assessment"/>
+                            <field name="cardiovascular" placeholder="Cardiovascular assessment"/>
+                            <field name="respiratory" placeholder="Respiratory assessment"/>
+                            <field name="gastrointestinal" placeholder="Gastrointestinal assessment"/>
+                            <field name="genitourinary" placeholder="Genitourinary assessment"/>
+                            <field name="musculoskeletal" placeholder="Musculoskeletal assessment"/>
+                            <field name="skin" placeholder="Skin assessment"/>
+                            <field name="pain" placeholder="Pain assessment"/>
+                            <field name="interventions" placeholder="Nursing interventions performed"/>
+                            <field name="notes" placeholder="Additional notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_nurse_assessment_tree" model="ir.ui.view">
+        <field name="name">hospital.nurse.assessment.tree</field>
+        <field name="model">hospital.nurse.assessment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="assessment_date"/>
+                <field name="nurse_id"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_nurse_assessment" model="ir.actions.act_window">
+        <field name="name">Nurse Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.nurse.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Drug Chart Views -->
+    <record id="view_hospital_drug_chart_form" model="ir.ui.view">
+        <field name="name">hospital.drug.chart.form</field>
+        <field name="model">hospital.drug.chart</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <tree>
+                            <field name="medicine_id"/>
+                            <field name="dosage"/>
+                            <field name="frequency_id"/>
+                            <field name="route_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="morning"/>
+                            <field name="noon"/>
+                            <field name="evening"/>
+                            <field name="night"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_drug_chart_tree" model="ir.ui.view">
+        <field name="name">hospital.drug.chart.tree</field>
+        <field name="model">hospital.drug.chart</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_drug_chart" model="ir.actions.act_window">
+        <field name="name">Drug Charts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.chart</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Drug Administration Views -->
+    <record id="view_hospital_drug_administration_form" model="ir.ui.view">
+        <field name="name">hospital.drug.administration.form</field>
+        <field name="model">hospital.drug.administration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="medicine_id" readonly="1"/>
+                            <field name="dosage" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="administration_date"/>
+                            <field name="time"/>
+                            <field name="administered"/>
+                            <field name="administered_by" readonly="1"/>
+                            <field name="administered_datetime" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Administration notes"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_drug_administration_tree" model="ir.ui.view">
+        <field name="name">hospital.drug.administration.tree</field>
+        <field name="model">hospital.drug.administration</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="administered == True" decoration-danger="administered == False">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="medicine_id"/>
+                <field name="administration_date"/>
+                <field name="time"/>
+                <field name="administered"/>
+                <field name="administered_by"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_drug_administration" model="ir.actions.act_window">
+        <field name="name">Drug Administrations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.administration</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

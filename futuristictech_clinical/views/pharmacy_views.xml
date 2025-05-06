@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hospital Pharmacy Form View -->
+    <record id="view_hospital_pharmacy_form" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.form</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Pharmacy Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="hospital_id"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Inventory" name="inventory">
+                            <field name="stock_picking_type_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="sequence_code"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Medicines" name="medicines">
+                            <field name="medicine_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="quantity_available"/>
+                                    <field name="medicine_type_id"/>
+                                    <field name="medicine_category_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!-- <page string="Staff" name="staff">
+                            <field name="staff_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="job_position"/>
+                                    <field name="work_phone"/>
+                                    <field name="work_email"/>
+                                </tree>
+                            </field>
+                        </page> -->
+                        <page string="Extra Information" name="extra_info">
+                            <group>
+                                <field name="working_hours"/>
+                                <field name="emergency_service"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Hospital Pharmacy Tree View -->
+    <record id="view_hospital_pharmacy_tree" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.tree</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="hospital_id"/>
+                <field name="code"/>
+                <field name="location_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Hospital Pharmacy Search View -->
+    <record id="view_hospital_pharmacy_search" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.search</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="hospital_id"/>
+                <field name="code"/>
+                <field name="location_id"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Hospital" name="group_by_hospital" context="{'group_by': 'hospital_id'}"/>
+                    <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Hospital Pharmacy Kanban View -->
+    <record id="view_hospital_pharmacy_kanban" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.kanban</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="hospital_id"/>
+                <field name="code"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <div t-attf-class="o_kanban_record_top mb4">
+                                <div class="o_kanban_record_headings mt4">
+                                    <strong class="o_kanban_record_title">
+                                        <span><t t-esc="record.name.value"/></span>
+                                    </strong>
+                                </div>
+                                <strong t-if="record.active.raw_value" class="badge badge-success">Active</strong>
+                                <strong t-if="!record.active.raw_value" class="badge badge-danger">Inactive</strong>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><strong>Hospital:</strong> <t t-esc="record.hospital_id.value"/></div>
+                                <div><strong>Code:</strong> <t t-esc="record.code.value"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- Hospital Pharmacy Action -->
+    <record id="action_hospital_pharmacy" model="ir.actions.act_window">
+        <field name="name">Pharmacies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.pharmacy</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_hospital_pharmacy_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first pharmacy!
+            </p>
+            <p>
+                Create pharmacies to manage medicine stocks and dispensing.
+            </p>
+        </field>
+    </record>
+</odoo>

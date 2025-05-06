@@ -1,0 +1,1045 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Campus Actions -->
+    <record id="action_hospital_hospital" model="ir.actions.act_window">
+        <field name="name">Campus</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_block" model="ir.actions.act_window">
+        <field name="name">Blocks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_room" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.room</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_bed" model="ir.actions.act_window">
+        <field name="name">Beds</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.bed</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_hospital_bed_search"/>
+    </record>
+
+    <record id="action_hospital_pharmacy" model="ir.actions.act_window">
+        <field name="name">Pharmacies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.pharmacy</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Patient Management Actions -->
+    <!--<record id="action_hospital_my_profile" model="ir.actions.act_window">
+         <field name="name">My Profile</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_patient_search"/>
+    </record> -->
+
+
+
+    <record id="action_hospital_admission" model="ir.actions.act_window">
+        <field name="name">Inpatient Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.admission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_admission_search"/>
+    </record>
+    
+    <record id="action_hospital_my_admission" model="ir.actions.act_window">
+        <field name="name">My Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.admission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('create_uid', '=', uid)]</field>
+        <field name="context">{'search_default_draft': 1}</field>
+    </record>
+
+    <!-- Drug Related Actions -->
+    <record id="action_hospital_drug_chart" model="ir.actions.act_window">
+        <field name="name">Drug Charts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.chart</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_drug_administration" model="ir.actions.act_window">
+        <field name="name">Drug Administrations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.administration</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Medicine Related Actions -->
+    <record id="action_hospital_medicine_box" model="ir.actions.act_window">
+        <field name="name">Medicine Box</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.box</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_medicine_box_search"/>
+    </record>
+
+    <record id="action_hospital_medicine_packing" model="ir.actions.act_window">
+        <field name="name">Medicine Packing</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.packing</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_medicine_packing_search"/>
+    </record>
+
+    <!-- Clinical Assessment Actions -->
+    <record id="action_hospital_initial_assessment" model="ir.actions.act_window">
+        <field name="name">Initial Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.initial.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_mental_status_examination" model="ir.actions.act_window">
+        <field name="name">Mental Status Examinations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.mental.status.examination</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_nurse_assessment" model="ir.actions.act_window">
+        <field name="name">Nurse Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.nurse.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Vital Signs Actions -->
+    <record id="action_hospital_vital_chart" model="ir.actions.act_window">
+        <field name="name">Vital Charts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vital.chart</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Care Plan Actions -->
+    <record id="action_hospital_care_plan" model="ir.actions.act_window">
+        <field name="name">Care Plans</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.care.plan</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Consultation Actions -->
+    <record id="action_hospital_outside_consultation" model="ir.actions.act_window">
+        <field name="name">Outside Consultation Advice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.outside.consultation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_outside_consultation_search"/>
+    </record>
+
+    <record id="action_hospital_op_visit" model="ir.actions.act_window">
+        <field name="name">OP Visits</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.op.visit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_op_visit_search"/>
+    </record>
+
+    <!-- Food Service Actions -->
+    <record id="action_hospital_food_requisition" model="ir.actions.act_window">
+        <field name="name">Food Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.food.requisition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Block Duty Actions -->
+    <record id="action_hospital_block_duty_assignment" model="ir.actions.act_window">
+        <field name="name">Block Duty Assignments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block.duty.assignment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_block_duty_register" model="ir.actions.act_window">
+        <field name="name">Block Duty Registers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block.duty.register</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Configuration Actions -->
+    <record id="action_hospital_physician_speciality" model="ir.actions.act_window">
+        <field name="name">Physician Specialities</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician.speciality</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_physician_degree" model="ir.actions.act_window">
+        <field name="name">Physician Degrees</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician.degree</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_illness_tag" model="ir.actions.act_window">
+        <field name="name">Illness Tags</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.illness.tag</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_document_type" model="ir.actions.act_window">
+        <field name="name">Document Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.document.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Discharge Related Actions -->
+    <record id="action_hospital_discharge" model="ir.actions.act_window">
+        <field name="name">Discharge Records</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.discharge</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_discharge_summary" model="ir.actions.act_window">
+        <field name="name">Discharge Summaries</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.discharge.summary</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Added actions -->
+
+    <!-- Missing Registration Form Actions -->
+    <record id="action_hospital_registration_form" model="ir.actions.act_window">
+        <field name="name">Registration Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Case History Actions -->
+    <record id="action_hospital_case_history" model="ir.actions.act_window">
+        <field name="name">Case History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.case.history</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Patient Document Actions -->
+    <record id="action_hospital_patient_document" model="ir.actions.act_window">
+        <field name="name">Patient Documents</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.document</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Follow-up Sheet Actions -->
+    <record id="action_hospital_follow_up_sheet" model="ir.actions.act_window">
+        <field name="name">Follow-Up Sheet</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.follow.up.sheet</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Package Details Actions -->
+    <record id="action_hospital_package_details" model="ir.actions.act_window">
+        <field name="name">Package Details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.packing</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Drug Frequency Actions -->
+    <record id="action_hospital_drug_frequency" model="ir.actions.act_window">
+        <field name="name">Drug Frequencies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.frequency</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Activity Record Actions -->
+    <record id="action_hospital_activity_record" model="ir.actions.act_window">
+        <field name="name">Activity Records</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.activity.record</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Medication Form Actions -->
+    <record id="action_hospital_medication_form" model="ir.actions.act_window">
+        <field name="name">Medication Form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Physician Actions -->
+    <record id="action_hospital_physician" model="ir.actions.act_window">
+        <field name="name">Physicians</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_physician_my_profile" model="ir.actions.act_window">
+        <field name="name">My Profile</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.physician</field>
+        <field name="view_mode">form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <!-- Missing Appointment Actions -->
+    <record id="action_hospital_appointment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.appointment</field>
+        <field name="view_mode">tree,calendar,form</field>
+    </record>
+
+    <!-- Missing Prescription Actions -->
+    <record id="action_hospital_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.prescription</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Evaluation Actions -->
+    <record id="action_hospital_evaluation" model="ir.actions.act_window">
+        <field name="name">Evaluations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.evaluation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Gynecology Actions -->
+    <record id="action_hospital_gynecology" model="ir.actions.act_window">
+        <field name="name">Gynecology</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.gynecology</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Food Register Actions -->
+    <record id="action_hospital_food_register" model="ir.actions.act_window">
+        <field name="name">Food Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.food.register</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_food_service_payout" model="ir.actions.act_window">
+        <field name="name">Food Service Payout</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.food.service.payout</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_food_bill" model="ir.actions.act_window">
+        <field name="name">Food Bills</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.food.bill</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Vaccine Config Actions -->
+    <record id="action_hospital_vaccine_config" model="ir.actions.act_window">
+        <field name="name">Vaccine Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vaccine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Medicine Actions -->
+    <record id="action_hospital_medicine" model="ir.actions.act_window">
+        <field name="name">Medicines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_dose_unit" model="ir.actions.act_window">
+        <field name="name">Dose Units</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.dose.unit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_drug_route" model="ir.actions.act_window">
+        <field name="name">Drug Routes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.route</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_drug_form" model="ir.actions.act_window">
+        <field name="name">Drug Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_medicine_dosage" model="ir.actions.act_window">
+        <field name="name">Medicine Dosage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.dosage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Other Missing Actions for Block Duty Configuration -->
+    <record id="action_hospital_block_duty_checklist" model="ir.actions.act_window">
+        <field name="name">Block Duty Checklist</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block.duty.checklist</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_block_duty_reporting_block" model="ir.actions.act_window">
+        <field name="name">Block Duty Reporting - Block</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block.duty.report</field>
+        <field name="view_mode">tree,pivot,graph</field>
+        <field name="context">{'group_by': 'block_id'}</field>
+    </record>
+
+    <record id="action_hospital_block_duty_reporting_patient" model="ir.actions.act_window">
+        <field name="name">Block Duty Reporting - Patient</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.block.duty.report</field>
+        <field name="view_mode">tree,pivot,graph</field>
+        <field name="context">{'group_by': 'patient_id'}</field>
+    </record>
+
+    <!-- Registration Details Actions -->
+    <record id="action_hospital_registration_details_campus" model="ir.actions.act_window">
+        <field name="name">Campus</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_registration_details_service" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.service</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_registration_details_language" model="ir.actions.act_window">
+        <field name="name">Languages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.language</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_registration_details_relationship" model="ir.actions.act_window">
+        <field name="name">Relationship</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.relationship</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_registration_details_physical_health_condition" model="ir.actions.act_window">
+        <field name="name">Physical Health Condition</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.physical.health.condition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_registration_details_service_list" model="ir.actions.act_window">
+        <field name="name">Service Lists</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.service.list</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_medicine_register" model="ir.actions.act_window">
+        <field name="name">Medicine Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Patient Config Actions -->
+    <record id="action_hospital_patient_ethnic_group" model="ir.actions.act_window">
+        <field name="name">Ethnic Groups</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.ethnic.group</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_patient_genetic_risk" model="ir.actions.act_window">
+        <field name="name">Genetic Risks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.genetic.risk</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_patient_occupation" model="ir.actions.act_window">
+        <field name="name">Occupations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.occupation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_patient_recreational_drug" model="ir.actions.act_window">
+        <field name="name">Recreational Drugs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.recreational.drug</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_aws_file_type" model="ir.actions.act_window">
+        <field name="name">AWS File Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.aws.file.type</field>
+        <field name="view_mode">tree,form</field>
+
+    </record>
+
+    <!-- Missing Medicine Consumption Action -->
+    <record id="action_hospital_medicine_consumption" model="ir.actions.act_window">
+        <field name="name">Medicine Consumption</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.consumption</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Tablet/Capsule Action -->
+    <record id="action_hospital_tablet_capsule" model="ir.actions.act_window">
+        <field name="name">Tablet/Capsule</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.tablet.capsule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Injection/Application Action -->
+    <record id="action_hospital_injection_application" model="ir.actions.act_window">
+        <field name="name">Injection/Application</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.injection.application</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Nurses Campus Duty Allocation Action -->
+    <record id="action_hospital_nurses_campus_duty" model="ir.actions.act_window">
+        <field name="name">Nurses Campus Duty Allocation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.nurses.campus.duty</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Medication Category Action -->
+    <record id="action_hospital_medication_category" model="ir.actions.act_window">
+        <field name="name">Medication Categories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medication.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Medication Type Action -->
+    <record id="action_hospital_medication_type" model="ir.actions.act_window">
+        <field name="name">Medication Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medication.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Vaccine Actions -->
+    <record id="action_hospital_vaccine" model="ir.actions.act_window">
+        <field name="name">Vaccines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vaccine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_my_vaccine" model="ir.actions.act_window">
+        <field name="name">My Vaccines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vaccine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('create_uid', '=', uid)]</field>
+    </record>
+
+    <!-- Missing Registration Details Risk Assessment Action -->
+    <record id="action_hospital_registration_details_risk_assessment" model="ir.actions.act_window">
+        <field name="name">Risk Assessment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.risk.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Registration Details Psychomotor Activity Action -->
+    <record id="action_hospital_registration_details_psychomotor_activity" model="ir.actions.act_window">
+        <field name="name">Psychomotor Activity</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.psychomotor.activity</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Registration Details Catatonic Signs Action -->
+    <record id="action_hospital_registration_details_catatonic_sign" model="ir.actions.act_window">
+        <field name="name">Catatonic Signs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.catatonic.sign</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Registration Details Physical Illness Action -->
+    <record id="action_hospital_registration_details_physical_illness" model="ir.actions.act_window">
+        <field name="name">Physical Illness</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.physical.illness</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Registration Details Sources Action -->
+    <record id="action_hospital_registration_details_source" model="ir.actions.act_window">
+        <field name="name">Sources</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.source</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Missing Registration Details Physiatric Illness Action -->
+    <record id="action_hospital_registration_details_physiatric_illness" model="ir.actions.act_window">
+        <field name="name">Physiatric Illness</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.registration.details.physiatric.illness</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- Missing Informed Consent Form Action -->
+    <record id="action_hospital_informed_consent_form" model="ir.actions.act_window">
+        <field name="name">Informed Consent Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.informed.consent.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- Bill Estimation Actions -->
+    <record id="action_hospital_bill_estimation_form" model="ir.actions.act_window">
+        <field name="name">Bill Estimation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.bill.estimation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Biochemistry Actions -->
+    <record id="action_hospital_biochemistry" model="ir.actions.act_window">
+        <field name="name">Biochemistry Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.biochemistry</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Capacity Assessment Actions -->
+    <record id="action_hospital_capacity_assessment" model="ir.actions.act_window">
+        <field name="name">Capacity Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.capacity.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Caretaker Related Actions -->
+    <record id="action_hospital_caretaker_allotment" model="ir.actions.act_window">
+        <field name="name">Caretaker Allotments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.caretaker.allotment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_caretaker_register" model="ir.actions.act_window">
+        <field name="name">Caretaker Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.caretaker</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_caretaker_requisition" model="ir.actions.act_window">
+        <field name="name">Caretaker Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.caretaker.allotment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+    <!-- Case Formulation Actions -->
+    <record id="action_hospital_case_formulation" model="ir.actions.act_window">
+        <field name="name">Case Formulations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.case.formulation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Counsellor Clearance Actions -->
+    <record id="action_hospital_counsellor_clearance" model="ir.actions.act_window">
+        <field name="name">Counsellor Clearances</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.counsellor.clearance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- DAMA Form Actions -->
+    <record id="action_hospital_dama_form" model="ir.actions.act_window">
+        <field name="name">DAMA Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.dama.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Discharge Clearance Actions -->
+    <record id="action_hospital_discharge_clearance_checklist" model="ir.actions.act_window">
+        <field name="name">Discharge Clearance Checklist</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.discharge.clearance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Doctor Payout Actions -->
+    <record id="action_hospital_doctor_payout" model="ir.actions.act_window">
+        <field name="name">Doctor Payouts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.doctor.payout</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_doctor_payout_report_wizard" model="ir.actions.act_window">
+        <field name="name">Doctor Payout Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.doctor.payout</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <!-- Drug Assays Actions -->
+    <record id="action_hospital_drug_assays" model="ir.actions.act_window">
+        <field name="name">Drug Assays</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.drug.assays</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ECT Consent Form Actions -->
+    <record id="action_hospital_ect_consent_form" model="ir.actions.act_window">
+        <field name="name">ECT Consent Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.ect.consent.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Emergency Assessment Actions -->
+    <record id="action_hospital_emergency_assessment" model="ir.actions.act_window">
+        <field name="name">Emergency Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.emergency.assessment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Emergency Medicine Actions -->
+    <record id="action_hospital_emergency_medicine" model="ir.actions.act_window">
+        <field name="name">Emergency Medicines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.emergency.medicine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Enhanced Recovery Actions -->
+    <record id="action_hospital_enhanced_recovery" model="ir.actions.act_window">
+        <field name="name">Enhanced Recovery (CEROP)</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.enhanced.recovery</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Form C Section 86 Actions -->
+    <record id="action_hospital_form_c_section_86" model="ir.actions.act_window">
+        <field name="name">Form C Section 86</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.form.c.section.86</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Hematology Actions -->
+    <record id="action_hospital_hematology" model="ir.actions.act_window">
+        <field name="name">Hematology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.hematology</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- High Support Admission Actions -->
+    <record id="action_hospital_high_support_admission" model="ir.actions.act_window">
+        <field name="name">High Support Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.high.support.admission</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Hormones Actions -->
+    <record id="action_hospital_hormones" model="ir.actions.act_window">
+        <field name="name">Hormone Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.hormones</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Immunology Actions -->
+    <record id="action_hospital_immunology" model="ir.actions.act_window">
+        <field name="name">Immunology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.immunology</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Incident Report Actions -->
+    <record id="action_hospital_incident_report" model="ir.actions.act_window">
+        <field name="name">Incident Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.incident.report</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Independent Examination Actions -->
+    <record id="action_hospital_independant_examination_professional_i" model="ir.actions.act_window">
+        <field name="name">Independent Examination Professional I</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.independent.examination</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_examination_type': 'professional_1'}</field>
+        <field name="domain">[('examination_type', '=', 'professional_1')]</field>
+    </record>
+
+    <record id="action_hospital_independent_examination_professional_ii" model="ir.actions.act_window">
+        <field name="name">Independent Examination Professional II</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.independent.examination</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_examination_type': 'professional_2'}</field>
+        <field name="domain">[('examination_type', '=', 'professional_2')]</field>
+    </record>
+
+    <!-- Investigation Request Actions -->
+    <record id="action_hospital_investigation_request" model="ir.actions.act_window">
+        <field name="name">Investigation Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.investigation.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- LAMA Form Actions -->
+    <record id="action_hospital_lama_form" model="ir.actions.act_window">
+        <field name="name">LAMA Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.lama.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Medical Procedure Actions -->
+    <record id="action_hospital_medical_procedure" model="ir.actions.act_window">
+        <field name="name">Medical Procedures</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medical.procedure</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Medicine Requisition Actions -->
+    <record id="action_hospital_medicine_requisition" model="ir.actions.act_window">
+        <field name="name">Medicine Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.requisition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Microbiology Actions -->
+    <record id="action_hospital_microbiology" model="ir.actions.act_window">
+        <field name="name">Microbiology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.microbiology</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Minor Admission Actions -->
+    <record id="action_hospital_minor_admission" model="ir.actions.act_window">
+        <field name="name">Minor Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.minor.admission</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Miscellaneous Actions -->
+    <record id="action_hospital_miscelleneous" model="ir.actions.act_window">
+        <field name="name">Miscellaneous Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.miscellaneous</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Molecular Biology Actions -->
+    <record id="action_hospital_molecular_biology" model="ir.actions.act_window">
+        <field name="name">Molecular Biology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.molecular.biology</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- MO/SR Section 86 Actions -->
+    <record id="action_hospital_mo_sr_section_86" model="ir.actions.act_window">
+        <field name="name">MO/SR Section 86</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.mo.sr.section.86</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Outing Related Actions -->
+    <record id="action_hospital_outing_expenses" model="ir.actions.act_window">
+        <field name="name">Outing Expenses</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.outing.expenses</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_outing_form" model="ir.actions.act_window">
+        <field name="name">Outing Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.outing.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Patient Requisition Actions -->
+    <record id="action_hospital_patient_requisition" model="ir.actions.act_window">
+        <field name="name">Patient Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.requisition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_patient_requisition_register" model="ir.actions.act_window">
+        <field name="name">Patient Requisition Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.requisition</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <!-- Procedural Form Section 86 Actions -->
+    <record id="action_hospital_procedural_form_section_86" model="ir.actions.act_window">
+        <field name="name">Procedural Form Section-86</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.procedural.form.section.86</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Profile Actions -->
+    <record id="action_hospital_profile" model="ir.actions.act_window">
+        <field name="name">Patient Profiles</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Provisional Bill Actions -->
+    <record id="action_hospital_provisional_bill" model="ir.actions.act_window">
+        <field name="name">Provisional Bills</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.provisional.bill</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Room Inspection Actions -->
+    <record id="action_hospital_room_inspection" model="ir.actions.act_window">
+        <field name="name">Room Inspections</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.room.inspection</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_room_inspection_report" model="ir.actions.act_window">
+        <field name="name">Room Inspection Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.room.inspection</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <!-- Service Related Actions -->
+    <record id="action_hospital_service_register" model="ir.actions.act_window">
+        <field name="name">Service Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.service.requisition</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <record id="action_hospital_service_requisition" model="ir.actions.act_window">
+        <field name="name">Service Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.service.requisition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Special Privileges Actions -->
+    <record id="action_hospital_special_privileges" model="ir.actions.act_window">
+        <field name="name">Special Privileges</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.special.privileges</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_special_privilege_register" model="ir.actions.act_window">
+        <field name="name">Special Privilege Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.special.privileges</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <record id="action_hospital_special_privilege_report" model="ir.actions.act_window">
+        <field name="name">Special Privilege Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.special.privileges</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <!-- Store Clearance Actions -->
+    <record id="action_hospital_store_clearance" model="ir.actions.act_window">
+        <field name="name">Store Clearances</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.store.clearance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Urine Related Actions -->
+    <record id="action_hospital_urine_chemistry" model="ir.actions.act_window">
+        <field name="name">Urine Chemistry Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.urine.chemistry</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hospital_urine_screening" model="ir.actions.act_window">
+        <field name="name">Urine Screening Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.urine.screening</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Variable Billing Actions -->
+    <record id="action_hospital_variable_billing" model="ir.actions.act_window">
+        <field name="name">Variable Billing</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.variable.billing</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Case History Form View -->
+    <record id="view_hospital_case_history_form" model="ir.ui.view">
+        <field name="name">hospital.case.history.form</field>
+        <field name="model">hospital.case.history</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_save" string="Save" type="object" class="oe_highlight"/>
+                    <button name="action_discard" string="Discard" type="object"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="patient_id" options="{'no_create': True}" widget="selection"/>
+                            <field name="age"/>
+                            <field name="marital_status"/>
+                            <field name="languages_known"/>
+                            <field name="education"/>
+                        </group>
+                        <group>
+                            <field name="date_of_birth"/>
+                            <field name="sex"/>
+                            <field name="religion"/>
+                            <field name="socio_economic_status"/>
+                            <field name="occupation"/>
+                        </group>
+                    </group>
+                    
+                    <separator string="Informants"/>
+                    <group>
+                        <group>
+                            <field name="informant_name"/>
+                            <field name="duration_of_stay"/>
+                        </group>
+                        <group>
+                            <field name="relationship"/>
+                        </group>
+                    </group>
+                    
+                    <group string="INFORMATION : Reliable and Adequate">
+                        <field name="information" nolabel="1" placeholder="Enter reliable and adequate information about the patient's case..."/>
+                    </group>
+                    
+                    <group string="CHIEF COMPLAINTS : - (Chronological order with duration)">
+                        <field name="chief_complaint_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name" string="Chief Complaints"/>
+                                <field name="duration"/>
+                                <field name="year"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="duration"/>
+                                    <field name="year"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    
+                    <group string="Onset of Illness: (Check appropriate box and describe about the onset)">
+                        <group>
+                            <field name="onset_of_illness" widget="radio"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="course" placeholder="Describe the course of the illness..."/>
+                    </group>
+                    
+                    <group string="Duration of Illness (Specify Month or Years)">
+                        <group>
+                            <field name="duration_of_illness" widget="radio"/>
+                            <field name="duration_value" invisible="[('duration_of_illness', '=', False)]"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Case History Tree View -->
+    <record id="view_hospital_case_history_tree" model="ir.ui.view">
+        <field name="name">hospital.case.history.tree</field>
+        <field name="model">hospital.case.history</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id"/>
+                <field name="date_of_birth"/>
+                <field name="age"/>
+                <field name="sex"/>
+                <field name="occupation"/>
+                <field name="create_date" string="Creation Date"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Chief Complaint Form View -->
+    <record id="view_hospital_chief_complaint_form" model="ir.ui.view">
+        <field name="name">hospital.chief.complaint.form</field>
+        <field name="model">hospital.chief.complaint</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="duration"/>
+                    <field name="year"/>
+                    <field name="case_history_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Case History Action -->
+    <record id="action_hospital_case_history" model="ir.actions.act_window">
+        <field name="name">Case History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.case.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first case history!
+            </p>
+        </field>
+    </record>
+</odoo>

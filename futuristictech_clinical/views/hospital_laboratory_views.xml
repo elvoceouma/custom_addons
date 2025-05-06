@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Views for Lab Tests -->
+    <record id="view_hospital_lab_test_tree" model="ir.ui.view">
+        <field name="name">hospital.lab.test.tree</field>
+        <field name="model">hospital.lab.test</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-danger="state == 'cancelled'" decoration-success="state == 'completed'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="test_date"/>
+                <field name="test_type"/>
+                <field name="physician_id"/>
+                <field name="urgency"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_lab_test_form" model="ir.ui.view">
+        <field name="name">hospital.lab.test.form</field>
+        <field name="model">hospital.lab.test</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sample_collected,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="physician_id"/>
+                            <field name="admission_id"/>
+                            <field name="requisition_id"/>
+                        </group>
+                        <group>
+                            <field name="test_date"/>
+                            <field name="test_type"/>
+                            <field name="urgency"/>
+                            <field name="sample_type"/>
+                            <field name="sample_collection_date"/>
+                            <field name="collected_by"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Results">
+                            <group>
+                                <field name="results"/>
+                                <field name="normal_range"/>
+                                <field name="interpretation"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_lab_test_search" model="ir.ui.view">
+        <field name="name">hospital.lab.test.search</field>
+        <field name="model">hospital.lab.test</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="physician_id"/>
+                <field name="test_type"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Urgent" name="urgent" domain="[('urgency', '=', 'urgent')]"/>
+                <filter string="Emergency" name="emergency" domain="[('urgency', '=', 'emergency')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Physician" name="physician" context="{'group_by': 'physician_id'}"/>
+                    <filter string="Test Type" name="test_type" context="{'group_by': 'test_type'}"/>
+                    <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Lab Test Action -->
+    <record id="action_hospital_lab_test" model="ir.actions.act_window">
+        <field name="name">Lab Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.lab.test</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_lab_test_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lab test!
+            </p>
+            <p>
+                Create laboratory tests to track and manage patient test results.
+            </p>
+        </field>
+    </record>
+
+    <!-- Views for Lab Test Requisitions -->
+    <record id="view_hospital_lab_test_requisition_tree" model="ir.ui.view">
+        <field name="name">hospital.lab.test.requisition.tree</field>
+        <field name="model">hospital.lab.test.requisition</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-danger="state == 'cancelled'" decoration-success="state == 'completed'">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="requisition_date"/>
+                <field name="physician_id"/>
+                <field name="urgency"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_lab_test_requisition_form" model="ir.ui.view">
+        <field name="name">hospital.lab.test.requisition.form</field>
+        <field name="model">hospital.lab.test.requisition</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="physician_id"/>
+                            <field name="admission_id"/>
+                        </group>
+                        <group>
+                            <field name="requisition_date"/>
+                            <field name="urgency"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tests">
+                            <field name="test_ids">
+                                <tree editable="bottom">
+                                    <field name="test_type"/>
+                                    <field name="specific_test"/>
+                                    <field name="notes"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Clinical Information">
+                            <group>
+                                <field name="clinical_history"/>
+                                <field name="diagnosis"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_lab_test_requisition_search" model="ir.ui.view">
+        <field name="name">hospital.lab.test.requisition.search</field>
+        <field name="model">hospital.lab.test.requisition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="physician_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Urgent" name="urgent" domain="[('urgency', '=', 'urgent')]"/>
+                <filter string="Emergency" name="emergency" domain="[('urgency', '=', 'emergency')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Physician" name="physician" context="{'group_by': 'physician_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Lab Test Requisition Action -->
+    <record id="action_hospital_lab_test_requisition" model="ir.actions.act_window">
+        <field name="name">Lab Test Requisitions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.lab.test.requisition</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph</field>
+        <field name="search_view_id" ref="view_hospital_lab_test_requisition_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lab test requisition!
+            </p>
+            <p>
+                Create laboratory test requisitions to request tests for patients.
+            </p>
+        </field>
+    </record>
+</odoo>

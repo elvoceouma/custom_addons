@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vaccine Form View for Creating New Records -->
+    <record id="view_hospital_vaccine_form" model="ir.ui.view">
+        <field name="name">hospital.patient.vaccine.form</field>
+        <field name="model">hospital.patient.vaccine</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- <button name="action_save" string="Save" type="object" class="oe_highlight"/>
+                    <button name="action_discard" string="Discard" type="object"/> -->
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vaccine_id" options="{'no_create': False}"/>
+                            <field name="patient_id" options="{'no_create': True}"/>
+                            <field name="dose_number" string="Dose #"/>
+                            <field name="vaccination_date" string="Date"/>
+                        </group>
+                        <group>
+                            <field name="physician_id" options="{'no_create': True}" domain="[('is_physician', '=', True)]"/>
+                            <field name="institution"/>
+                            <field name="next_dose_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Observations" name="observations">
+                            <field name="observations" placeholder="Enter any observations about the vaccination..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vaccine Tree View (List View) -->
+    <record id="view_hospital_vaccine_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.vaccine.tree</field>
+        <field name="model">hospital.patient.vaccine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="vaccine_id"/>
+                <field name="patient_id"/>
+                <field name="dose_number"/>
+                <field name="vaccination_date"/>
+                <field name="next_dose_date"/>
+                <field name="physician_id"/>
+                <field name="institution"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Search View for Vaccines -->
+    <record id="view_hospital_vaccine_search" model="ir.ui.view">
+        <field name="name">hospital.patient.vaccine.search</field>
+        <field name="model">hospital.patient.vaccine</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id"/>
+                <field name="vaccine_id"/>
+                <field name="physician_id"/>
+                <field name="institution"/>
+                <separator/>
+                <filter string="My Vaccines" name="my_vaccines" domain="[('create_uid', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Vaccine" name="group_by_vaccine" context="{'group_by': 'vaccine_id'}"/>
+                    <filter string="Physician" name="group_by_physician" context="{'group_by': 'physician_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'vaccination_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Vaccines Action -->
+    <record id="action_hospital_vaccine" model="ir.actions.act_window">
+        <field name="name">Vaccines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.vaccine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_vaccine_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first vaccine record!
+            </p>
+        </field>
+    </record>
+    
+    <!-- My Vaccines Action -->
+    <record id="action_hospital_my_vaccine" model="ir.actions.act_window">
+        <field name="name">My Vaccines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.vaccine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('create_uid', '=', uid)]</field>
+        <field name="context">{'search_default_my_vaccines': 1}</field>
+        <field name="search_view_id" ref="view_hospital_vaccine_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No vaccines registered yet!
+            </p>
+        </field>
+    </record>
+    
+    <!-- Vaccine Configuration Views -->
+    <record id="view_hospital_vaccine_config_form" model="ir.ui.view">
+        <field name="name">hospital.vaccine.form</field>
+        <field name="model">hospital.vaccine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="manufacturer"/>
+                        </group>
+                        <group>
+                            <field name="days_between_doses"/>
+                            <field name="num_doses"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Enter description about the vaccine..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_vaccine_config_tree" model="ir.ui.view">
+        <field name="name">hospital.vaccine.tree</field>
+        <field name="model">hospital.vaccine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="manufacturer"/>
+                <field name="num_doses"/>
+                <field name="days_between_doses"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_vaccine_config" model="ir.actions.act_window">
+        <field name="name">Vaccine Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.vaccine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first vaccine type!
+            </p>
+        </field>
+    </record>
+</odoo>

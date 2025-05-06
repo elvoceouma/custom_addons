@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medicine Box Form View -->
+    <record id="view_hospital_medicine_box_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.box.form</field>
+        <field name="model">hospital.medicine.box</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="box_location"/>
+                            <field name="source_return_location"/>
+                            <field name="request_picking_type"/>
+                            <field name="return_picking_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medicine Lines" name="medicine_lines">
+                            <field name="medicine_line_ids">
+                                <tree editable="bottom">
+                                    <field name="medicine_id"/>
+                                    <field name="quantity"/>
+                                    <field name="outhand_qty"/>
+                                    <field name="end_date"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="medicine_id"/>
+                                            <field name="quantity"/>
+                                        </group>
+                                        <group>
+                                            <field name="outhand_qty"/>
+                                            <field name="end_date"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Medicine Box Tree View -->
+    <record id="view_hospital_medicine_box_tree" model="ir.ui.view">
+        <field name="name">hospital.medicine.box.tree</field>
+        <field name="model">hospital.medicine.box</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="ip_number"/>
+                <field name="patient_id"/>
+                <field name="box_location"/>
+                <field name="create_date" string="Creation Date"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Medicine Box Line Form View -->
+    <record id="view_hospital_medicine_box_line_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.box.line.form</field>
+        <field name="model">hospital.medicine.box.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="medicine_box_id"/>
+                        <field name="medicine_id"/>
+                        <field name="quantity"/>
+                    </group>
+                    <group>
+                        <field name="outhand_qty"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Medicine Box Line Tree View -->
+    <record id="view_hospital_medicine_box_line_tree" model="ir.ui.view">
+        <field name="name">hospital.medicine.box.line.tree</field>
+        <field name="model">hospital.medicine.box.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="medicine_box_id"/>
+                <field name="medicine_id"/>
+                <field name="quantity"/>
+                <field name="outhand_qty"/>
+                <field name="end_date"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Medicine Box Search View -->
+    <record id="view_hospital_medicine_box_search" model="ir.ui.view">
+        <field name="name">hospital.medicine.box.search</field>
+        <field name="model">hospital.medicine.box</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="ip_number"/>
+                <field name="patient_id"/>
+                <field name="box_location"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Box Location" name="group_by_box_location" context="{'group_by': 'box_location'}"/>
+                    <filter string="Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Medicine Box Action -->
+    <record id="action_hospital_medicine_box" model="ir.actions.act_window">
+        <field name="name">Medicine Box</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.box</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_medicine_box_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medicine box!
+            </p>
+        </field>
+    </record>
+</odoo>
