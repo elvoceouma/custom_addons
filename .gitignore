@@ -49,5 +49,4 @@ package.json
 /man/
 /share/
 /src/
-
-echo "oemedical/" >> .gitignore
+oemedical
