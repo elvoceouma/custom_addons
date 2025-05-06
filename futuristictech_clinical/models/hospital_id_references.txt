@@ -1,0 +1,14 @@
+./hospital.py:21:    block_ids = fields.One2many('hospital.block', 'hospital_id', string='Blocks')
+./hospital.py:22:    pharmacy_ids = fields.One2many('hospital.pharmacy', 'hospital_id', string='Pharmacies')
+./hospital.py:25:    block_ids = fields.One2many('hospital.block', 'hospital_id', string='Blocks')
+./hospital.py:26:    pharmacy_ids = fields.One2many('hospital.pharmacy', 'hospital_id', string='Pharmacies')
+
+=== One2many Relationships ===
+
+./hospital.py:21:    block_ids = fields.One2many('hospital.block', 'hospital_id', string='Blocks')
+./hospital.py:22:    pharmacy_ids = fields.One2many('hospital.pharmacy', 'hospital_id', string='Pharmacies')
+./hospital.py:25:    block_ids = fields.One2many('hospital.block', 'hospital_id', string='Blocks')
+./hospital.py:26:    pharmacy_ids = fields.One2many('hospital.pharmacy', 'hospital_id', string='Pharmacies')
+
+=== Many2one Relationships ===
+
