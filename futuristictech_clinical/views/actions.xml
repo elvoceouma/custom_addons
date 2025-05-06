@@ -55,7 +55,7 @@
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_hospital_admission_search"/>
     </record>
-    
+
     <record id="action_hospital_my_admission" model="ir.actions.act_window">
         <field name="name">My Admissions</field>
         <field name="type">ir.actions.act_window</field>
@@ -221,7 +221,7 @@
 
     <!-- Added actions -->
 
-    <!-- Missing Registration Form Actions -->
+    <!-- Registration Form Actions -->
     <record id="action_hospital_registration_form" model="ir.actions.act_window">
         <field name="name">Registration Forms</field>
         <field name="type">ir.actions.act_window</field>
@@ -229,7 +229,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Case History Actions -->
+    <!-- Case History Actions -->
     <record id="action_hospital_case_history" model="ir.actions.act_window">
         <field name="name">Case History</field>
         <field name="type">ir.actions.act_window</field>
@@ -237,7 +237,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Patient Document Actions -->
+    <!-- Patient Document Actions -->
     <record id="action_hospital_patient_document" model="ir.actions.act_window">
         <field name="name">Patient Documents</field>
         <field name="type">ir.actions.act_window</field>
@@ -245,7 +245,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Follow-up Sheet Actions -->
+    <!-- Follow-up Sheet Actions -->
     <record id="action_hospital_follow_up_sheet" model="ir.actions.act_window">
         <field name="name">Follow-Up Sheet</field>
         <field name="type">ir.actions.act_window</field>
@@ -253,7 +253,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Package Details Actions -->
+    <!-- Package Details Actions -->
     <record id="action_hospital_package_details" model="ir.actions.act_window">
         <field name="name">Package Details</field>
         <field name="type">ir.actions.act_window</field>
@@ -261,7 +261,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Drug Frequency Actions -->
+    <!-- Drug Frequency Actions -->
     <record id="action_hospital_drug_frequency" model="ir.actions.act_window">
         <field name="name">Drug Frequencies</field>
         <field name="type">ir.actions.act_window</field>
@@ -269,7 +269,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Activity Record Actions -->
+    <!-- Activity Record Actions -->
     <record id="action_hospital_activity_record" model="ir.actions.act_window">
         <field name="name">Activity Records</field>
         <field name="type">ir.actions.act_window</field>
@@ -277,7 +277,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Medication Form Actions -->
+    <!-- Medication Form Actions -->
     <record id="action_hospital_medication_form" model="ir.actions.act_window">
         <field name="name">Medication Form</field>
         <field name="type">ir.actions.act_window</field>
@@ -285,7 +285,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Physician Actions -->
+    <!-- Physician Actions -->
     <record id="action_hospital_physician" model="ir.actions.act_window">
         <field name="name">Physicians</field>
         <field name="type">ir.actions.act_window</field>
@@ -302,7 +302,7 @@
         <field name="context">{'create': False}</field>
     </record>
 
-    <!-- Missing Appointment Actions -->
+    <!-- Appointment Actions -->
     <record id="action_hospital_appointment" model="ir.actions.act_window">
         <field name="name">Appointments</field>
         <field name="type">ir.actions.act_window</field>
@@ -310,7 +310,7 @@
         <field name="view_mode">tree,calendar,form</field>
     </record>
 
-    <!-- Missing Prescription Actions -->
+    <!-- Prescription Actions -->
     <record id="action_hospital_prescription" model="ir.actions.act_window">
         <field name="name">Prescriptions</field>
         <field name="type">ir.actions.act_window</field>
@@ -318,7 +318,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Evaluation Actions -->
+    <!-- Evaluation Actions -->
     <record id="action_hospital_evaluation" model="ir.actions.act_window">
         <field name="name">Evaluations</field>
         <field name="type">ir.actions.act_window</field>
@@ -326,7 +326,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Gynecology Actions -->
+    <!-- Gynecology Actions -->
     <record id="action_hospital_gynecology" model="ir.actions.act_window">
         <field name="name">Gynecology</field>
         <field name="type">ir.actions.act_window</field>
@@ -334,7 +334,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Food Register Actions -->
+    <!-- Food Register Actions -->
     <record id="action_hospital_food_register" model="ir.actions.act_window">
         <field name="name">Food Register</field>
         <field name="type">ir.actions.act_window</field>
@@ -356,7 +356,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Vaccine Config Actions -->
+    <!-- Vaccine Config Actions -->
     <record id="action_hospital_vaccine_config" model="ir.actions.act_window">
         <field name="name">Vaccine Types</field>
         <field name="type">ir.actions.act_window</field>
@@ -364,7 +364,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Medicine Actions -->
+    <!-- Medicine Actions -->
     <record id="action_hospital_medicine" model="ir.actions.act_window">
         <field name="name">Medicines</field>
         <field name="type">ir.actions.act_window</field>
@@ -400,7 +400,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Other Missing Actions for Block Duty Configuration -->
+    <!-- Other Actions for Block Duty Configuration -->
     <record id="action_hospital_block_duty_checklist" model="ir.actions.act_window">
         <field name="name">Block Duty Checklist</field>
         <field name="type">ir.actions.act_window</field>
@@ -474,7 +474,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Patient Config Actions -->
+    <!-- Patient Config Actions -->
     <record id="action_hospital_patient_ethnic_group" model="ir.actions.act_window">
         <field name="name">Ethnic Groups</field>
         <field name="type">ir.actions.act_window</field>
@@ -511,7 +511,7 @@
 
     </record>
 
-    <!-- Missing Medicine Consumption Action -->
+    <!-- Medicine Consumption Action -->
     <record id="action_hospital_medicine_consumption" model="ir.actions.act_window">
         <field name="name">Medicine Consumption</field>
         <field name="type">ir.actions.act_window</field>
@@ -519,7 +519,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Tablet/Capsule Action -->
+    <!-- Tablet/Capsule Action -->
     <record id="action_hospital_tablet_capsule" model="ir.actions.act_window">
         <field name="name">Tablet/Capsule</field>
         <field name="type">ir.actions.act_window</field>
@@ -527,7 +527,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Injection/Application Action -->
+    <!-- Injection/Application Action -->
     <record id="action_hospital_injection_application" model="ir.actions.act_window">
         <field name="name">Injection/Application</field>
         <field name="type">ir.actions.act_window</field>
@@ -535,7 +535,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Nurses Campus Duty Allocation Action -->
+    <!-- Nurses Campus Duty Allocation Action -->
     <record id="action_hospital_nurses_campus_duty" model="ir.actions.act_window">
         <field name="name">Nurses Campus Duty Allocation</field>
         <field name="type">ir.actions.act_window</field>
@@ -543,7 +543,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Medication Category Action -->
+    <!-- Medication Category Action -->
     <record id="action_hospital_medication_category" model="ir.actions.act_window">
         <field name="name">Medication Categories</field>
         <field name="type">ir.actions.act_window</field>
@@ -551,7 +551,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Medication Type Action -->
+    <!-- Medication Type Action -->
     <record id="action_hospital_medication_type" model="ir.actions.act_window">
         <field name="name">Medication Types</field>
         <field name="type">ir.actions.act_window</field>
@@ -559,8 +559,8 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Vaccine Actions -->
-    <record id="action_hospital_vaccine" model="ir.actions.act_window">
+    <!--  Vaccine Actions -->
+    <!-- <record id="action_hospital_vaccine" model="ir.actions.act_window">
         <field name="name">Vaccines</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.vaccine</field>
@@ -573,9 +573,9 @@
         <field name="res_model">hospital.vaccine</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('create_uid', '=', uid)]</field>
-    </record>
+    </record> -->
 
-    <!-- Missing Registration Details Risk Assessment Action -->
+    <!-- Registration Details Risk Assessment Action -->
     <record id="action_hospital_registration_details_risk_assessment" model="ir.actions.act_window">
         <field name="name">Risk Assessment</field>
         <field name="type">ir.actions.act_window</field>
@@ -583,7 +583,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Registration Details Psychomotor Activity Action -->
+    <!-- Registration Details Psychomotor Activity Action -->
     <record id="action_hospital_registration_details_psychomotor_activity" model="ir.actions.act_window">
         <field name="name">Psychomotor Activity</field>
         <field name="type">ir.actions.act_window</field>
@@ -591,7 +591,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Registration Details Catatonic Signs Action -->
+    <!-- Registration Details Catatonic Signs Action -->
     <record id="action_hospital_registration_details_catatonic_sign" model="ir.actions.act_window">
         <field name="name">Catatonic Signs</field>
         <field name="type">ir.actions.act_window</field>
@@ -599,7 +599,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Registration Details Physical Illness Action -->
+    <!-- Registration Details Physical Illness Action -->
     <record id="action_hospital_registration_details_physical_illness" model="ir.actions.act_window">
         <field name="name">Physical Illness</field>
         <field name="type">ir.actions.act_window</field>
@@ -607,7 +607,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Registration Details Sources Action -->
+    <!-- Registration Details Sources Action -->
     <record id="action_hospital_registration_details_source" model="ir.actions.act_window">
         <field name="name">Sources</field>
         <field name="type">ir.actions.act_window</field>
@@ -615,7 +615,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Missing Registration Details Physiatric Illness Action -->
+    <!-- Registration Details Physiatric Illness Action -->
     <record id="action_hospital_registration_details_physiatric_illness" model="ir.actions.act_window">
         <field name="name">Physiatric Illness</field>
         <field name="type">ir.actions.act_window</field>
@@ -624,7 +624,7 @@
     </record>
 
 
-    <!-- Missing Informed Consent Form Action -->
+    <!-- Informed Consent Form Action -->
     <record id="action_hospital_informed_consent_form" model="ir.actions.act_window">
         <field name="name">Informed Consent Forms</field>
         <field name="type">ir.actions.act_window</field>

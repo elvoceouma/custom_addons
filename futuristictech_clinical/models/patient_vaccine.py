@@ -76,7 +76,7 @@ class Vaccine(models.Model):
         ('draft', 'Draft'),
         ('administered', 'Administered'),
         ('cancel', 'Cancelled'),
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     notes = fields.Text(string='Notes')
     
     _sql_constraints = [

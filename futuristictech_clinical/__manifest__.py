@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Hospital Management',
+    'version': '17.0.1.0.0',
+    'category': 'Healthcare',
+    'summary': 'Hospital Management System for Odoo 18',
+    'description': """
+        This module provides comprehensive hospital management functionality:
+        - Campus/Hospital management
+        - Patient management
+        - Room/Bed allocation
+        - Admission and discharge process
+        - Medical records
+        - Pharmacy integration
+        - Billing integration
+    """,
+    'author': 'Odoo',
+    'website': 'https://www.odoo.com',
+    'depends': [
+        'base',
+        'mail',
+        'stock',
+        'account',
+        'product',
+        'uom',
+    ],
+    'data': 
+    [
+        'security/hospital_security.xml',
+        'security/ir.model.access.csv',
+        
+        'data/hospital_sequence.xml',
+        
+        'views/hospital_views.xml',
+        'views/admission_views.xml',
+        'views/bed_views.xml',
+        'views/block_duty_views.xml',
+        'views/patient_document_views.xml',
+        # 'views/case_history_views.xml',
+        'views/configuration_views.xml',
+        'views/discharge_views.xml',
+        'views/food_views.xml',
+        'views/hospital_management_admission_views.xml',
+        'views/hospital_management_case_history_views.xml',
+        'views/hospital_management_medicine_box_views.xml',
+        'views/hospital_management_medicine_packing_views.xml',
+        'views/hospital_management_op_visits_views.xml',
+        'views/hospital_management_outside_consultation_views.xml',
+        'views/hospital_management_vaccine_views.xml',
+        'views/registration_form_views.xml',
+        'views/hospital_pysician_views.xml',
+        'views/medical_record_views.xml',
+        'views/medicine_views.xml',
+        'views/patient_views.xml',
+        'views/pharmacy_views.xml',
+        'views/prescription_views.xml',
+        'views/room_views.xml',
+        'views/hospital_laboratory_views.xml',
+
+        'views/actions.xml',  
+        'views/menu.xml',     
+        
+        # 'reports/patient_card.xml',
+        # 'reports/admission_report.xml',
+        # 'reports/discharge_summary.xml',
+        # 'reports/prescription_report.xml',
+        # 'reports/hospital_reports.xml',
+    ],
+    'demo': [
+        # 'demo/hospital_demo.xml',
+    ],
+    # 'images': ['static/description/banner.png'],
+    'application': True,
+    'installable': True,
+    'auto_install': False,
+    'license': 'LGPL-3',
+    'assets': {
+        # 'web.assets_backend': [
+        #     'hospital_management/static/src/js/**/*',
+        #     'hospital_management/static/src/css/**/*',
+        # ],
+        # 'web.assets_qweb': [
+        #     'hospital_management/static/src/xml/**/*',
+        # ],
+    },
+}

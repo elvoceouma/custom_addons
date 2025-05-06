@@ -65,6 +65,20 @@ class PatientDocument(models.Model):
     date = fields.Date(string='Date', default=fields.Date.context_today)
 
 
+    def save(self):
+        # Save the document and return to the list view
+        self.ensure_one()
+        if not self.file:
+            raise ValidationError(_('Please upload a file.'))
+        if not self.file_name:
+            raise ValidationError(_('Please provide a file name.'))
+        self.write({'file_name': self.file_name})
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
+
+
 
 
 class IllnessTag(models.Model):

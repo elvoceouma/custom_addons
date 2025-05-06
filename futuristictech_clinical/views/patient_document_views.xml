@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+          <!-- Form View -->
+        <record id="view_hospital_patient_document_form" model="ir.ui.view">
+            <field name="name">hospital.patient.document.form</field>
+            <field name="model">hospital.patient.document</field>
+            <field name="arch" type="xml">
+                <form string="Patient Document">
+                    <header>
+                        <button name="save" string="Save" type="object" class="btn-primary"/>
+                        <button string="Discard" special="cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Document Name"/></h1>
+                        </div>
+                        <group string="Document Details">
+                            <group>
+                                <field name="document_type_id" required="1"/>
+                                <field name="patient_id" required="1"/>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="file" filename="file_name" widget="binary" string="Upload document"/>
+                                <field name="file_name" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes">
+                                <field name="note" placeholder="Add notes here..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_hospital_patient_document_tree" model="ir.ui.view">
+            <field name="name">hospital.patient.document.tree</field>
+            <field name="model">hospital.patient.document</field>
+            <field name="arch" type="xml">
+                <tree string="Patient Documents">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="document_type_id"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_hospital_patient_document_search" model="ir.ui.view">
+            <field name="name">hospital.patient.document.search</field>
+            <field name="model">hospital.patient.document</field>
+            <field name="arch" type="xml">
+                <search string="Patient Documents">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="document_type_id"/>
+                    <field name="date"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Patient" name="patient_id" context="{'group_by':'patient_id'}"/>
+                        <filter string="Document Type" name="document_type_id" context="{'group_by':'document_type_id'}"/>
+                        <filter string="Date" name="date" context="{'group_by':'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action Window -->
+        <record id="action_hospital_patient_document" model="ir.actions.act_window">
+            <field name="name">Patient Documents</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hospital.patient.document</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first patient document
+                </p>
+            </field>
+        </record>
+
+</odoo>

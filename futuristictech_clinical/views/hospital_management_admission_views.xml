@@ -56,7 +56,7 @@
                     </div>
                     <group>
                         <group>
-                            <filed name='campus_id' string='campus'/> 
+                            <field name='campus_id' string='campus'/> 
                             <field name="patient_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="patient_title"/>
                             <field name="admitting_person"/>
