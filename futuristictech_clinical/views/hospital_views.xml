@@ -10,17 +10,42 @@
                     <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Hospital Name"/>
+                            <field name="name" placeholder="Campus Name"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="code"/>
-                            <field name="address"/>
-                            <field name="website"/>
+                            <field name="type"/>
+                      
+                            <field name="website" placeholder="e.g. www.odoo.com"/>
                         </group>
                         <group>
-                            <field name="phone"/>
+                            <field name="block_count" invisible="1"/>
+                            <field name="pharmacy_count" invisible="1"/>
+                            <div class="o_row">
+                                <span class="o_stat_value">
+                                    <field name="block_count" />
+                                </span>
+                                <span class="o_stat_text"> Blocks</span>
+                            </div>
+                            <div class="o_row">
+                                <span class="o_stat_value">
+                                    <field name="pharmacy_count" />
+                                </span>
+                                <span class="o_stat_text"> Pharmacies</span>
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Address">
+                            <field name="street" placeholder="Street..."/>
+                            <field name="city" placeholder="City"/>
+                            <field name="state" placeholder="State"/>
+                            <field name="zip" placeholder="ZIP"/>
+                            <field name="country" placeholder="Country"/>
+                        </group>
+                        <group string="Contact Information">
+                            <field name="phone" placeholder="e.g. +32.81.81.37.00"/>
                             <field name="mobile"/>
                             <field name="fax"/>
                             <field name="email"/>
@@ -29,13 +54,15 @@
                     <notebook>
                         <page string="Inventory" name="inventory">
                             <group>
-                                <!-- <field name="patient_requisition_picking_type_id"/>
+                                <field name="patient_requisition_picking_type_id"/>
                                 <field name="store_clearance_picking_type_id"/>
-                                <field name="medicine_packing_picking_type_id"/> -->
+                                <field name="medicine_packing_picking_type_id"/>
                             </group>
                         </page>
                         <page string="Extra Information" name="extra_info">
-                            <group></group>
+                            <group>
+                            <field name="notes" placeholder="Notes..."/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -54,11 +81,12 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
-                <field name="code"/>
-                <field name="phone"/>
-                <field name="email"/>
-                <!-- <field name="block_count"/>
-                <field name="pharmacy_count"/> -->
+                <field name="type"/>
+                <field name="street"/>
+                <field name="city"/>
+                <field name="state"/>
+                <field name="country"/>
+                <field name="website"/>
             </tree>
         </field>
     </record>
@@ -67,130 +95,6 @@
         <field name="name">Campus</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.hospital</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- Hospital Block Views -->
-    <record id="view_hospital_block_form" model="ir.ui.view">
-        <field name="name">hospital.block.form</field>
-        <field name="model">hospital.block</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Block Name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="hospital_id"/>
-                            <field name="code"/>
-                        </group>
-                        <group>
-                            <field name="floor_number"/>
-                            <field name="dispensing_store"/>
-                            <field name="emergency_store"/>
-                        </group>
-                    </group>
-                    <group>
-                        <field name="request_picking_type"/>
-                        <field name="return_picking_type"/>
-                        <field name="emergency_picking_type"/>
-                    </group>
-                    <div class="oe_button_box">
-                        <!-- Changed from type="action" to type="object" -->
-                        <button name="action_hospital_room" string="Rooms" type="object" class="oe_stat_button" icon="fa-building-o">
-                        </button>
-                        <button name="action_hospital_bed" string="Beds" type="object" class="oe_stat_button" icon="fa-bed">
-                        </button>
-                    </div>
-                    <notebook>
-                        <page string="Extra Information" name="extra_info">
-                            <group></group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_hospital_block_tree" model="ir.ui.view">
-        <field name="name">hospital.block.tree</field>
-        <field name="model">hospital.block</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <!-- <field name="hospital_id"/> -->
-                <field name="floor_number"/>
-                <field name="code"/>
-                <!-- <field name="room_count"/>
-                <field name="bed_count"/> -->
-            </tree>
-        </field>
-    </record>
-
-    <record id="action_hospital_block" model="ir.actions.act_window">
-        <field name="name">Blocks</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.block</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- Hospital Pharmacy Views -->
-    <record id="view_hospital_pharmacy_form" model="ir.ui.view">
-        <field name="name">hospital.pharmacy.form</field>
-        <field name="model">hospital.pharmacy</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Pharmacy Name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <!-- <field name="hospital_id"/> -->
-                            <field name="code"/>
-                        </group>
-                        <group>
-                            <field name="location_id"/>
-                            <field name="active"/>
-                        </group>
-                    </group>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_hospital_pharmacy_tree" model="ir.ui.view">
-        <field name="name">hospital.pharmacy.tree</field>
-        <field name="model">hospital.pharmacy</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <!-- <field name="hospital_id"/> -->
-                <field name="code"/>
-                <!-- <field name="location_id"/> -->
-            </tree>
-        </field>
-    </record>
-
-    <record id="action_hospital_pharmacy" model="ir.actions.act_window">
-        <field name="name">Pharmacies</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.pharmacy</field>
         <field name="view_mode">tree,form</field>
     </record>
 </odoo>
