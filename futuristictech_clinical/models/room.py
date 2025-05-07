@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class Room(models.Model):
     _name = 'hospital.room'
@@ -9,14 +9,9 @@ class Room(models.Model):
     
     name = fields.Char(string='Name', required=True, tracking=True)
     block_id = fields.Many2one('hospital.block', string='Block', required=True)
-    # floor_number = fields.Selection(related='block_id.floor_number', string='Floor Number', store=True)
-    # In block.py
-    floor_number = fields.Selection([
-        ('0', 'GROUND FLOOR'),
-        ('1', '1st FLOOR'),
-        ('2', '2nd FLOOR'),
-        ('3', '3rd FLOOR'),
-    ], string='Floor Number', required=True, tracking=True)
+    hospital_id = fields.Many2one(related='block_id.hospital_id', string='Campus', store=True)
+    floor_number = fields.Selection(related='block_id.floor_number', string='Floor Number', store=True)
+    
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female'),
@@ -35,10 +30,52 @@ class Room(models.Model):
         ('dormitory', 'Dormitory')
     ], string='Room Type', required=True, tracking=True)
     
+    # Location details
+    location = fields.Char(string='Location', help="Specific location identifier for the room")
+    is_private_room = fields.Boolean(string='Private Room')
+    
+    # Facilities
+    telephone_access = fields.Boolean(string='Telephone access')
+    private_bathroom = fields.Boolean(string='Private Bathroom')
+    television = fields.Boolean(string='Television')
+    refrigerator = fields.Boolean(string='Refrigerator')
+    air_conditioning = fields.Boolean(string='Air Conditioning')
+    guest_sofa_bed = fields.Boolean(string='Guest sofa-bed')
+    internet_access = fields.Boolean(string='Internet Access')
+    microwave = fields.Boolean(string='Microwave')
+    
+    # Additional information
+    bio_hazard = fields.Boolean(string='Bio Hazard')
+    price_tags = fields.Char(string='Price Tags')
+    notes = fields.Text(string='Extra Information')
+    
+    # Related fields
     bed_ids = fields.One2many('hospital.bed', 'room_id', string='Beds')
     bed_count = fields.Integer(compute='_compute_bed_count', string='Bed Count')
+    available_beds = fields.Integer(compute='_compute_available_beds', string='Available Beds')
     
     @api.depends('bed_ids')
     def _compute_bed_count(self):
         for record in self:
             record.bed_count = len(record.bed_ids)
+    
+    @api.depends('bed_ids.status')
+    def _compute_available_beds(self):
+        for record in self:
+            record.available_beds = len(record.bed_ids.filtered(lambda b: b.status == 'available'))
+
+    def action_view_beds(self):
+        """Smart button action to view beds"""
+        self.ensure_one()
+        return {
+            'name': _('Beds'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.bed',
+            'type': 'ir.actions.act_window',
+            'domain': [('room_id', '=', self.id)],
+            'context': {
+                'default_room_id': self.id,
+                'default_block_id': self.block_id.id,
+                'default_hospital_id': self.hospital_id.id,
+            }
+        }
