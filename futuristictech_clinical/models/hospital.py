@@ -8,16 +8,17 @@ class Hospital(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Name', required=True, tracking=True)
+    code = fields.Char(string='Code', tracking=True)
     type = fields.Selection([
         ('hospital', 'Hospital'),
         ('clinic', 'Clinic'),
         ('nursing_home', 'Nursing Home'),
-        ('community_health_centre', 'Community Health Centre'),
-        ('military_health_facility', 'Military Health Facility'),
+        ('ommunity_health_center', 'Community Health Center'),
+        ('military_hospital', 'Military Health Center'),
         ('others', 'Others'),
-    ], string='Type', default='hospital')
+    ], string='Type')
     image = fields.Binary(string='Image')
-    notes = fields.Text(string='Note')
+    
     # Address fields
     address = fields.Text(string='Address')
     street = fields.Char(string='Street')
@@ -56,6 +57,34 @@ class Hospital(models.Model):
         for record in self:
             record.pharmacy_count = len(record.pharmacy_ids)
 
+    def action_view_blocks(self):
+        """Smart button action to view blocks"""
+        self.ensure_one()
+        return {
+            'name': _('Blocks'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.block',
+            'type': 'ir.actions.act_window',
+            'domain': [('hospital_id', '=', self.id)],
+            'context': {
+                'default_hospital_id': self.id,
+            }
+        }
+    
+    def action_view_pharmacies(self):
+        """Smart button action to view pharmacies"""
+        self.ensure_one()
+        return {
+            'name': _('Pharmacies'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.pharmacy',
+            'type': 'ir.actions.act_window',
+            'domain': [('hospital_id', '=', self.id)],
+            'context': {
+                'default_hospital_id': self.id,
+            }
+        }
+        
     def action_hospital_room(self):
         return {
             'name': _('Rooms'),

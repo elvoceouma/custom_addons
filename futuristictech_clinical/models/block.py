@@ -16,18 +16,22 @@ class Block(models.Model):
         ('3', '3rd FLOOR'),
     ], string='Floor Number', required=True, tracking=True)
     
-    dispensing_store = fields.Char(string='Dispensing Store')
-    emergency_store = fields.Char(string='Emergency Store')
-    request_picking_type = fields.Char(string='Request Picking Type')
-    return_picking_type = fields.Char(string='Return Picking Type')
-    emergency_picking_type = fields.Char(string='Emergency Picking Type')
+    dispensing_store = fields.Many2one('stock.location', string='Dispensing Store')
+    emergency_store = fields.Many2one('stock.location', string='Emergency Store')
+    request_picking_type = fields.Many2one('stock.picking.type', string='Request Picking Type')
+    return_picking_type = fields.Many2one('stock.picking.type', string='Return Picking Type')
+    emergency_picking_type = fields.Many2one('stock.picking.type', string='Emergency Picking Type')
     
-    room_count = fields.Integer( string='Rooms')
-    bed_count = fields.Integer( string='Beds')
+    room_count = fields.Integer(compute='_compute_room_count', string='Rooms')
+    bed_count = fields.Integer(compute='_compute_bed_count', string='Beds')
     hospital_id = fields.Many2one('hospital.hospital', string='Campus', required=True)
     
     room_ids = fields.One2many('hospital.room', 'block_id', string='Rooms')
     bed_ids = fields.One2many('hospital.bed', 'block_id', string='Beds')
+    
+    # Additional field for extra information
+    notes = fields.Text(string='Extra Information')
+    
     @api.depends('room_ids')
     def _compute_room_count(self):
         for record in self:
@@ -38,20 +42,38 @@ class Block(models.Model):
         for record in self:
             record.bed_count = len(record.bed_ids)
 
-    def action_hospital_bed(self):
-        return {
-            'name': _('Beds'),
-            'view_mode': 'tree,form',
-            'res_model': 'hospital.bed',
-            'type': 'ir.actions.act_window',
-            'domain': [('block_id', '=', self.id)],
-        }
-    
-    def action_hospital_room(self):
+    def action_view_rooms(self):
+        """Smart button action to view rooms"""
+        self.ensure_one()
         return {
             'name': _('Rooms'),
             'view_mode': 'tree,form',
             'res_model': 'hospital.room',
             'type': 'ir.actions.act_window',
             'domain': [('block_id', '=', self.id)],
+            'context': {
+                'default_block_id': self.id,
+                'default_hospital_id': self.hospital_id.id,
+            }
         }
+    
+    def action_view_beds(self):
+        """Smart button action to view beds"""
+        self.ensure_one()
+        return {
+            'name': _('Beds'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.bed',
+            'type': 'ir.actions.act_window',
+            'domain': [('block_id', '=', self.id)],
+            'context': {
+                'default_block_id': self.id,
+                'default_hospital_id': self.hospital_id.id,
+            }
+        }
+
+    def action_hospital_room(self):
+        return self.action_view_rooms()
+    
+    def action_hospital_bed(self):
+        return self.action_view_beds()

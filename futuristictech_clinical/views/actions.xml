@@ -36,6 +36,7 @@
         <field name="res_model">hospital.pharmacy</field>
         <field name="view_mode">tree,form</field>
     </record>
+    
 
     <!-- Patient Management Actions -->
     <!--<record id="action_hospital_my_profile" model="ir.actions.act_window">

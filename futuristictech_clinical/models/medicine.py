@@ -15,7 +15,7 @@ class Medicine(models.Model):
     active = fields.Boolean(default=True)
     pharmacy_id = fields.Many2one('hospital.pharmacy', string='Pharmacy', required=True)
     quantity_available = fields.Float(string='Quantity Available', compute='_compute_quantity_available', store=True)
-
+    pharmacy_id = fields.Many2one('hospital.pharmacy', string='Pharmacy')
 
 class MedicineDosage(models.Model):
     _name = 'hospital.medicine.dosage'

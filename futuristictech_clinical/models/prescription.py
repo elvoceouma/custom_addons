@@ -15,6 +15,14 @@ class Prescription(models.Model):
     op_visit_id = fields.Many2one('hospital.op.visit', string='OP Visit')
     admission_id = fields.Many2one('hospital.admission', string='Admission')
     line_ids = fields.One2many('hospital.prescription.line', 'prescription_id', string='Prescription Lines')
+    pharmacy_id = fields.Many2one('hospital.pharmacy', string='Pharmacy')
+    date = fields.Datetime(string='Date', default=fields.Datetime.now)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
     
     @api.model_create_multi
     def create(self, vals_list):

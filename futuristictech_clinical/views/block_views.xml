@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hospital Block Views -->
+    <record id="view_hospital_block_form" model="ir.ui.view">
+        <field name="name">hospital.block.form</field>
+        <field name="model">hospital.block</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_rooms" type="object" class="oe_stat_button" icon="fa-th-large">
+                            <field name="room_count" widget="statinfo" string="Rooms"/>
+                        </button>
+                        <button name="action_view_beds" type="object" class="oe_stat_button" icon="fa-bed">
+                            <field name="bed_count" widget="statinfo" string="Beds"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Block Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="hospital_id"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="floor_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="dispensing_store"/>
+                        <field name="emergency_store"/>
+                    </group>
+                    <group>
+                        <field name="request_picking_type"/>
+                        <field name="return_picking_type"/>
+                        <field name="emergency_picking_type"/>
+                    </group>
+                    <notebook>
+                        <page string="Extra Information" name="extra_info">
+                            <field name="notes" placeholder="Add any additional notes about this block here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_block_tree" model="ir.ui.view">
+        <field name="name">hospital.block.tree</field>
+        <field name="model">hospital.block</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hospital_id"/>
+                <field name="floor_number"/>
+                <field name="room_count"/>
+                <field name="bed_count"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_hospital_block_search" model="ir.ui.view">
+        <field name="name">hospital.block.search</field>
+        <field name="model">hospital.block</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hospital_id"/>
+                <separator/>
+                <filter string="Ground Floor" name="ground_floor" domain="[('floor_number', '=', '0')]"/>
+                <filter string="1st Floor" name="first_floor" domain="[('floor_number', '=', '1')]"/>
+                <filter string="2nd Floor" name="second_floor" domain="[('floor_number', '=', '2')]"/>
+                <filter string="3rd Floor" name="third_floor" domain="[('floor_number', '=', '3')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Campus" name="group_by_hospital" context="{'group_by': 'hospital_id'}"/>
+                    <filter string="Floor" name="group_by_floor" context="{'group_by': 'floor_number'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

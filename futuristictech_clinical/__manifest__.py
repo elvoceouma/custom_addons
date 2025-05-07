@@ -34,6 +34,7 @@
         'views/hospital_views.xml',
         'views/admission_views.xml',
         'views/bed_views.xml',
+        'views/block_views.xml',
         'views/block_duty_views.xml',
         'views/patient_document_views.xml',
         # 'views/case_history_views.xml',
@@ -56,7 +57,6 @@
         'views/prescription_views.xml',
         'views/room_views.xml',
         'views/hospital_laboratory_views.xml',
-
         'views/actions.xml',  
         'views/menu.xml',     
         
