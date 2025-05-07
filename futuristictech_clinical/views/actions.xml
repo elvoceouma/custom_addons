@@ -36,17 +36,25 @@
         <field name="res_model">hospital.pharmacy</field>
         <field name="view_mode">tree,form</field>
     </record>
-    
+
 
     <!-- Patient Management Actions -->
-    <!--<record id="action_hospital_my_profile" model="ir.actions.act_window">
+    <record id="action_hospital_my_profile" model="ir.actions.act_window">
          <field name="name">My Profile</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.patient</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_hospital_patient_search"/>
-    </record> -->
+        <!-- <field name="search_view_id" ref="view_hospital_patient_search"/> -->
+    </record>
 
+        <!-- Patient Management Actions -->
+    <record id="action_hospital_patient" model="ir.actions.act_window">
+         <field name="name">Patients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form</field>
+        <!-- <field name="search_view_id" ref="view_hospital_patient_search"/> -->
+    </record>
 
 
     <record id="action_hospital_admission" model="ir.actions.act_window">

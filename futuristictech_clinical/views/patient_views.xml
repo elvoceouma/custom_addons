@@ -1,83 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Hospital Patient Views -->
-    <record id="view_hospital_patient_form" model="ir.ui.view">
-        <field name="name">hospital.patient.form</field>
+    <!-- Patient Card/Profile Form View -->
+    <record id="view_hospital_patient_profile_form" model="ir.ui.view">
+        <field name="name">hospital.patient.profile.form</field>
         <field name="model">hospital.patient</field>
+        <field name="priority">100</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="My Profile">
+                <header>
+                    <button string="Patient Card" type="object" name="action_hospital_patient" class="oe_highlight"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_registrations" type="object" icon="fa-clipboard-list">
+                            <field name="registration_ids" widget="statinfo" string="Registration Forms"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_appointments" type="object" icon="fa-calendar">
+                            <field name="appointment_ids" widget="statinfo" string="Appointments"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_prescriptions" type="object" icon="fa-prescription">
+                            <field name="prescription_ids" widget="statinfo" string="Prescriptions"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_admissions" type="object" icon="fa-hospital">
+                            <field name="admission_ids" widget="statinfo" string="Admissions"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_vaccines" type="object" icon="fa-syringe">
+                            <field name="vaccine_ids" widget="statinfo" string="Vaccines"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_op_visits" type="object" icon="fa-user-md">
+                            <field name="op_visit_ids" widget="statinfo" string="OP Visits"/>
+                        </button>
+                        <button string="Case History" name="action_view_case_history" type="object" class="oe_stat_button" icon="fa-history"/>
+                    </div>
                     <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Patient Name"/>
+                            <field name="name" placeholder="Full Name"/>
                         </h1>
-                        <h2>
-                            <!-- <field name="reference" readonly="1"/> -->
-                        </h2>
-                        <h2>
-                            <field name="mrn" string="MRN No" readonly="1"/>
-                        </h2>
                     </div>
                     <group>
                         <group>
-                            <field name="gender"/>
-                            <field name="age"/>
-                            <field name="dob"/>
-                            <field name="blood_group"/>
+                            <field name="mrn" string="MRN No"/>
+                            <field name="dob" string="Date of Birth"/>
+                            <field name="gender" string="Sex"/>
                         </group>
                         <group>
-                            <field name="mobile"/>
-                            <field name="phone"/>
-                            <field name="email"/>
-                            <field name="address"/>
+                            <field name="age"/>
+                            <field name="marital_status"/>
+                            <field name="referred_by"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Illness Tags" name="illness_tags">
-                            <field name="illness_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <page string="Personal" name="personal">
+                            <group>
+                                <group string="Address">
+                                    <field name="street" placeholder="Street..."/>
+                                    <div class="o_address_format">
+                                        <field name="city" placeholder="City" class="o_address_city"/>
+                                        <field name="state_id" placeholder="State" class="o_address_state"/>
+                                        <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                        <field name="country_id" placeholder="Country" class="o_address_country"/>
+                                    </div>
+                                    <field name="website" widget="url" placeholder="e.g. www.odoo.com"/>
+                                </group>
+                                <group string="Contact Information">
+                                    <field name="phone" placeholder="e.g. +32.81.81.37.00"/>
+                                    <field name="mobile"/>
+                                    <field name="fax"/>
+                                    <field name="email"/>
+                                    <field name="occupation_id"/>
+                                </group>
+                            </group>
                         </page>
-                        <page string="Admissions" name="admissions">
-                            <field name="admission_ids">
+                        <page string="Family &amp; Insurance" name="family_insurance">
+                            <group>
+                                <field name="insurance_id"/>
+                            </group>
+                            <group string="Family" name="family">
+                                <field name="family_member_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="age"/>
+                                        <field name="gender" string="Sex"/>
+                                        <field name="relation"/>
+                                        <field name="mobile"/>
+                                        <field name="email"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Medicines" name="medicines">
+                            <field name="prescription_ids" nolabel="1">
                                 <tree>
-                                    <field name="name"/>
-                                    <field name="admission_date"/>
-                                    <field name="campus_id"/>
-                                    <field name="block_id"/>
-                                    <field name="room_id"/>
-                                    <field name="bed_id"/>
+                                    <field name="physician_id"/>
+                                    <field name="speciality"/>
+                                    <field name="medicine_id"/>
+                                    <field name="medicine_type"/>
+                                    <field name="start_date" string="From"/>
+                                    <field name="end_date" string="TO"/>
+                                    <field name="morning" string="M"/>
+                                    <field name="afternoon" string="AN"/>
+                                    <field name="evening" string="E"/>
+                                    <field name="night" string="N"/>
+                                    <field name="uom_id"/>
+                                    <field name="take"/>
+                                    <field name="form"/>
+                                    <field name="indication"/>
+                                    <field name="frequency"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Evaluations" name="evaluations">
+                            <field name="evaluation_ids" nolabel="1">
+                                <tree>
+                                    <field name="name" string="Evaluation #"/>
+                                    <field name="patient_id"/>
+                                    <field name="physician_id"/>
+                                    <field name="appointment_id" string="Appointment #"/>
+                                    <field name="date" string="Evaluation Date"/>
+                                    <field name="indication"/>
+                                    <field name="bmi" string="Body Mass Index (BMI)"/>
+                                    <field name="evaluation_type"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Other Info" name="other_info">
+                            <group>
+                                <group>
+                                    <field name="user_id" string="User"/>
+                                </group>
+                                <group>
+                                    <field name="company_id" string="Company"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Lab Tests" name="lab_tests">
+                            <field name="lab_test_ids" nolabel="1">
+                                <tree>
+                                    <field name="name" string="Lab Test #"/>
+                                    <field name="test_type_id" string="Test Type"/>
+                                    <field name="pathologist_id" string="Pathologist"/>
+                                    <field name="doctor_id" string="Doctor who requested the test"/>
+                                    <field name="request_date" string="Date requested"/>
+                                    <field name="analysis_date" string="Date of the Analysis"/>
                                     <field name="state"/>
                                 </tree>
                             </field>
                         </page>
+                        <page string="CRM Documents" name="crm_documents">
+                            <field name="crm_document_ids" nolabel="1">
+                                <tree>
+                                    <field name="name" string="Document Name"/>
+                                    <field name="upload_date" string="Uploaded On"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Documents" name="documents">
-                            <field name="document_ids">
+                            <field name="document_ids" nolabel="1">
                                 <tree>
-                                    <field name="name"/>
-                                    <field name="document_type_id"/>
-                                    <field name="date"/>
-                                    <field name="file_name"/>
+                                    <field name="name" string="Document Name"/>
+                                    <field name="document_type_id" string="Document Type"/>
                                 </tree>
-                            </field>
-                        </page>
-                        <page string="Vaccines" name="vaccines">
-                            <field name="vaccine_ids">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="vaccine_id"/>
-                                    <field name="date"/>
-                                    <field name="next_dose_date"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="OP Visits" name="op_visits">
-                            <field name="op_visit_ids">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="date"/>
-                                    <field name="physician_id"/>
-                                    <field name="reason"/>
-                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="document_type_id"/>
+                                            <field name="date"/>
+                                        </group>
+                                        <group>
+                                            <field name="file" filename="file_name"/>
+                                            <field name="file_name" invisible="1"/>
+                                        </group>
+                                    </group>
+                                    <field name="note" placeholder="Notes..."/>
+                                    <footer>
+                                        <button string="Save" name="save" type="object" class="btn-primary"/>
+                                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                                    </footer>
+                                </form>
                             </field>
                         </page>
                     </notebook>
@@ -91,47 +192,21 @@
         </field>
     </record>
     
-    <record id="view_hospital_patient_tree" model="ir.ui.view">
-        <field name="name">hospital.patient.tree</field>
-        <field name="model">hospital.patient</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="reference"/>
-                <field name="mrn"/>
-                <field name="gender"/>
-                <field name="age"/>
-                <field name="mobile"/>
-            </tree>
-        </field>
-    </record>
-    
-    <record id="view_hospital_patient_search" model="ir.ui.view">
-        <field name="name">hospital.patient.search</field>
-        <field name="model">hospital.patient</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="reference"/>
-                <field name="mrn"/>
-                <field name="mobile"/>
-                <field name="email"/>
-                <separator/>
-                <filter string="Male" name="male" domain="[('gender', '=', 'male')]"/>
-                <filter string="Female" name="female" domain="[('gender', '=', 'female')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Gender" name="group_by_gender" context="{'group_by': 'gender'}"/>
-                    <filter string="Blood Group" name="group_by_blood_group" context="{'group_by': 'blood_group'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-    
-    <record id="action_hospital_patient" model="ir.actions.act_window">
-        <field name="name">Patients</field>
+    <record id="action_hospital_my_profile" model="ir.actions.act_window">
+        <field name="name">My Profile</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.patient</field>
-        <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_hospital_patient_search"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_hospital_patient_profile_form"/>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'default_user_id': uid}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your profile!
+            </p>
+            <p>
+                Fill in your personal and medical information.
+            </p>
+        </field>
     </record>
 </odoo>

@@ -41,29 +41,29 @@ class HospitalAppointment(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
         return super(HospitalAppointment, self).create(vals_list)
 
-class HospitalEvaluation(models.Model):
-    _name = 'hospital.evaluation'
-    _description = 'Hospital Evaluation'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class HospitalEvaluation(models.Model):
+#     _name = 'hospital.evaluation'
+#     _description = 'Hospital Evaluation'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True, tracking=True)
-    evaluation_date = fields.Date(string='Evaluation Date', default=fields.Date.context_today, tracking=True)
-    evaluation_type = fields.Selection([
-        ('initial', 'Initial'),
-        ('follow_up', 'Follow-up'),
-        ('discharge', 'Discharge')
-    ], string='Evaluation Type', default='initial', tracking=True)
-    findings = fields.Text(string='Findings')
-    recommendations = fields.Text(string='Recommendations')
+#     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True, tracking=True)
+#     evaluation_date = fields.Date(string='Evaluation Date', default=fields.Date.context_today, tracking=True)
+#     evaluation_type = fields.Selection([
+#         ('initial', 'Initial'),
+#         ('follow_up', 'Follow-up'),
+#         ('discharge', 'Discharge')
+#     ], string='Evaluation Type', default='initial', tracking=True)
+#     findings = fields.Text(string='Findings')
+#     recommendations = fields.Text(string='Recommendations')
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.evaluation') or _('New')
-        return super(HospitalEvaluation, self).create(vals_list)
+#     @api.model_create_multi
+#     def create(self, vals_list):
+#         for vals in vals_list:
+#             if vals.get('name', _('New')) == _('New'):
+#                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.evaluation') or _('New')
+#         return super(HospitalEvaluation, self).create(vals_list)
 
 class HospitalGynecology(models.Model):
     _name = 'hospital.gynecology'
@@ -252,27 +252,27 @@ class HospitalNursesCampusDuty(models.Model):
 
 
 # Medication Category Model
-class HospitalMedicationCategory(models.Model):
-    _name = 'hospital.medication.category'
-    _description = 'Hospital Medication Category'
+# class HospitalMedicationCategory(models.Model):
+#     _name = 'hospital.medication.category'
+#     _description = 'Hospital Medication Category'
 
-    name = fields.Char(string='Name', required=True)
-    code = fields.Char(string='Code')
-    parent_id = fields.Many2one('hospital.medication.category', string='Parent Category')
-    description = fields.Text(string='Description')
-    active = fields.Boolean(string='Active', default=True)
+#     name = fields.Char(string='Name', required=True)
+#     code = fields.Char(string='Code')
+#     parent_id = fields.Many2one('hospital.medication.category', string='Parent Category')
+#     description = fields.Text(string='Description')
+#     active = fields.Boolean(string='Active', default=True)
 
 
-# Medication Type Model
-class HospitalMedicationType(models.Model):
-    _name = 'hospital.medication.type'
-    _description = 'Hospital Medication Type'
+# # Medication Type Model
+# class HospitalMedicationType(models.Model):
+#     _name = 'hospital.medication.type'
+#     _description = 'Hospital Medication Type'
 
-    name = fields.Char(string='Name', required=True)
-    category_id = fields.Many2one('hospital.medication.category', string='Category')
-    code = fields.Char(string='Code')
-    description = fields.Text(string='Description')
-    active = fields.Boolean(string='Active', default=True)
+#     name = fields.Char(string='Name', required=True)
+#     category_id = fields.Many2one('hospital.medication.category', string='Category')
+#     code = fields.Char(string='Code')
+#     description = fields.Text(string='Description')
+#     active = fields.Boolean(string='Active', default=True)
 
 
 # Informed Consent Form Model
@@ -1447,64 +1447,64 @@ class HospitalLAMAForm(models.Model):
 from odoo import models, fields, api
 from datetime import datetime
 
-class HospitalLabTest(models.Model):
-    _name = 'hospital.lab.test'
-    _description = 'Laboratory Test'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'id desc'
+# class HospitalLabTest(models.Model):
+#     _name = 'hospital.lab.test'
+#     _description = 'Laboratory Test'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
+#     _order = 'id desc'
 
-    name = fields.Char(string='Test Reference', required=True, copy=False, readonly=True, default='New')
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-    physician_id = fields.Many2one('hospital.physician', string='Requesting Physician', tracking=True)
-    test_date = fields.Date(string='Test Date', default=fields.Date.today, tracking=True)
-    test_type = fields.Selection([
-        ('biochemistry', 'Biochemistry'),
-        ('hematology', 'Hematology'),
-        ('hormones', 'Hormones'),
-        ('immunology', 'Immunology'),
-        ('microbiology', 'Microbiology'),
-        ('molecular_biology', 'Molecular Biology'),
-        ('urine_chemistry', 'Urine Chemistry'),
-        ('urine_screening', 'Urine Screening'),
-        ('drug_assays', 'Drug Assays'),
-        ('other', 'Other')
-    ], string='Test Type', required=True, tracking=True)
-    urgency = fields.Selection([
-        ('routine', 'Routine'),
-        ('urgent', 'Urgent'),
-        ('emergency', 'Emergency')
-    ], string='Urgency', default='routine', tracking=True)
-    sample_type = fields.Selection([
-        ('blood', 'Blood'),
-        ('urine', 'Urine'),
-        ('stool', 'Stool'),
-        ('csf', 'CSF'),
-        ('tissue', 'Tissue'),
-        ('other', 'Other')
-    ], string='Sample Type', tracking=True)
-    sample_collection_date = fields.Datetime(string='Sample Collection Date', tracking=True)
-    collected_by = fields.Many2one('res.users', string='Collected By', tracking=True)
-    results = fields.Text(string='Test Results', tracking=True)
-    normal_range = fields.Text(string='Normal Range')
-    interpretation = fields.Text(string='Interpretation', tracking=True)
-    notes = fields.Text(string='Notes')
-    attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('sample_collected', 'Sample Collected'),
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    requisition_id = fields.Many2one('hospital.lab.test.requisition', string='Requisition')
+#     name = fields.Char(string='Test Reference', required=True, copy=False, readonly=True, default='New')
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Requesting Physician', tracking=True)
+#     test_date = fields.Date(string='Test Date', default=fields.Date.today, tracking=True)
+#     test_type = fields.Selection([
+#         ('biochemistry', 'Biochemistry'),
+#         ('hematology', 'Hematology'),
+#         ('hormones', 'Hormones'),
+#         ('immunology', 'Immunology'),
+#         ('microbiology', 'Microbiology'),
+#         ('molecular_biology', 'Molecular Biology'),
+#         ('urine_chemistry', 'Urine Chemistry'),
+#         ('urine_screening', 'Urine Screening'),
+#         ('drug_assays', 'Drug Assays'),
+#         ('other', 'Other')
+#     ], string='Test Type', required=True, tracking=True)
+#     urgency = fields.Selection([
+#         ('routine', 'Routine'),
+#         ('urgent', 'Urgent'),
+#         ('emergency', 'Emergency')
+#     ], string='Urgency', default='routine', tracking=True)
+#     sample_type = fields.Selection([
+#         ('blood', 'Blood'),
+#         ('urine', 'Urine'),
+#         ('stool', 'Stool'),
+#         ('csf', 'CSF'),
+#         ('tissue', 'Tissue'),
+#         ('other', 'Other')
+#     ], string='Sample Type', tracking=True)
+#     sample_collection_date = fields.Datetime(string='Sample Collection Date', tracking=True)
+#     collected_by = fields.Many2one('res.users', string='Collected By', tracking=True)
+#     results = fields.Text(string='Test Results', tracking=True)
+#     normal_range = fields.Text(string='Normal Range')
+#     interpretation = fields.Text(string='Interpretation', tracking=True)
+#     notes = fields.Text(string='Notes')
+#     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('sample_collected', 'Sample Collected'),
+#         ('in_progress', 'In Progress'),
+#         ('completed', 'Completed'),
+#         ('cancelled', 'Cancelled')
+#     ], string='Status', default='draft', tracking=True)
+#     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+#     admission_id = fields.Many2one('hospital.admission', string='Admission')
+#     requisition_id = fields.Many2one('hospital.lab.test.requisition', string='Requisition')
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('hospital.lab.test') or 'New'
-        return super(HospitalLabTest, self).create(vals)
+    # @api.model
+    # def create(self, vals):
+    #     if vals.get('name', 'New') == 'New':
+    #         vals['name'] = self.env['ir.sequence'].next_by_code('hospital.lab.test') or 'New'
+    #     return super(HospitalLabTest, self).create(vals)
 
 class HospitalLabTestRequisition(models.Model):
     _name = 'hospital.lab.test.requisition'

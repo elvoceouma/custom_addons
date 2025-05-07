@@ -21,7 +21,7 @@ class RegistrationForm(models.Model):
     blood_group = fields.Selection(related='patient_id.blood_group', readonly=False, store=True)
     mobile = fields.Char(string='Mobile', related='patient_id.mobile', readonly=False, store=True)
     email = fields.Char(string='Email', related='patient_id.email', readonly=False, store=True)
-    address = fields.Text(string='Address', related='patient_id.address', readonly=False, store=True)
+    address = fields.Text(string='Address', readonly=False, store=True)
     
     # Emergency Contact Information
     emergency_contact = fields.Char(string='Emergency Contact')

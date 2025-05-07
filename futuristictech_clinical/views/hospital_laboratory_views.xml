@@ -10,7 +10,7 @@
                 <field name="patient_id"/>
                 <field name="test_date"/>
                 <field name="test_type"/>
-                <field name="physician_id"/>
+                <!-- <field name="physician_id"/> -->
                 <field name="urgency"/>
                 <field name="state"/>
             </tree>
@@ -34,9 +34,9 @@
                     <group>
                         <group>
                             <field name="patient_id"/>
-                            <field name="physician_id"/>
+                            <!-- <field name="physician_id"/> -->
                             <field name="admission_id"/>
-                            <field name="requisition_id"/>
+                            <!-- <field name="requisition_id"/> -->
                         </group>
                         <group>
                             <field name="test_date"/>
@@ -59,7 +59,7 @@
                             <field name="notes"/>
                         </page>
                         <page string="Attachments">
-                            <field name="attachment_ids" widget="many2many_binary"/>
+                            <!-- <field name="attachment_ids" widget="many2many_binary"/> -->
                         </page>
                     </notebook>
                 </sheet>
@@ -79,7 +79,7 @@
             <search>
                 <field name="name"/>
                 <field name="patient_id"/>
-                <field name="physician_id"/>
+                <!-- <field name="physician_id"/> -->
                 <field name="test_type"/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                 <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
@@ -88,7 +88,7 @@
                 <filter string="Emergency" name="emergency" domain="[('urgency', '=', 'emergency')]"/>
                 <group expand="0" string="Group By">
                     <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
-                    <filter string="Physician" name="physician" context="{'group_by': 'physician_id'}"/>
+                    <!-- <filter string="Physician" name="physician" context="{'group_by': 'physician_id'}"/> -->
                     <filter string="Test Type" name="test_type" context="{'group_by': 'test_type'}"/>
                     <filter string="Status" name="status" context="{'group_by': 'state'}"/>
                 </group>
