@@ -16,8 +16,8 @@
     <menuitem id="menu_my_profile" name="My Profile" parent="menu_patient_management_root" action="action_hospital_my_profile" sequence="10"/>
     <menuitem id="menu_registration_forms" name="Registration Forms" parent="menu_patient_management_root" action="action_hospital_registration_form" sequence="20"/>
     <menuitem id="menu_patients" name="Patients" parent="menu_patient_management_root" action="action_hospital_patient" sequence="30"/>
-    <menuitem id="menu_inpatient_admissions" name="Inpatient Admissions" parent="menu_patient_management_root" action="action_hospital_admission" sequence="40"/>
-    <menuitem id="menu_my_admissions" name="My Admissions" parent="menu_patient_management_root" action="action_hospital_my_admission" sequence="50"/>
+    <!-- <menuitem id="menu_inpatient_admissions" name="Inpatient Admissions" parent="menu_patient_management_root" action="action_hospital_admission" sequence="40"/>
+    <menuitem id="menu_my_admissions" name="My Admissions" parent="menu_patient_management_root" action="action_hospital_my_admission" sequence="50"/> -->
     <menuitem id="menu_vaccines" name="Vaccines" parent="menu_patient_management_root" action="action_hospital_vaccine" sequence="60"/>
     <menuitem id="menu_my_vaccines" name="My Vaccines" parent="menu_patient_management_root" action="action_hospital_my_vaccine" sequence="70"/>
     <menuitem id="menu_case_history" name="Case History" parent="menu_patient_management_root" action="action_hospital_case_history" sequence="80"/>

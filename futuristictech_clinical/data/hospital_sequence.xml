@@ -9,7 +9,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Patient MRN Sequence -->
         <record id="seq_hospital_patient_mrn" model="ir.sequence">
             <field name="name">Hospital Patient MRN</field>
@@ -18,7 +18,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Admission Sequence -->
         <record id="seq_hospital_admission" model="ir.sequence">
             <field name="name">Hospital Admission</field>
@@ -27,7 +27,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- OP Visit Sequence -->
         <record id="seq_hospital_op_visit" model="ir.sequence">
             <field name="name">Hospital OP Visit</field>
@@ -36,7 +36,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Prescription Sequence -->
         <record id="seq_hospital_prescription" model="ir.sequence">
             <field name="name">Hospital Prescription</field>
@@ -45,7 +45,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Initial Assessment Sequence -->
         <record id="seq_hospital_initial_assessment" model="ir.sequence">
             <field name="name">Hospital Initial Assessment</field>
@@ -54,7 +54,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Vital Chart Sequence -->
         <record id="seq_hospital_vital_chart" model="ir.sequence">
             <field name="name">Hospital Vital Chart</field>
@@ -63,7 +63,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Mental Status Examination Sequence -->
         <record id="seq_hospital_mental_status_examination" model="ir.sequence">
             <field name="name">Hospital Mental Status Examination</field>
@@ -72,7 +72,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Discharge Record Sequence -->
         <record id="seq_hospital_discharge" model="ir.sequence">
             <field name="name">Hospital Discharge</field>
@@ -81,7 +81,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Discharge Summary Sequence -->
         <record id="seq_hospital_discharge_summary" model="ir.sequence">
             <field name="name">Hospital Discharge Summary</field>
@@ -90,7 +90,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Food Requisition Sequence -->
         <record id="seq_hospital_food_requisition" model="ir.sequence">
             <field name="name">Hospital Food Requisition</field>
@@ -99,7 +99,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Patient Requisition Sequence -->
         <record id="seq_hospital_patient_requisition" model="ir.sequence">
             <field name="name">Hospital Patient Requisition</field>
@@ -108,7 +108,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Care Plan Sequence -->
         <record id="seq_hospital_care_plan" model="ir.sequence">
             <field name="name">Hospital Care Plan</field>
@@ -117,7 +117,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Nurse Assessment Sequence -->
         <record id="seq_hospital_nurse_assessment" model="ir.sequence">
             <field name="name">Hospital Nurse Assessment</field>
@@ -126,7 +126,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Block Duty Assignment Sequence -->
         <record id="seq_hospital_block_duty_assignment" model="ir.sequence">
             <field name="name">Hospital Block Duty Assignment</field>
@@ -135,13 +135,21 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- Block Duty Register Sequence -->
         <record id="seq_hospital_block_duty_register" model="ir.sequence">
             <field name="name">Hospital Block Duty Register</field>
             <field name="code">hospital.block.duty.register</field>
             <field name="prefix">BDR</field>
             <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_hospital_inpatient_admission" model="ir.sequence">
+            <field name="name">Hospital Inpatient Admission</field>
+            <field name="code">hospital.inpatient.admission</field>
+            <field name="prefix">IP</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
     </data>

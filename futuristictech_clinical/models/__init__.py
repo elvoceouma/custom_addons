@@ -2,6 +2,7 @@ from . import hospital
 from . import patient
 from . import block
 from . import admission
+from .import inpatient_admission
 from . import room
 from . import bed
 from . import pharmacy

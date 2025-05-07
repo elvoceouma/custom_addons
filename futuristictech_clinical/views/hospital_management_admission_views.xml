@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Admission Tree View (List View) -->
+    <!-- Admission Tree View -->
     <record id="view_hospital_admission_tree" model="ir.ui.view">
         <field name="name">hospital.admission.tree</field>
         <field name="model">hospital.admission</field>

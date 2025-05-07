@@ -33,6 +33,7 @@
         
         'views/hospital_views.xml',
         'views/admission_views.xml',
+        'views/inpatient_admission_views.xml',
         'views/bed_views.xml',
         'views/block_views.xml',
         'views/block_duty_views.xml',
