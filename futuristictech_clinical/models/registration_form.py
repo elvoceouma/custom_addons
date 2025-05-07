@@ -7,65 +7,205 @@ class RegistrationForm(models.Model):
     _name = 'hospital.registration.form'
     _description = 'Patient Registration Form'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'reference'
+    _rec_name = 'lead_reference_no'
     
-    reference = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    # CRM References
+    lead_reference_no = fields.Char(string='Lead Reference No.', required=True, tracking=True)
+    lead_id = fields.Char(string='Lead ID')
+    visit_id = fields.Char(string='Visit ID')
+    registration_id = fields.Char(string='Registration ID')
     date = fields.Date(string='Registration Date', default=fields.Date.context_today, tracking=True)
+    reference = fields.Char(string='Reference')
+    # Campus Information
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True, tracking=True)
     
     # Patient Information
     patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
-    name = fields.Char(string='Patient Name', related='patient_id.name', store=True, readonly=False)
-    gender = fields.Selection(related='patient_id.gender', readonly=False, store=True)
-    age = fields.Integer(string='Age', related='patient_id.age', readonly=False, store=True)
-    dob = fields.Date(string='Date of Birth', related='patient_id.dob', readonly=False, store=True)
-    blood_group = fields.Selection(related='patient_id.blood_group', readonly=False, store=True)
-    mobile = fields.Char(string='Mobile', related='patient_id.mobile', readonly=False, store=True)
-    email = fields.Char(string='Email', related='patient_id.email', readonly=False, store=True)
-    address = fields.Text(string='Address', readonly=False, store=True)
+    
+    # Nominee Information
+    nominee_name = fields.Char(string='Nominee Name')
+    nominee_age = fields.Integer(string='Nominee Age')
+    nominee_gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Nominee Sex')
+    nominee_relationship = fields.Selection([
+        ('spouse', 'Spouse'),
+        ('child', 'Child'),
+        ('parent', 'Parent'),
+        ('sibling', 'Sibling'),
+        ('friend', 'Friend'),
+        ('other', 'Other')
+    ], string='Nominee Relationship with Patient')
+    nominee_mobile = fields.Char(string='Nominee Mobile')
+    nominee_email = fields.Char(string='Nominee Email')
+    nominee_address = fields.Char(string='Nominee Address')
+    nominee_street2 = fields.Char(string='Nominee Street 2')
+    nominee_city = fields.Char(string='Nominee City')
+    nominee_state = fields.Char(string='Nominee State')
+    nominee_zip = fields.Char(string='Nominee ZIP')
+    nominee_country = fields.Char(string='Nominee Country')
+    
+    # Visitor Information
+    visitor_name = fields.Char(string='Visitor Name')
+    visitor_age = fields.Integer(string='Visitor Age')
+    visitor_gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Visitor Sex')
+    visitor_relationship = fields.Selection([
+        ('spouse', 'Spouse'),
+        ('child', 'Child'),
+        ('parent', 'Parent'),
+        ('sibling', 'Sibling'),
+        ('friend', 'Friend'),
+        ('other', 'Other')
+    ], string='Visitor Relationship with Patient')
+    visitor_mobile = fields.Char(string='Visitor Mobile')
+    visitor_email = fields.Char(string='Visitor Email')
+    visitor_address = fields.Char(string='Visitor Address')
+    visitor_street2 = fields.Char(string='Visitor Street 2')
+    visitor_city = fields.Char(string='Visitor City')
+    visitor_state = fields.Char(string='Visitor State')
+    visitor_zip = fields.Char(string='Visitor ZIP')
+    visitor_country = fields.Char(string='Visitor Country')
+    
+    # Services
+    services_looking_for = fields.Selection([
+        ('counselling', 'Counselling'),
+        ('psychiatry', 'Psychiatry'),
+        ('psychology', 'Psychology'),
+        ('therapy', 'Therapy'),
+        ('rehabilitation', 'Rehabilitation'),
+        ('other', 'Other')
+    ], string='Services Looking for')
+    de_addiction = fields.Selection([
+        ('alcohol', 'Alcohol'),
+        ('drugs', 'Drugs'),
+        ('smoking', 'Smoking'),
+        ('gambling', 'Gambling'),
+        ('other', 'Other')
+    ], string='De Addiction')
+    mental_illness = fields.Selection([
+        ('depression', 'Depression'),
+        ('anxiety', 'Anxiety'),
+        ('bipolar', 'Bipolar Disorder'),
+        ('schizophrenia', 'Schizophrenia'),
+        ('other', 'Other')
+    ], string='Mental Illness')
+    mental_retardation = fields.Selection([
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe'),
+        ('profound', 'Profound')
+    ], string='Mental Retardation')
+    old_age_psychiatric_problem = fields.Selection([
+        ('dementia', 'Dementia'),
+        ('alzheimers', 'Alzheimer\'s'),
+        ('parkinsons', 'Parkinson\'s'),
+        ('other', 'Other')
+    ], string='Old Age Psychiatric Problem')
+    
+    # Patient Details
+    patient_first_name = fields.Char(string='Patient First Name')
+    patient_last_name = fields.Char(string='Patient Last Name')
+    dob = fields.Date(string='DOB')
+    patient_age = fields.Integer(string='Patient Age')
+    patient_gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Patient Sex')
+    patient_address = fields.Char(string='Patient Address')
+    patient_street2 = fields.Char(string='Patient Street 2')
+    patient_city = fields.Char(string='Patient City')
+    patient_state = fields.Char(string='Patient State')
+    patient_zip = fields.Char(string='Patient ZIP')
+    patient_country = fields.Char(string='Patient Country')
+    landline_number = fields.Char(string='Landline Number')
+    patient_mobile = fields.Char(string='Patient Mobile')
+    patient_email = fields.Char(string='Patient Email')
+    nationality = fields.Char(string='Nationality')
+    education_qualification = fields.Selection([
+        ('primary', 'Primary Education'),
+        ('secondary', 'Secondary Education'),
+        ('undergraduate', 'Undergraduate'),
+        ('graduate', 'Graduate'),
+        ('postgraduate', 'Postgraduate'),
+        ('other', 'Other')
+    ], string='Education Qualification')
+    occupation = fields.Char(string='Occupation')
+    religion = fields.Selection([
+        ('hinduism', 'Hinduism'),
+        ('islam', 'Islam'),
+        ('christianity', 'Christianity'),
+        ('sikhism', 'Sikhism'),
+        ('buddhism', 'Buddhism'),
+        ('jainism', 'Jainism'),
+        ('other', 'Other')
+    ], string='Religion')
+    marital_status = fields.Selection([
+        ('single', 'Single'),
+        ('married', 'Married'),
+        ('divorced', 'Divorced'),
+        ('widowed', 'Widowed'),
+        ('separated', 'Separated')
+    ], string='Marital Status')
+    languages_known = fields.Many2many('res.lang', string='Languages Known')
+    has_children = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Do you have Children')
+    children_count = fields.Integer(string='Number of Children')
+    concerns_problems = fields.Text(string='Concerns/Problems')
+    physical_condition = fields.Selection([
+        ('excellent', 'Excellent'),
+        ('good', 'Good'),
+        ('fair', 'Fair'),
+        ('poor', 'Poor')
+    ], string='Physical Condition')
+    
+    # CRM Remarks
+    crm_remarks_ids = fields.One2many('hospital.registration.crm.remarks', 'registration_id', string='CRM Remarks')
     
     # Emergency Contact Information
-    emergency_contact = fields.Char(string='Emergency Contact')
-    emergency_relation = fields.Many2one('hospital.patient.relationship', string='Relationship')
-    emergency_phone = fields.Char(string='Emergency Phone')
+    emergency_person_name = fields.Char(string='Emergency Person Name')
+    emergency_person_mobile = fields.Char(string='Emergency Person Mobile')
+    emergency_person_email = fields.Char(string='Emergency Person Email')
+    emergency_person_relationship = fields.Selection([
+        ('spouse', 'Spouse'),
+        ('child', 'Child'),
+        ('parent', 'Parent'),
+        ('sibling', 'Sibling'),
+        ('friend', 'Friend'),
+        ('other', 'Other')
+    ], string='Emergency Person Relationship with Patient')
     
-    # Insurance Information
-    insurance_provider = fields.Many2one('hospital.insurance', string='Insurance Provider')
-    policy_number = fields.Char(string='Policy Number')
-    policy_holder = fields.Char(string='Policy Holder')
+    # Consultant Information
+    has_consulted_before = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Have you consulted any other psycologist / psychiatrist / counsellor')
+    whom_to_meet = fields.Selection([
+        ('psychologist', 'Psychologist'),
+        ('psychiatrist', 'Psychiatrist'),
+        ('any_one', 'Any one'),
+        ('both', 'Both'),
+        ('dont_know', 'I don\'t know whom to meet')
+    ], string='Whom do you want to meet?')
+    previous_consultant_name = fields.Char(string='Previous Consultant Name')
+    how_known_about_us = fields.Selection([
+        ('friend', 'Friend'),
+        ('relative', 'Relative'),
+        ('internet', 'Internet'),
+        ('newspaper', 'Newspaper'),
+        ('doctor', 'Doctor'),
+        ('other', 'Other')
+    ], string='How did you get to know about us')
     
-    # Medical Information
-    illness_tag_ids = fields.Many2many('hospital.illness.tag', string='Illness Tags', related='patient_id.illness_tag_ids', readonly=False)
-    allergies = fields.Text(string='Allergies')
-    current_medications = fields.Text(string='Current Medications')
-    pre_existing_conditions = fields.Text(string='Pre-existing Conditions')
-    family_history = fields.Text(string='Family History')
-    
-    # Registration Type
-    registration_type = fields.Selection([
-        ('op', 'Outpatient'),
-        ('ip', 'Inpatient'),
-        ('emergency', 'Emergency')
-    ], string='Registration Type', default='op', required=True, tracking=True)
-    
-    # Campus/Location Information
-    campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True, tracking=True)
-    
-    # For Inpatient Registrations
-    is_admission_needed = fields.Boolean(string='Is Admission Needed')
-    admission_date = fields.Datetime(string='Admission Date')
-    block_id = fields.Many2one('hospital.block', string='Block')
-    room_id = fields.Many2one('hospital.room', string='Room')
-    bed_id = fields.Many2one('hospital.bed', string='Bed')
-    
-    # Physician Information
-    physician_id = fields.Many2one('res.partner', string='Physician', domain=[('is_physician', '=', True)])
-    referral_source = fields.Char(string='Referral Source')
-    
-    # Document Attachments
-    attachment_ids = fields.Many2many('ir.attachment', string='Documents')
-    
-    # Status and Agreement
-    consent_signed = fields.Boolean(string='Consent Form Signed')
+    # State
     state = fields.Selection([
         ('draft', 'Draft'),
         ('registered', 'Registered'),
@@ -73,110 +213,34 @@ class RegistrationForm(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
     
-    # Additional Fields
-    notes = fields.Text(string='Notes')
-    
     @api.model
     def create(self, vals):
-        if vals.get('reference', _('New')) == _('New'):
-            vals['reference'] = self.env['ir.sequence'].next_by_code('hospital.registration.form') or _('New')
-        
-        # If patient_id not provided, create a new patient record
-        if not vals.get('patient_id') and vals.get('name'):
-            patient_vals = {
-                'name': vals.get('name'),
-                'gender': vals.get('gender'),
-                'age': vals.get('age'),
-                'dob': vals.get('dob'),
-                'blood_group': vals.get('blood_group'),
-                'mobile': vals.get('mobile'),
-                'email': vals.get('email'),
-                'address': vals.get('address'),
-            }
-            patient = self.env['hospital.patient'].create(patient_vals)
-            vals['patient_id'] = patient.id
-            
+        if not vals.get('lead_reference_no'):
+            vals['lead_reference_no'] = self.env['ir.sequence'].next_by_code('hospital.registration.form.lead.ref') or 'New'
         return super(RegistrationForm, self).create(vals)
     
-    @api.onchange('patient_id')
-    def _onchange_patient_id(self):
-        if self.patient_id:
-            # Load patient data into the form
-            self.gender = self.patient_id.gender
-            self.age = self.patient_id.age
-            self.dob = self.patient_id.dob
-            self.blood_group = self.patient_id.blood_group
-            self.mobile = self.patient_id.mobile
-            self.email = self.patient_id.email
-            self.address = self.patient_id.address
-            self.illness_tag_ids = self.patient_id.illness_tag_ids
-    
-    @api.onchange('campus_id')
-    def _onchange_campus_id(self):
-        if self.campus_id:
-            # Reset block, room and bed when campus changes
-            self.block_id = False
-            self.room_id = False
-            self.bed_id = False
-            
-    @api.onchange('block_id')
-    def _onchange_block_id(self):
-        if self.block_id:
-            # Filter rooms based on selected block
-            self.room_id = False
-            self.bed_id = False
-            
-    @api.onchange('room_id')
-    def _onchange_room_id(self):
-        if self.room_id:
-            # Filter beds based on selected room
-            self.bed_id = False
-    
     def action_register(self):
-        self.ensure_one()
+        """Action to register the patient"""
         self.state = 'registered'
-        
-        # If admission is needed, create an admission record
-        if self.is_admission_needed and self.registration_type == 'ip':
-            admission_vals = {
-                'patient_id': self.patient_id.id,
-                'campus_id': self.campus_id.id,
-                'block_id': self.block_id.id,
-                'room_id': self.room_id.id,
-                'bed_id': self.bed_id.id,
-                'admission_date': self.admission_date or fields.Datetime.now(),
-                'physician_id': self.physician_id.id,
-                'state': 'draft',
-            }
-            
-            admission = self.env['hospital.admission'].create(admission_vals)
-            # Link the admission to this registration
-            self.write({
-                'state': 'admitted',
-            })
-            
-            # Return action to view the created admission
-            return {
-                'type': 'ir.actions.act_window',
-                'name': _('Admission'),
-                'res_model': 'hospital.admission',
-                'view_mode': 'form',
-                'res_id': admission.id,
-                'target': 'current',
-            }
-            
-        return True
-    
+        # Additional logic for registration can be added here
+
     def action_cancel(self):
-        self.ensure_one()
+        """Action to cancel the registration"""
         self.state = 'cancelled'
-        return True
+        # Additional logic for cancellation can be added here
+
+class HospitalRegistrationCRMRemarks(models.Model):
+    _name = 'hospital.registration.crm.remarks'
+    _description = 'Registration CRM Remarks'
     
-    def action_draft(self):
-        self.ensure_one()
-        self.state = 'draft'
-        return True
-    
+    registration_id = fields.Many2one('hospital.registration.form', string='Registration', required=True, ondelete='cascade')
+    date = fields.Date(string='Date', default=fields.Date.context_today)
+    points_of_discussion = fields.Text(string='Points of Discussion')
+    remarks = fields.Text(string='Remarks')
+    employee_id = fields.Many2one('hr.employee', string='Employee')
+
+
+
 
 class HospitalRegistrationDetilsService(models.Model):
     _name = 'hospital.registration.details.service'
@@ -400,4 +464,3 @@ class HospitalRegistrationDetailsSource(models.Model):
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
-
