@@ -64,23 +64,363 @@ class MentalStatusExamination(models.Model):
     _name = 'hospital.mental.status.examination'
     _description = 'Mental Status Examination'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _rec_name = 'name_seq'
     
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    name_seq = fields.Char(string='MSE #', readonly=True, default=lambda self: _('New'))
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
+    ip_number = fields.Char(string='IP Number')
+    patient_name = fields.Char(related='patient_id.name', string='Patient Name')
+    admission_id = fields.Many2one('hospital.inpatient.admission', string='Admission')
     date = fields.Date(string='Date', default=fields.Date.context_today)
-    appearance = fields.Text(string='Appearance')
-    behavior = fields.Text(string='Behavior')
-    attitude = fields.Text(string='Attitude')
-    mood = fields.Text(string='Mood')
-    affect = fields.Text(string='Affect')
-    speech = fields.Text(string='Speech')
-    thought_process = fields.Text(string='Thought Process')
-    thought_content = fields.Text(string='Thought Content')
-    perception = fields.Text(string='Perception')
-    cognition = fields.Text(string='Cognition')
-    insight = fields.Text(string='Insight')
-    judgment = fields.Text(string='Judgment')
+    age = fields.Integer(string='Age', related='patient_id.age')
+    mrn_no = fields.Char(string='MRN No', related='patient_id.mrn')
+    patient_gender = fields.Selection(related='patient_id.gender', string='Sex')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
+    
+    # General appearance and behavior
+    general_appearance_behavior = fields.Selection([
+        ('normal', 'Normal'),
+        ('abnormal', 'Abnormal')
+    ], string='General Appearance & Behavior')
+    eye_contact_with_examiner = fields.Selection([
+        ('good', 'Good'),
+        ('poor', 'Poor'),
+        ('none', 'None')
+    ], string='Eye Contact with Examiner')
+    touch_with_surrounding = fields.Selection([
+        ('good', 'Good'),
+        ('poor', 'Poor'),
+        ('none', 'None')
+    ], string='Touch with Surrounding')
+    dress = fields.Selection([
+        ('appropriate', 'Appropriate'),
+        ('inappropriate', 'Inappropriate')
+    ], string='Dress')
+    rapport = fields.Selection([
+        ('good', 'Good'),
+        ('adequate', 'Adequate'),
+        ('poor', 'Poor')
+    ], string='Rapport')
+    attitude_towards_interviewer = fields.Selection([
+        ('cooperative', 'Cooperative'),
+        ('uncooperative', 'Uncooperative'),
+        ('hostile', 'Hostile')
+    ], string='Attitude towards Interviewer')
+    
+    # Psychomotor activity
+    psychomotor_activity = fields.Selection([
+        ('normal', 'Normal'),
+        ('hyperactive', 'Hyperactive'),
+        ('hypoactive', 'Hypoactive')
+    ], string='Psychomotor Activity')
+    
+    # Speech
+    speech_initiation = fields.Selection([
+        ('spontaneous', 'Spontaneous'),
+        ('hesitant', 'Hesitant'),
+        ('mute', 'Mute')
+    ], string='Speech Initiation')
+    speech_reaction_time = fields.Selection([
+        ('normal', 'Normal'),
+        ('delayed', 'Delayed'),
+        ('accelerated', 'Accelerated')
+    ], string='Reaction Time')
+    speech_intensity = fields.Selection([
+        ('normal', 'Normal'),
+        ('increased', 'Increased'),
+        ('decreased', 'Decreased')
+    ], string='Intensity')
+    speech_pitch = fields.Selection([
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('low', 'Low')
+    ], string='Speed')
+    pressure_of_speech = fields.Selection([
+        ('normal', 'Normal'),
+        ('pressured', 'Pressured'),
+        ('reduced', 'Reduced')
+    ], string='Pressure of Speech')
+    speech_volume = fields.Selection([
+        ('normal', 'Normal'),
+        ('loud', 'Loud'),
+        ('soft', 'Soft')
+    ], string='Volume')
+    speech_relevance = fields.Selection([
+        ('relevant', 'Relevant'),
+        ('irrelevant', 'Irrelevant')
+    ], string='Relevance')
+    speech_coherence = fields.Selection([
+        ('coherent', 'Coherent'),
+        ('incoherent', 'Incoherent')
+    ], string='Coherence')
+    speech_deviation = fields.Selection([
+        ('none', 'None'),
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe')
+    ], string='Deviation')
+    
+    # Thought
+    thought_form = fields.Selection([
+        ('normal', 'Normal'),
+        ('circumstantial', 'Circumstantial'),
+        ('tangential', 'Tangential'),
+        ('loosening', 'Loosening of Association'),
+        ('flight', 'Flight of Ideas')
+    ], string='Thought Form')
+    thought_normal = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Normal (Appropriate, Goal Directed and Relevant)')
+    possession = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Possession')
+    compulsions = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Compulsions')
+    content_delusions = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Delusions')
+    delusion_primary_secondary = fields.Selection([
+        ('primary', 'Primary'),
+        ('secondary', 'Secondary'),
+        ('complete', 'Complete'),
+        ('partial', 'Partial'),
+        ('systematized', 'Systematized'),
+        ('non_systematized', 'Non-Systematized'),
+        ('mood_congruent', 'Mood Congruent'),
+        ('mood_incongruent', 'Mood Incongruent')
+    ], string='Primary/Secondary, Complete/Partial, Systematized/Non-Systematized, Mood Congruent/Incongruent')
+    effect_on_life = fields.Selection([
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe')
+    ], string='How Much It Affects His or Her Life')
+    preoccupation = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Preoccupation')
+    flow_stream_of_thought = fields.Selection([
+        ('normal', 'Normal'),
+        ('increased', 'Increased'),
+        ('decreased', 'Decreased'),
+        ('blocked', 'Blocked')
+    ], string='Flow/Stream of Thought')
+    thought_abnormal = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Abnormal')
+    obsessions = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Obsessions')
+    thought_alienation = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Thought Alienation')
+    delusion_of = fields.Selection([
+        ('reference', 'Reference'),
+        ('persecution', 'Persecution'),
+        ('grandeur', 'Grandeur'),
+        ('nihilism', 'Nihilism'),
+        ('guilt', 'Guilt')
+    ], string='Delusion of')
+    conviction_of_validity = fields.Selection([
+        ('full', 'Full'),
+        ('partial', 'Partial'),
+        ('none', 'None')
+    ], string='Conviction of Its Validity')
+    depressive_cognition = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Depressive Cognition')
+    preoccupation_details = fields.Selection([
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe')
+    ], string='Preoccupation Details')
+    somatization = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Somatization')
+    
+    # Mood
+    mood_subjective = fields.Selection([
+        ('euthymic', 'Euthymic'),
+        ('dysphoric', 'Dysphoric'),
+        ('euphoric', 'Euphoric'),
+        ('irritable', 'Irritable'),
+        ('anxious', 'Anxious')
+    ], string='Mood (Subjective)')
+    mood_objective = fields.Selection([
+        ('euthymic', 'Euthymic'),
+        ('annoyed', 'Annoyed'),
+        ('irritable', 'Irritable'),
+        ('angry', 'Angry')
+    ], string='Mood (Objective)')
+    mood_range = fields.Selection([
+        ('normal', 'Normal & Broad'),
+        ('restricted', 'Restricted'),
+        ('blunted', 'Blunted'),
+        ('flat', 'Flat')
+    ], string='Range')
+    mood_communicability = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Communicability')
+    mood_congruence = fields.Selection([
+        ('congruent', 'Congruent'),
+        ('incongruent', 'Incongruent')
+    ], string='Congruence')
+    mood_fluctuations = fields.Selection([
+        ('stable', 'Stable'),
+        ('labile', 'Labile')
+    ], string='Fluctuations of Mood')
+    mood_intensity = fields.Selection([
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe')
+    ], string='Intensity')
+    mood_reactivity = fields.Selection([
+        ('normal', 'Normal'),
+        ('increased', 'Increased'),
+        ('decreased', 'Decreased')
+    ], string='Reactivity')
+    mood_appropriateness = fields.Selection([
+        ('appropriate', 'Appropriate'),
+        ('inappropriate', 'Inappropriate')
+    ], string='Appropriateness')
+    
+    # Perception
+    perceptual_disturbances = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Perceptual Disturbances')
+    body_image_disturbance = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Body Image Disturbance')
+    sense_distortion = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Sense Distortion (Comment on Dulled or Heightened Perception & Changes in Quality)')
+    sensory_modality = fields.Selection([
+        ('auditory', 'Auditory'),
+        ('visual', 'Visual'),
+        ('tactile', 'Tactile'),
+        ('olfactory', 'Olfactory'),
+        ('gustatory', 'Gustatory')
+    ], string='Sensory Modality')
+    
+    # Cognitive
+    cognitive_attention_concentration = fields.Selection([
+        ('normal', 'Normal'),
+        ('impaired', 'Impaired')
+    ], string='First Rank Symptom')
+    cognitive_depersonalization_derealisation = fields.Selection([
+        ('absent', 'Absent'),
+        ('present', 'Present (Extreme Feelings of Detachment from Self or the Environment)')
+    ], string='Depersonalization, Derealisation')
+    cognitive_vigilance = fields.Selection([
+        ('normal', 'Normal'),
+        ('hypovigilant', 'Hypovigilant'),
+        ('hypervigilant', 'Hypervigilant'),
+        ('serial_sevens', 'Serial-Sevens (100-7)')
+    ], string='Vigilance')
+    cognitive_timing = fields.Selection([
+        ('normal', 'Normal'),
+        ('hypnopompic', 'Hypnopompic Hallucinations (While Waking Up)'),
+        ('hypnagogic', 'Hypnagogic Hallucinations (While Falling Asleep)')
+    ], string='Timing')
+    hallucinations_description = fields.Selection([
+        ('spontaneous', 'Spontaneous'),
+        ('provoked', 'Provoked'),
+        ('easily_aroused', 'Easily Aroused & Sustained')
+    ], string='Describe Hallucinations')
+    cognitive_orientation = fields.Selection([
+        ('time', 'Time'),
+        ('place', 'Place'),
+        ('person', 'Person')
+    ], string='Orientation')
+    
+    # Memory
+    memory = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Memory')
+    intelligence = fields.Selection([
+        ('below_average', 'Below Average'),
+        ('average', 'Average'),
+        ('above_average', 'Above Average')
+    ], string='Intelligence')
+    comprehension = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Comprehension')
+    abstract_thinking = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Abstract Thinking')
+    memory_assess_by = fields.Selection([
+        ('clinical_behavior', 'Clinical Behavior'),
+        ('formal_tests', 'Formal Tests')
+    ], string='Memory Assess By')
+    general_fund_of_information = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='General Fund of Information')
+    simple_arithmetics = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Simple Arithmetics')
+    abstract_thinking_type = fields.Selection([
+        ('concrete', 'Concrete'),
+        ('abstract', 'Abstract')
+    ], string='Abstract Thinking Type')
+    
+    # Judgment and Insight
+    differences = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Differences')
+    proverb = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Proverb')
+    judgement_test = fields.Selection([
+        ('social', 'Social'),
+        ('test', 'Test')
+    ], string='Judgement Test')
+    insight_grade = fields.Selection([
+        ('grade1', 'Grade I: Absence of Insight'),
+        ('grade2', 'Grade II: Partial Insight'),
+        ('grade3', 'Grade III: Complete Insight')
+    ], string='Insight Grade')
+    similarities = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Similarities')
+    judgement = fields.Selection([
+        ('intact', 'Intact'),
+        ('impaired', 'Impaired')
+    ], string='Judgement')
+    insight = fields.Selection([
+        ('absent', 'Absent'),
+        ('partial', 'Partial'),
+        ('complete', 'Complete')
+    ], string='Insight')
+    
+    # Status
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], string='State', default='draft', tracking=True)
+    
     examiner_id = fields.Many2one('res.users', string='Examiner', default=lambda self: self.env.user)
     
     @api.model_create_multi
@@ -88,8 +428,17 @@ class MentalStatusExamination(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.mental.status.examination') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.mental.status.examination.seq') or _('New')
         return super(MentalStatusExamination, self).create(vals_list)
-
+    
+    def action_confirm(self):
+        for record in self:
+            record.state = 'completed'
+    
+    def action_inprogress(self):
+        for record in self:
+            record.state = 'in_progress'
 
 class CarePlan(models.Model):
     _name = 'hospital.care.plan'

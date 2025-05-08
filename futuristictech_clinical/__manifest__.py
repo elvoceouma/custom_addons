@@ -41,6 +41,7 @@
         # 'views/case_history_views.xml',
         'views/configuration_views.xml',
         'views/discharge_views.xml',
+        'views/medication_consent_form_views.xml',
         'views/food_views.xml',
         'views/hospital_management_admission_views.xml',
         'views/hospital_management_case_history_views.xml',

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medication Consent Form Tree View -->
+    <record id="view_medication_consent_form_tree" model="ir.ui.view">
+        <field name="name">medication.consent.form.tree</field>
+        <field name="model">medication.consent.form</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="medication_type"/>
+                <field name="ip_number"/>
+                <field name="patient_name"/>
+                <field name="created_by"/>
+                <field name="company"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Medication Consent Form Form View -->
+    <record id="view_medication_consent_form_form" model="ir.ui.view">
+        <field name="name">medication.consent.form.form</field>
+        <field name="model">medication.consent.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_draft" string="Set to Draft" type="object" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Medication Form">
+                            <field name="ip_number"/>
+                            <field name="patient_id"/>
+                            <field name="patient_name" readonly="1"/>
+                            <field name="age" readonly="1"/>
+                            <field name="mrn_no" readonly="1"/>
+                            <field name="campus"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="nominated_representative"/>
+                            <field name="medication_type"/>
+                            <field name="medical_officer"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="diagnosis" placeholder="Diagnosis: (Use ICD 10 or 11)"/>
+                    </group>
+                    
+                    <field name="medication_line_ids">
+                        <tree editable="bottom">
+                            <field name="medication_category_id"/>
+                            <field name="medication_id" domain="[('medicine_category_id', '=', medication_category_id)]"/>
+                            <field name="dosage_range"/>
+                            <field name="planned_dosage_range"/>
+                        </tree>
+                    </field>
+                    
+                    <group string="This medication will be administered">
+                        <group>
+                            <field name="orally"/>
+                            <field name="injection"/>
+                            <field name="other_specify"/>
+                            <field name="other_specify_text" invisible="not other_specify" required="other_specify" placeholder="Others Specify"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Other Consequences:">
+                        <field name="other_consequences" nolabel="1" placeholder="Other Consequences"/>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                            <field name="company" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="confirmed_by" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Medication Consent Form Search View -->
+    <record id="view_medication_consent_form_search" model="ir.ui.view">
+        <field name="name">medication.consent.form.search</field>
+        <field name="model">medication.consent.form</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_name"/>
+                <field name="ip_number"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="group_by_date" domain="[]" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Medication Consent Form Action -->
+    <record id="action_medication_consent_form" model="ir.actions.act_window">
+        <field name="name">Medication Form</field>
+        <field name="res_model">medication.consent.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_medication_consent_form_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Medication Consent Form
+            </p>
+        </field>
+    </record>
+    
+    <!-- Medicine Views -->
+    <record id="view_hospital_medicine_tree" model="ir.ui.view">
+        <field name="name">hospital.medicine.tree</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="medicine_type_id"/>
+                <field name="medicine_category_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_medicine_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.form</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Medicine Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="medicine_type_id"/>
+                            <field name="medicine_category_id"/>
+                        </group>
+                        <group>
+                            <field name="form_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Dosages" name="dosages">
+                            <field name="dosage_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="strength"/>
+                                    <field name="unit_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Medicine Action -->
+    <record id="action_hospital_medicine" model="ir.actions.act_window">
+        <field name="name">Medicines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Medicine Type Action -->
+    <record id="action_hospital_medicine_type" model="ir.actions.act_window">
+        <field name="name">Medicine Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Medicine Category Action -->
+    <record id="action_hospital_medicine_category" model="ir.actions.act_window">
+        <field name="name">Medicine Categories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Medicine Form Action -->
+    <record id="action_hospital_medicine_form" model="ir.actions.act_window">
+        <field name="name">Medicine Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Medicine Unit Action -->
+    <record id="action_hospital_medicine_unit" model="ir.actions.act_window">
+        <field name="name">Medicine Units</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine.unit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- Menu Items -->
+    <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
+    <menuitem id="menu_medication_form" name="Medication Form" parent="menu_consent_forms_root" action="action_medication_consent_form" sequence="10"/>
+    
+    <!-- <menuitem id="menu_medicine_configuration" name="Medicine Configuration" parent="hospital_management_configuration" sequence="30"/>
+    <menuitem id="menu_hospital_medicine" name="Medicines" parent="menu_medicine_configuration" action="action_hospital_medicine" sequence="10"/>
+    <menuitem id="menu_hospital_medicine_type" name="Medicine Types" parent="menu_medicine_configuration" action="action_hospital_medicine_type" sequence="20"/>
+    <menuitem id="menu_hospital_medicine_category" name="Medicine Categories" parent="menu_medicine_configuration" action="action_hospital_medicine_category" sequence="30"/>
+    <menuitem id="menu_hospital_medicine_form" name="Medicine Forms" parent="menu_medicine_configuration" action="action_hospital_medicine_form" sequence="40"/>
+    <menuitem id="menu_hospital_medicine_unit" name="Medicine Units" parent="menu_medicine_configuration" action="action_hospital_medicine_unit" sequence="50"/> -->
+</odoo>

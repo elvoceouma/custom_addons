@@ -44,9 +44,9 @@
     <menuitem id="menu_activity_records" name="Activity Records" parent="menu_patient_management_root" action="action_hospital_activity_record" sequence="240"/>
     
     <!-- Consent Forms Menu -->
-    <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
+    <!-- <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
     <menuitem id="menu_medication_form" name="Medication Form" parent="menu_consent_forms_root" action="action_hospital_medication_form" sequence="10"/>
-    
+     -->
     <!-- Physicians & Appointments Menu -->
     <menuitem id="menu_physicians_appointments_root" name="Physicians &amp; Appointments" parent="hospital_management_root" sequence="40"/>
     <menuitem id="menu_physicians" name="Physicians" parent="menu_physicians_appointments_root" action="action_hospital_physician" sequence="10"/>

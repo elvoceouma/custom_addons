@@ -411,5 +411,86 @@
         <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
-    </record>       
+    </record>  
+
+     Security Access Rules
+        <record id="access_medication_consent_form_user" model="ir.model.access">
+            <field name="name">medication.consent.form.user</field>
+            <field name="model_id" ref="model_medication_consent_form"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_medication_consent_form_line_user" model="ir.model.access">
+            <field name="name">medication.consent.form.line.user</field>
+            <field name="model_id" ref="model_medication_consent_form_line"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_user" model="ir.model.access">
+            <field name="name">hospital.medicine.user</field>
+            <field name="model_id" ref="model_hospital_medicine"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_type_user" model="ir.model.access">
+            <field name="name">hospital.medicine.type.user</field>
+            <field name="model_id" ref="model_hospital_medicine_type"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_category_user" model="ir.model.access">
+            <field name="name">hospital.medicine.category.user</field>
+            <field name="model_id" ref="model_hospital_medicine_category"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_form_user" model="ir.model.access">
+            <field name="name">hospital.medicine.form.user</field>
+            <field name="model_id" ref="model_hospital_medicine_form"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_dosage_user" model="ir.model.access">
+            <field name="name">hospital.medicine.dosage.user</field>
+            <field name="model_id" ref="model_hospital_medicine_dosage"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        
+        <record id="access_hospital_medicine_unit_user" model="ir.model.access">
+            <field name="name">hospital.medicine.unit.user</field>
+            <field name="model_id" ref="model_hospital_medicine_unit"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>     
 </odoo>

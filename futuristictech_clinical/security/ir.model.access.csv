@@ -277,3 +277,4 @@ access_hospital_variable_billing_user,hospital.variable.billing.user,model_hospi
 access_hospital_variable_billing_manager,hospital.variable.billing.manager,model_hospital_variable_billing,base.group_system,1,1,1,1
 access_hospital_vital_chart_user,hospital.vital.chart.user,model_hospital_vital_chart,base.group_user,1,1,1,0
 access_hospital_vital_chart_manager,hospital.vital.chart.manager,model_hospital_vital_chart,base.group_system,1,1,1,1
+access_hospital_inpatient_admission_internal,hospital.inpatient.admission.internal,model_hospital_inpatient_admission,base.group_user,1,1,1,1

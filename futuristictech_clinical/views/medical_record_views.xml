@@ -51,7 +51,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_initial_assessment_tree" model="ir.ui.view">
         <field name="name">hospital.initial.assessment.tree</field>
         <field name="model">hospital.initial.assessment</field>
@@ -65,8 +65,8 @@
             </tree>
         </field>
     </record>
-    
-    
+
+
     <record id="action_hospital_initial_assessment" model="ir.actions.act_window">
         <field name="name">Initial Assessments</field>
         <field name="type">ir.actions.act_window</field>
@@ -113,7 +113,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_vital_chart_tree" model="ir.ui.view">
         <field name="name">hospital.vital.chart.tree</field>
         <field name="model">hospital.vital.chart</field>
@@ -130,7 +130,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_vital_chart" model="ir.actions.act_window">
         <field name="name">Vital Charts</field>
         <field name="type">ir.actions.act_window</field>
@@ -139,72 +139,194 @@
     </record>
 
     <!-- Mental Status Examination Views -->
+    <!-- Mental Status Examination Views -->
     <record id="view_hospital_mental_status_examination_form" model="ir.ui.view">
         <field name="name">hospital.mental.status.examination.form</field>
         <field name="model">hospital.mental.status.examination</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" invisible="state != 'in_progress'" type="object" class="oe_highlight"/>
+                    <button name="action_inprogress" string="In Progress" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
                             <field name="name" readonly="1"/>
-                        </h1>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="date"/>
-                            <field name="examiner_id"/>
+                            <field name="ip_number" readonly="state == 'completed'"/>
+                            <field name="patient_id" readonly="state == 'completed'"/>
+                            <field name="patient_name" readonly="1"/>
+                            <field name="age" readonly="1"/>
+                            <field name="mrn_no" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="state == 'completed'"/>
+                            <field name="patient_gender" readonly="1"/>
+                            <field name="campus_id" readonly="state == 'completed'"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Examination" name="examination">
-                            <group>
-                                <field name="appearance" placeholder="Appearance"/>
-                                <field name="behavior" placeholder="Behavior"/>
-                                <field name="attitude" placeholder="Attitude"/>
-                                <field name="mood" placeholder="Mood"/>
-                                <field name="affect" placeholder="Affect"/>
-                                <field name="speech" placeholder="Speech"/>
-                                <field name="thought_process" placeholder="Thought Process"/>
-                                <field name="thought_content" placeholder="Thought Content"/>
-                                <field name="perception" placeholder="Perception"/>
-                                <field name="cognition" placeholder="Cognition"/>
-                                <field name="insight" placeholder="Insight"/>
-                                <field name="judgment" placeholder="Judgment"/>
-                            </group>
-                        </page>
-                    </notebook>
+                    <group string="">
+                        <group>
+                            <field name="general_appearance_behavior" readonly="state == 'completed'"/>
+                            <field name="eye_contact_with_examiner" readonly="state == 'completed'"/>
+                            <field name="touch_with_surrounding" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="dress" readonly="state == 'completed'"/>
+                            <field name="rapport" readonly="state == 'completed'"/>
+                            <field name="attitude_towards_interviewer" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="psychomotor_activity" readonly="state == 'completed'"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="speech_initiation" readonly="state == 'completed'"/>
+                            <field name="speech_reaction_time" readonly="state == 'completed'"/>
+                            <field name="speech_intensity" readonly="state == 'completed'"/>
+                            <field name="speech_pitch" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="pressure_of_speech" readonly="state == 'completed'"/>
+                            <field name="speech_volume" readonly="state == 'completed'"/>
+                            <field name="speech_relevance" readonly="state == 'completed'"/>
+                            <field name="speech_coherence" readonly="state == 'completed'"/>
+                            <field name="speech_deviation" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="thought_form" readonly="state == 'completed'"/>
+                            <field name="thought_normal" readonly="state == 'completed'"/>
+                            <field name="possession" readonly="state == 'completed'"/>
+                            <field name="compulsions" readonly="state == 'completed'"/>
+                            <field name="content_delusions" readonly="state == 'completed'"/>
+                            <field name="delusion_primary_secondary" readonly="state == 'completed'"/>
+                            <field name="effect_on_life" readonly="state == 'completed'"/>
+                            <field name="preoccupation" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="flow_stream_of_thought" readonly="state == 'completed'"/>
+                            <field name="thought_abnormal" readonly="state == 'completed'"/>
+                            <field name="obsessions" readonly="state == 'completed'"/>
+                            <field name="thought_alienation" readonly="state == 'completed'"/>
+                            <field name="delusion_of" readonly="state == 'completed'"/>
+                            <field name="conviction_of_validity" readonly="state == 'completed'"/>
+                            <field name="depressive_cognition" readonly="state == 'completed'"/>
+                            <field name="preoccupation_details" readonly="state == 'completed'"/>
+                            <field name="somatization" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="mood_subjective" readonly="state == 'completed'"/>
+                            <field name="mood_objective" readonly="state == 'completed'"/>
+                            <field name="mood_range" readonly="state == 'completed'"/>
+                            <field name="mood_communicability" readonly="state == 'completed'"/>
+                            <field name="mood_congruence" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="mood_fluctuations" readonly="state == 'completed'"/>
+                            <field name="mood_intensity" readonly="state == 'completed'"/>
+                            <field name="mood_reactivity" readonly="state == 'completed'"/>
+                            <field name="mood_appropriateness" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="perceptual_disturbances" readonly="state == 'completed'"/>
+                            <field name="body_image_disturbance" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="sense_distortion" readonly="state == 'completed'"/>
+                            <field name="sensory_modality" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="cognitive_attention_concentration" readonly="state == 'completed'"/>
+                            <field name="cognitive_depersonalization_derealisation" readonly="state == 'completed'"/>
+                            <field name="cognitive_vigilance" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="cognitive_timing" readonly="state == 'completed'"/>
+                            <field name="hallucinations_description" readonly="state == 'completed'"/>
+                            <field name="cognitive_orientation" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="memory" readonly="state == 'completed'"/>
+                            <field name="intelligence" readonly="state == 'completed'"/>
+                            <field name="comprehension" readonly="state == 'completed'"/>
+                            <field name="abstract_thinking" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="memory_assess_by" readonly="state == 'completed'"/>
+                            <field name="general_fund_of_information" readonly="state == 'completed'"/>
+                            <field name="simple_arithmetics" readonly="state == 'completed'"/>
+                            <field name="abstract_thinking_type" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="">
+                        <group>
+                            <field name="differences" readonly="state == 'completed'"/>
+                            <field name="proverb" readonly="state == 'completed'"/>
+                            <field name="judgement_test" readonly="state == 'completed'"/>
+                            <field name="insight_grade" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="similarities" readonly="state == 'completed'"/>
+                            <field name="judgement" readonly="state == 'completed'"/>
+                            <field name="insight" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_mental_status_examination_tree" model="ir.ui.view">
         <field name="name">hospital.mental.status.examination.tree</field>
         <field name="model">hospital.mental.status.examination</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="patient_id"/>
+            <tree decoration-success="state == 'completed'" decoration-info="state == 'in_progress'" decoration-danger="state == 'draft'">
+                <field name="name_seq"/>
+                <field name="ip_number"/>
+                <field name="patient_name"/>
                 <field name="date"/>
-                <field name="examiner_id"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_mental_status_examination" model="ir.actions.act_window">
         <field name="name">Mental Status Examinations</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.mental.status.examination</field>
         <field name="view_mode">tree,form</field>
     </record>
+
+
 
     <!-- Care Plan Views -->
     <record id="view_hospital_care_plan_form" model="ir.ui.view">
@@ -250,7 +372,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_care_plan_tree" model="ir.ui.view">
         <field name="name">hospital.care.plan.tree</field>
         <field name="model">hospital.care.plan</field>
@@ -265,7 +387,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_care_plan" model="ir.actions.act_window">
         <field name="name">Care Plans</field>
         <field name="type">ir.actions.act_window</field>
@@ -318,7 +440,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_nurse_assessment_tree" model="ir.ui.view">
         <field name="name">hospital.nurse.assessment.tree</field>
         <field name="model">hospital.nurse.assessment</field>
@@ -331,7 +453,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_nurse_assessment" model="ir.actions.act_window">
         <field name="name">Nurse Assessments</field>
         <field name="type">ir.actions.act_window</field>
@@ -384,7 +506,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_drug_chart_tree" model="ir.ui.view">
         <field name="name">hospital.drug.chart.tree</field>
         <field name="model">hospital.drug.chart</field>
@@ -397,7 +519,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_chart" model="ir.actions.act_window">
         <field name="name">Drug Charts</field>
         <field name="type">ir.actions.act_window</field>
@@ -441,7 +563,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_drug_administration_tree" model="ir.ui.view">
         <field name="name">hospital.drug.administration.tree</field>
         <field name="model">hospital.drug.administration</field>
@@ -457,7 +579,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_administration" model="ir.actions.act_window">
         <field name="name">Drug Administrations</field>
         <field name="type">ir.actions.act_window</field>
