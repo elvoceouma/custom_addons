@@ -144,13 +144,13 @@
     </record>
 
     <!-- Consultation Actions -->
-    <record id="action_hospital_outside_consultation" model="ir.actions.act_window">
+    <!-- <record id="action_hospital_outside_consultation" model="ir.actions.act_window">
         <field name="name">Outside Consultation Advice</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.outside.consultation</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_hospital_outside_consultation_search"/>
-    </record>
+    </record> -->
 
     <record id="action_hospital_op_visit" model="ir.actions.act_window">
         <field name="name">OP Visits</field>
