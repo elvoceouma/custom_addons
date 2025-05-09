@@ -17,29 +17,29 @@ class HospitalActivityRecord(models.Model):
         ('informal', 'Informal')
     ], string='Activity Type', required=True, default='formal')
 
-class HospitalAppointment(models.Model):
-    _name = 'hospital.appointment'
-    _description = 'Hospital Appointment'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class HospitalAppointment(models.Model):
+#     _name = 'hospital.appointment'
+#     _description = 'Hospital Appointment'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True, tracking=True)
-    appointment_date = fields.Datetime(string='Appointment Date', required=True, tracking=True)
-    purpose = fields.Text(string='Purpose')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+#     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True, tracking=True)
+#     appointment_date = fields.Datetime(string='Appointment Date', required=True, tracking=True)
+#     purpose = fields.Text(string='Purpose')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('confirmed', 'Confirmed'),
+#         ('done', 'Done'),
+#         ('cancelled', 'Cancelled')
+#     ], string='Status', default='draft', tracking=True)
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
-        return super(HospitalAppointment, self).create(vals_list)
+#     @api.model_create_multi
+#     def create(self, vals_list):
+#         for vals in vals_list:
+#             if vals.get('name', _('New')) == _('New'):
+#                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
+#         return super(HospitalAppointment, self).create(vals_list)
 
 # class HospitalEvaluation(models.Model):
 #     _name = 'hospital.evaluation'
