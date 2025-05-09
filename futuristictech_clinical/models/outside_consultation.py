@@ -44,7 +44,7 @@ class OutsideConsultation(models.Model):
     op_visit_id = fields.Many2one('hospital.appointment', string='OP Reference', 
                                   domain="[('state', '=', 'confirmed')]", tracking=True)
     
-    campus_id = fields.Many2one('hospital.campus', string='Campus', tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
     psychiatrist_id = fields.Many2one('hospital.physician', string='Psychiatrist', tracking=True)
     doctor_id = fields.Many2one('hospital.physician', string='Doctor', tracking=True)
     

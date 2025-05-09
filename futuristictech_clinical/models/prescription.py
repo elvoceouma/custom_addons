@@ -39,7 +39,7 @@ class Prescription(models.Model):
         ('full', 'Full')
     ], string='Receive Method', default='partial', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
-    campus_id = fields.Many2one('hospital.campus', string='Campus', tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
     notes = fields.Text(string='Notes')
     @api.model_create_multi

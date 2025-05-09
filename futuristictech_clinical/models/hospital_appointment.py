@@ -9,7 +9,7 @@ class HospitalAppointment(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
     appointment_date = fields.Datetime(string='Appointment Date', required=True)
-    health_center_id = fields.Many2one('hospital.campus', string='Health Center')
+    health_center_id = fields.Many2one('hospital.hospital', string='Health Center')
     duration = fields.Float(string='Duration (Hours)', default=1.0)
     campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True, tracking=True)
 

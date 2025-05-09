@@ -25,6 +25,16 @@ class BlockDutyAssignment(models.Model):
         ('done', 'Done'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
+    code = fields.Char(string='Code')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
+    active = fields.Boolean(default=True)
+    description = fields.Text(string='Description')
+    employee_id = fields.Many2one('hr.employee', string='Employee', tracking=True)
+    duty_roster_id = fields.Many2one('hospital.duty.roster', string='Duty Roster', tracking=True)
+    block_id = fields.Many2one('hospital.block', string='Block', required=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, tracking=True)
+    assignment_line_ids = fields.One2many('hospital.block.duty.assignment.line', 'assignment_id', string='Assignment Lines')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -60,6 +70,26 @@ class BlockDutyRegister(models.Model):
     registration_time = fields.Datetime(string='Registration Time', default=fields.Datetime.now)
     checklist_ids = fields.One2many('hospital.block.duty.checklist.line', 'register_id', string='Checklist Items')
     notes = fields.Text(string='Notes')
+
+    employee_id = fields.Many2one('hr.employee', string='Employee', tracking=True)
+    duty_roster_id = fields.Many2one('hospital.duty.roster', string='Duty Roster', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('assigned', 'Assigned'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
+    register_line_ids = fields.One2many('hospital.block.duty.register.line', 'register_id', string='Register Lines')
+    notes = fields.Text(string='Notes')
+    
+    # Patient related fields for reporting
+    patient_reporting_ids = fields.One2many('hospital.block.duty.patient.reporting', 'register_id', string='Patient Reporting')
+    
+    # Block related fields for reporting
+    block_reporting_ids = fields.One2many('hospital.block.duty.block.reporting', 'register_id', string='Block Reporting')
+    
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -78,6 +108,19 @@ class BlockDutyRegister(models.Model):
                     }))
                 vals['checklist_ids'] = checklist_lines
         return super(BlockDutyRegister, self).create(vals_list)
+
+     
+    def action_assign(self):
+        for record in self:
+            record.state = 'assigned'
+    
+    def action_complete(self):
+        for record in self:
+            record.state = 'completed'
+    
+    def action_cancel(self):
+        for record in self:
+            record.state = 'cancelled'
 
 
 class BlockDutyChecklist(models.Model):
@@ -134,4 +177,54 @@ class HospitalBlockDutyReport(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.block.duty.report') or _('New')
         return super(HospitalBlockDutyReport, self).create(vals_list)
 
+class HospitalBlockDutyAssignmentLine(models.Model):
+    _name = 'hospital.block.duty.assignment.line'
+    _description = 'Block Duty Assignment Line'
+    
+    assignment_id = fields.Many2one('hospital.block.duty.assignment', string='Assignment')
+    date = fields.Date(string='Date')
+    employee_id = fields.Many2one('hr.employee', string='Employee')
+    duty_roster_id = fields.Many2one('hospital.duty.roster', string='Duty Roster')
+    block_id = fields.Many2one('hospital.block', string='Block')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
+    status = fields.Selection([
+        ('draft', 'Draft'),
+        ('assigned', 'Assigned'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft')
 
+class HospitalDutyRoster(models.Model):
+    _name = 'hospital.duty.roster'
+    _description = 'Hospital Duty Roster'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    active = fields.Boolean(default=True)
+
+class HospitalBlockDutyRegisterLine(models.Model):
+    _name = 'hospital.block.duty.register.line'
+    _description = 'Block Duty Register Line'
+    
+    register_id = fields.Many2one('hospital.block.duty.register', string='Register')
+    name = fields.Char(string='Name')
+    response = fields.Char(string='Response')
+
+
+class HospitalBlockDutyPatientReporting(models.Model):
+    _name = 'hospital.block.duty.patient.reporting'
+    _description = 'Block Duty Patient Reporting'
+    
+    register_id = fields.Many2one('hospital.block.duty.register', string='Register')
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    type = fields.Char(string='Type')
+    description = fields.Text(string='Description')
+
+
+class HospitalBlockDutyBlockReporting(models.Model):
+    _name = 'hospital.block.duty.block.reporting'
+    _description = 'Block Duty Block Reporting'
+    
+    register_id = fields.Many2one('hospital.block.duty.register', string='Register')
+    type = fields.Char(string='Type')
+    description = fields.Text(string='Description')

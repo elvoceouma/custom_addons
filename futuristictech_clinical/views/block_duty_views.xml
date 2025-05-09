@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Block Model Views -->
+    <record id="view_hospital_block_form" model="ir.ui.view">
+        <field name="name">hospital.block.form</field>
+        <field name="model">hospital.block</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Block Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="campus_id"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_block_tree" model="ir.ui.view">
+        <field name="name">hospital.block.tree</field>
+        <field name="model">hospital.block</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="campus_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_block" model="ir.actions.act_window">
+        <field name="name">Blocks</field>
+        <field name="res_model">hospital.block</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Campus Model Views -->
+    <record id="view_hospital_campus_form" model="ir.ui.view">
+        <field name="name">hospital.hospital.form</field>
+        <field name="model">hospital.hospital</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Campus Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_campus_tree" model="ir.ui.view">
+        <field name="name">hospital.hospital.tree</field>
+        <field name="model">hospital.hospital</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_campus" model="ir.actions.act_window">
+        <field name="name">Campuses</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Duty Roster Model Views -->
+    <record id="view_hospital_duty_roster_form" model="ir.ui.view">
+        <field name="name">hospital.duty.roster.form</field>
+        <field name="model">hospital.duty.roster</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Roster Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hospital_duty_roster_tree" model="ir.ui.view">
+        <field name="name">hospital.duty.roster.tree</field>
+        <field name="model">hospital.duty.roster</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_hospital_duty_roster" model="ir.actions.act_window">
+        <field name="name">Duty Rosters</field>
+        <field name="res_model">hospital.duty.roster</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
     <!-- Block Duty Assignment Views -->
     <record id="view_hospital_block_duty_assignment_form" model="ir.ui.view">
         <field name="name">hospital.block.duty.assignment.form</field>
@@ -7,7 +133,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancelled"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state not in ['draft']"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state not in ['confirmed']"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'confirmed']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -17,22 +146,41 @@
                     </div>
                     <group>
                         <group>
-                            <field name="block_id"/>
                             <field name="date"/>
-                            <field name="shift"/>
+                            <field name="user_id"/>
+                            <field name="company_id"/>
                         </group>
                         <group>
+                            <field name="block_id"/>
+                            <field name="shift"/>
                             <field name="responsible_id"/>
-                            <field name="state"/>
                         </group>
                     </group>
-                    <field name="assistant_ids" widget="many2many_tags"/>
-                    <field name="note" placeholder="Additional notes about this duty assignment"/>
+                    <notebook>
+                        <page string="Assignment Line">
+                            <field name="assignment_line_ids">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="employee_id"/>
+                                    <field name="duty_roster_id"/>
+                                    <field name="campus_id"/>
+                                    <field name="block_id"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Additional Info">
+                            <group>
+                                <field name="assistant_ids" widget="many2many_tags"/>
+                                <field name="note" placeholder="Additional notes about this duty assignment"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -44,8 +192,8 @@
         <field name="arch" type="xml">
             <tree decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'cancelled'">
                 <field name="name"/>
-                <field name="block_id"/>
                 <field name="date"/>
+                <field name="block_id"/>
                 <field name="shift"/>
                 <field name="responsible_id"/>
                 <field name="state"/>
@@ -53,6 +201,11 @@
         </field>
     </record>
     
+    <record id="action_hospital_block_duty_assignment" model="ir.actions.act_window">
+        <field name="name">Block Duty Assignments</field>
+        <field name="res_model">hospital.block.duty.assignment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
     <!-- Block Duty Register Views -->
     <record id="view_hospital_block_duty_register_form" model="ir.ui.view">
@@ -60,6 +213,12 @@
         <field name="model">hospital.block.duty.register</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_assign" string="Assigned" type="object" class="oe_highlight" invisible="state not in ['draft']"/>
+                    <button name="action_complete" string="Completed" type="object" class="oe_highlight" invisible="state not in ['assigned']"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'assigned']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,completed,cancelled"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -68,31 +227,62 @@
                     </div>
                     <group>
                         <group>
-                            <field name="assignment_id"/>
-                            <field name="registration_time"/>
+                            <field name="date"/>
+                            <field name="employee_id"/>
+                            <field name="duty_roster_id"/>
                         </group>
                         <group>
-                            <field name="block_id" readonly="1"/>
-                            <field name="date" readonly="1"/>
-                            <field name="shift" readonly="1"/>
-                            <field name="responsible_id" readonly="1"/>
+                            <field name="block_id"/>
+                            <field name="registration_time"/>
+                            <field name="user_id"/>
                         </group>
                     </group>
-                    <field name="checklist_ids">
-                        <tree>
-                            <field name="name" readonly="1"/>
-                            <field name="completed"/>
-                            <field name="completion_time" readonly="1"/>
-                            <field name="completed_by" readonly="1"/>
-                            <field name="remarks"/>
-                        </tree>
-                    </field>
-                    <field name="notes" placeholder="Additional notes about this duty register"/>
+                    <notebook>
+                        <page string="Register Line">
+                            <field name="register_line_ids">
+                                <tree editable="bottom">
+                                    <field name="name" string="Checklist"/>
+                                    <field name="response"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Reporting">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3>Block</h3>
+                                    <field name="block_reporting_ids">
+                                        <tree editable="bottom">
+                                            <field name="type"/>
+                                            <field name="description"/>
+                                        </tree>
+                                    </field>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h3>Patient</h3>
+                                    <field name="patient_reporting_ids">
+                                        <tree editable="bottom">
+                                            <field name="patient_id"/>
+                                            <field name="type"/>
+                                            <field name="description"/>
+                                        </tree>
+                                    </field>
+                                </div>
+                            </div>
+                        </page>
+                        <page string="Other Info">
+                            <group>
+                                <field name="company_id"/>
+                                <field name="notes" placeholder="Additional notes about this duty register"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -102,17 +292,23 @@
         <field name="name">hospital.block.duty.register.tree</field>
         <field name="model">hospital.block.duty.register</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'assigned'" decoration-success="state == 'completed'" decoration-danger="state == 'cancelled'">
                 <field name="name"/>
-                <field name="assignment_id"/>
-                <field name="block_id"/>
                 <field name="date"/>
-                <field name="shift"/>
+                <field name="employee_id"/>
+                <field name="duty_roster_id"/>
+                <field name="block_id"/>
                 <field name="registration_time"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
     
+    <record id="action_hospital_block_duty_register" model="ir.actions.act_window">
+        <field name="name">Block Duty Registers</field>
+        <field name="res_model">hospital.block.duty.register</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
     <!-- Block Duty Checklist Views -->
     <record id="view_hospital_block_duty_checklist_form" model="ir.ui.view">
@@ -132,7 +328,7 @@
                             <field name="sequence"/>
                         </group>
                         <group>
-                            <field name="active"/>
+                            <field name="active" widget="boolean_toggle"/>
                         </group>
                     </group>
                     <field name="description" placeholder="Detailed description of this checklist item"/>
@@ -146,12 +342,64 @@
         <field name="model">hospital.block.duty.checklist</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="block_id"/>
-                <field name="sequence"/>
-                <field name="active"/>
+                <field name="active" widget="boolean_toggle"/>
             </tree>
         </field>
     </record>
+    
+    <record id="action_hospital_block_duty_checklist" model="ir.actions.act_window">
+        <field name="name">Block Duty Checklists</field>
+        <field name="res_model">hospital.block.duty.checklist</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
+    <!-- Menus -->
+    <!-- <menuitem id="menu_hospital_block_duty"
+              name="Block Duty"
+              parent="menu_hospital_clinical"
+              sequence="40"/>
+              
+    <menuitem id="menu_hospital_block_duty_assignment"
+              name="Block Duty Assignment"
+              parent="menu_hospital_block_duty"
+              action="action_hospital_block_duty_assignment"
+              sequence="10"/>
+              
+    <menuitem id="menu_hospital_block_duty_register"
+              name="Block Duty Register"
+              parent="menu_hospital_block_duty"
+              action="action_hospital_block_duty_register"
+              sequence="20"/>
+              
+    <menuitem id="menu_hospital_block_duty_configuration"
+              name="Block Duty Configuration"
+              parent="menu_hospital_configuration"
+              sequence="30"/>
+              
+    <menuitem id="menu_hospital_block"
+              name="Blocks"
+              parent="menu_hospital_block_duty_configuration"
+              action="action_hospital_block"
+              sequence="10"/>
+              
+    <menuitem id="menu_hospital_campus"
+              name="Campuses"
+              parent="menu_hospital_block_duty_configuration"
+              action="action_hospital_campus"
+              sequence="20"/>
+              
+    <menuitem id="menu_hospital_duty_roster"
+              name="Duty Rosters"
+              parent="menu_hospital_block_duty_configuration"
+              action="action_hospital_duty_roster"
+              sequence="30"/>
+              
+    <menuitem id="menu_hospital_block_duty_checklist"
+              name="Block Duty Checklists"
+              parent="menu_hospital_block_duty_configuration"
+              action="action_hospital_block_duty_checklist"
+              sequence="40"/> -->
 </odoo>

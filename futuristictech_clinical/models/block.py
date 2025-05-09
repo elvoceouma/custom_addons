@@ -15,7 +15,7 @@ class Block(models.Model):
         ('2', '2nd FLOOR'),
         ('3', '3rd FLOOR'),
     ], string='Floor Number', required=True, tracking=True)
-    
+    active = fields.Boolean(string='Active', default=True)
     dispensing_store = fields.Many2one('stock.location', string='Dispensing Store')
     emergency_store = fields.Many2one('stock.location', string='Emergency Store')
     request_picking_type = fields.Many2one('stock.picking.type', string='Request Picking Type')
@@ -25,13 +25,13 @@ class Block(models.Model):
     room_count = fields.Integer(compute='_compute_room_count', string='Rooms')
     bed_count = fields.Integer(compute='_compute_bed_count', string='Beds')
     hospital_id = fields.Many2one('hospital.hospital', string='Campus', required=True)
-    
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     room_ids = fields.One2many('hospital.room', 'block_id', string='Rooms')
     bed_ids = fields.One2many('hospital.bed', 'block_id', string='Beds')
     
     # Additional field for extra information
     notes = fields.Text(string='Extra Information')
-    
+    description = fields.Text(string='Description')
     @api.depends('room_ids')
     def _compute_room_count(self):
         for record in self:
