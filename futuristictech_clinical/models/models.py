@@ -41,29 +41,6 @@ class HospitalActivityRecord(models.Model):
 #                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or _('New')
 #         return super(HospitalAppointment, self).create(vals_list)
 
-# class HospitalEvaluation(models.Model):
-#     _name = 'hospital.evaluation'
-#     _description = 'Hospital Evaluation'
-#     _inherit = ['mail.thread', 'mail.activity.mixin']
-    
-#     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True, tracking=True)
-#     evaluation_date = fields.Date(string='Evaluation Date', default=fields.Date.context_today, tracking=True)
-#     evaluation_type = fields.Selection([
-#         ('initial', 'Initial'),
-#         ('follow_up', 'Follow-up'),
-#         ('discharge', 'Discharge')
-#     ], string='Evaluation Type', default='initial', tracking=True)
-#     findings = fields.Text(string='Findings')
-#     recommendations = fields.Text(string='Recommendations')
-    
-#     @api.model_create_multi
-#     def create(self, vals_list):
-#         for vals in vals_list:
-#             if vals.get('name', _('New')) == _('New'):
-#                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.evaluation') or _('New')
-#         return super(HospitalEvaluation, self).create(vals_list)
 
 class HospitalGynecology(models.Model):
     _name = 'hospital.gynecology'

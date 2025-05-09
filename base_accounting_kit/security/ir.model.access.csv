@@ -46,6 +46,7 @@ access_account_lock_date,access.account.lock.date,model_account_lock_date,accoun
 access_account_recurring_entries_line,access.account.recurring.entries.line,model_account_recurring_entries_line,account.group_account_user,1,1,1,1
 access_generate_recurring_entries,generate.recurring.entries.user,model_account_recurring_payments,account.group_account_user,1,1,1,1
 
-
-
-
+access_hospital_evaluation,access_hospital_evaluation,model_hospital_evaluation,base.group_user,1,1,1,1
+access_hospital_gynecology,access_hospital_gynecology,model_hospital_gynecology,base.group_user,1,1,1,1
+access_hospital_pathology,access_hospital_pathology,model_hospital_pathology,base.group_user,1,1,1,1
+access_hospital_pathology_category,access_hospital_pathology_category,model_hospital_pathology_category,base.group_user,1,1,1,1

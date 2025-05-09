@@ -177,5 +177,22 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <!-- Sequences for Hospital Module -->
+        <record id="seq_hospital_evaluation" model="ir.sequence">
+            <field name="name">Hospital Evaluation Sequence</field>
+            <field name="code">hospital.evaluation</field>
+            <field name="prefix">EVAL/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_hospital_gynecology" model="ir.sequence">
+            <field name="name">Hospital Gynecology Sequence</field>
+            <field name="code">hospital.gynecology</field>
+            <field name="prefix">GYN/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

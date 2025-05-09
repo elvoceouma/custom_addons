@@ -246,24 +246,6 @@ class PatientDocument(models.Model):
 #     frequency = fields.Char(string='Frequency')
 
 
-# class PatientEvaluation(models.Model):
-#     _name = 'hospital.evaluation'
-#     _description = 'Patient Evaluation'
-    
-#     name = fields.Char(string='Evaluation #', required=True)
-#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Physician')
-#     appointment_id = fields.Many2one('hospital.appointment', string='Appointment #')
-#     date = fields.Date(string='Evaluation Date')
-#     indication = fields.Char(string='Indication')
-#     bmi = fields.Float(string='Body Mass Index (BMI)')
-#     evaluation_type = fields.Selection([
-#         ('initial', 'Initial'),
-#         ('followup', 'Follow-up'),
-#         ('annual', 'Annual'),
-#         ('emergency', 'Emergency'),
-#     ], string='Evaluation Type')
-#     notes = fields.Text(string='Notes')
 
 
 class LabTest(models.Model):
