@@ -23,7 +23,25 @@ class Prescription(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
-    
+    type = fields.Selection([
+        ('op', 'OP'),
+        ('ip', 'IP')
+    ], string='Type', default='op', tracking=True)
+    ip_number = fields.Char(string='IP Number', tracking=True)
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    picking_type = fields.Char(string='Picking Type', tracking=True)
+    source_location = fields.Char(string='Source Location', tracking=True)
+    destination_location = fields.Char(string='Destination Location', tracking=True)
+    request_picking_type = fields.Text(string='Request Picking Type', tracking=True)
+    return_picking_type = fields.Text(string='Return Picking Type', tracking=True)
+    receive_method = fields.Selection([
+        ('partial', 'Partial'),
+        ('full', 'Full')
+    ], string='Receive Method', default='partial', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    campus_id = fields.Many2one('hospital.campus', string='Campus', tracking=True)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    notes = fields.Text(string='Notes')
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -31,6 +49,28 @@ class Prescription(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.prescription') or _('New')
         return super(Prescription, self).create(vals_list)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.prescription') or _('New')
+        return super(Prescription, self).create(vals_list)
+    
+    def action_confirm(self):
+        for record in self:
+            record.state = 'confirm'
+    
+    def action_done(self):
+        for record in self:
+            record.state = 'done'
+    
+    def action_cancel(self):
+        for record in self:
+            record.state = 'cancel'
+    
+    def action_draft(self):
+        for record in self:
+            record.state = 'draft'
 
 class PrescriptionLine(models.Model):
     _name = 'hospital.prescription.line'

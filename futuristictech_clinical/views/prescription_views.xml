@@ -1,38 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Prescription Views -->
+    <!-- Tree View for Prescriptions -->
+    <record id="view_hospital_prescription_tree" model="ir.ui.view">
+        <field name="name">hospital.prescription.tree</field>
+        <field name="model">hospital.prescription</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-success="state == 'confirm'" decoration-muted="state == 'cancel'">
+                <field name="name" string="Prescription #"/>
+                <field name="patient_id" string="Patient"/>
+                <field name="prescription_date" string="Prescription Date"/>
+                <field name="physician_id" string="Physician"/>
+                <field name="pharmacy_id" string="Pharmacy"/>
+                <field name="state" string="State"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Prescriptions -->
     <record id="view_hospital_prescription_form" model="ir.ui.view">
         <field name="name">hospital.prescription.form</field>
         <field name="model">hospital.prescription</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary" 
+                           invisible="state != 'draft'"/>
+                    <button name="action_draft" string="Set to Draft" type="object" 
+                           invisible="state != 'cancel'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                           invisible="state not in ['draft', 'confirm']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
+                    
+                    <!-- Main prescription details -->
                     <group>
                         <group>
-                            <field name="patient_id"/>
-                            <field name="physician_id"/>
-                            <field name="prescription_date"/>
+                            <field name="type"/>
+                            <field name="ip_number" placeholder="IPxxxxxxx" invisible="type != 'ip'"/>
+                            <field name="patient_id" options="{'no_create': True}"/>
+                            <field name="mrn_no"/>
                         </group>
                         <group>
-                            <field name="op_visit_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="physician_id" options="{'no_create': True}"/>
+                            <field name="prescription_date"/>
                         </group>
                     </group>
-                    <field name="line_ids">
-                        <tree>
-                            <field name="medicine_id"/>
-                            <field name="dosage"/>
-                            <field name="frequency_id"/>
-                            <field name="duration"/>
-                            <field name="route_id"/>
-                            <field name="note"/>
-                        </tree>
-                    </field>
+                    
+                    <!-- Notebook with tabbed sections -->
+                    <notebook>
+                        <!-- Prescription Lines tab -->
+                        <page string="Prescription Lines" name="prescription_lines">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="physician_id"/>
+                                    <field name="speciality"/>
+                                    <field name="medicine_id"/>
+                                    <field name="medicine_type"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="morning"/>
+                                    <field name="afternoon"/>
+                                    <field name="evening"/>
+                                    <field name="night"/>
+                                    <field name="form"/>
+                                    <field name="uom_id"/>
+                                    <field name="frequency"/>
+                                    <field name="take"/>
+                                    <field name="indication"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="physician_id"/>
+                                            <field name="speciality"/>
+                                            <field name="medicine_id"/>
+                                            <field name="medicine_type"/>
+                                            <field name="start_date"/>
+                                            <field name="end_date"/>
+                                        </group>
+                                        <group>
+                                            <field name="morning"/>
+                                            <field name="afternoon"/>
+                                            <field name="evening"/>
+                                            <field name="night"/>
+                                            <field name="form"/>
+                                            <field name="uom_id"/>
+                                            <field name="frequency"/>
+                                            <field name="take"/>
+                                            <field name="indication"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <!-- Other Details tab -->
+                        <page string="Other Details" name="other_details">
+                            <group>
+                                <group>
+                                    <field name="picking_type"/>
+                                    <field name="source_location"/>
+                                    <field name="destination_location"/>
+                                    <field name="request_picking_type"/>
+                                    <field name="return_picking_type"/>
+                                </group>
+                                <group>
+                                    <field name="receive_method"/>
+                                    <field name="company_id" options="{'no_create': True}"/>
+                                    <field name="campus_id" options="{'no_create': True}"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Notes tab -->
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Add notes here..."/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -43,23 +134,175 @@
         </field>
     </record>
     
-    <record id="view_hospital_prescription_tree" model="ir.ui.view">
-        <field name="name">hospital.prescription.tree</field>
+    <!-- Search View for Prescriptions -->
+    <record id="view_hospital_prescription_search" model="ir.ui.view">
+        <field name="name">hospital.prescription.search</field>
         <field name="model">hospital.prescription</field>
         <field name="arch" type="xml">
-            <tree>
+            <search>
                 <field name="name"/>
                 <field name="patient_id"/>
                 <field name="physician_id"/>
-                <field name="prescription_date"/>
-            </tree>
+                <separator/>
+                <filter string="Active Prescriptions" name="active_prescriptions" domain="[('state', 'in', ['draft', 'confirm'])]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirm')]"/>
+                <separator/>
+                <filter string="Today" name="today" domain="[('prescription_date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('prescription_date', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter string="This Week" name="this_week" domain="[('prescription_date', '&gt;=', (context_today() + relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d')), ('prescription_date', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('prescription_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')), ('prescription_date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Physician" name="group_by_physician" context="{'group_by': 'physician_id'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
         </field>
     </record>
     
+    <!-- Prescription Action -->
     <record id="action_hospital_prescription" model="ir.actions.act_window">
         <field name="name">Prescriptions</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.prescription</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active_prescriptions': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first prescription!
+            </p>
+        </field>
     </record>
+    
+    <!-- Medicine Form View -->
+    <record id="view_hospital_medicine_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.form</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Medicine Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="generic_name"/>
+                        </group>
+                        <group>
+                            <field name="manufacturer"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Add description..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Medicine Tree View -->
+    <record id="view_hospital_medicine_tree" model="ir.ui.view">
+        <field name="name">hospital.medicine.tree</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="generic_name"/>
+                <field name="manufacturer"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Medicine Action -->
+    <record id="action_hospital_medicine" model="ir.actions.act_window">
+        <field name="name">Medicines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medicine!
+            </p>
+        </field>
+    </record>
+    
+    <!-- Pharmacy Form View -->
+    <record id="view_hospital_pharmacy_form" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.form</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Pharmacy Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Pharmacy Tree View -->
+    <record id="view_hospital_pharmacy_tree" model="ir.ui.view">
+        <field name="name">hospital.pharmacy.tree</field>
+        <field name="model">hospital.pharmacy</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="location"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Pharmacy Action -->
+    <record id="action_hospital_pharmacy" model="ir.actions.act_window">
+        <field name="name">Pharmacies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.pharmacy</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first pharmacy!
+            </p>
+        </field>
+    </record>
+    
+    <!-- Menu Items -->
+    <!-- <menuitem id="menu_hospital_prescription"
+              name="Prescriptions"
+              parent="hospital_management.menu_hospital_clinical"
+              action="action_hospital_prescription"
+              sequence="20"/>
+              
+    <menuitem id="menu_hospital_medicine"
+              name="Medicines"
+              parent="hospital_management.menu_hospital_configuration"
+              action="action_hospital_medicine"
+              sequence="30"/>
+              
+    <menuitem id="menu_hospital_pharmacy"
+              name="Pharmacies"
+              parent="hospital_management.menu_hospital_configuration"
+              action="action_hospital_pharmacy"
+              sequence="40"/> -->
 </odoo>

@@ -21,13 +21,14 @@ class Medicine(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient')
     prescription_ids = fields.One2many('hospital.prescription.line', 'medicine_id', string='Prescriptions')
     form_id = fields.Many2one('hospital.drug.form', string='Form')
-    
+    generic_name = fields.Char(string='Generic Name')
+    active = fields.Boolean(string='Active', default=True)
+    description = fields.Text(string='Description')
+    manufacturer = fields.Char(string='Manufacturer')
     @api.onchange('medicine_type_id')
     def _onchange_medicine_type(self):
         if self.medicine_type_id and not self.medicine_category_id:
             self.medicine_category_id = self.medicine_type_id.default_category_id
-
-
 
 class MedicineDosage(models.Model):
     _name = 'hospital.medicine.dosage'

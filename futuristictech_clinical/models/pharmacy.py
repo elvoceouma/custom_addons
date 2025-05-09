@@ -22,7 +22,7 @@ class Pharmacy(models.Model):
     fax = fields.Char(string='Fax')
     email = fields.Char(string='Email')
     website = fields.Char(string='Website')
-    
+    location = fields.Char(string='Location')
     # Pharmacist
     pharmacist_id = fields.Many2one('res.users', string='Pharmacist')
     
