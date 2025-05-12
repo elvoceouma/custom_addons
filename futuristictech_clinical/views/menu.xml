@@ -63,7 +63,7 @@
     
     <!-- Medicine Register Menu -->
     <menuitem id="menu_medicine_register_root" name="Medicine Register" parent="hospital_management_root" sequence="60"/>
-    <menuitem id="menu_view_medicine_register" name="View Medicine Register" parent="menu_medicine_register_root" action="action_hospital_medicine_register" sequence="10"/>
+    <menuitem id="menu_view_medicine_register" name="View Medicine Register" parent="menu_medicine_register_root" action="action_medicine_register" sequence="10"/>
     <menuitem id="menu_create_medicine_consumption" name="Create Medicine Consumption" parent="menu_medicine_register_root" action="action_hospital_medicine_consumption" sequence="20"/>
     <menuitem id="menu_tablet_capsule" name="Tablet / Capsule" parent="menu_medicine_register_root" action="action_hospital_tablet_capsule" sequence="30"/>
     <menuitem id="menu_injection_application" name="Injection / Application" parent="menu_medicine_register_root" action="action_hospital_injection_application" sequence="40"/>

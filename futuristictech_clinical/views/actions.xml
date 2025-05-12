@@ -478,7 +478,7 @@
     <record id="action_hospital_medicine_register" model="ir.actions.act_window">
         <field name="name">Medicine Register</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.medicine</field>
+        <field name="res_model">medicine.register</field>
         <field name="view_mode">tree,form</field>
     </record>
 

@@ -42,6 +42,7 @@ class Prescription(models.Model):
     campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
     notes = fields.Text(string='Notes')
+    medicine_register_ids = fields.One2many('medicine.register', 'prescription_id', string='Medicine Registers')
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

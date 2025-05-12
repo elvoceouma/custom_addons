@@ -69,44 +69,44 @@ from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 
 # Medicine Consumption Model
-class HospitalMedicineConsumption(models.Model):
-    _name = 'hospital.medicine.consumption'
-    _description = 'Hospital Medicine Consumption'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class HospitalMedicineConsumption(models.Model):
+#     _name = 'hospital.medicine.consumption'
+#     _description = 'Hospital Medicine Consumption'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
-                       default=lambda self: _('New'))
-    date = fields.Date(string='Date', default=fields.Date.context_today)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    medicine_line_ids = fields.One2many('hospital.medicine.consumption.line', 'consumption_id', 
-                                       string='Medicine Lines')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirm', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancel', 'Cancelled'),
-    ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
+#     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+#                        default=lambda self: _('New'))
+#     date = fields.Date(string='Date', default=fields.Date.context_today)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Physician')
+#     medicine_line_ids = fields.One2many('hospital.medicine.consumption.line', 'consumption_id', 
+#                                        string='Medicine Lines')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('confirm', 'Confirmed'),
+#         ('done', 'Done'),
+#         ('cancel', 'Cancelled'),
+#     ], string='Status', default='draft', tracking=True)
+#     notes = fields.Text(string='Notes')
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.medicine.consumption') or _('New')
-        return super(HospitalMedicineConsumption, self).create(vals_list)
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get('name', _('New')) == _('New'):
+    #             vals['name'] = self.env['ir.sequence'].next_by_code('hospital.medicine.consumption') or _('New')
+    #     return super(HospitalMedicineConsumption, self).create(vals_list)
     
-    def action_confirm(self):
-        self.state = 'confirm'
+    # def action_confirm(self):
+    #     self.state = 'confirm'
     
-    def action_done(self):
-        self.state = 'done'
+    # def action_done(self):
+    #     self.state = 'done'
     
-    def action_cancel(self):
-        self.state = 'cancel'
+    # def action_cancel(self):
+    #     self.state = 'cancel'
     
-    def action_draft(self):
-        self.state = 'draft'
+    # def action_draft(self):
+    #     self.state = 'draft'
 
 
 class HospitalMedicineConsumptionLine(models.Model):
@@ -140,13 +140,17 @@ class HospitalTabletCapsule(models.Model):
 
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
                        default=lambda self: _('New'))
+    date = fields.Date(string='Date', default=fields.Date.context_today)
     medicine_id = fields.Many2one('hospital.medicine', string='Medicine', required=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     physician_id = fields.Many2one('hospital.physician', string='Physician')
     quantity = fields.Float(string='Quantity', default=1.0)
     frequency_id = fields.Many2one('hospital.drug.frequency', string='Frequency')
+    campus_id = fields.Many2one('hospital.campus', string='Campus')
     start_date = fields.Date(string='Start Date', default=fields.Date.context_today)
     end_date = fields.Date(string='End Date')
+    person_responsible = fields.Many2one('res.users', string='Person Responsible')
+    time = fields.Char(string='Time', required=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('prescribed', 'Prescribed'),
@@ -228,29 +232,6 @@ class HospitalNursesCampusDuty(models.Model):
         return super(HospitalNursesCampusDuty, self).create(vals_list)
 
 
-# Medication Category Model
-# class HospitalMedicationCategory(models.Model):
-#     _name = 'hospital.medication.category'
-#     _description = 'Hospital Medication Category'
-
-#     name = fields.Char(string='Name', required=True)
-#     code = fields.Char(string='Code')
-#     parent_id = fields.Many2one('hospital.medication.category', string='Parent Category')
-#     description = fields.Text(string='Description')
-#     active = fields.Boolean(string='Active', default=True)
-
-
-# # Medication Type Model
-# class HospitalMedicationType(models.Model):
-#     _name = 'hospital.medication.type'
-#     _description = 'Hospital Medication Type'
-
-#     name = fields.Char(string='Name', required=True)
-#     category_id = fields.Many2one('hospital.medication.category', string='Category')
-#     code = fields.Char(string='Code')
-#     description = fields.Text(string='Description')
-#     active = fields.Boolean(string='Active', default=True)
-
 
 # Informed Consent Form Model
 class HospitalInformedConsentForm(models.Model):
@@ -271,13 +252,15 @@ class HospitalInformedConsentForm(models.Model):
     physician_signature = fields.Binary(string='Physician Signature')
     witness_id = fields.Many2one('res.users', string='Witness')
     witness_signature = fields.Binary(string='Witness Signature')
+    nurse_id = fields.Many2one('res.users', string='Nurse')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('signed', 'Signed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
-    
+    age = fields.Integer(string='Age')
+    admitting_person = fields.Char(string='Admitting Person')
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -286,17 +269,24 @@ class HospitalInformedConsentForm(models.Model):
         return super(HospitalInformedConsentForm, self).create(vals_list)
 
 
-# ECT Consent Form Model
 class HospitalEctConsentForm(models.Model):
     _name = 'hospital.ect.consent.form'
     _description = 'Hospital ECT Consent Form'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+    name = fields.Char(string='EC Format', required=True, copy=False, readonly=True, 
                        default=lambda self: _('New'))
+    ip_number = fields.Char(string='IP Number', required=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
+    patient_name = fields.Char(related='patient_id.name', string='Patient Name', store=True)
+    age = fields.Integer(string='Age')
+    sex = fields.Selection([('male', 'Male'), ('female', 'Female')], string='Sex')
+    admitting_person = fields.Char(string='Admitting Person')
     date = fields.Date(string='Date', default=fields.Date.context_today, required=True)
+    psychiatrist_id = fields.Many2one('hospital.physician', string='Psychiatrist')
+    assistant_id = fields.Many2one('res.users', string='Assistant')
+    equipment_used = fields.Char(string='Equipment Used')
+    diagnosis = fields.Char(string='Diagnosis')
     num_sessions = fields.Integer(string='Number of Sessions')
     anesthesia_type = fields.Char(string='Anesthesia Type')
     risks_explained = fields.Boolean(string='Risks Explained')
@@ -312,6 +302,9 @@ class HospitalEctConsentForm(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
+    others = fields.Text(string='Others')
+    internal_code = fields.Char(string='Internal Code')
+    # log_ids = fields.One2many('ect.form.log', 'form_id', string='Logs')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -320,7 +313,13 @@ class HospitalEctConsentForm(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.ect.consent.form') or _('New')
         return super(HospitalEctConsentForm, self).create(vals_list)
 
+    def action_sign(self):
+        self.state = 'signed'
 
+    def action_cancel(self):
+        self.state = 'cancelled'
+        
+        
 # Procedural Form Section-86 Model
 class HospitalProceduralFormSection86(models.Model):
     _name = 'hospital.procedural.form.section.86'
@@ -806,18 +805,6 @@ class HospitalPatientRequisition(models.Model):
         ('completed', 'Completed')
     ], string='Status', default='draft')
 
-class HospitalProceduralFormSection86(models.Model):
-    _name = 'hospital.procedural.form.section.86'
-    _description = 'Procedural Form Section-86'
-    
-    name = fields.Char(string='Form Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    procedure_details = fields.Text(string='Procedure Details')
-    observations = fields.Text(string='Observations')
-    recommendations = fields.Text(string='Recommendations')
-
 class HospitalProfile(models.Model):
     _name = 'hospital.profile'
     _description = 'Patient Profile'
@@ -1210,18 +1197,6 @@ class HospitalDoctorPayout(models.Model):
         ('paid', 'Paid')
     ], string='Status', default='draft')
 
-class HospitalECTConsentForm(models.Model):
-    _name = 'hospital.ect.consent.form'
-    _description = 'ECT Consent Form'
-    
-    name = fields.Char(string='Consent Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    num_sessions = fields.Integer(string='Number of Sessions')
-    risks_explained = fields.Boolean(string='Risks Explained')
-    consent_given = fields.Boolean(string='Consent Given')
-    notes = fields.Text(string='Notes')
 
 class HospitalEmergencyAssessment(models.Model):
     _name = 'hospital.emergency.assessment'

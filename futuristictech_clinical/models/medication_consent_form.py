@@ -122,3 +122,15 @@ class HospitalMedicineUnit(models.Model):
     name = fields.Char(string='Name', required=True)
     code = fields.Char(string='Code')
     active = fields.Boolean(default=True)
+
+class MedicineCategory(models.Model):
+    _name = 'medicine.category'
+    _description = 'Medicine Category'
+    
+    name = fields.Char(string='Name', required=True)
+    code = fields.Char(string='Code')
+    active = fields.Boolean(default=True)
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', 'Medicine category name must be unique!')
+    ]

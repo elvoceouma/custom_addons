@@ -61,6 +61,7 @@
     </record>
 
     <!-- Medication Category Views -->
+ <!-- Medication Category Views -->
     <record id="view_hospital_medication_category_form" model="ir.ui.view">
         <field name="name">hospital.medication.category.form</field>
         <field name="model">hospital.medication.category</field>
@@ -76,10 +77,27 @@
                         <field name="code"/>
                         <field name="active"/>
                     </group>
+                    <notebook>
+                        <page string="Products" name="medication_products">
+                            <field name="product_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="dosage_range"/>
+                                    <field name="medication_type_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
+
     
     <record id="view_hospital_medication_category_tree" model="ir.ui.view">
         <field name="name">hospital.medication.category.tree</field>
@@ -328,7 +346,61 @@
             </form>
         </field>
     </record>
-    
+
+    <!-- Create Medicine Consumption Views   -->
+        <record id="view_hospital_medicine_consumption_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.consumption.form</field>
+        <field name="model">hospital.medicine.consumption</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Consumption Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                            <field name="register_type"/>
+                            <field name="date"/>
+                        <field name="time"/>
+                        <field name="campus_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Create teh  views for the Tablet/Capsule Model -->
+
+    <record  id="view_hospital_tablet_capsule_form" model="ir.ui.view">
+        <field name="name">hospital.tablet.capsule.form</field>
+        <field name="model">hospital.tablet.capsule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Tablet/Capsule Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="date"/>
+                        <field name="campus_id"/>
+                        <field name="person_responsible"/>
+                        
+                    </group>
+                    <notebook>
+                        <page string="Details" name="details">
+                            <field name="medicine_id"/>
+                            <field name="quantity"/>
+                            <field name="date"/>
+                            <field name="time"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
     <record id="view_hospital_drug_frequency_config_tree" model="ir.ui.view">
         <field name="name">hospital.drug.frequency.config.tree</field>
         <field name="model">hospital.drug.frequency.config</field>

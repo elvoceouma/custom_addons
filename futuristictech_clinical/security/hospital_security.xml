@@ -784,4 +784,367 @@
         <field name="perm_unlink" eval="1"/>
     </record>
 
+      <!-- Access Rights -->
+    <record id="access_medicine_register_user" model="ir.model.access">
+        <field name="name">medicine.register.user</field>
+        <field name="model_id" ref="model_medicine_register"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_medicine_register_manager" model="ir.model.access">
+        <field name="name">medicine.register.manager</field>
+        <field name="model_id" ref="model_medicine_register"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_medicine_type_user" model="ir.model.access">
+        <field name="name">medicine.type.user</field>
+        <field name="model_id" ref="model_medicine_type"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_medicine_type_manager" model="ir.model.access">
+        <field name="name">medicine.type.manager</field>
+        <field name="model_id" ref="model_medicine_type"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_drug_form_user" model="ir.model.access">
+        <field name="name">hospital.drug.form.user</field>
+        <field name="model_id" ref="model_hospital_drug_form"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_drug_form_manager" model="ir.model.access">
+        <field name="name">hospital.drug.form.manager</field>
+        <field name="model_id" ref="model_hospital_drug_form"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medicine_user" model="ir.model.access">
+        <field name="name">hospital.medicine.user</field>
+        <field name="model_id" ref="model_hospital_medicine"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.manager</field>
+        <field name="model_id" ref="model_hospital_medicine"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_medicine_category_user" model="ir.model.access">
+        <field name="name">medicine.category.user</field>
+        <field name="model_id" ref="model_medicine_category"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_medicine_category_manager" model="ir.model.access">
+        <field name="name">medicine.category.manager</field>
+        <field name="model_id" ref="model_medicine_category"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <!-- Additional models from the attached files -->
+    <record id="access_hospital_medicine_dosage_user" model="ir.model.access">
+        <field name="name">hospital.medicine.dosage.user</field>
+        <field name="model_id" ref="model_hospital_medicine_dosage"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_dosage_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.dosage.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_dosage"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medication_category_user" model="ir.model.access">
+        <field name="name">hospital.medication.category.user</field>
+        <field name="model_id" ref="model_hospital_medication_category"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medication_category_manager" model="ir.model.access">
+        <field name="name">hospital.medication.category.manager</field>
+        <field name="model_id" ref="model_hospital_medication_category"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medication_type_user" model="ir.model.access">
+        <field name="name">hospital.medication.type.user</field>
+        <field name="model_id" ref="model_hospital_medication_type"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medication_type_manager" model="ir.model.access">
+        <field name="name">hospital.medication.type.manager</field>
+        <field name="model_id" ref="model_hospital_medication_type"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_drug_frequency_user" model="ir.model.access">
+        <field name="name">hospital.drug.frequency.user</field>
+        <field name="model_id" ref="model_hospital_drug_frequency"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_drug_frequency_manager" model="ir.model.access">
+        <field name="name">hospital.drug.frequency.manager</field>
+        <field name="model_id" ref="model_hospital_drug_frequency"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_drug_route_user" model="ir.model.access">
+        <field name="name">hospital.drug.route.user</field>
+        <field name="model_id" ref="model_hospital_drug_route"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_drug_route_manager" model="ir.model.access">
+        <field name="name">hospital.drug.route.manager</field>
+        <field name="model_id" ref="model_hospital_drug_route"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_dose_unit_user" model="ir.model.access">
+        <field name="name">hospital.dose.unit.user</field>
+        <field name="model_id" ref="model_hospital_dose_unit"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_dose_unit_manager" model="ir.model.access">
+        <field name="name">hospital.dose.unit.manager</field>
+        <field name="model_id" ref="model_hospital_dose_unit"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medicine_consumption_user" model="ir.model.access">
+        <field name="name">hospital.medicine.consumption.user</field>
+        <field name="model_id" ref="model_hospital_medicine_consumption"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_consumption_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.consumption.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_consumption"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <!-- Medication Consent Form -->
+    <record id="access_medication_consent_form_user" model="ir.model.access">
+        <field name="name">medication.consent.form.user</field>
+        <field name="model_id" ref="model_medication_consent_form"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_medication_consent_form_manager" model="ir.model.access">
+        <field name="name">medication.consent.form.manager</field>
+        <field name="model_id" ref="model_medication_consent_form"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_medication_consent_form_line_user" model="ir.model.access">
+        <field name="name">medication.consent.form.line.user</field>
+        <field name="model_id" ref="model_medication_consent_form_line"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_medication_consent_form_line_manager" model="ir.model.access">
+        <field name="name">medication.consent.form.line.manager</field>
+        <field name="model_id" ref="model_medication_consent_form_line"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medicine_type_user" model="ir.model.access">
+        <field name="name">hospital.medicine.type.user</field>
+        <field name="model_id" ref="model_hospital_medicine_type"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_type_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.type.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_type"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medicine_category_user" model="ir.model.access">
+        <field name="name">hospital.medicine.category.user</field>
+        <field name="model_id" ref="model_hospital_medicine_category"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_category_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.category.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_category"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="access_hospital_medicine_form_user" model="ir.model.access">
+        <field name="name">hospital.medicine.form.user</field>
+        <field name="model_id" ref="model_hospital_medicine_form"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_form_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.form.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_form"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+    
+    <record id="access_hospital_medicine_unit_user" model="ir.model.access">
+        <field name="name">hospital.medicine.unit.user</field>
+        <field name="model_id" ref="model_hospital_medicine_unit"/>
+        <field name="group_id" ref="group_hospital_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="access_hospital_medicine_unit_manager" model="ir.model.access">
+        <field name="name">hospital.medicine.unit.manager</field>
+        <field name="model_id" ref="model_hospital_medicine_unit"/>
+        <field name="group_id" ref="group_hospital_manager"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
 </odoo>

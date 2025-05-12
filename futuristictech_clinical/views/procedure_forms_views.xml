@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Procedure Forms Views -->
+    <record id="view_hospital_informed_consent_form" model="ir.ui.view">
+        <field name="name">hospital.informed.consent.form.form</field>
+        <field name="model">hospital.informed.consent.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Informed Consent Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                    
+                        <field name="patient_id"/>
+                        <field name="name"/>
+                        <field name="age"/>
+                        <field name="admitting_person"/>
+
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="physician_id"/>
+                        <field name="nurse_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_ect_consent_form" model="ir.ui.view">
+    <field name="name">hospital.ect.consent.form.view</field>
+    <field name="model">hospital.ect.consent.form</field>
+    <field name="arch" type="xml">
+        <form string="ECT Content Form">
+            <header>
+                <button name="action_sign" string="Sign" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_cancel" string="Cancel" invisible="state != 'draft'"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,signed,cancelled"/>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>ECT Content Form</h1>
+                </div>
+                
+                <group>
+                    <group>
+                        <field name="ip_number"/>
+                        <field name="patient_name"/>
+                        <field name="age"/>
+                        <field name="admitting_person"/>
+                        <field name="anesthesia_type"/>
+                        <field name="others"/>
+                    </group>
+                    
+                    <group>
+                        <field name="date"/>
+                        <field name="sex"/>
+                        <field name="psychiatrist_id"/>
+                        <field name="assistant_id"/>
+                        <field name="equipment_used"/>
+                        <field name="diagnosis"/>
+                    </group>
+                </group>
+                
+                <!-- <notebook>
+                    <page string="Consent Details">
+                        <group>
+                            <field name="num_sessions"/>
+                            <field name="anesthesia_type"/>
+                            <field name="risks_explained"/>
+                            <field name="benefits_explained"/>
+                            <field name="alternatives_explained"/>
+                        </group>
+                        <group>
+                            <field name="patient_signature" widget="image" options="{'preview_image': 'image'}" class="oe_avatar"/>
+                            <field name="physician_signature" widget="image" options="{'preview_image': 'image'}" class="oe_avatar"/>
+                            <field name="witness_id"/>
+                            <field name="witness_signature" widget="image" options="{'preview_image': 'image'}" class="oe_avatar"/>
+                        </group>
+                    </page>
+                    
+                     <page string="Logs">
+                        <field name="internal_code" placeholder="Log an internal code"/>
+                        <field name="log_ids" mode="tree,form">
+                            <tree>
+                                <field name="date"/>
+                                <field name="note"/>
+                                <field name="psychiatrist_id"/>
+                                <field name="ip_number_from"/>
+                                <field name="ip_number_to"/>
+                            </tree>
+                        </field>
+                    </page>
+                     
+                    <page string="Notes">
+                        <field name="notes"/>
+                    </page>
+                </notebook> -->
+            </sheet>
+        </form>
+    </field>
+</record>
+
+</odoo>

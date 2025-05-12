@@ -41,7 +41,7 @@ class Hospital(models.Model):
     pharmacy_ids = fields.One2many('hospital.pharmacy', 'hospital_id', string='Pharmacies')
     block_count = fields.Integer(compute='_compute_block_count', string='Blocks')
     pharmacy_count = fields.Integer(compute='_compute_pharmacy_count', string='Pharmacies')
-    
+    medicine_register_ids = fields.One2many('medicine.register', 'campus_id', string='Medicine Registers')
     # Inventory-related fields
     patient_requisition_picking_type_id = fields.Many2one('stock.picking.type', string='Patient Requisition Picking Type')
     store_clearance_picking_type_id = fields.Many2one('stock.picking.type', string='Store Clearance Picking Type')

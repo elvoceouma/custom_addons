@@ -83,7 +83,7 @@ class Patient(models.Model):
     
     # Insurance Information
     insurance_id = fields.Many2one('hospital.insurance', string='Insurance')
-    
+    medicine_register_ids = fields.One2many('medicine.register', 'patient_id', string='Medicine Registers')
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -222,30 +222,6 @@ class PatientDocument(models.Model):
             'type': 'ir.actions.client',
             'tag': 'reload',
         }
-
-
-# class PatientPrescriptionLine(models.Model):
-#     _name = 'hospital.prescription.line'
-#     _description = 'Prescription Line'
-    
-#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Physician')
-#     speciality = fields.Char(string='Speciality')
-#     medicine_id = fields.Many2one('hospital.medicine', string='Medicine')
-#     medicine_type = fields.Char(string='Type')
-#     start_date = fields.Date(string='From')
-#     end_date = fields.Date(string='TO')
-#     morning = fields.Boolean(string='M')
-#     afternoon = fields.Boolean(string='AN')
-#     evening = fields.Boolean(string='E')
-#     night = fields.Boolean(string='N')
-#     uom_id = fields.Many2one('uom.uom', string='UOM')
-#     take = fields.Char(string='Take')
-#     form = fields.Char(string='Form')
-#     indication = fields.Char(string='Indication')
-#     frequency = fields.Char(string='Frequency')
-
-
 
 
 class LabTest(models.Model):

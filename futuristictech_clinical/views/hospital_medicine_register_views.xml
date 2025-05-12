@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medicine Register Form View -->
+    <record id="view_medicine_register_form" model="ir.ui.view">
+        <field name="name">medicine.register.form</field>
+        <field name="model">medicine.register</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_draft" string="Set to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title" style="width: 390px;">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number"/>
+                            <field name="patient_id"/>
+                            <field name="campus_id"/>
+                        </group>
+                        <group>
+                            <field name="prescription_id"/>
+                            <field name="date"/>
+                            <field name="type_id"/>
+                            <field name="medicine_id"/>
+                            <field name="form_id"/>
+                            <field name="quantity"/>
+                            <field name="time"/>
+                            <field name="hours"/>
+                         </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Medicine Register Tree View -->
+    <record id="view_medicine_register_tree" model="ir.ui.view">
+        <field name="name">medicine.register.tree</field>
+        <field name="model">medicine.register</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'cancelled'">
+                <field name="date"/>
+                <field name="ip_number"/>
+                <field name="campus_id"/>
+                <field name="medicine_id"/>
+                <field name="form_id"/>
+                <field name="quantity"/>
+                <field name="time"/>
+                <field name="hours"/>
+                <field name="state" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medicine Register Search View -->
+    <record id="view_medicine_register_search" model="ir.ui.view">
+        <field name="name">medicine.register.search</field>
+        <field name="model">medicine.register</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="ip_number"/>
+                <field name="patient_id"/>
+                <field name="campus_id"/>
+                <field name="medicine_id"/>
+                <field name="date"/>
+                <filter string="Today" name="today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('date', '>=', (context_today() + relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d')), ('date', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d')), ('date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient" domain="[]" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Medicine" name="medicine" domain="[]" context="{'group_by': 'medicine_id'}"/>
+                    <filter string="Form" name="form" domain="[]" context="{'group_by': 'form_id'}"/>
+                    <filter string="Campus" name="campus" domain="[]" context="{'group_by': 'campus_id'}"/>
+                    <filter string="Date" name="date" domain="[]" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medicine Type Views -->
+    <record id="view_medicine_type_form" model="ir.ui.view">
+        <field name="name">medicine.type.form</field>
+        <field name="model">medicine.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Type Name"/></h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_medicine_type_tree" model="ir.ui.view">
+        <field name="name">medicine.type.tree</field>
+        <field name="model">medicine.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medicine Form Views -->
+    <!-- <record id="view_medicine_form_form" model="ir.ui.view">
+        <field name="name">'hospital.medicine.form.form</field>
+        <field name="model">'hospital.medicine.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Form Name"/></h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+<!-- 
+    <record id="view_medicine_form_tree" model="ir.ui.view">
+        <field name="name">'hospital.medicine.form.tree</field>
+        <field name="model">'hospital.medicine.form</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record> -->
+
+    <!-- Hospital Medicine Views -->
+    <record id="view_hospital_medicine_form" model="ir.ui.view">
+        <field name="name">hospital.'hospital.medicine.form</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Medicine Name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="type_id"/>
+                        </group>
+                        <group>
+                            <field name="form_id"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_medicine_tree" model="ir.ui.view">
+        <field name="name">hospital.medicine.tree</field>
+        <field name="model">hospital.medicine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="type_id"/>
+                <field name="form_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medicine Category Views -->
+    <record id="view_medicine_category_form" model="ir.ui.view">
+        <field name="name">medicine.category.form</field>
+        <field name="model">medicine.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Category Name"/></h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_medicine_category_tree" model="ir.ui.view">
+        <field name="name">medicine.category.tree</field>
+        <field name="model">medicine.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Medication Category Views -->
+    <record id="view_hospital_medication_category_form" model="ir.ui.view">
+        <field name="name">hospital.medication.category.form</field>
+        <field name="model">hospital.medication.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Category Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="medication_products">
+                            <field name="product_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="dosage_range"/>
+                                    <field name="medication_type_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_medication_category_tree" model="ir.ui.view">
+        <field name="name">hospital.medication.category.tree</field>
+        <field name="model">hospital.medication.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_medication_category_search" model="ir.ui.view">
+        <field name="name">hospital.medication.category.search</field>
+        <field name="model">hospital.medication.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medication Product Views -->
+    <record id="view_hospital_medication_product_form" model="ir.ui.view">
+        <field name="name">hospital.medication.product.form</field>
+        <field name="model">hospital.medication.product</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Medication Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="product_id"/>
+                            <field name="medication_type_id"/>
+                        </group>
+                        <group>
+                            <field name="default_dosage"/>
+                            <field name="dosage_range"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_medication_product_tree" model="ir.ui.view">
+        <field name="name">hospital.medication.product.tree</field>
+        <field name="model">hospital.medication.product</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="dosage_range"/>
+                <field name="medication_type_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_medication_product_search" model="ir.ui.view">
+        <field name="name">hospital.medication.product.search</field>
+        <field name="model">hospital.medication.product</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="medication_type_id"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Medication Type" name="type" context="{'group_by': 'medication_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medication Type Views -->
+    <record id="view_hospital_medication_type_form" model="ir.ui.view">
+        <field name="name">hospital.medication.type.form</field>
+        <field name="model">hospital.medication.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Type Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="description"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_medication_type_tree" model="ir.ui.view">
+        <field name="name">hospital.medication.type.tree</field>
+        <field name="model">hospital.medication.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Specific view for Medication Category List as shown in the image -->
+    <record id="view_hospital_medication_category_list_form" model="ir.ui.view">
+        <field name="name">hospital.medication.category.list.form</field>
+        <field name="model">hospital.medication.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" string="Medication Category"/>
+                    </group>
+                    <group string="Medication Product">
+                        <field name="product_ids" nolabel="1">
+                            <tree>
+                                <field name="name" string="Medication"/>
+                                <field name="dosage_range"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Medication Type">
+                        <field name="product_ids" readonly="1" nolabel="1">
+                            <tree>
+                                <field name="medication_type_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_hospital_medication_category" model="ir.actions.act_window">
+        <field name="name">Medication Categories</field>
+        <field name="res_model">hospital.medication.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medication category
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_medication_product" model="ir.actions.act_window">
+        <field name="name">Medication Products</field>
+        <field name="res_model">hospital.medication.product</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medication product
+            </p>
+        </field>
+    </record>
+
+    <record id="action_hospital_medication_type" model="ir.actions.act_window">
+        <field name="name">Medication Types</field>
+        <field name="res_model">hospital.medication.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first medication type
+            </p>
+        </field>
+    </record>
+    <!-- Actions -->
+    <record id="action_medicine_register" model="ir.actions.act_window">
+        <field name="name">Medicine Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">medicine.register</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new medicine register entry!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_view_medicine_register" model="ir.actions.act_window">
+        <field name="name">View Medicine Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">medicine.register</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No medicine register entries found!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_medicine_type" model="ir.actions.act_window">
+        <field name="name">Medicine Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">medicine.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new medicine type!
+            </p>
+        </field>
+    </record>
+
+    <!-- <record id="action_medicine_form" model="ir.actions.act_window">
+        <field name="name">Medicine Forms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">'hospital.medicine.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new medicine form!
+            </p>
+        </field>
+    </record> -->
+
+    <record id="action_hospital_medicine" model="ir.actions.act_window">
+        <field name="name">Medicines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.medicine</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new medicine!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_medicine_category" model="ir.actions.act_window">
+        <field name="name">Medicine Categories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">medicine.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new medicine category!
+            </p>
+        </field>
+    </record>
+
+  
+</odoo>
