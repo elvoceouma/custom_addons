@@ -320,7 +320,6 @@ class HospitalEctConsentForm(models.Model):
         self.state = 'cancelled'
         
         
-# Procedural Form Section-86 Model
 class HospitalProceduralFormSection86(models.Model):
     _name = 'hospital.procedural.form.section.86'
     _description = 'Hospital Procedural Form Section-86'
@@ -335,7 +334,7 @@ class HospitalProceduralFormSection86(models.Model):
     patient_age_display = fields.Integer(related='patient_id.age', string='Patient Age', readonly=True, store=True)
     patient_sex_display = fields.Selection(related='patient_id.gender', string='Patient Sex', readonly=True, store=True)
     # For Tree View consistency
-    patient_ip_number_tree = fields.Char( string='IP Number', store=True)
+    patient_ip_number_tree = fields.Char(string='IP Number', store=True, readonly=True)
 
 
     physician_id = fields.Many2one('hospital.physician', string='Mental Health Professional (Psychiatrist)', required=True, tracking=True)
@@ -397,7 +396,7 @@ class HospitalProceduralFormSection86(models.Model):
             if record.state in ['submitted', 'approved', 'rejected']:
                 record.state = 'draft'
         return True
-
+    
 # Enhanced Recovery Model
 class HospitalEnhancedRecovery(models.Model):
     _name = 'hospital.enhanced.recovery'
@@ -405,16 +404,54 @@ class HospitalEnhancedRecovery(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
-                       default=lambda self: _('New'))
+                      default=lambda self: _('New'))
+    name_seq = fields.Char(string='Form Number', readonly=True)
+    ip_number = fields.Char(string='IP Number', required=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
+    patient_name = fields.Char(related='patient_id.name', string='Patient Name', store=True)
+    mrn_no = fields.Char(string='MRN Number')
+    age = fields.Integer(string='Age')
+    admitted_by = fields.Char(string='Admitted By')
     date = fields.Date(string='Date', default=fields.Date.context_today, required=True)
-    procedure_id = fields.Many2one('hospital.medical.procedure', string='Procedure')
-    pre_op_assessment = fields.Text(string='Pre-operative Assessment')
-    intra_op_measures = fields.Text(string='Intra-operative Measures')
-    post_op_care = fields.Text(string='Post-operative Care')
-    discharge_criteria = fields.Text(string='Discharge Criteria')
-    follow_up_plan = fields.Text(string='Follow-up Plan')
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex')
+    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
+    psychiatrist = fields.Char(string='Psychiatrist')
+    languages_known = fields.Many2many('res.lang', string='Languages Known')
+    residence = fields.Char(string='Residence')
+    psychiatric_diagnosis = fields.Char(string='Psychiatric Diagnosis')
+    medical_comorbidity = fields.Char(string='Medical Comorbidity')
+    psychiatric_hospitalisation = fields.Char(string='Psychiatric Hospitalisation')
+    client_education = fields.Char(string='Client Education')
+    marital_status = fields.Selection([
+        ('single', 'Single'),
+        ('married', 'Married'),
+        ('divorced', 'Divorced'),
+        ('widowed', 'Widowed')
+    ], string='Marital Status')
+    doi = fields.Char(string='DOI')
+    duration = fields.Char(string='Duration')
+    inter_episodic = fields.Text(string='Inter Episodic')
+    current_living = fields.Text(string='Current Living')
+    substance_use = fields.Text(string='Substance Use')
+    understanding_illness = fields.Text(string='Understanding Illness')
+    treatment_adherence = fields.Text(string='Treatment Adherence')
+    patients_basic_activity = fields.Text(string="Patient's Basic Activity")
+    patient_instrumental = fields.Text(string='Patient Instrumental')
+    patient_functioning = fields.Text(string='Patient Functioning')
+    attitude_emotions = fields.Text(string='Attitude Emotions')
+    concerns_caregiver = fields.Text(string='Concerns Caregiver')
+    short_term = fields.Text(string='Short Term Goals')
+    long_term = fields.Text(string='Long Term Goals')
+    disability_certification = fields.Boolean(string='Disability Certification')
+    perceived_change = fields.Text(string='Perceived Change')
+    commitment_change = fields.Text(string='Commitment Change')
+    time_and_effort = fields.Text(string='Time and Effort')
+    potential_barriers = fields.Text(string='Potential Barriers')
+    advice = fields.Text(string='Advice')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),
@@ -428,8 +465,20 @@ class HospitalEnhancedRecovery(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.enhanced.recovery') or _('New')
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.enhanced.recovery.seq') or _('New')
         return super(HospitalEnhancedRecovery, self).create(vals_list)
-
+    
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+    
+    def action_inprogress(self):
+        self.write({'state': 'in_progress'})
+    
+    def action_cancel(self):
+        self.write({'state': 'cancelled'})
+    
+    def action_draft(self):
+        self.write({'state': 'draft'})
 
 # Case Formulation Model
 class HospitalCaseFormulation(models.Model):
@@ -1279,22 +1328,6 @@ class HospitalEmergencyMedicine(models.Model):
     administered = fields.Boolean(string='Administered')
     administered_by = fields.Many2one('res.users', string='Administered By')
 
-class HospitalEnhancedRecovery(models.Model):
-    _name = 'hospital.enhanced.recovery'
-    _description = 'Enhanced Recovery (CEROP)'
-    
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    start_date = fields.Date(string='Start Date', default=fields.Date.today)
-    end_date = fields.Date(string='End Date')
-    recovery_plan = fields.Text(string='Recovery Plan')
-    progress_notes = fields.Text(string='Progress Notes')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed')
-    ], string='Status', default='draft')
 
 class HospitalFormCSection86(models.Model):
     _name = 'hospital.form.c.section.86'

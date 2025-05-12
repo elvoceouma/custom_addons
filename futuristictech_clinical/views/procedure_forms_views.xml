@@ -200,4 +200,201 @@
         </field>
     </record>
 
+     <record id="view_hospital_procedural_form_section_86_form" model="ir.ui.view">
+        <field name="name">hospital.procedural.form.section.86.form</field>
+        <field name="model">hospital.procedural.form.section.86</field>
+        <field name="arch" type="xml">
+            <form string="Procedural Form Section-86">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_reject" string="Reject" type="object"
+                            invisible="state != 'submitted'"
+                            confirm="Are you sure you want to reject this form?"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ['submitted', 'approved', 'rejected']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title mb-3">
+                        <h1>Procedural Form</h1>
+                        <h2><field name="name" readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group id="left_column">
+                            <field name="patient_id" string="IP Number" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="patient_name_display" string="Patient Name"/>
+                            <field name="mrn_no"/>
+                            <field name="patient_age_display" string="Age"/>
+                            <field name="admitting_person_identifier" string="Admitting Person"/>
+                        </group>
+                        <group id="right_column">
+                            <field name="form_datetime" string="Date&amp;Time"/>
+                            <field name="patient_sex_display" string="Sex"/>
+                        </group>
+                    </group>
+
+                    <group string="Provisional Diagnosis &amp; Assessment" col="1">
+                        <label for="symptom_severity_text" class="oe_newline"/>
+                        <field name="symptom_severity_text" nolabel="1" placeholder="Details on severity of symptoms..."/>
+                        <label for="clinical_assessment_text" class="oe_newline"/>
+                        <field name="clinical_assessment_text" nolabel="1" placeholder="Clinical assessment details..."/>
+                        <label for="care_plan_text" class="oe_newline"/>
+                        <field name="care_plan_text" nolabel="1" placeholder="Proposed care plan..."/>
+                        <label for="patient_understanding_text" class="oe_newline"/>
+                        <field name="patient_understanding_text" nolabel="1" placeholder="Patient's understanding..."/>
+                        <label for="purpose_as_per_patient_text" class="oe_newline"/>
+                        <field name="purpose_as_per_patient_text" nolabel="1" placeholder="Purpose as stated by patient..."/>
+                         <label for="support_required_text" class="oe_newline"/>
+                        <field name="support_required_text" nolabel="1" placeholder="Support needs for decision making..."/>
+                    </group>
+
+                    <group string="Medical Professionals Involved">
+                        <group>
+                            <field name="medical_officer_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="physician_id" string="Mental Health Professional (Psychiatrist)" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                             <field name="non_psychiatrist_professional_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="General Details &amp; Notes">
+                            <group>
+                                <field name="procedure_details" placeholder="General details about the procedure..."/>
+                                <field name="reasons" placeholder="General reasons for the procedure..."/>
+                                <field name="notes" placeholder="Additional internal notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_procedural_form_section_86_tree" model="ir.ui.view">
+        <field name="name">hospital.procedural.form.section.86.tree</field>
+        <field name="model">hospital.procedural.form.section.86</field>
+        <field name="arch" type="xml">
+            <tree string="Procedural Forms Section-86">
+                <field name="name" string="Reference"/>
+                <field name="patient_ip_number_tree" string="IP Number"/>
+                <field name="patient_name_display" string="Patient Name"/>
+                <field name="form_datetime" string="Date &amp; Time"/>
+                <field name="physician_id" string="Psychiatrist"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_enhanced_recovery_form" model="ir.ui.view">
+    <field name="name">hospital.enhanced.recovery.form</field>
+    <field name="model">hospital.enhanced.recovery</field>
+    <field name="arch" type="xml">
+        <form string="Enhanced Recovery">
+            <header>
+                <button name="action_confirm" string="Confirm" class="btn-primary" invisible="state != 'in_progress'"/>
+                <button name="action_inprogress" string="In Progress" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_cancel" string="Cancel" invisible="state in ['completed', 'cancelled']"/>
+                <button name="action_draft" string="Reset to Draft" invisible="state != 'cancelled'"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,cancelled" options="{'clickable': '1'}"/>
+            </header>
+            <sheet>
+                <div class="oe_title" style="text-align:center">
+                    <h2>
+                        <field name="name" readonly="1"/>
+                    </h2>
+                </div>
+                <div class="oe_title"> 
+                    <h2>
+                        <field name="name_seq" readonly="1"/>
+                    </h2>
+                </div>
+            
+                <group>
+                    <group>
+                        <field name="ip_number" required="1" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}"/>
+                        <field name="patient_name"/>
+                        <field name="mrn_no"/>
+                        <field name="age"/>                                        
+                        <field name="admitted_by"/>	
+                    </group>   
+                    <group> 
+                        <field name="date" readonly="state != 'draft'"/>
+                        <field name="gender" string="Sex"/>
+                        <field name="psychiatrist"/>
+                    </group>                                    
+                </group>
+                <group>
+                    <group>
+                        <field name="languages_known" widget="many2many_tags"/>
+                        <field name="residence"/>
+                        <field name="psychiatric_diagnosis"/>
+                        <field name="medical_comorbidity"/>
+                        <field name="psychiatric_hospitalisation"/>
+                    </group>
+                    <group>
+                        <field name="client_education"/>
+                        <field name="marital_status"/>
+                        <field name="doi"/>
+                        <field name="duration"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Assessment">
+                        <group col="1">
+                            <field name="inter_episodic"/>
+                            <field name="current_living"/>
+                            <field name="substance_use"/>
+                            <field name="understanding_illness"/>
+                            <field name="treatment_adherence"/>
+                            <field name="patients_basic_activity"/>
+                            <field name="patient_instrumental"/>
+                            <field name="patient_functioning"/>
+                            <field name="attitude_emotions"/>
+                            <field name="concerns_caregiver"/>
+                        </group>
+                        <group col="1" string="Specific Personally Relevant Goals">
+                            <field name="short_term"/>
+                            <field name="long_term"/>
+                        </group>
+                        <group col="1">
+                            <field name="disability_certification"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="perceived_change"/>
+                            </group>
+                            <group>
+                                <field name="commitment_change"/>
+                            </group>
+                        </group>
+                        <group col="1">
+                            <field name="time_and_effort"/>
+                            <field name="potential_barriers"/>
+                            <field name="advice"/>
+                        </group>
+                    </page>
+                    <page string="Notes">
+                        <field name="notes"/>
+                    </page>
+                </notebook>
+            </sheet>
+
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+    </field>
+</record>
+
 </odoo>
