@@ -326,20 +326,48 @@ class HospitalProceduralFormSection86(models.Model):
     _description = 'Hospital Procedural Form Section-86'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    date = fields.Date(string='Date', default=fields.Date.context_today, required=True)
-    procedure_details = fields.Text(string='Procedure Details')
-    reasons = fields.Text(string='Reasons')
+    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+    
+    # Related fields from Patient for display
+    patient_name_display = fields.Char(related='patient_id.name', string='Patient Name', readonly=True, store=True)
+    patient_age_display = fields.Integer(related='patient_id.age', string='Patient Age', readonly=True, store=True)
+    patient_sex_display = fields.Selection(related='patient_id.gender', string='Patient Sex', readonly=True, store=True)
+    # For Tree View consistency
+    patient_ip_number_tree = fields.Char( string='IP Number', store=True)
+
+
+    physician_id = fields.Many2one('hospital.physician', string='Mental Health Professional (Psychiatrist)', required=True, tracking=True)
+    
+    form_datetime = fields.Datetime(string='Date & Time', default=fields.Datetime.now, required=True, tracking=True) # Changed from Date to Datetime
+
+    # New fields from the form image
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    admitting_person_identifier = fields.Char(string='Admitting Person', tracking=True) # Label in image is 'Admitting Person'
+
+    symptom_severity_text = fields.Text(string='Severity of the Symptoms (As per Relevant Scales)', tracking=True)
+    clinical_assessment_text = fields.Text(string='Clinical Assessment of the Severity Requiring Admission (Mental Illness of Severity Requiring admission)', tracking=True)
+    care_plan_text = fields.Text(string='Care Plan (Likely Benefits from Admission)', tracking=True)
+    patient_understanding_text = fields.Text(string='Patients Understanding of the Admission and Request for Admission', tracking=True)
+    purpose_as_per_patient_text = fields.Text(string='Purpose (As per Patient)', tracking=True)
+    support_required_text = fields.Text(string='Support Required for Taking Mental Health Decision', tracking=True)
+    
+    medical_officer_id = fields.Many2one('hospital.physician', string='Medical Officer', tracking=True) # Or res.users
+    non_psychiatrist_professional_id = fields.Many2one('hr.employee', string='Mental Health Professional (Non Psychiatrist)', tracking=True) # Or other relevant model
+
+    # Existing fields, review their usage with new detailed fields
+    procedure_details = fields.Text(string='General Procedure Details', tracking=True) # Kept for general notes
+    reasons = fields.Text(string='General Reasons', tracking=True) # Kept for general notes
+    
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('approved', 'Approved'),
+        ('submitted', 'In Progress'), # Updated label
+        ('approved', 'Completed'),   # Updated label
         ('rejected', 'Rejected'),
     ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
+    
+    notes = fields.Text(string='Additional Internal Notes') # Renamed for clarity
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -348,6 +376,27 @@ class HospitalProceduralFormSection86(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.procedural.form.section.86') or _('New')
         return super(HospitalProceduralFormSection86, self).create(vals_list)
 
+    # Action Buttons
+    def action_submit(self):
+        self.ensure_one()
+        self.write({'state': 'submitted'})
+        return True
+
+    def action_approve(self):
+        self.ensure_one()
+        self.write({'state': 'approved'})
+        return True
+
+    def action_reject(self):
+        self.ensure_one()
+        self.write({'state': 'rejected'})
+        return True
+
+    def action_reset_to_draft(self):
+        for record in self:
+            if record.state in ['submitted', 'approved', 'rejected']:
+                record.state = 'draft'
+        return True
 
 # Enhanced Recovery Model
 class HospitalEnhancedRecovery(models.Model):
