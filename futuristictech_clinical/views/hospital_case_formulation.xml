@@ -474,4 +474,165 @@
     <field name="padding">4</field>
     <field name="company_id" eval="False"/>
 </record>
+
+  <record id="view_hospital_capacity_assessment_form" model="ir.ui.view">
+        <field name="name">hospital.capacity.assessment.form</field>
+        <field name="model">hospital.capacity.assessment</field>
+        <field name="arch" type="xml">
+            <form string="Capacity Assessment">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="inprogress" string="In Progress" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" 
+                           statusbar_visible="draft,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="mrn_no"/>
+                            <field name="age"/>
+                            <field name="admitted_by"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="gender" string="Sex"/>
+                            <field name="purpose" readonly="state == 'completed'"/>
+                            <field name="advanced_directive" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Obvious lack of capacity">
+                        <field name="condition_meaning" string="Is she/he in a condtion that one cannot have any kind of meaningful conversation with him/her(Such as violent,excited or under alcohol)" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="condition_explanation" readonly="state == 'completed'"/>
+                    </group>
+                    
+                    <group string="1.The Understanding the information is relevant to take a decision on the treatment or admission or personal assistance">
+                        <field name="individual_oriented" string="Is the individual oriented to time place and person?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="relevant_information" string="Has been provided relevant information about mental health care and treatment pertaining to illnaess in question?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="simple_commands" string="Is Patient Able to follow simple commands like show your tongue and close your eyes" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="acknowledge" string="Does patient acknowledge that he has a mentsl illness" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="one_explanation" readonly="state == 'completed'"/>
+                    </group>
+                    
+                    <group string="2.Appreciating: Reasonably foreseeable cansequence of a decision or lack of decision the treatment or admissin or personal assistance">
+                        <field name="individual_agree" string="(A)Does the individual agree to recieve treatment suggested by th treating team?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="receive_treatment" string="(B)Does he/she explain why agreed to receive treatment?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="agree_treatment" string="(C) Does he/she explain why he/she does not agree to receive treatment?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="two_explanation" readonly="state == 'completed'"/>
+                    </group>
+                    
+                    <group string="3.Communicating the decision under sub-clause(1) by means of speech, expression,gesture or any other means">
+                        <field name="communicating" readonly="state == 'completed'"/>
+                        <field name="individual_communicate" string="Is the individual able to communicate his/her decision by means of speech, writing, expression,gesture or any other means?" 
+                               widget="radio" readonly="state == 'completed'"/>
+                        <field name="explanation_communicate" readonly="state == 'completed'"/>
+                    </group>
+                    
+                    <group string="4.Based on the examination and relevant history, behavioural observation, clinical finding and mental status examination findings noted in the medical records(select the choice below)">
+                        <field name="self_treatment" invisible="support_treatment"/>
+                        <field name="support_treatment" invisible="self_treatment"/>
+                        <field name="four_explanation" readonly="state == 'completed'"/>
+                    </group>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_capacity_assessment_tree" model="ir.ui.view">
+        <field name="name">hospital.capacity.assessment.tree</field>
+        <field name="model">hospital.capacity.assessment</field>
+        <field name="arch" type="xml">
+            <tree string="Capacity Assessments">
+                <field name="name"/>
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hospital_capacity_assessment_search" model="ir.ui.view">
+        <field name="name">hospital.capacity.assessment.search</field>
+        <field name="model">hospital.capacity.assessment</field>
+        <field name="arch" type="xml">
+            <search string="Capacity Assessments">
+                <field name="name"/>
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="mrn_no"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state','=','in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="state" context="{'group_by':'state'}"/>
+                    <filter string="Assessment Date" name="date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_capacity_assessment" model="ir.actions.act_window">
+        <field name="name">Capacity Assessments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.capacity.assessment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_capacity_assessment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the first Capacity Assessment
+            </p>
+        </field>
+    </record>
+
+  
+    <!-- Sequences -->
+    <record id="seq_hospital_capacity_assessment" model="ir.sequence">
+        <field name="name">Hospital Capacity Assessment</field>
+        <field name="code">hospital.capacity.assessment</field>
+        <field name="prefix">CA</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_hospital_capacity_assessment_seq" model="ir.sequence">
+        <field name="name">Hospital Capacity Assessment Sequence</field>
+        <field name="code">hospital.capacity.assessment.seq</field>
+        <field name="prefix">CAP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

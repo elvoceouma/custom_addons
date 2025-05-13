@@ -797,34 +797,96 @@ class HospitalIncidentReport(models.Model):
         """Set state to completed"""
         self.write({'state': 'completed'})
 
+from odoo import api, fields, models, _
 
-# Capacity Assessment Model
+
 class HospitalCapacityAssessment(models.Model):
     _name = 'hospital.capacity.assessment'
     _description = 'Hospital Capacity Assessment'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+    
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Assessing Physician', required=True)
-    date = fields.Date(string='Assessment Date', default=fields.Date.context_today, required=True)
-    decision_context = fields.Text(string='Decision Context', required=True)
-    understand_information = fields.Boolean(string='Patient can understand relevant information')
-    retain_information = fields.Boolean(string='Patient can retain the information')
-    weigh_information = fields.Boolean(string='Patient can weigh information to make decision')
-    communicate_decision = fields.Boolean(string='Patient can communicate their decision')
-    assessment_details = fields.Text(string='Assessment Details')
-    capacity_determination = fields.Selection([
-        ('has_capacity', 'Has Capacity'),
-        ('lacks_capacity', 'Lacks Capacity'),
-        ('fluctuating', 'Fluctuating Capacity'),
-    ], string='Capacity Determination', required=True)
-    recommendations = fields.Text(string='Recommendations')
+    name_seq = fields.Char(string='Sequence', required=True, copy=False, readonly=True,
+                          default=lambda self: _('New'))
+    
+    # Patient Information Fields
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name',  readonly=True)
+    mrn_no = fields.Char(string='MRN No',  readonly=True)
+    age = fields.Integer(string='Age',  readonly=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex')
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    
+    # Assessment Fields
+    date = fields.Date(string='Assessment Date', default=fields.Date.context_today, required=True, tracking=True)
+    purpose = fields.Text(string='Purpose of Assessment', tracking=True)
+    advanced_directive = fields.Text(string='Advanced Directive', tracking=True)
+    
+    # Lack of Capacity Fields
+    condition_meaning = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Condition Meaning', tracking=True, 
+    help="Is she/he in a condition that one cannot have any kind of meaningful conversation with him/her")
+    condition_explanation = fields.Text(string='Explanation', tracking=True)
+    
+    # Understanding Information Fields
+    individual_oriented = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Individual Oriented', tracking=True)
+    relevant_information = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Relevant Information', tracking=True)
+    simple_commands = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Simple Commands', tracking=True)
+    acknowledge = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Acknowledge Illness', tracking=True)
+    one_explanation = fields.Text(string='Explanation', tracking=True)
+    
+    # Appreciating Consequences Fields
+    individual_agree = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Individual Agree', tracking=True)
+    receive_treatment = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Receive Treatment', tracking=True)
+    agree_treatment = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Agree Treatment', tracking=True)
+    two_explanation = fields.Text(string='Explanation', tracking=True)
+    
+    # Communication Fields
+    communicating = fields.Text(string='Communication Details', tracking=True)
+    individual_communicate = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Individual Communicate', tracking=True)
+    explanation_communicate = fields.Text(string='Communication Explanation', tracking=True)
+    
+    # Decision Making Fields
+    self_treatment = fields.Boolean(string='Can Make Treatment Decisions Without Support', tracking=True)
+    support_treatment = fields.Boolean(string='Needs Support for Treatment Decisions', tracking=True)
+    four_explanation = fields.Text(string='Decision Making Explanation', tracking=True)
+    
+    # State Management
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('completed', 'Completed'),
-        ('reviewed', 'Reviewed'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
     ], string='Status', default='draft', tracking=True)
     
     @api.model_create_multi
@@ -832,8 +894,17 @@ class HospitalCapacityAssessment(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.capacity.assessment') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.capacity.assessment.seq') or _('New')
         return super(HospitalCapacityAssessment, self).create(vals_list)
-
+    
+    def action_confirm(self):
+        """Change state to completed when confirmed"""
+        self.write({'state': 'completed'})
+    
+    def inprogress(self):
+        """Change state to in_progress"""
+        self.write({'state': 'in_progress'})
 
 # Independent Examination Professional I Model
 class HospitalIndependantExaminationProfessionalI(models.Model):
@@ -1370,20 +1441,6 @@ class HospitalBiochemistry(models.Model):
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
 
-class HospitalCapacityAssessment(models.Model):
-    _name = 'hospital.capacity.assessment'
-    _description = 'Patient Capacity Assessment'
-    
-    name = fields.Char(string='Assessment Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    assessment_date = fields.Date(string='Assessment Date', default=fields.Date.today)
-    physician_id = fields.Many2one('hospital.physician', string='Assessing Physician')
-    mental_capacity = fields.Selection([
-        ('full', 'Full Capacity'),
-        ('partial', 'Partial Capacity'),
-        ('none', 'No Capacity')
-    ], string='Mental Capacity Status')
-    assessment_notes = fields.Text(string='Assessment Notes')
 
 class HospitalCaretaker(models.Model):
     _name = 'hospital.caretaker'
