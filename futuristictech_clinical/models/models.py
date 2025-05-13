@@ -1607,25 +1607,25 @@ class HospitalImmunology(models.Model):
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
 
-class HospitalIndependentExamination(models.Model):
-    _name = 'hospital.independent.examination'
-    _description = 'Independent Medical Examination'
+# class HospitalIndependentExamination(models.Model):
+#     _name = 'hospital.independent.examination'
+#     _description = 'Independent Medical Examination'
     
-    name = fields.Char(string='Examination Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Examining Physician')
-    examination_date = fields.Date(string='Examination Date', default=fields.Date.today)
-    examination_type = fields.Selection([
-        ('professional_1', 'Professional I'),
-        ('professional_2', 'Professional II')
-    ], string='Examination Type')
-    findings = fields.Text(string='Findings')
-    recommendations = fields.Text(string='Recommendations')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('completed', 'Completed'),
-        ('reviewed', 'Reviewed')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Examination Reference', required=True)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Examining Physician')
+#     examination_date = fields.Date(string='Examination Date', default=fields.Date.today)
+#     examination_type = fields.Selection([
+#         ('professional_1', 'Professional I'),
+#         ('professional_2', 'Professional II')
+#     ], string='Examination Type')
+#     findings = fields.Text(string='Findings')
+#     recommendations = fields.Text(string='Recommendations')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('completed', 'Completed'),
+#         ('reviewed', 'Reviewed')
+#     ], string='Status', default='draft')
 
 class HospitalInvestigationRequest(models.Model):
     _name = 'hospital.investigation.request'
@@ -1668,9 +1668,6 @@ class HospitalLAMAForm(models.Model):
     witness_signature = fields.Binary(string='Witness Signature')
     patient_signature = fields.Binary(string='Patient Signature')
 
-
-from odoo import models, fields, api
-from datetime import datetime
 
 # class HospitalLabTest(models.Model):
 #     _name = 'hospital.lab.test'

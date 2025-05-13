@@ -1146,5 +1146,6 @@
         <field name="perm_create" eval="1"/>
         <field name="perm_unlink" eval="1"/>
     </record>
+    
 
 </odoo>

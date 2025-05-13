@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hospital_independent_examination_form" model="ir.ui.view">
+        <field name="name">hospital.independent.examination.form</field>
+        <field name="model">hospital.independent.examination</field>
+        <field name="arch" type="xml">
+            <form string="Independant Examination Professional I">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="inprogress" string="In Progress" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" 
+                           statusbar_visible="draft,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="mrn_no"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="age"/>
+                            <field name="gender" string="Sex"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Details of the Independent Examination by Professional I">
+                        <field name="professional_line_ids" widget="one2many_list" nolabel="1">
+                            <tree string="Details of Professionals" editable="bottom">
+                                <field name="professional_id" />
+                                <field name="examination_date"/>
+                                <field name="place"/>
+                            </tree>
+                        </field>
+                    </group>
+                    
+                    <group>
+                        <field name="provisional_diagnosis"/>
+                        <field name="severity_symptoms"/>
+                    </group>
+                    
+                    <group string="The Examined Person needs admission and treatment in my opinion due to following Reasons">
+                        <field name="recently_threatened"/>
+                        <field name="recently_behaved"/>
+                        <field name="inability"/>
+                        <field name="nature_purpose"/>
+                    </group>
+                    
+                    <group string="Additional notes may be added">
+                        <field name="additional_notes" nolabel="1"/>
+                    </group>
+                    
+                    <group string="Care Plan (Likely Benefits from Admission)">
+                        <field name="diagnostics"/>
+                        <field name="symptom"/>
+                        <field name="psychopharmacological"/>
+                        <field name="observation"/>
+                        <field name="psycho_social"/>
+                        <field name="rehabilitation"/>
+                        <field name="risk_harm"/>
+                        <field name="crisis"/>
+                    </group>
+                    
+                    <group string="Previous Attempts of Support Offered and Failed/Refused">
+                        <field name="op_treatment"/>
+                        <field name="home_care"/>
+                        <field name="independent_patient"/>
+                        <field name="alternative_treatment"/>
+                        <field name="psychological_counselling"/>
+                    </group>
+                    
+                    <group>
+                        <field name="examination_category_id" widget="one2many_list" nolabel="1">
+                            <tree string="">
+                                <field name="doctor_name"/>
+                                <field name="category"/>
+                                <field name="date"/>
+                                <field name="date_admission"/>
+                                <field name="expiry_date"/>
+                            </tree>
+                        </field>
+                    </group>
+                    
+                    <group string="Documents">
+                        <field name="examination_document_ids" widget="one2many_list" nolabel="1">
+                            <tree string="">
+                                <field name="document_type"/>
+                                <field name="executed_date"/>
+                                <field name="available"/>
+                            </tree>
+                        </field>
+                    </group>
+                    
+                    <group string="Capacity Assessment">
+                        <field name="examination_capacity_ids" widget="one2many_list" nolabel="1">
+                            <tree string="">
+                                <field name="capacity_assessment"/>
+                                <field name="outcome"/>
+                                <field name="psychiatrist"/>
+                                <field name="date"/>
+                            </tree>
+                        </field>
+                    </group>
+                    
+                    <group string="Reporting to Mental Health Board">
+                        <field name="examintation_mental_health" widget="one2many_list" nolabel="1">
+                            <tree string="">
+                                <field name="category"/>
+                                <field name="Mandate"/>
+                                <field name="date_admission"/>
+                                <field name="inform_date"/>
+                            </tree>
+                        </field>
+                    </group>
+                    
+                    <group string="Details of Scales (If Administered)">
+                        <field name="examination_details_ids" widget="one2many_list" nolabel="1">
+                            <tree string="">
+                                <field name="scale"/>
+                                <field name="administered"/>
+                                <field name="scoring"/>
+                                <field name="date"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_independent_examination_tree" model="ir.ui.view">
+        <field name="name">hospital.independent.examination.tree</field>
+        <field name="model">hospital.independent.examination</field>
+        <field name="arch" type="xml">
+            <tree string="Independent Examinations">
+                <field name="name"/>
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="examination_type"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hospital_independent_examination_search" model="ir.ui.view">
+        <field name="name">hospital.independent.examination.search</field>
+        <field name="model">hospital.independent.examination</field>
+        <field name="arch" type="xml">
+            <search string="Independent Examinations">
+                <field name="name"/>
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="mrn_no"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state','=','in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="state" context="{'group_by':'state'}"/>
+                    <filter string="Examination Date" name="date" context="{'group_by':'date'}"/>
+                    <filter string="Examination Type" name="examination_type" context="{'group_by':'examination_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_independent_examination" model="ir.actions.act_window">
+        <field name="name">Independent Examinations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.independent.examination</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_independent_examination_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the first Independent Examination
+            </p>
+        </field>
+    </record>
+
+
+
+    <!-- Sequences -->
+    <record id="seq_hospital_independent_examination" model="ir.sequence">
+        <field name="name">Hospital Independent Examination</field>
+        <field name="code">hospital.independent.examination</field>
+        <field name="prefix">IE</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_hospital_independent_examination_seq" model="ir.sequence">
+        <field name="name">Hospital Independent Examination Sequence</field>
+        <field name="code">hospital.independent.examination.seq</field>
+        <field name="prefix">IEP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

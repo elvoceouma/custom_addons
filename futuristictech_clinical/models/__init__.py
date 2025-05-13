@@ -26,4 +26,5 @@ from . import hospital_physician
 from . import hospital_appointment
 from . import hospital_evaluation
 from . import medication_consent_form
+from .import hospital_independent_examination
 from . import models
