@@ -159,7 +159,162 @@
     <field name="padding">4</field>
     <field name="company_id" eval="False"/>
 </record>
+<record id="view_hospital_emergency_assessment_form" model="ir.ui.view">
+    <field name="name">hospital.emergency.assessment.form</field>
+    <field name="model">hospital.emergency.assessment</field>
+    <field name="arch" type="xml">
+        <form string="Emergency Assessment">
+            <header>
+                <button name="inprogress" string="In Progress" type="object" 
+                        class="oe_highlight" invisible="state != 'draft'"/>
+                <button name="action_confirm" string="Confirm" type="object" 
+                        class="oe_highlight" invisible="state != 'in_progress'"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+            </header>
+            <sheet>
+                <div class="oe_title" style="text-align:center">
+                    <h2>
+                        <field name="name" readonly="1"/>
+                    </h2>
+                </div>
+                <div class="oe_title"> 
+                    <h2>
+                        <field name="name_seq" readonly="1"/>
+                    </h2>
+                </div>
+            
+                <group>
+                    <group>
+                        <field name="ip_number" options="{'no_open': True, 'no_create': True}" 
+                               readonly="state != 'draft'" required="1"/>
+                        <field name="patient_name"/>
+                        <field name="mrn_no"/>                                        
+                        <field name="admitted_by"/>	
+                        <field name="medical_officer"/>
+                        <field name="occupation"/>
+                    </group>   
+                    <group> 
+                        <field name="date" readonly="1"/>
+                        <field name="age"/>
+                        <field name="gender" string="Sex"/>
+                        <field name="staff_nurse"/>
+                    </group>                                    
+                </group>
+                <group>
+                    <group>
+                        <field name="identification_mark"/>
+                        <field name="patient_relative"/>
+                    </group>
+                    <group>
+                        <field name="reliable_unreliable"/>
+                        <field name="relationship_patient"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="complaints"/>
+                    <field name="allergic_history"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="height"/>
+                        <field name="skin"/>
+                    </group>
+                    <group>
+                        <field name="weight"/>
+                        <field name="conjunctiva"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="rs"/>
+                        <field name="coma_score"/>
+                    </group>
+                    <group>
+                        <field name="cvs"/>
+                        <field name="pa"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="eyes"/>
+                        <field name="motor"/>
+                    </group>
+                    <group>
+                        <field name="verbal"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="appearance_behaviour"/>
+                        <field name="speech"/>
+                        <field name="perceptual_disturbances"/>
+                        <field name="insight"/>
+                        <field name="lab_investigation"/>
+                    </group>
+                    <group>
+                        <field name="psychomotor_activity"/>
+                        <field name="mood"/>
+                        <field name="cognitive_functions"/>
+                        <field name="treatment"/>
+                    </group>
+                </group>
+            </sheet>
 
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+    </field>
+</record>
+
+<!-- Tree view -->
+<record id="view_hospital_emergency_assessment_tree" model="ir.ui.view">
+    <field name="name">hospital.emergency.assessment.tree</field>
+    <field name="model">hospital.emergency.assessment</field>
+    <field name="arch" type="xml">
+        <tree string="Emergency Assessments">
+            <field name="name_seq"/>
+            <field name="patient_name"/>
+            <field name="date"/>
+            <field name="medical_officer"/>
+            <field name="coma_score"/>
+            <field name="state" widget="badge" decoration-info="state == 'draft'" 
+                   decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'"/>
+        </tree>
+    </field>
+</record>
+
+<!-- Action -->
+<record id="action_hospital_emergency_assessment" model="ir.actions.act_window">
+    <field name="name">Emergency Assessments</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">hospital.emergency.assessment</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create a new emergency assessment
+        </p>
+    </field>
+</record>
+
+<!-- Sequences -->
+<record id="seq_hospital_emergency_assessment" model="ir.sequence">
+    <field name="name">Hospital Emergency Assessment</field>
+    <field name="code">hospital.emergency.assessment</field>
+    <field name="prefix">EA/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+<record id="seq_hospital_emergency_assessment_seq" model="ir.sequence">
+    <field name="name">Hospital Emergency Assessment Sequence</field>
+    <field name="code">hospital.emergency.assessment.seq</field>
+    <field name="prefix">EA-</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+</record>
 
 
 </odoo>

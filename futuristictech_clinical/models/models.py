@@ -498,7 +498,11 @@ class HospitalCaseFormulation(models.Model):
     patient_name = fields.Char(string='Patient Name', readonly=True)
     mrn_no = fields.Char(string='MRN Number', readonly=True)
     age = fields.Integer(string='Age', readonly=True)
-    gender = fields.Selection(related='ip_number.gender', string='Sex', readonly=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female','Female'),
+        ('other', 'Other')
+    ], string="Gender", readonly=True)
     admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
 
     # Predisposing - Biological Factors
@@ -580,51 +584,117 @@ class HospitalCaseFormulation(models.Model):
         """Confirm the case formulation"""
         return self.write({'state': 'completed'})
 
-# Emergency Assessment Model
 class HospitalEmergencyAssessment(models.Model):
     _name = 'hospital.emergency.assessment'
     _description = 'Hospital Emergency Assessment'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    date_time = fields.Datetime(string='Date & Time', default=fields.Datetime.now, required=True)
-    chief_complaint = fields.Text(string='Chief Complaint')
-    vital_signs = fields.Text(string='Vital Signs')
-    mental_status = fields.Text(string='Mental Status')
-    risk_assessment = fields.Text(string='Risk Assessment')
-    physical_assessment = fields.Text(string='Physical Assessment')
-    provisional_diagnosis = fields.Text(string='Provisional Diagnosis')
-    immediate_plan = fields.Text(string='Immediate Plan')
-    disposition = fields.Selection([
-        ('admit', 'Admit'),
-        ('refer', 'Refer'),
-        ('discharge', 'Discharge'),
-        ('observation', 'Observation'),
-    ], string='Disposition')
-    triage_level = fields.Selection([
-        ('level_1', 'Level 1 - Resuscitation'),
-        ('level_2', 'Level 2 - Emergency'),
-        ('level_3', 'Level 3 - Urgent'),
-        ('level_4', 'Level 4 - Semi-urgent'),
-        ('level_5', 'Level 5 - Non-urgent'),
-    ], string='Triage Level')
+    name_seq = fields.Char(string='Sequence', readonly=True, copy=False)
+    
+    # Patient information
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', readonly=True)
+    mrn_no = fields.Char(string='MRN No', readonly=True)
+    age = fields.Integer(string='Age', readonly=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female','Female'),
+        ('other', 'Other')
+    ], string="Gender", readonly=True)
+    
+    # Staff information
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    medical_officer = fields.Many2one('hospital.physician', string='Medical Officer', tracking=True)
+    staff_nurse = fields.Many2one('res.users', string='Staff Nurse', tracking=True)
+    
+    # Basic information
+    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    occupation = fields.Char(string='Occupation', tracking=True)
+    identification_mark = fields.Char(string='Identification Mark', tracking=True)
+    
+    # Patient relative information
+    patient_relative = fields.Char(string='Patient Relative', tracking=True)
+    reliable_unreliable = fields.Selection([
+        ('reliable', 'Reliable'),
+        ('unreliable', 'Unreliable')
+    ], string='Reliable/Unreliable', tracking=True)
+    relationship_patient = fields.Char(string='Relationship with Patient', tracking=True)
+    
+    # Medical information
+    complaints = fields.Text(string='Complaints', tracking=True)
+    allergic_history = fields.Text(string='Allergic History', tracking=True)
+    
+    # Physical examination
+    height = fields.Float(string='Height (cm)', tracking=True)
+    weight = fields.Float(string='Weight (kg)', tracking=True)
+    skin = fields.Char(string='Skin', tracking=True)
+    conjunctiva = fields.Char(string='Conjunctiva', tracking=True)
+    rs = fields.Char(string='RS (Respiratory System)', tracking=True)
+    cvs = fields.Char(string='CVS (Cardiovascular System)', tracking=True)
+    pa = fields.Char(string='PA (Per Abdomen)', tracking=True)
+    
+    # Glasgow Coma Scale
+    coma_score = fields.Integer(string='Glasgow Coma Score', tracking=True)
+    eyes = fields.Selection([
+        ('1', '1 - No eye opening'),
+        ('2', '2 - Eye opening to pain'),
+        ('3', '3 - Eye opening to verbal command'),
+        ('4', '4 - Eyes open spontaneously')
+    ], string='Eyes', tracking=True)
+    verbal = fields.Selection([
+        ('1', '1 - No verbal response'),
+        ('2', '2 - Incomprehensible sounds'),
+        ('3', '3 - Inappropriate words'),
+        ('4', '4 - Confused'),
+        ('5', '5 - Oriented')
+    ], string='Verbal', tracking=True)
+    motor = fields.Selection([
+        ('1', '1 - No motor response'),
+        ('2', '2 - Extension to pain'),
+        ('3', '3 - Flexion to pain'),
+        ('4', '4 - Withdrawal from pain'),
+        ('5', '5 - Localizing pain'),
+        ('6', '6 - Obeys commands')
+    ], string='Motor', tracking=True)
+    
+    # Mental state examination
+    appearance_behaviour = fields.Text(string='Appearance & Behaviour', tracking=True)
+    psychomotor_activity = fields.Text(string='Psychomotor Activity', tracking=True)
+    speech = fields.Text(string='Speech', tracking=True)
+    mood = fields.Text(string='Mood', tracking=True)
+    perceptual_disturbances = fields.Text(string='Perceptual Disturbances', tracking=True)
+    cognitive_functions = fields.Text(string='Cognitive Functions', tracking=True)
+    insight = fields.Text(string='Insight', tracking=True)
+    
+    # Treatment and investigations
+    lab_investigation = fields.Text(string='Lab Investigation', tracking=True)
+    treatment = fields.Text(string='Treatment', tracking=True)
+    
+    # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
     ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.emergency.assessment') or _('New')
+            if not vals.get('name_seq'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.emergency.assessment.seq') or _('EA-0000')
         return super(HospitalEmergencyAssessment, self).create(vals_list)
-
+    
+    def inprogress(self):
+        """Set state to in_progress"""
+        self.write({'state': 'in_progress'})
+        
+    def action_confirm(self):
+        """Set state to completed"""
+        self.write({'state': 'completed'})
 
 # Incident Report Model
 class HospitalIncidentReport(models.Model):
@@ -1348,23 +1418,6 @@ class HospitalDoctorPayout(models.Model):
     ], string='Status', default='draft')
 
 
-class HospitalEmergencyAssessment(models.Model):
-    _name = 'hospital.emergency.assessment'
-    _description = 'Emergency Assessment'
-    
-    name = fields.Char(string='Assessment Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Assessing Physician')
-    assessment_date = fields.Datetime(string='Assessment Date', default=fields.Datetime.now)
-    chief_complaint = fields.Text(string='Chief Complaint')
-    vital_signs = fields.Text(string='Vital Signs')
-    assessment = fields.Text(string='Assessment')
-    plan = fields.Text(string='Plan')
-    disposition = fields.Selection([
-        ('admit', 'Admit'),
-        ('discharge', 'Discharge'),
-        ('transfer', 'Transfer')
-    ], string='Disposition')
 
 class HospitalEmergencyMedicine(models.Model):
     _name = 'hospital.emergency.medicine'
