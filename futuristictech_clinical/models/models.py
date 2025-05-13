@@ -696,53 +696,106 @@ class HospitalEmergencyAssessment(models.Model):
         """Set state to completed"""
         self.write({'state': 'completed'})
 
-# Incident Report Model
 class HospitalIncidentReport(models.Model):
     _name = 'hospital.incident.report'
     _description = 'Hospital Incident Report'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
-    reporter_id = fields.Many2one('res.users', string='Reporter', default=lambda self: self.env.user.id)
-    patient_id = fields.Many2one('hospital.patient', string='Patient Involved')
-    staff_involved_ids = fields.Many2many('res.users', string='Staff Involved')
-    date_time = fields.Datetime(string='Date & Time of Incident', default=fields.Datetime.now, required=True)
-    location = fields.Char(string='Location of Incident')
+    name_seq = fields.Char(string='Sequence', readonly=True, copy=False)
+    
+    # Patient information
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', readonly=True)
+    mrn_no = fields.Char(string='MRN No', readonly=True)
+    age = fields.Integer(string='Age', readonly=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex')
+    
+    # Location information
+    location_room = fields.Char(string='Room', tracking=True)
+    location_bed = fields.Char(string='Bed', tracking=True)
+    loaction_ward = fields.Char(string='Ward', tracking=True)  # Keeping typo for compatibility
+    
+    # Staff information
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    
+    # Date information
+    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    
+    # Medical information
+    diagnosis = fields.Text(string='Diagnosis', tracking=True)
+    
+    # Incident details
     incident_type = fields.Selection([
+        ('fall', 'Fall'),
         ('medication', 'Medication Error'),
-        ('fall', 'Patient Fall'),
-        ('equipment', 'Equipment Failure'),
-        ('behavior', 'Behavioral Incident'),
-        ('security', 'Security Incident'),
+        ('treatment', 'Treatment Error'),
+        ('infection', 'Infection'),
+        ('ect_anesthesia', 'ECT/Anesthesia'),
+        ('drugs_iv_blood', 'Drugs/IV/Blood'),
+        ('laboratory', 'Laboratory'),
+        ('radiology', 'Radiology'),
+        ('miscellaneous', 'Miscellaneous'),
         ('other', 'Other'),
-    ], string='Incident Type', required=True)
-    description = fields.Text(string='Description of Incident', required=True)
-    immediate_actions = fields.Text(string='Immediate Actions Taken')
-    injuries = fields.Boolean(string='Were there injuries?')
-    injury_description = fields.Text(string='Injury Description')
-    witnesses_ids = fields.Many2many('res.users', 'incident_witnesses_rel', 'incident_id', 'user_id', string='Witnesses')
-    severity = fields.Selection([
-        ('minor', 'Minor'),
-        ('moderate', 'Moderate'),
-        ('major', 'Major'),
-        ('critical', 'Critical'),
-    ], string='Severity')
+    ], string='Incident Type', tracking=True)
+    
+    # Incident subtypes
+    fall_subtype = fields.Char(string='Fall Subtype', tracking=True)
+    treatment_subtype = fields.Char(string='Treatment Subtype', tracking=True)
+    infection_subtype = fields.Char(string='Infection Subtype', tracking=True)
+    ect_anesthesia_subtype = fields.Char(string='ECT/Anesthesia Subtype', tracking=True)
+    miscellaneous_subtype = fields.Char(string='Miscellaneous Subtype', tracking=True)
+    
+    # Issue details
+    drugs_iv_blood_issue = fields.Text(string='Drugs/IV/Blood Issue', tracking=True)
+    laboratory_issue = fields.Text(string='Laboratory Issue', tracking=True)
+    radiology_issue = fields.Text(string='Radiology Issue', tracking=True)
+    other_issue = fields.Text(string='Other Issue', tracking=True)
+    
+    # Incident occurrence
+    incident_occured = fields.Datetime(string='Incident Occurred', tracking=True)
+    
+    # Description and actions
+    narrative_description = fields.Text(string='Narrative Description', tracking=True)
+    immediate_action = fields.Text(string='Immediate Action Taken', tracking=True)
+    root_cause = fields.Text(string='Root Cause Analysis', tracking=True)
+    corrective_action = fields.Text(string='Corrective Action Plan', tracking=True)
+    
+    # Reporting information
+    reported_by = fields.Many2one('res.users', string='Reported By', default=lambda self: self.env.user.id, tracking=True)
+    reporting_date_time = fields.Datetime(string='Reporting Date & Time', default=fields.Datetime.now, tracking=True)
+    report_sent_date_time = fields.Datetime(string='Report Sent Date & Time', tracking=True)
+    reviewed_by = fields.Many2one('res.users', string='Reviewed By', tracking=True)
+    review_time = fields.Datetime(string='Review Time', tracking=True)
+    
+    # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('reported', 'Reported'),
-        ('under_investigation', 'Under Investigation'),
-        ('resolved', 'Resolved'),
-        ('closed', 'Closed'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
     ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.incident.report') or _('New')
+            if not vals.get('name_seq'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.incident.report.seq') or _('IR-0000')
         return super(HospitalIncidentReport, self).create(vals_list)
+    
+    def inprogress(self):
+        """Set state to in_progress"""
+        self.write({'state': 'in_progress'})
+        
+    def action_confirm(self):
+        """Set state to completed"""
+        self.write({'state': 'completed'})
 
 
 # Capacity Assessment Model
@@ -1496,30 +1549,6 @@ class HospitalImmunology(models.Model):
     physician_id = fields.Many2one('hospital.physician', string='Requesting Physician')
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
-
-class HospitalIncidentReport(models.Model):
-    _name = 'hospital.incident.report'
-    _description = 'Incident Report'
-    
-    name = fields.Char(string='Report Reference', required=True)
-    date = fields.Datetime(string='Incident Date', default=fields.Datetime.now)
-    location = fields.Char(string='Location')
-    reported_by = fields.Many2one('res.users', string='Reported By')
-    incident_type = fields.Selection([
-        ('patient', 'Patient Related'),
-        ('staff', 'Staff Related'),
-        ('facility', 'Facility Related'),
-        ('other', 'Other')
-    ], string='Incident Type')
-    description = fields.Text(string='Description')
-    action_taken = fields.Text(string='Action Taken')
-    witnesses = fields.Text(string='Witnesses')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('reported', 'Reported'),
-        ('investigating', 'Under Investigation'),
-        ('resolved', 'Resolved')
-    ], string='Status', default='draft')
 
 class HospitalIndependentExamination(models.Model):
     _name = 'hospital.independent.examination'
