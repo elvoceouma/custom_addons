@@ -486,33 +486,99 @@ class HospitalCaseFormulation(models.Model):
     _description = 'Hospital Case Formulation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    # Basic Information
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
                        default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    date = fields.Date(string='Date', default=fields.Date.context_today, required=True)
-    presenting_problems = fields.Text(string='Presenting Problems')
-    history = fields.Text(string='Relevant History')
-    predisposing_factors = fields.Text(string='Predisposing Factors')
-    precipitating_factors = fields.Text(string='Precipitating Factors')
-    perpetuating_factors = fields.Text(string='Perpetuating Factors')
-    protective_factors = fields.Text(string='Protective Factors')
-    diagnosis = fields.Text(string='Diagnosis')
-    treatment_plan = fields.Text(string='Treatment Plan')
+    name_seq = fields.Char(string='Case Number', required=True, copy=False, readonly=True,
+                         default=lambda self: _('New'))
+    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    
+    # Patient Information
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', readonly=True)
+    mrn_no = fields.Char(string='MRN Number', readonly=True)
+    age = fields.Integer(string='Age', readonly=True)
+    gender = fields.Selection(related='ip_number.gender', string='Sex', readonly=True)
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+
+    # Predisposing - Biological Factors
+    genetic = fields.Text(string='Genetic', tracking=True)
+    birth_trauma = fields.Text(string='Birth Trauma', tracking=True)
+    illness_psychological = fields.Text(string='Illness (Psychological)', tracking=True)
+    physical = fields.Text(string='Physical', tracking=True)
+    medication = fields.Text(string='Medication', tracking=True)
+    drugs = fields.Text(string='Drugs', tracking=True)
+    alcohol = fields.Text(string='Alcohol', tracking=True)
+    pain = fields.Text(string='Pain', tracking=True)
+    
+    # Predisposing - Psychological Factors
+    personality = fields.Text(string='Personality', tracking=True)
+    modelling = fields.Text(string='Modelling', tracking=True)
+    defences = fields.Text(string='Defences', tracking=True)
+    coping_strategies = fields.Text(string='Coping Strategies', tracking=True)
+    self_esteem = fields.Text(string='Self Esteem', tracking=True)
+    body_image = fields.Text(string='Body Image', tracking=True)
+    cognition = fields.Text(string='Cognition', tracking=True)
+    
+    # Predisposing - Social Factors
+    socio_economic = fields.Text(string='Socio-Economic', tracking=True)
+    trauma = fields.Text(string='Trauma', tracking=True)
+    
+    # Precipitating - Biological Factors
+    precipitating_medication = fields.Text(string='Medication', tracking=True)
+    precipitating_trauma = fields.Text(string='Trauma', tracking=True)
+    precipitating_drug_alcohol = fields.Text(string='Drug/Alcohol', tracking=True)
+    precipitating_acute_illness = fields.Text(string='Acute Illness', tracking=True)
+    precipitating_pain = fields.Text(string='Pain', tracking=True)
+    
+    # Precipitating - Psychological Factors
+    precipitating_state_life = fields.Text(string='State/Life Events', tracking=True)
+    precipitating_loss_grief = fields.Text(string='Loss/Grief', tracking=True)
+    precipitating_treatment = fields.Text(string='Treatment', tracking=True)
+    precipitating_stressor = fields.Text(string='Stressor', tracking=True)
+    
+    # Precipitating - Social Factors
+    precipitating_work = fields.Text(string='Work', tracking=True)
+    precipitating_finance = fields.Text(string='Finance', tracking=True)
+    precipitating_connections = fields.Text(string='Connections', tracking=True)
+    precipitating_relationships = fields.Text(string='Relationships', tracking=True)
+    
+    # Perpetuating Factors
+    perpetuating = fields.Text(string='Perpetuating Factors', tracking=True)
+    
+    # Protective - Biological Factors
+    protective_health = fields.Text(string='Health', tracking=True)
+    
+    # Protective - Psychological Factors
+    protective_engagement = fields.Text(string='Engagement', tracking=True)
+    protective_insight = fields.Text(string='Insight', tracking=True)
+    protective_adherence = fields.Text(string='Adherence', tracking=True)
+    protective_coping_strategies = fields.Text(string='Coping Strategies', tracking=True)
+    protective_intelligence = fields.Text(string='Intelligence', tracking=True)
+    
+    # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('finalized', 'Finalized'),
-        ('revised', 'Revised'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
     ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.case.formulation') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.case.formulation.seq') or _('New')
         return super(HospitalCaseFormulation, self).create(vals_list)
-
+    
+    def inprogress(self):
+        """Set state to in_progress"""
+        return self.write({'state': 'in_progress'})
+    
+    def action_confirm(self):
+        """Confirm the case formulation"""
+        return self.write({'state': 'completed'})
 
 # Emergency Assessment Model
 class HospitalEmergencyAssessment(models.Model):
@@ -1221,20 +1287,6 @@ class HospitalCaretakerAllotment(models.Model):
         ('completed', 'Completed')
     ], string='Status', default='draft')
 
-class HospitalCaseFormulation(models.Model):
-    _name = 'hospital.case.formulation'
-    _description = 'Case Formulation'
-    
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    formulation_date = fields.Date(string='Formulation Date', default=fields.Date.today)
-    presenting_problems = fields.Text(string='Presenting Problems')
-    predisposing_factors = fields.Text(string='Predisposing Factors')
-    precipitating_factors = fields.Text(string='Precipitating Factors')
-    perpetuating_factors = fields.Text(string='Perpetuating Factors')
-    protective_factors = fields.Text(string='Protective Factors')
-    treatment_plan = fields.Text(string='Treatment Plan')
 
 class HospitalCounsellorClearance(models.Model):
     _name = 'hospital.counsellor.clearance'

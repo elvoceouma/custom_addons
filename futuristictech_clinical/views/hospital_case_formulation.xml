@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hospital_case_formulation_form" model="ir.ui.view">
+    <field name="name">hospital.case.formulation.form</field>
+    <field name="model">hospital.case.formulation</field>
+    <field name="arch" type="xml">
+        <form string="Case Formulation">
+            <header>
+                <button name="inprogress" string="In Progress" type="object" 
+                        class="oe_highlight" invisible="state != 'draft'"/>
+                <button name="action_confirm" string="Confirm" type="object" 
+                        class="oe_highlight" invisible="state != 'in_progress'"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+            </header>
+            <sheet>
+                <div class="oe_title" style="text-align:center">
+                    <h2>
+                        <field name="name" readonly="1"/>
+                    </h2>
+                </div>
+                <div class="oe_title"> 
+                    <h2>
+                        <field name="name_seq" readonly="1"/>
+                    </h2>
+                </div>
+            
+                <group>
+                    <group>
+                        <field name="ip_number" options="{'no_open': True, 'no_create': True}" 
+                               readonly="state != 'draft'"/>
+                        <field name="patient_name"/>
+                        <field name="mrn_no"/>
+                        <field name="age"/>                                        
+                        <field name="admitted_by"/>	
+                    </group>   
+                    <group> 
+                        <field name="date" readonly="1"/>
+                        <field name="gender" string="Sex"/>
+                    </group>                                    
+                </group>
+                <group col="3">
+                    <group string="Predisposing - Biological">
+                        <field name="genetic" readonly="state == 'completed'"/>
+                        <field name="birth_trauma" readonly="state == 'completed'"/>
+                        <field name="illness_psychological" readonly="state == 'completed'"/>
+                        <field name="physical" readonly="state == 'completed'"/>                                        
+                        <field name="medication" readonly="state == 'completed'"/>
+                        <field name="drugs" readonly="state == 'completed'"/>
+                        <field name="alcohol" readonly="state == 'completed'"/>                                        
+                        <field name="pain" readonly="state == 'completed'"/>	
+                    </group>
+                    <group string="Predisposing - Psychological"> 
+                        <field name="personality" readonly="state == 'completed'"/>
+                        <field name="modelling" readonly="state == 'completed'"/>
+                        <field name="defences" readonly="state == 'completed'"/>
+                        <field name="coping_strategies" readonly="state == 'completed'"/>                                        
+                        <field name="self_esteem" readonly="state == 'completed'"/>
+                        <field name="body_image" readonly="state == 'completed'"/>
+                        <field name="cognition" readonly="state == 'completed'"/>                                        
+                    </group>
+                    <group string="Predisposing - Social">
+                        <field name="socio_economic" readonly="state == 'completed'"/>
+                        <field name="trauma" readonly="state == 'completed'"/>
+                    </group>
+                </group>
+                <group col="3">
+                    <group string="Precipitating-Biological">
+                        <field name="precipitating_medication" readonly="state == 'completed'"/>
+                        <field name="precipitating_trauma" readonly="state == 'completed'"/>
+                        <field name="precipitating_drug_alcohol" readonly="state == 'completed'"/>
+                        <field name="precipitating_acute_illness" readonly="state == 'completed'"/>                                        
+                        <field name="precipitating_pain" readonly="state == 'completed'"/>	
+                    </group>
+                    <group string="Precipitating-Psychological"> 
+                        <field name="precipitating_state_life" readonly="state == 'completed'"/>
+                        <field name="precipitating_loss_grief" readonly="state == 'completed'"/>
+                        <field name="precipitating_treatment" readonly="state == 'completed'"/>
+                        <field name="precipitating_stressor" readonly="state == 'completed'"/>                                                                               
+                    </group>
+                    <group string="Precipitating-Social">
+                        <field name="precipitating_work" readonly="state == 'completed'"/>
+                        <field name="precipitating_finance" readonly="state == 'completed'"/>
+                        <field name="precipitating_connections" readonly="state == 'completed'"/>
+                        <field name="precipitating_relationships" readonly="state == 'completed'"/>
+                    </group>
+                </group>
+                <group string="Perpetuating">
+                    <field name="perpetuating" readonly="state == 'completed'"/>
+                </group>
+                <group col="3">
+                    <group string="Protective-Biological">
+                        <field name="protective_health" readonly="state == 'completed'"/>	
+                    </group>
+                    <group string="Protective-Psychological"> 
+                        <field name="protective_engagement" readonly="state == 'completed'"/>
+                        <field name="protective_insight" readonly="state == 'completed'"/>
+                        <field name="protective_adherence" readonly="state == 'completed'"/>
+                        <field name="protective_coping_strategies" readonly="state == 'completed'"/>
+                        <field name="protective_intelligence" readonly="state == 'completed'"/>                                                                          
+                    </group>
+                    <group string="Protective-Social">
+                        <!-- Placeholder if protective social fields are added in the future -->
+                    </group>
+                </group>
+            </sheet>
+
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+    </field>
+</record>
+
+<!-- Tree view -->
+<record id="view_hospital_case_formulation_tree" model="ir.ui.view">
+    <field name="name">hospital.case.formulation.tree</field>
+    <field name="model">hospital.case.formulation</field>
+    <field name="arch" type="xml">
+        <tree string="Case Formulations">
+            <field name="name_seq"/>
+            <field name="patient_name"/>
+            <field name="date"/>
+            <field name="admitted_by"/>
+            <field name="state" widget="badge" decoration-info="state == 'draft'" 
+                   decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'"/>
+        </tree>
+    </field>
+</record>
+
+<!-- Action -->
+<record id="action_hospital_case_formulation" model="ir.actions.act_window">
+    <field name="name">Case Formulations</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">hospital.case.formulation</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create a new case formulation
+        </p>
+    </field>
+</record>
+
+<!-- Sequences -->
+<record id="seq_hospital_case_formulation" model="ir.sequence">
+    <field name="name">Hospital Case Formulation</field>
+    <field name="code">hospital.case.formulation</field>
+    <field name="prefix">CF/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+<record id="seq_hospital_case_formulation_seq" model="ir.sequence">
+    <field name="name">Hospital Case Formulation Sequence</field>
+    <field name="code">hospital.case.formulation.seq</field>
+    <field name="prefix">CF-</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+
+
+</odoo>

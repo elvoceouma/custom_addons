@@ -62,6 +62,7 @@
         'views/pharmacy_views.xml',
         'views/prescription_views.xml',
         'views/room_views.xml',
+        'views/hospital_case_formulation.xml',
         'views/hospital_laboratory_views.xml',
         'views/actions.xml',  
         'views/menu.xml',     
