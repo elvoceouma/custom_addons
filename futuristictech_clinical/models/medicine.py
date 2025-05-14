@@ -263,3 +263,4 @@ class ProductProduct(models.Model):
     medication_type_id = fields.Many2one('hospital.medication.type', string='Medication Type')
     debit_note = fields.Boolean(string='Debit Note')
     medicine_product = fields.Boolean(string='Medicine Product')
+    procedure_product = fields.Boolean('procedure_product')

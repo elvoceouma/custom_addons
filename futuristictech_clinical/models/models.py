@@ -1068,25 +1068,185 @@ class HospitalInjctionApplication(models.Model):
     notes = fields.Text(string='Notes')
 
 
-
 class HospitalMedicalProcedure(models.Model):
     _name = 'hospital.medical.procedure'
     _description = 'Medical Procedure'
-    
-    name = fields.Char(string='Procedure Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Performing Physician')
-    procedure_date = fields.Datetime(string='Procedure Date')
-    procedure_type = fields.Char(string='Procedure Type')
+    _inherit = ['mail.thread', 'mail.activity.mixin'] # For chatter
+
+    # Original fields (kept if sensible)
+    name = fields.Char(string='Procedure Reference', required=True, tracking=True)
+    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+    physician_id = fields.Many2one('hospital.physician', string='Performing Physician', tracking=True)
+    procedure_type = fields.Char(string='Procedure Type', tracking=True)
     notes = fields.Text(string='Procedure Notes')
     complications = fields.Text(string='Complications')
-    state = fields.Selection([
-        ('planned', 'Planned'),
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='planned')
 
+    # Fields from the form view
+    inpatient_admission_id = fields.Many2one(
+        'hospital.inpatient.admission', # Assuming this model exists
+        string='IP Number',
+        tracking=True
+    )
+    purpose = fields.Text(string='Purpose', tracking=True)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
+        readonly=True # Usually set once
+    )
+    date_selection = fields.Selection([
+        ('by_date', 'By Date'),
+        ('by_period', 'By Period')
+    ], string="Date Selection Type", tracking=True) # Made the string more descriptive
+
+    requested_date = fields.Date(string='Requested Date', tracking=True)
+    start_date = fields.Date(string='Period Start Date', tracking=True)
+    end_date = fields.Date(string='Period End Date', tracking=True)
+
+    required_date = fields.Date(string='Required Date', tracking=True) # As per view, though its use alongside others is to be defined by business logic
+
+    approved_date = fields.Datetime(string='Approved Date', readonly=True, tracking=True)
+    debit_note_id = fields.Many2one(
+        'account.move', # Assuming standard debit notes are account.move
+        string='Debit Note',
+        readonly=True,
+        tracking=True
+    )
+    user_id = fields.Many2one(
+        'res.users',
+        string='Requested By',
+        default=lambda self: self.env.user,
+        readonly=True,
+        tracking=True
+    )
+    approved_by = fields.Many2one(
+        'res.users',
+        string='Approved By',
+        readonly=True,
+        tracking=True
+    )
+
+    requisition_line_ids = fields.One2many(
+        'hospital.medical.procedure.line',
+        'procedure_id',
+        string='Products/Services'
+    )
+    material_line_ids = fields.One2many(
+        'hospital.medical.procedure.material.line',
+        'procedure_id',
+        string='Materials Used'
+    )
+
+    # --- Business Methods ---
+    def action_approve(self):
+        self.ensure_one() # Ensure method is called on a single record for this implementation
+        if not self.approved_by: # Prevent re-approval or other logic can be added
+            self.write({
+                'approved_by': self.env.user.id,
+                'approved_date': fields.Datetime.now()
+            })
+            self.message_post(body=_("Procedure approved.")) # Post a message to chatter
+        return True
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for record in self:
+            if record.start_date and record.end_date and record.start_date > record.end_date:
+                raise models.ValidationError(_("End Date cannot be earlier than Start Date."))
+
+
+class HospitalMedicalProcedureLine(models.Model):
+    _name = 'hospital.medical.procedure.line'
+    _description = 'Medical Procedure Product/Service Line'
+
+    procedure_id = fields.Many2one(
+        'hospital.medical.procedure',
+        string='Medical Procedure',
+        required=True,
+        ondelete='cascade'
+    )
+    date = fields.Date(string='Date') # As per the view's invisible field
+    product_id = fields.Many2one(
+        'product.product',
+        string='Product/Service',
+        required=True,
+        domain="[('type','=','service'),('procedure_product','=',True)]" # Simplified domain for clarity, original had 'debit_note' too
+    )
+    name = fields.Text(string='Description') # Intended for product description, can be auto-filled
+    internal_category_id = fields.Many2one(
+        'product.category',
+        related='product_id.categ_id',
+        string='Internal Category',
+        store=True, # Store for easier access if needed
+        readonly=True
+    )
+    quantity = fields.Float(string='Quantity', default=1.0, required=True)
+    price_unit = fields.Float(string='Unit Price', required=True)
+    price_subtotal = fields.Monetary(
+        string='Subtotal',
+        compute='_compute_price_subtotal',
+        store=True
+    )
+    currency_id = fields.Many2one(
+        related='procedure_id.company_id.currency_id',
+        string='Currency',
+        store=True, # Store for monetary field functionality
+        readonly=True
+    )
+
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.name = self.product_id.get_product_multiline_description_sale() if self.product_id else ''
+            # Ensure company_id is available for price context if using product pricelists
+            # For simplicity, using standard list price. Adjust if pricelists are used.
+            self.price_unit = self.product_id.lst_price
+        else:
+            self.name = ''
+            self.price_unit = 0.0
+
+
+class HospitalMedicalProcedureMaterialLine(models.Model):
+    _name = 'hospital.medical.procedure.material.line'
+    _description = 'Medical Procedure Material Line'
+
+    procedure_id = fields.Many2one(
+        'hospital.medical.procedure',
+        string='Medical Procedure',
+        required=True,
+        ondelete='cascade'
+    )
+    product_id = fields.Many2one(
+        'product.product',
+        string='Material/Drug',
+        required=True,
+        domain="[('medicine_product','=',True)]" # Assuming 'medicine_product' is a boolean on product.product
+    )
+    name = fields.Text(string='Description', readonly=False, store=True) # Allow override if needed
+    internal_category_id = fields.Many2one(
+        'product.category',
+        related='product_id.categ_id',
+        string='Internal Category',
+        store=True,
+        readonly=True
+    )
+    quantity = fields.Float(string='Quantity', default=1.0, required=True)
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            # Name is related, but if you want to set it differently on change:
+            # self.name = self.product_id.display_name
+            pass # Name is already related
+        else:
+            # self.name = '' # Handled by related if product is unset
+            pass
 
 class HospitalMedicineRequisition(models.Model):
     _name = 'hospital.medicine.requisition'
@@ -1659,24 +1819,144 @@ class HospitalRoomInspection(models.Model):
 class HospitalServiceRequisition(models.Model):
     _name = 'hospital.service.requisition'
     _description = 'Service Requisition'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Requisition Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Requesting Physician')
-    service_date = fields.Date(string='Service Date', default=fields.Date.today)
-    service_type = fields.Char(string='Service Type')
-    description = fields.Text(string='Service Description')
+    name = fields.Char(
+        string='Requisition Reference',
+        required=True,
+        readonly=True,
+        copy=False,
+        default=lambda self: _('New'),
+        tracking=True
+    )
+    inpatient_admission_id = fields.Many2one(
+        'hospital.inpatient.admission',
+        string='IP Number',
+        domain="[('state','!=','discharge_advised')]",
+        tracking=True
+    )
+    patient_id = fields.Many2one(
+        'hospital.patient',
+        string='Patient',
+        required=True,
+        tracking=True
+    )
+    physician_id = fields.Many2one(
+        'hospital.physician',
+        string='Requesting Physician',
+        tracking=True
+    )
+    prescribing_doctor = fields.Many2one(
+        'res.partner',
+        string='Prescribing Doctor',
+        # domain="[('team_role','in',('psychiatrist','physician'))]",
+        tracking=True
+    )
+    purpose = fields.Text(string='Purpose', tracking=True)
+    service_type = fields.Char(string='Service Type', tracking=True)
+    description = fields.Text(string='Service Description', tracking=True)
+    date_selection = fields.Selection([
+        ('by_date', 'By Date'),
+        ('by_period', 'By Period')
+    ], string='Date Selection', tracking=True)
+    requested_date = fields.Date(string='Requested Date', tracking=True)
+    start_date = fields.Date(string='Start Date', tracking=True)
+    end_date = fields.Date(string='End Date', tracking=True)
+    required_date = fields.Date(string='Required Date', tracking=True)
+    approved_date = fields.Date(string='Approved Date', readonly=True, tracking=True)
+    service_date = fields.Date(
+        string='Service Date',
+        default=fields.Date.today,
+        tracking=True
+    )
+    requisition_line_ids = fields.One2many(
+        'hospital.service.requisition.line',
+        'requisition_id',
+        string='Services',
+        tracking=True
+    )
+    debit_note_id = fields.Many2one(
+        'account.move',
+        string='Debit Note',
+        readonly=True,
+        tracking=True
+    )
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        tracking=True
+    )
+    user_id = fields.Many2one(
+        'res.users',
+        string='Requested By',
+        default=lambda self: self.env.user,
+        readonly=True,
+        tracking=True
+    )
+    approved_by = fields.Many2one(
+        'res.users',
+        string='Approved By',
+        readonly=True,
+        tracking=True
+    )
     urgency = fields.Selection([
         ('normal', 'Normal'),
         ('urgent', 'Urgent'),
         ('emergency', 'Emergency')
-    ], string='Urgency')
+    ], string='Urgency', default='normal', tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('requested', 'Requested'),
         ('approved', 'Approved'),
         ('completed', 'Completed')
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.service.requisition') or _('New')
+        return super().create(vals_list)
+
+    def action_approve(self):
+        self.write({
+            'state': 'approved',
+            'approved_date': fields.Date.today(),
+            'approved_by': self.env.user.id
+        })
+
+
+class HospitalServiceRequisitionLine(models.Model):
+    _name = 'hospital.service.requisition.line'
+    _description = 'Service Requisition Line'
+    
+    requisition_id = fields.Many2one('hospital.service.requisition', string='Requisition')
+    product_id = fields.Many2one(
+        'product.product',
+        string='Service',
+        domain="[('type','=','service'),('debit_note','=',True)]",
+        required=True
+    )
+    name = fields.Text(string='Description')
+    date = fields.Date(string='Date')
+    internal_category_id = fields.Many2one('product.category', string='Internal Category')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_subtotal', store=True)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+    
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.name = self.product_id.name
+            self.internal_category_id = self.product_id.categ_id
+            self.price_unit = self.product_id.list_price
+
 
 class HospitalSpecialPrivileges(models.Model):
     _name = 'hospital.special.privileges'
@@ -2052,17 +2332,163 @@ class HospitalDoctorPayout(models.Model):
 
 class HospitalEmergencyMedicine(models.Model):
     _name = 'hospital.emergency.medicine'
-    _description = 'Emergency Medicine'
+    _description = 'Emergency Medicine Requisition'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Prescribing Physician')
-    medicine_id = fields.Many2one('hospital.medicine', string='Medicine')
+    name = fields.Char(
+        string='Reference',
+        required=True,
+        readonly=True,
+        copy=False,
+        default=lambda self: _('New'),
+        tracking=True
+    )
+    inpatient_admission_id = fields.Many2one(
+        'hospital.inpatient.admission',
+        string='IP Number',
+        domain="[('state','!=','discharge_advised')]",
+        tracking=True
+    )
+    patient_id = fields.Many2one(
+        'hospital.patient',
+        string='Patient',
+        required=True,
+        tracking=True
+    )
+    physician_id = fields.Many2one(
+        'hospital.physician',
+        string='Prescribing Physician',
+        tracking=True
+    )
+
+    advising_doctor_id = fields.Many2one(
+        'res.partner',
+        string='Advising Doctor',
+        # domain="[('doctor','=',True),('active_doctor','=',True)]",
+        required=True,
+        tracking=True
+    )
+    purpose = fields.Text(string='Purpose', tracking=True)
+    reason = fields.Text(string='Reason', tracking=True)
+    note = fields.Text(string='Notes', required=True, tracking=True)
+    requested_date = fields.Date(string='Requested Date', tracking=True)
+    required_date = fields.Date(string='Required Date', tracking=True)
+    approved_date = fields.Date(string='Approved Date', readonly=True, tracking=True)
+    date = fields.Datetime(
+        string='Date',
+        default=fields.Datetime.now,
+        tracking=True
+    )
+    requisition_line_ids = fields.One2many(
+        'hospital.emergency.medicine.line',
+        'requisition_id',
+        string='Medicines',
+        tracking=True
+    )
+    requirement = fields.Text(string='Requirement', tracking=True)
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', tracking=True)
+    picking_type_id = fields.Many2one('stock.picking.type', string='Picking Type', tracking=True)
+    source_location_id = fields.Many2one('stock.location', string='Source Location', tracking=True)
+    destination_location_id = fields.Many2one('stock.location', string='Destination Location', tracking=True)
+    move_type = fields.Selection([
+        ('direct', 'As soon as possible'),
+        ('one', 'When all products are ready')
+    ], string='Move Type', default='direct', tracking=True)
+    stock_picking_ids = fields.Many2many('stock.picking', string='Stock Pickings', tracking=True)
+    stock_picking_count = fields.Integer(string='Stock Picking Count', compute='_compute_stock_picking_count')
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        tracking=True
+    )
+    user_id = fields.Many2one(
+        'res.users',
+        string='Requested By',
+        default=lambda self: self.env.user,
+        readonly=True,
+        tracking=True
+    )
+    approved_by = fields.Many2one('res.users', string='Approved By', readonly=True, tracking=True)
+    administered = fields.Boolean(string='Administered', tracking=True)
+    administered_by = fields.Many2one('res.users', string='Administered By', tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('waiting_for_approval', 'Waiting for Approval'),
+        ('inprogress', 'In Progress'),
+        ('issued', 'Issued')
+    ], string='Status', default='draft', tracking=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.emergency.medicine') or _('New')
+        return super().create(vals_list)
+
+    def action_confirm(self):
+        self.write({'state': 'confirmed'})
+
+    def action_approve(self):
+        self.write({
+            'state': 'inprogress',
+            'approved_date': fields.Date.today(),
+            'approved_by': self.env.user.id
+        })
+
+    @api.depends('stock_picking_ids')
+    def _compute_stock_picking_count(self):
+        for record in self:
+            record.stock_picking_count = len(record.stock_picking_ids)
+
+    def view_stock_picking(self):
+        self.ensure_one()
+        return {
+            'name': _('Stock Pickings'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', self.stock_picking_ids.ids)],
+        }
+
+    @api.onchange('inpatient_admission_id')
+    def _onchange_inpatient_admission_id(self):
+        if self.inpatient_admission_id:
+            self.patient_id = self.inpatient_admission_id.patient_id
+
+
+class HospitalEmergencyMedicineLine(models.Model):
+    _name = 'hospital.emergency.medicine.line'
+    _description = 'Emergency Medicine Line'
+    
+    requisition_id = fields.Many2one('hospital.emergency.medicine', string='Requisition')
+    product_id = fields.Many2one(
+        'product.product',
+        string='Medicine',
+        domain="[('medicine_product','=',True)]",
+        required=True
+    )
+    name = fields.Text(string='Description')
+    date = fields.Date(string='Date')
+    internal_category_id = fields.Many2one('product.category', string='Internal Category')
+    quantity = fields.Float(string='Quantity', default=1.0)
     dosage = fields.Char(string='Dosage')
-    date = fields.Datetime(string='Date', default=fields.Datetime.now)
-    reason = fields.Text(string='Reason')
-    administered = fields.Boolean(string='Administered')
-    administered_by = fields.Many2one('res.users', string='Administered By')
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_subtotal', store=True)
+    is_issued = fields.Boolean(string='Is Issued', default=False)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+    
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.name = self.product_id.name
+            self.internal_category_id = self.product_id.categ_id
+            self.price_unit = self.product_id.list_price
 
 
 class HospitalFormCSection86(models.Model):
