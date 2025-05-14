@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hospital_mo_sr_section_86_form" model="ir.ui.view">
+        <field name="name">hospital.mo.sr.section.86.form</field>
+        <field name="model">hospital.mo.sr.section.86</field>
+        <field name="arch" type="xml">
+            <form string="Independent Admission">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="gender"/>
+                            <field name="mrn_no"/>
+                            <field name="provisional_diagnosis"/>
+                            <field name="symptoms_severity"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="age"/>
+                            <field name="admitted_by"/>
+                            <field name="severity_requiring"/>
+                            <field name="patient_understanding"/>
+                            <field name="purpose"/>
+                            <field name="report_contents" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_mo_sr_section_86_tree" model="ir.ui.view">
+        <field name="name">hospital.mo.sr.section.86.tree</field>
+        <field name="model">hospital.mo.sr.section.86</field>
+        <field name="arch" type="xml">
+            <tree string="MO/SR Section 86">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="admitted_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_mo_sr_section_86" model="ir.actions.act_window">
+        <field name="name">MO/SR Section 86</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.mo.sr.section.86</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first MO/SR Section 86 record
+            </p>
+        </field>
+    </record>
+
+
+
+    <record id="view_hospital_minor_admission_form" model="ir.ui.view">
+        <field name="name">hospital.minor.admission.form</field>
+        <field name="model">hospital.minor.admission</field>
+        <field name="arch" type="xml">
+            <form string="Minor Admission">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <label for="illness_symptoms_1" string="Illness Symptoms"/>
+                            <div>
+                                <field name="illness_symptoms_1" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_2" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_3" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_4" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_5" placeholder="Illness Symptoms"/>
+                            </div>
+                            <label for="illness_doc_1" string="Illness Documents"/>
+                            <div>
+                                <field name="illness_doc_1" placeholder="Illness Documents"/>
+                                <field name="illness_doc_2" placeholder="Illness Documents"/>
+                                <field name="illness_doc_3" placeholder="Illness Documents"/>
+                                <field name="illness_doc_4" placeholder="Illness Documents"/>
+                                <field name="illness_doc_5" placeholder="Illness Documents"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="age"/>
+                            <field name="admitted_by"/>
+                            <field name="symptoms_since" placeholder="Days / Month / Year eg: 2 Years/4months/10days"/>
+                            <field name="report_contents" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_minor_admission_tree" model="ir.ui.view">
+        <field name="name">hospital.minor.admission.tree</field>
+        <field name="model">hospital.minor.admission</field>
+        <field name="arch" type="xml">
+            <tree string="Minor Admissions">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="admitted_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_minor_admission" model="ir.actions.act_window">
+        <field name="name">Minor Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.minor.admission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first minor admission record
+            </p>
+        </field>
+    </record>
+
+      <record id="view_hospital_high_support_admission_form" model="ir.ui.view">
+        <field name="name">hospital.high.support.admission.form</field>
+        <field name="model">hospital.high.support.admission</field>
+        <field name="arch" type="xml">
+            <form string="Independent Admission">                       
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" 
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title"> 
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}" 
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="since" placeholder="how many year"/>  
+                            <label for="illness_symptoms_1" string="Illness Symptoms"/>
+                            <div>
+                                <field name="illness_symptoms_1" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_2" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_3" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_4" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_5" placeholder="Illness Symptoms"/>   
+                            </div>
+                            <label for="illness_doc_1" string="Illness Documents"/>
+                            <div>
+                                <field name="illness_doc_1" placeholder="Illness Documents"/>
+                                <field name="illness_doc_2" placeholder="Illness Documents"/>
+                                <field name="illness_doc_3" placeholder="Illness Documents"/>                                                                                            
+                            </div>                                        	 
+                        </group>   
+                        <group> 
+                            <field name="date" readonly="1"/>
+                            <field name="age"/>                                        
+                            <field name="admitted_by"/>
+                            <field name="symptoms_since" placeholder="mention the year"/>
+                            <field name="report_contents" invisible="1"/>
+                        </group>                                    
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_high_support_admission_tree" model="ir.ui.view">
+        <field name="name">hospital.high.support.admission.tree</field>
+        <field name="model">hospital.high.support.admission</field>
+        <field name="arch" type="xml">
+            <tree string="High Support Admissions">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="admitted_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_high_support_admission" model="ir.actions.act_window">
+        <field name="name">High Support Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.high.support.admission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first high support admission record
+            </p>
+        </field>
+    </record>
+</odoo>

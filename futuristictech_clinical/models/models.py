@@ -584,6 +584,7 @@ class HospitalCaseFormulation(models.Model):
         """Confirm the case formulation"""
         return self.write({'state': 'completed'})
 
+
 class HospitalEmergencyAssessment(models.Model):
     _name = 'hospital.emergency.assessment'
     _description = 'Hospital Emergency Assessment'
@@ -1128,20 +1129,60 @@ class HospitalMicrobiology(models.Model):
 class HospitalMinorAdmission(models.Model):
     _name = 'hospital.minor.admission'
     _description = 'Minor Admission'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Admission Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    guardian_id = fields.Many2one('hospital.patient.relationship', string='Guardian')
-    admission_date = fields.Date(string='Admission Date', default=fields.Date.today)
-    physician_id = fields.Many2one('hospital.physician', string='Admitting Physician')
-    reason = fields.Text(string='Reason for Admission')
-    guardian_consent = fields.Boolean(string='Guardian Consent Obtained')
+    name = fields.Char(string='Admission Reference', readonly=True)
+    name_seq = fields.Char(string='Sequence', readonly=True, copy=False, default=lambda self: _('New'))
+    
+    # Fields from the form view
+    ip_number = fields.Char(string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    
+    # Illness symptoms fields
+    illness_symptoms_1 = fields.Char(string='Illness Symptoms 1', tracking=True)
+    illness_symptoms_2 = fields.Char(string='Illness Symptoms 2', tracking=True)
+    illness_symptoms_3 = fields.Char(string='Illness Symptoms 3', tracking=True)
+    illness_symptoms_4 = fields.Char(string='Illness Symptoms 4', tracking=True)
+    illness_symptoms_5 = fields.Char(string='Illness Symptoms 5', tracking=True)
+    
+    # Illness documents fields
+    illness_doc_1 = fields.Char(string='Illness Document 1', tracking=True)
+    illness_doc_2 = fields.Char(string='Illness Document 2', tracking=True)
+    illness_doc_3 = fields.Char(string='Illness Document 3', tracking=True)
+    illness_doc_4 = fields.Char(string='Illness Document 4', tracking=True)
+    illness_doc_5 = fields.Char(string='Illness Document 5', tracking=True)
+    
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    symptoms_since = fields.Char(string='Symptoms Since', tracking=True, 
+                                help="Days / Month / Year eg: 2 Years/4months/10days")
+    report_contents = fields.Binary(string='Report Contents', attachment=True)
+    
+    # Original fields from the provided model
+    patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
+    guardian_id = fields.Many2one('hospital.patient.relationship', string='Guardian', tracking=True)
+    admission_date = fields.Date(string='Admission Date', default=fields.Date.today, tracking=True)
+    physician_id = fields.Many2one('hospital.physician', string='Admitting Physician', tracking=True)
+    reason = fields.Text(string='Reason for Admission', tracking=True)
+    guardian_consent = fields.Boolean(string='Guardian Consent Obtained', tracking=True)
+    
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('admitted', 'Admitted'),
-        ('discharged', 'Discharged')
-    ], string='Status', default='draft')
-
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.minor.admission') or _('New')
+        return super(HospitalMinorAdmission, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.state = 'completed'
+        return True
+    
 class HospitalMiscellaneous(models.Model):
     _name = 'hospital.miscellaneous'
     _description = 'Miscellaneous Tests'
@@ -1169,15 +1210,69 @@ class HospitalMolecularBiology(models.Model):
 class HospitalMOSRSection86(models.Model):
     _name = 'hospital.mo.sr.section.86'
     _description = 'MO/SR Section 86'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    assessment = fields.Text(string='Assessment')
-    recommendations = fields.Text(string='Recommendations')
-    notes = fields.Text(string='Notes')
-
+    name = fields.Char(string='Reference', readonly=True)
+    name_seq = fields.Char(string='Sequence', readonly=True, copy=False, default=lambda self: _('New'))
+    
+    # Fields from the form view
+    ip_number = fields.Char(string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Gender', tracking=True)
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    provisional_diagnosis = fields.Text(string='Provisional Diagnosis', tracking=True)
+    symptoms_severity = fields.Selection([
+        ('mild', 'Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe')
+    ], string='Symptoms Severity', tracking=True)
+    
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    severity_requiring = fields.Selection([
+        ('outpatient', 'Outpatient'),
+        ('inpatient', 'Inpatient'),
+        ('icu', 'ICU')
+    ], string='Severity Requiring', tracking=True)
+    patient_understanding = fields.Selection([
+        ('good', 'Good'),
+        ('fair', 'Fair'),
+        ('poor', 'Poor')
+    ], string='Patient Understanding', tracking=True)
+    purpose = fields.Selection([
+        ('assessment', 'Assessment'),
+        ('treatment', 'Treatment'),
+        ('followup', 'Follow-up')
+    ], string='Purpose', tracking=True)
+    report_contents = fields.Binary(string='Report Contents', attachment=True)
+    
+    # Original fields from the provided model
+    patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
+    physician_id = fields.Many2one('hospital.physician', string='Physician', tracking=True)
+    assessment = fields.Text(string='Assessment', tracking=True)
+    recommendations = fields.Text(string='Recommendations', tracking=True)
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.mo.sr.section.86') or _('New')
+        return super(HospitalMOSRSection86, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.state = 'completed'
+        return True
+    
 class HospitalOutingExpenses(models.Model):
     _name = 'hospital.outing.expenses'
     _description = 'Outing Expenses'
@@ -1704,15 +1799,52 @@ class HospitalEmergencyMedicine(models.Model):
 
 class HospitalFormCSection86(models.Model):
     _name = 'hospital.form.c.section.86'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Form C Section 86'
     
-    name = fields.Char(string='Form Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    date = fields.Date(string='Date', default=fields.Date.today)
-    physician_id = fields.Many2one('hospital.physician', string='Physician')
-    diagnosis = fields.Text(string='Diagnosis')
-    recommendations = fields.Text(string='Recommendations')
-    notes = fields.Text(string='Notes')
+    name = fields.Char(string='Name', readonly=True)
+    name_seq = fields.Char(string='Reference Number', readonly=True)
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(related='ip_number.name', string='Patient Name', store=True)
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    age = fields.Integer(related='ip_number.age', string='Age', store=True)
+    since = fields.Char(string='Since', help='How many years')
+    admitted_by = fields.Many2one('res.users', string='Admitted By', default=lambda self: self.env.user)
+    symptoms_since = fields.Char(string='Symptoms Since', help='Mention the year')
+    
+    # Illness symptoms fields
+    illness_symptoms_1 = fields.Char(string='Illness Symptoms 1')
+    illness_symptoms_2 = fields.Char(string='Illness Symptoms 2')
+    illness_symptoms_3 = fields.Char(string='Illness Symptoms 3')
+    illness_symptoms_4 = fields.Char(string='Illness Symptoms 4')
+    illness_symptoms_5 = fields.Char(string='Illness Symptoms 5')
+    
+    # Illness documents fields
+    illness_doc_1 = fields.Char(string='Illness Document 1')
+    illness_doc_2 = fields.Char(string='Illness Document 2')
+    illness_doc_3 = fields.Char(string='Illness Document 3')
+    
+    report_contents = fields.Text(string='Report Contents')
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('name'):
+                vals['name'] = 'Independent Admission'
+            if not vals.get('name_seq'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.form.c.section.86') or _('New')
+        return super(HospitalFormCSection86, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.state = 'completed'
+        return True
+    
+
 
 class HospitalHematology(models.Model):
     _name = 'hospital.hematology'
@@ -1726,23 +1858,61 @@ class HospitalHematology(models.Model):
     wbc_count = fields.Float(string='WBC Count')
     platelet_count = fields.Float(string='Platelet Count')
     notes = fields.Text(string='Notes')
-
 class HospitalHighSupportAdmission(models.Model):
     _name = 'hospital.high.support.admission'
     _description = 'High Support Admission'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Admission Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_date = fields.Date(string='Admission Date', default=fields.Date.today)
-    physician_id = fields.Many2one('hospital.physician', string='Admitting Physician')
-    reason = fields.Text(string='Reason for High Support')
-    care_plan = fields.Text(string='Care Plan')
+    name = fields.Char(string='Admission Reference', readonly=True)
+    name_seq = fields.Char(string='Sequence', readonly=True, copy=False, default=lambda self: _('New'))
+    
+    # Fields from the form view
+    ip_number = fields.Char(string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    since = fields.Char(string='Since', tracking=True, help="How many year")
+    
+    # Illness symptoms fields
+    illness_symptoms_1 = fields.Char(string='Illness Symptoms 1', tracking=True)
+    illness_symptoms_2 = fields.Char(string='Illness Symptoms 2', tracking=True)
+    illness_symptoms_3 = fields.Char(string='Illness Symptoms 3', tracking=True)
+    illness_symptoms_4 = fields.Char(string='Illness Symptoms 4', tracking=True)
+    illness_symptoms_5 = fields.Char(string='Illness Symptoms 5', tracking=True)
+    
+    # Illness documents fields
+    illness_doc_1 = fields.Char(string='Illness Document 1', tracking=True)
+    illness_doc_2 = fields.Char(string='Illness Document 2', tracking=True)
+    illness_doc_3 = fields.Char(string='Illness Document 3', tracking=True)
+    
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    admitted_by = fields.Many2one('hospital.physician', string='Admitted By', tracking=True)
+    symptoms_since = fields.Char(string='Symptoms Since', tracking=True, help="Mention the year")
+    report_contents = fields.Binary(string='Report Contents', attachment=True)
+    
+    # Original fields from the provided model
+    patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
+    admission_date = fields.Date(string='Admission Date', default=fields.Date.today, tracking=True)
+    physician_id = fields.Many2one('hospital.physician', string='Admitting Physician', tracking=True)
+    reason = fields.Text(string='Reason for High Support', tracking=True)
+    care_plan = fields.Text(string='Care Plan', tracking=True)
+    
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('admitted', 'Admitted'),
-        ('discharged', 'Discharged')
-    ], string='Status', default='draft')
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.high.support.admission') or _('New')
+        return super(HospitalHighSupportAdmission, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.state = 'completed'
+        return True
 
+        
 class HospitalHormones(models.Model):
     _name = 'hospital.hormones'
     _description = 'Hormone Tests'
@@ -1764,26 +1934,6 @@ class HospitalImmunology(models.Model):
     physician_id = fields.Many2one('hospital.physician', string='Requesting Physician')
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
-
-# class HospitalIndependentExamination(models.Model):
-#     _name = 'hospital.independent.examination'
-#     _description = 'Independent Medical Examination'
-    
-#     name = fields.Char(string='Examination Reference', required=True)
-#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Examining Physician')
-#     examination_date = fields.Date(string='Examination Date', default=fields.Date.today)
-#     examination_type = fields.Selection([
-#         ('professional_1', 'Professional I'),
-#         ('professional_2', 'Professional II')
-#     ], string='Examination Type')
-#     findings = fields.Text(string='Findings')
-#     recommendations = fields.Text(string='Recommendations')
-#     state = fields.Selection([
-#         ('draft', 'Draft'),
-#         ('completed', 'Completed'),
-#         ('reviewed', 'Reviewed')
-#     ], string='Status', default='draft')
 
 class HospitalInvestigationRequest(models.Model):
     _name = 'hospital.investigation.request'

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hospital_form_c_section_86_form" model="ir.ui.view">
+        <field name="name">hospital.form.c.section.86.form</field>
+        <field name="model">hospital.form.c.section.86</field>
+        <field name="arch" type="xml">
+            <form string="Independent Admission">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" 
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" class="oe_title oe_title_custom" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" class="oe_title oe_title_custom" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="since" placeholder="how many year"/>
+                            <label for="illness_symptoms_1" string="Illness Symptoms"/>
+                            <div>
+                                <field name="illness_symptoms_1" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_2" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_3" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_4" placeholder="Illness Symptoms"/>
+                                <field name="illness_symptoms_5" placeholder="Illness Symptoms"/>
+                            </div>
+                            <label for="illness_doc_1" string="Illness Documents"/>
+                            <div>
+                                <field name="illness_doc_1" placeholder="Illness Documents"/>
+                                <field name="illness_doc_2" placeholder="Illness Documents"/>
+                                <field name="illness_doc_3" placeholder="Illness Documents"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="age"/>
+                            <field name="admitted_by"/>
+                            <field name="symptoms_since" placeholder="mention the year"/>
+                            <field name="report_contents" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_form_c_section_86_tree" model="ir.ui.view">
+        <field name="name">hospital.form.c.section.86.tree</field>
+        <field name="model">hospital.form.c.section.86</field>
+        <field name="arch" type="xml">
+            <tree string="Independent Admissions">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="age"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hospital_form_c_section_86" model="ir.actions.act_window">
+        <field name="name">Independent Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.form.c.section.86</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first independent admission record
+            </p>
+        </field>
+    </record>
+
+    <!-- Create sequence for hospital.form.c.section.86 -->
+    <record id="seq_hospital_form_c_section_86" model="ir.sequence">
+        <field name="name">Hospital Form C Section 86</field>
+        <field name="code">hospital.form.c.section.86</field>
+        <field name="prefix">ICF/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>
