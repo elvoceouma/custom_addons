@@ -1043,15 +1043,6 @@ class HospitalProfessionalCategory(models.Model):
     date_admission = fields.Date(string='Date of Admission')
     expiry_date = fields.Date(string='Expiry Date')
 
-# Discharge Clearance Checklist Model
-class HospitalDischargeClearanceChecklist(models.Model):
-    _name = 'hospital.discharge.clearance.checklist'
-    _description = 'Hospital Discharge Clearance Checklist'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
-                          default=lambda self: _('New'))
-    
 
 class HospitalInjctionApplication(models.Model):
     _name = 'hospital.injection.application'
@@ -1558,35 +1549,126 @@ class HospitalCounsellorClearance(models.Model):
 class HospitalDAMAForm(models.Model):
     _name = 'hospital.dama.form'
     _description = 'Discharge Against Medical Advice Form'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='DAMA Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    physician_id = fields.Many2one('hospital.physician', string='Treating Physician')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    reason = fields.Text(string='Reason for DAMA')
-    risk_explained = fields.Boolean(string='Risks Explained')
-    witness_name = fields.Char(string='Witness Name')
-    witness_signature = fields.Binary(string='Witness Signature')
-    patient_signature = fields.Binary(string='Patient Signature')
-
-class HospitalDischargeClearance(models.Model):
-    _name = 'hospital.discharge.clearance'
-    _description = 'Discharge Clearance Checklist'
+    name = fields.Char(string='DAMA Reference', required=True, copy=False, readonly=True,
+                       default=lambda self: _('New'))
+    name_seq = fields.Char(string='Sequence', required=True, copy=False, readonly=True,
+                          default=lambda self: _('New'))
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex', tracking=True)
     
-    name = fields.Char(string='Clearance Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    medication_reconciliation = fields.Boolean(string='Medication Reconciliation')
-    follow_up_scheduled = fields.Boolean(string='Follow-up Scheduled')
-    documentation_complete = fields.Boolean(string='Documentation Complete')
-    patient_educated = fields.Boolean(string='Patient Educated')
+    # DAMA specific fields
+    dama_date = fields.Date(string='DAMA Date', tracking=True)
+    Patient_relation = fields.Char(string='Patient Relation', tracking=True)
+    medical_record = fields.Char(string='Medical Record', tracking=True)
+    relation_with = fields.Char(string='Relation With', tracking=True)
+    
+    # Reasons for DAMA
+    reasons_dama = fields.Text(string='Reasons DAMA', tracking=True)
+    
+    # Additional information
+    against_medical = fields.Boolean(string='Against Medical', tracking=True)
+    duty_doctor = fields.Many2one('hospital.physician', string='Duty Doctor', tracking=True)
+    witness_person = fields.Char(string='Witness Person', tracking=True)
+    
+    # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed')
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.dama.form') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.dama.form.seq') or _('New')
+        return super(HospitalDAMAForm, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+    
+    def inprogress(self):
+        self.write({'state': 'in_progress'})
+
+class HospitalDischargeClearance(models.Model):
+    _name = 'hospital.discharge.clearance'
+    _description = 'Hospital Discharge Clearance Checklist'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
+                       default=lambda self: _('New'))
+    name_seq = fields.Char(string='Sequence', required=True, copy=False, readonly=True,
+                          default=lambda self: _('New'))
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex', tracking=True)
+    
+    # Admission and clearance details
+    center_admitted = fields.Char(string='Center Admitted', tracking=True)
+    clearance_given = fields.Many2one('hr.employee', string='Clearance Given By', 
+                                     
+                                     tracking=True)
+    
+    # Patient accompanying documents and materials
+    case_history = fields.Integer(string='Case History', default=0, tracking=True)
+    progress_notes = fields.Integer(string='Progress Notes', default=0, tracking=True)
+    drug_chart = fields.Integer(string='Drug Chart', default=0, tracking=True)
+    discharge_summary = fields.Integer(string='Discharge Summary', default=0, tracking=True)
+    prescription = fields.Integer(string='Prescription', default=0, tracking=True)
+    valuables = fields.Integer(string='Valuables', default=0, tracking=True)
+    cloths = fields.Integer(string='Clothes', default=0, tracking=True)
+    
+    # Other details
+    nurse = fields.Many2one('hr.employee', string='Nurse', domain="[('job_id.name','in',['NURSES'])]", tracking=True)
+    caretaker = fields.Char(string='Caretaker', tracking=True)
+    driver = fields.Char(string='Driver', tracking=True)
+    vehicle = fields.Char(string='Vehicle', tracking=True)
+    security = fields.Char(string='Security', tracking=True)
+    
+    # Final verification details
+    receive_date = fields.Date(string='Receive Date', tracking=True)
+    verified_by = fields.Char(string='Verified By', tracking=True)
+    program_manager = fields.Char(string='Program Manager', tracking=True)
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.discharge.clearance') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.discharge.clearance.seq') or _('New')
+        return super(HospitalDischargeClearance, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+    
+    def inprogress(self):
+        self.write({'state': 'in_progress'})
 
 class HospitalDoctorPayout(models.Model):
     _name = 'hospital.doctor.payout'
@@ -1732,77 +1814,60 @@ class HospitalInvestigationRequest(models.Model):
 class HospitalLAMAForm(models.Model):
     _name = 'hospital.lama.form'
     _description = 'Leave Against Medical Advice Form'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='LAMA Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    physician_id = fields.Many2one('hospital.physician', string='Treating Physician')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    reason = fields.Text(string='Reason for LAMA')
-    risk_explained = fields.Boolean(string='Risks Explained')
-    witness_name = fields.Char(string='Witness Name')
-    witness_signature = fields.Binary(string='Witness Signature')
-    patient_signature = fields.Binary(string='Patient Signature')
+    name = fields.Char(string='Name', readonly=True)
+    name_seq = fields.Char(string='LAMA Reference', readonly=True)
+    
+    # Patient information
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True)
+    patient_name = fields.Char(string='Patient Name')
+    mrn_no = fields.Char(string='MRN Number')
+    age = fields.Integer(string='Age')
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex')
+    
+    # LAMA details
+    date = fields.Date(string='Creation Date', default=fields.Date.today(), readonly=True)
+    lama_date = fields.Date(string='LAMA Date')
+    Patient_relation = fields.Char(string='Patient Relation')
+    medical_record = fields.Boolean(string='Medical Record')
+    relation_with = fields.Char(string='Relation With')
+    
+    # Medical information
+    complaints_admission = fields.Text(string='Complaints on Admission')
+    diagnosis = fields.Text(string='Diagnosis')
+    request_fir = fields.Text(string='Request FIR')
+    reasons_lama = fields.Text(string='Reasons for LAMA')
+    
+    # Signatures and approval
+    against_medical = fields.Char(string='Against Medical Advice')
+    duty_doctor = fields.Many2one('hospital.physician', string='Duty Doctor')
+    witness_person = fields.Char(string='Witness Person')
+    
+    # State management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('hospital.lama.form') or 'New'
+            vals['name_seq'] = 'LAMA/' + vals['name']
+        return super(HospitalLAMAForm, self).create(vals_list)
+    
+    def inprogress(self):
+        self.state = 'in_progress'
+    
+    def action_confirm(self):
+        self.state = 'completed'
 
-
-# class HospitalLabTest(models.Model):
-#     _name = 'hospital.lab.test'
-#     _description = 'Laboratory Test'
-#     _inherit = ['mail.thread', 'mail.activity.mixin']
-#     _order = 'id desc'
-
-#     name = fields.Char(string='Test Reference', required=True, copy=False, readonly=True, default='New')
-#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Requesting Physician', tracking=True)
-#     test_date = fields.Date(string='Test Date', default=fields.Date.today, tracking=True)
-#     test_type = fields.Selection([
-#         ('biochemistry', 'Biochemistry'),
-#         ('hematology', 'Hematology'),
-#         ('hormones', 'Hormones'),
-#         ('immunology', 'Immunology'),
-#         ('microbiology', 'Microbiology'),
-#         ('molecular_biology', 'Molecular Biology'),
-#         ('urine_chemistry', 'Urine Chemistry'),
-#         ('urine_screening', 'Urine Screening'),
-#         ('drug_assays', 'Drug Assays'),
-#         ('other', 'Other')
-#     ], string='Test Type', required=True, tracking=True)
-#     urgency = fields.Selection([
-#         ('routine', 'Routine'),
-#         ('urgent', 'Urgent'),
-#         ('emergency', 'Emergency')
-#     ], string='Urgency', default='routine', tracking=True)
-#     sample_type = fields.Selection([
-#         ('blood', 'Blood'),
-#         ('urine', 'Urine'),
-#         ('stool', 'Stool'),
-#         ('csf', 'CSF'),
-#         ('tissue', 'Tissue'),
-#         ('other', 'Other')
-#     ], string='Sample Type', tracking=True)
-#     sample_collection_date = fields.Datetime(string='Sample Collection Date', tracking=True)
-#     collected_by = fields.Many2one('res.users', string='Collected By', tracking=True)
-#     results = fields.Text(string='Test Results', tracking=True)
-#     normal_range = fields.Text(string='Normal Range')
-#     interpretation = fields.Text(string='Interpretation', tracking=True)
-#     notes = fields.Text(string='Notes')
-#     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
-#     state = fields.Selection([
-#         ('draft', 'Draft'),
-#         ('sample_collected', 'Sample Collected'),
-#         ('in_progress', 'In Progress'),
-#         ('completed', 'Completed'),
-#         ('cancelled', 'Cancelled')
-#     ], string='Status', default='draft', tracking=True)
-#     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-#     admission_id = fields.Many2one('hospital.admission', string='Admission')
-#     requisition_id = fields.Many2one('hospital.lab.test.requisition', string='Requisition')
-
-    # @api.model
-    # def create(self, vals):
-    #     if vals.get('name', 'New') == 'New':
-    #         vals['name'] = self.env['ir.sequence'].next_by_code('hospital.lab.test') or 'New'
-    #     return super(HospitalLabTest, self).create(vals)
 
 class HospitalLabTestRequisition(models.Model):
     _name = 'hospital.lab.test.requisition'

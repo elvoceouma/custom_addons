@@ -49,8 +49,6 @@ access_hospital_discharge_user,hospital.discharge.user,model_hospital_discharge,
 access_hospital_discharge_manager,hospital.discharge.manager,model_hospital_discharge,base.group_system,1,1,1,1
 access_hospital_discharge_clearance_user,hospital.discharge.clearance.user,model_hospital_discharge_clearance,base.group_user,1,1,1,0
 access_hospital_discharge_clearance_manager,hospital.discharge.clearance.manager,model_hospital_discharge_clearance,base.group_system,1,1,1,1
-access_hospital_discharge_clearance_checklist_user,hospital.discharge.clearance.checklist.user,model_hospital_discharge_clearance_checklist,base.group_user,1,1,1,0
-access_hospital_discharge_clearance_checklist_manager,hospital.discharge.clearance.checklist.manager,model_hospital_discharge_clearance_checklist,base.group_system,1,1,1,1
 access_hospital_discharge_summary_user,hospital.discharge.summary.user,model_hospital_discharge_summary,base.group_user,1,1,1,0
 access_hospital_discharge_summary_manager,hospital.discharge.summary.manager,model_hospital_discharge_summary,base.group_system,1,1,1,1
 access_hospital_doctor_payout_user,hospital.doctor.payout.user,model_hospital_doctor_payout,base.group_user,1,1,1,0
