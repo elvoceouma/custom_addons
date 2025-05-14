@@ -933,30 +933,74 @@ class HospitalIndependantExaminationProfessionalI(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.independant.examination.professional.i') or _('New')
         return super(HospitalIndependantExaminationProfessionalI, self).create(vals_list)
+    
 
-
-# Independent Examination Professional II Model
 class HospitalIndependentExaminationProfessionalII(models.Model):
     _name = 'hospital.independent.examination.professional.ii'
     _description = 'Hospital Independent Examination Professional II'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
-                       default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    examiner_id = fields.Many2one('hospital.physician', string='Examining Professional', required=True)
-    date = fields.Date(string='Examination Date', default=fields.Date.context_today, required=True)
-    purpose = fields.Text(string='Purpose of Examination', required=True)
-    previous_exam_id = fields.Many2one('hospital.independant.examination.professional.i', string='Previous Examination')
-    agrees_with_previous = fields.Boolean(string='Agrees with Previous Assessment')
-    disagreement_reasons = fields.Text(string='Reasons for Disagreement')
-    findings = fields.Text(string='Clinical Findings')
-    diagnosis = fields.Text(string='Diagnosis/Opinion')
-    recommendations = fields.Text(string='Recommendations')
+    
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True,
+                        default=lambda self: _('New'))
+    name_seq = fields.Char(string='Sequence', required=True, copy=False, readonly=True,
+                        default=lambda self: _('New'))
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    mrn_no = fields.Char(string='MRN No', tracking=True)
+    date = fields.Date(string='Examination Date', default=fields.Date.context_today, required=True, tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Sex', tracking=True)
+    
+    # Professional line
+    professional_line_ids = fields.One2many('hospital.independent.examination.professional.line', 
+                                           'examination_id', string='Professional Lines')
+    
+    # Diagnosis and symptoms
+    provisional_diagnosis = fields.Text(string='Provisional Diagnosis', tracking=True)
+    severity_symptoms = fields.Text(string='Severity of Symptoms', tracking=True)
+    examination_type = fields.Selection([
+        ('professional_1', 'Professional I'),
+        ('professional_2', 'Professional II'),
+    ], string='Examination Type', default='professional_2')
+    
+    # Reasons for admission and treatment
+    recently_threatened = fields.Boolean(string='Recently threatened or attempted to cause harm to self', tracking=True)
+    recently_behaved = fields.Boolean(string='Recently behaved violently or caused another person to fear violence', tracking=True)
+    inability = fields.Boolean(string='Inability to care for self and protect self from significant harm', tracking=True)
+    nature_purpose = fields.Boolean(string='Nature/Purpose of Admission not understood by Patient due to Mental Illness', tracking=True)
+    
+    # Additional notes
+    additional_notes = fields.Text(string='Additional Notes', tracking=True)
+    
+    # Care Plan
+    diagnostics = fields.Boolean(string='Diagnostics and assessment', tracking=True)
+    symptom = fields.Boolean(string='Symptom control', tracking=True)
+    psychopharmacological = fields.Boolean(string='Psychopharmacological management', tracking=True)
+    observation = fields.Boolean(string='Observation', tracking=True)
+    psycho_social = fields.Boolean(string='Psycho-social intervention', tracking=True)
+    rehabilitation = fields.Boolean(string='Rehabilitation', tracking=True)
+    risk_harm = fields.Boolean(string='Risk/harm management', tracking=True)
+    crisis = fields.Boolean(string='Crisis management', tracking=True)
+    
+    # Previous attempts of support
+    op_treatment = fields.Boolean(string='OP Treatment', tracking=True)
+    home_care = fields.Boolean(string='Home Care', tracking=True)
+    independent_patient = fields.Boolean(string='Independent Patient', tracking=True)
+    alternative_treatment = fields.Boolean(string='Alternative Treatment', tracking=True)
+    psychological_counselling = fields.Boolean(string='Psychological Counselling', tracking=True)
+    
+    # Professional categories
+    professional_category_id = fields.One2many('hospital.professional.category', 
+                                              'examination_id', string='Professional Categories')
+    
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('completed', 'Completed'),
-        ('reviewed', 'Reviewed'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
     ], string='Status', default='draft', tracking=True)
     
     @api.model_create_multi
@@ -964,8 +1008,40 @@ class HospitalIndependentExaminationProfessionalII(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.independent.examination.professional.ii') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.independent.examination.professional.ii.seq') or _('New')
         return super(HospitalIndependentExaminationProfessionalII, self).create(vals_list)
+    
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+    
+    def inprogress(self):
+        self.write({'state': 'in_progress'})
 
+
+class HospitalIndependentExaminationProfessionalLine(models.Model):
+    _name = 'hospital.independent.examination.professional.line'
+    _description = 'Hospital Independent Examination Professional Line'
+    
+    examination_id = fields.Many2one('hospital.independent.examination.professional.ii', 
+                                    string='Independent Examination', ondelete='cascade')
+    professional_id = fields.Many2one('hr.employee', string='Professional', 
+                                    )
+    examination_date = fields.Date(string='Examination Date')
+    place = fields.Char(string='Place')
+
+
+class HospitalProfessionalCategory(models.Model):
+    _name = 'hospital.professional.category'
+    _description = 'Hospital Professional Category'
+    
+    examination_id = fields.Many2one('hospital.independent.examination.professional.ii', 
+                                    string='Independent Examination', ondelete='cascade')
+    doctor_name = fields.Char(string='Doctor Name')
+    category = fields.Char(string='Category')
+    date = fields.Date(string='Date')
+    date_admission = fields.Date(string='Date of Admission')
+    expiry_date = fields.Date(string='Expiry Date')
 
 # Discharge Clearance Checklist Model
 class HospitalDischargeClearanceChecklist(models.Model):

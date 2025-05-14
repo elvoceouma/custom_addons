@@ -836,10 +836,9 @@
     <record id="action_hospital_independent_examination_professional_ii" model="ir.actions.act_window">
         <field name="name">Independent Examination Professional II</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.independent.examination</field>
+        <field name="res_model">hospital.independent.examination.professional.ii</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'default_examination_type': 'professional_2'}</field>
-        <field name="domain">[('examination_type', '=', 'professional_2')]</field>
+       
     </record>
 
     <!-- Investigation Request Actions -->
