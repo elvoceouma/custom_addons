@@ -261,3 +261,5 @@ class ProductProduct(models.Model):
     medication_product_ids = fields.One2many('hospital.medication.product', 'product_id', 
                                            string='Medication Products')
     medication_type_id = fields.Many2one('hospital.medication.type', string='Medication Type')
+    debit_note = fields.Boolean(string='Debit Note')
+    medicine_product = fields.Boolean(string='Medicine Product')

@@ -257,4 +257,225 @@
             </p>
         </field>
     </record>
+
+    <record id="view_hospital_outing_form" model="ir.ui.view">
+        <field name="name">hospital.outing.form.view</field>
+        <field name="model">hospital.outing.form</field>
+        <field name="arch" type="xml">
+            <form string="Procedure Form">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" 
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title"> 
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                
+                    <group>
+                        <group>
+                            <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_name"/>
+                            <field name="mrn_no"/>
+                            <field name="age"/>                                        
+                            <field name="admitted_by"/>	
+                            <field name="outing_reason" readonly="state != 'draft'"/>
+                            <field name="outing_duration" readonly="state != 'draft'"/>                                         
+                            <field name="doctor" 
+                                   readonly="state != 'draft'"/>         
+                        </group>   
+                        <group> 
+                            <field name="date" readonly="1"/>
+                            <field name="gender" string="Sex"/>
+                            <field name="partner_id" string="Outing Destination" readonly="state != 'draft'"/>
+                            <field name="nurse" readonly="state != 'draft'"/>                                  
+                            <field name="grt" readonly="state != 'draft'"/>
+                            <field name="security" readonly="state != 'draft'"/>                                        						
+                        </group>                                    
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_patient_requisition_form" model="ir.ui.view">
+        <field name="name">hospital.patient.requisition.form</field>
+        <field name="model">hospital.patient.requisition</field>
+        <field name="arch" type="xml">
+            <form string="Patient Requisition">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" groups="billing_debit_note.group_approve_requisition" 
+                            type="object" class="oe_highlight"
+                            invisible="state not in ['confirmed','waiting_for_approval']"/>
+                    <field name="state" statusbar_visible="draft,waiting_for_approval,inprogress,issued" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_stock_picking" icon="fa-pencil-square-o" 
+                                invisible="stock_picking_count == 0">
+                            <field string="Stock Picking" name="stock_picking_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_admission_id" string="IP Number" domain="[('state','!=','discharge_advised')]" 
+                                   readonly="state not in ['draft','waiting_for_approval']"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="purpose" readonly="state not in ['draft','waiting_for_approval']"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="date_selection" readonly="state not in ['draft','waiting_for_approval']" invisible="1"/>
+                            <field name="requested_date" required="date_selection == 'by_date'"
+                                   readonly="state not in ['draft','waiting_for_approval']" 
+                                   invisible="date_selection != 'by_date'"/>
+                            <label for="start_date" string="Period" 
+                                  invisible="date_selection != 'by_period'"/>
+                            <div invisible="date_selection != 'by_period'">
+                                <field name="start_date" required="date_selection == 'by_period'"
+                                       readonly="state not in ['draft','waiting_for_approval']" 
+                                       class="oe_inline"/>
+                                <field name="end_date" required="date_selection == 'by_period'"
+                                       readonly="state not in ['draft','waiting_for_approval']" 
+                                       class="oe_inline"/>
+                            </div>
+                            <field name="required_date" invisible="1"/>
+                            <field name="approved_date" readonly="1"/>
+                            <field name="requirement" invisible="1"/>
+                            <field name="stock_picking_ids" widget="many2many_tags" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="requisition_line_ids" readonly="state not in ['draft','waiting_for_approval']">
+                                <tree decoration-success="is_issued == True" editable="bottom">
+                                    <field name="date" invisible="1"/>
+                                    <field name="product_id" domain="[('debit_note','=',True),('type','!=','service')]"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="internal_category_id" invisible="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit" readonly="1" invisible="0"/>
+                                    <field name="price_subtotal" invisible="0"/>
+                                    <field name="is_issued" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Others" name="others">
+                            <group>
+                                <group>
+                                    <field name="picking_type_id" readonly="state not in ['draft','waiting_for_approval']"/>
+                                    <field name="warehouse_id" readonly="state not in ['draft','waiting_for_approval']"/>
+                                    <field name="source_location_id" readonly="state not in ['draft','waiting_for_approval']"/>
+                                    <field name="destination_location_id" readonly="state not in ['draft','waiting_for_approval']"/>
+                                </group>
+                                <group>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="approved_by" readonly="1"/>
+                                    <field name="move_type" readonly="state not in ['draft','waiting_for_approval']"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_medicine_requisition_form" model="ir.ui.view">
+        <field name="name">hospital.medicine.requisition.form</field>
+        <field name="model">hospital.medicine.requisition</field>
+        <field name="arch" type="xml">
+            <form string="Medicine Requisition">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" groups="billing_debit_note.group_approve_requisition" 
+                            type="object" class="oe_highlight"
+                            invisible="state not in ['confirmed','waiting_for_approval']"/>
+                    <field name="state" statusbar_visible="draft,waiting_for_approval,inprogress,issued" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_stock_picking" icon="fa-pencil-square-o"
+                                invisible="stock_picking_count == 0">
+                            <field string="Stock Picking" name="stock_picking_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_admission_id" string="IP Number" domain="[('state','!=','discharge_advised')]"
+                                   readonly="state in ['issued']"/>
+                            <field name="patient_id"/>
+                            <field name="purpose" readonly="state in ['issued']"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="requested_date" readonly="state in ['issued']"/>
+                            <field name="required_date" invisible="1"/>
+                            <field name="approved_date" readonly="1"/>
+                            <field name="picking_type_id" readonly="state in ['issued']"/>
+                            <field name="requirement" invisible="1"/>
+                            <field name="debit_note_id" readonly="1" invisible="not debit_note_id"/>
+                            <field name="stock_picking_ids" widget="many2many_tags" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="requisition_line_ids" readonly="state in ['issued']">
+                                <tree decoration-success="is_issued == True" editable="bottom">
+                                    <field name="date" invisible="1"/>
+                                    <field name="product_id" domain="[('medicine_product','=',True)]"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="internal_category_id" invisible="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit" readonly="1"/>
+                                    <field name="price_subtotal"/>
+                                    <field name="is_issued" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Others" name="others">
+                            <group>
+                                <group>
+                                    <field name="warehouse_id" readonly="state in ['issued']"/>
+                                    <field name="source_location_id" readonly="state in ['issued']"/>
+                                    <field name="destination_location_id" readonly="state in ['issued']"/>
+                                </group>
+                                <group>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="approved_by" readonly="1"/>
+                                    <field name="move_type" readonly="state in ['issued']"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
 </odoo>
