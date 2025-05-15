@@ -267,3 +267,4 @@ class ProductProduct(models.Model):
     special_privilege = fields.Boolean(string='Special Privilege')
     can_be_expensed = fields.Boolean(string='Can be Expensed') 
     variable_billing = fields.Boolean(string='Variable Billing')
+    returnable_product = fields.Boolean(string='Returnable Product')

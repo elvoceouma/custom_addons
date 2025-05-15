@@ -1848,32 +1848,8 @@ class HospitalPatientRequisition(models.Model):
             self.patient_id = self.inpatient_admission_id.patient_id
 
 
-class HospitalPatientRequisitionLine(models.Model):
-    _name = 'hospital.patient.requisition.line'
-    _description = 'Patient Requisition Line'
-    
-    requisition_id = fields.Many2one('hospital.patient.requisition', string='Requisition')
-    product_id = fields.Many2one('product.product', string='Product', 
-                                domain="[('debit_note','=',True),('type','!=','service')]", required=True)
-    name = fields.Text(string='Description')
-    date = fields.Date(string='Date')
-    internal_category_id = fields.Many2one('product.category', string='Internal Category')
-    quantity = fields.Float(string='Quantity', default=1.0)
-    price_unit = fields.Float(string='Unit Price')
-    price_subtotal = fields.Float(string='Subtotal', compute='_compute_subtotal', store=True)
-    is_issued = fields.Boolean(string='Is Issued', default=False)
-    
-    @api.depends('quantity', 'price_unit')
-    def _compute_subtotal(self):
-        for line in self:
-            line.price_subtotal = line.quantity * line.price_unit
-    
-    @api.onchange('product_id')
-    def _onchange_product_id(self):
-        if self.product_id:
-            self.name = self.product_id.name
-            self.internal_category_id = self.product_id.categ_id
-            self.price_unit = self.product_id.list_price
+# 
+
 
 class HospitalProfile(models.Model):
     _name = 'hospital.profile'
@@ -2137,7 +2113,7 @@ class HospitalServiceRequisition(models.Model):
 
 
 class HospitalServiceRequisitionLine(models.Model):
-    _name = 'hospital.service.requisition.line'
+    _inherit = 'hospital.service.requisition.line'
     _description = 'Service Requisition Line'
     
     requisition_id = fields.Many2one('hospital.service.requisition', string='Requisition')
@@ -2147,6 +2123,7 @@ class HospitalServiceRequisitionLine(models.Model):
         domain="[('type','=','service'),('debit_note','=',True)]",
         required=True
     )
+    
     name = fields.Text(string='Description')
     date = fields.Date(string='Date')
     internal_category_id = fields.Many2one('product.category', string='Internal Category')

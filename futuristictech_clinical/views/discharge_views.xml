@@ -6,37 +6,21 @@
         <field name="arch" type="xml">
             <form string="Discharge">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" 
-                            invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" 
-                            invisible="state != 'waiting_for_approval'"/>
-                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="medicine_register.group_close_discharge" 
-                            invisible="state != 'approve'"/>
-                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" 
-                            invisible="state not in ('draft', 'waiting_for_approval')"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" invisible="state != 'waiting_for_approval'"/>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="medicine_register.group_close_discharge" invisible="state != 'approve'"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" invisible="state not in ('draft', 'waiting_for_approval')"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,waiting_for_approval,approve,close,cancel"/>
                 </header>
                 <sheet>
                     <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
-                        <button type="object" class="oe_stat_button" string="Medicine Packing" name="action_medicine_packing" 
-                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
-                                icon="fa-list" groups="medicine_register.group_discharge_nurses"
-                                invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Medicine Packing" name="action_medicine_packing" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_nurses" invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Requisition Clearance" name="action_requisition_clearance" 
-                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
-                                icon="fa-list" groups="medicine_register.group_discharge_counsellors"
-                                invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Requisition Clearance" name="action_requisition_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_counsellors" invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Store Clearance" name="action_store_clearance" 
-                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
-                                icon="fa-list" groups="medicine_register.group_discharge_stores"
-                                invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Store Clearance" name="action_store_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_stores" invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Discharge Summary" name="action_discharge_summary" 
-                                context="{'search_default_inpatient_admission_id': inpatient_admission_id,'default_inpatient_admission_id': inpatient_admission_id,'default_patient_id': patient_id,'default_campus': campus}" 
-                                icon="fa-list" groups="medicine_register.group_discharge_counsellors"
-                                invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Discharge Summary" name="action_discharge_summary" context="{'search_default_inpatient_admission_id': inpatient_admission_id,'default_inpatient_admission_id': inpatient_admission_id,'default_patient_id': patient_id,'default_campus': campus}" icon="fa-list" groups="medicine_register.group_discharge_counsellors" invisible="state != 'approve'">
                         </button>
                     </div>
 
@@ -50,11 +34,9 @@
                     </div>
                     <group>
                         <group>
-                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]" 
-                                   readonly="state != 'draft'"/>
+                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]" readonly="state != 'draft'"/>
                             <field name="patient_id" readonly="state != 'draft'"/>
-                            <field name="requested_by" readonly="state not in ('draft','waiting_for_approval')" 
-                                   required="state == 'waiting_for_approval'" options="{&quot;no_create&quot;: True}"/>
+                            <field name="requested_by" readonly="state not in ('draft','waiting_for_approval')" required="state == 'waiting_for_approval'" options="{&quot;no_create&quot;: True}"/>
                         </group>
                         <group>
                             <field name="discharge_date"/>
@@ -64,26 +46,26 @@
                         <page string="Other Details">
                             <group>
                                 <group>
-                                    <field name="approved_by"/>    
+                                    <field name="approved_by"/>
                                     <field name="approved_date"/>
                                 </group>
                                 <group>
-                                    <field name="campus"/>    
-                                    <field name="company_id"/>    
+                                    <field name="campus"/>
+                                    <field name="company_id"/>
                                     <field name="prescription_id"/>
                                 </group>
                             </group>
 
                             <group string="Clearance Details">
                                 <group>
-                                    <field name="counsellor"/>    
+                                    <field name="counsellor"/>
                                     <field name="nurse"/>
                                     <field name="store_incharge"/>
                                 </group>
                                 <group>
                                 </group>
                             </group>
-                            <field name="description" readonly="state != 'draft'" placeholder="Description..."/>    
+                            <field name="description" readonly="state != 'draft'" placeholder="Description..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -101,17 +83,10 @@
         <field name="arch" type="xml">
             <form string="Discharge Summary">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" 
-                            invisible="state != 'draft'"/>
-                    <button name="action_approve_clinical_psychologist" string="Approve" type="object" class="oe_highlight" 
-                            groups="medicine_register.group_discharge_psychologist" 
-                            invisible="clinical_psychologist_bool or state != 'inprogress'"/>
-                    <button name="action_approve_psychiatrist" string="Approve" type="object" class="oe_highlight" 
-                            groups="medicine_register.group_discharge_psychiatrist" 
-                            invisible="psychiatrist_bool or state != 'inprogress'"/>
-                    <button name="action_approve_registrar" string="Approve" type="object" class="oe_highlight" 
-                            groups="medicine_register.group_discharge_registrar" 
-                            invisible="registrar_bool or state != 'inprogress'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_approve_clinical_psychologist" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_psychologist" invisible="clinical_psychologist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_psychiatrist" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_psychiatrist" invisible="psychiatrist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_registrar" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_registrar" invisible="registrar_bool or state != 'inprogress'"/>
                     <field name="state" statusbar_visible="draft,inprogress,approve" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -148,6 +123,500 @@
         </field>
     </record>
 
+    <!-- Requisition Clearance Form View -->
+    <record id="view_hospital_requisition_clearance_form" model="ir.ui.view">
+        <field name="name">hospital.requisition.clearance.form</field>
+        <field name="model">hospital.requisition.clearance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" invisible="state != 'inprogress'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" statusbar_visible="draft,inprogress,close" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="discharge_id"/>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requisitions Details">
+                            <group string="Patient Requisition" colspan="4">
+                                <field name="pa_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="pr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Service Requisition" colspan="4">
+                                <field name="sr_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Caretaker Requisition" colspan="4">
+                                <field name="ct_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="cr_id"/>
+                                        <field name="type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Special Privilege" colspan="4">
+                                <field name="sp_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="ref"/>
+                                        <field name="sp_id"/>
+                                        <field name="privilege_type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="processed_by"/>
+                                    <field name="processed_date"/>
+                                </group>
+                                <group>
+                                    <field name="campus"/>
+                                    <field name="company_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
 
-    
+    <!-- Store Clearance Form View -->
+    <record id="view_hospital_store_clearance_form" model="ir.ui.view">
+        <field name="name">hospital.store.clearance.form</field>
+        <field name="model">hospital.store.clearance</field>
+        <field name="arch" type="xml">
+            <form string="Store Clearance">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" invisible="state != 'inprogress'"/>
+                    <field name="state" statusbar_visible="draft,inprogress,close" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_stock_picking" icon="fa-pencil-square-o" invisible="stock_picking_count == 0">
+                            <field string="Stock Picking" name="stock_picking_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="inpatient_admission_id"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="discharge_id"/>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <group string="List Of Items in Resident Location">
+                                <field name="product_list" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="qty"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Product Lines">
+                                <field name="product_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="product_id" domain="[('returnable_product', '=',True)]"/>
+                                        <field name="qty"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="picking_type"/>
+                                    <field name="source_location"/>
+                                    <field name="destination_location"/>
+                                </group>
+                                <group>
+                                    <field name="company_id"/>
+                                    <field name="campus"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_hospital_discharge_summary_form" model="ir.ui.view">
+        <field name="name">hospital.discharge.summary.form</field>
+        <field name="model">hospital.discharge.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'inprogress'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,close"/>
+                </header>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]" readonly="state != 'draft'"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="discharge_id"/>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requisitions Details">
+                            <group string="Patient Requisition" colspan="4">
+                                <field name="pa_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="pr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Service Requisition" colspan="4">
+                                <field name="sr_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Caretaker Requisition" colspan="4">
+                                <field name="ct_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="cr_id"/>
+                                        <field name="type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Special Privilege" colspan="4">
+                                <field name="sp_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="ref"/>
+                                        <field name="sp_id"/>
+                                        <field name="privilege_type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="processed_by"/>
+                                    <field name="processed_date"/>
+                                </group>
+                                <group>
+                                    <field name="campus"/>
+                                    <field name="company_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Approvals" groups="base.group_system">
+                            <group>
+                                <group>
+                                    <field name="clinical_psychologist"/>
+                                    <field name="clinical_psychologist_bool"/>
+                                    <button name="action_approve_clinical_psychologist" string="Approve as Clinical Psychologist" type="object" class="oe_highlight" groups="base.group_user" invisible="clinical_psychologist_bool"/>
+                                </group>
+                                <group>
+                                    <field name="psychiatrist"/>
+                                    <field name="psychiatrist_bool"/>
+                                    <button name="action_approve_psychiatrist" string="Approve as Psychiatrist" type="object" class="oe_highlight" groups="base.group_user" invisible="psychiatrist_bool"/>
+                                </group>
+                                <group>
+                                    <field name="registrar"/>
+                                    <field name="registrar_bool"/>
+                                    <button name="action_approve_registrar" string="Approve as Registrar" type="object" class="oe_highlight" groups="base.group_user" invisible="registrar_bool"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="description" placeholder="Additional Notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view for Discharge Summary -->
+    <record id="view_hospital_discharge_summary_tree" model="ir.ui.view">
+        <field name="name">hospital.discharge.summary.tree</field>
+        <field name="model">hospital.discharge.summary</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="inpatient_admission_id"/>
+                <field name="discharge_id"/>
+                <field name="discharge_date"/>
+                <field name="processed_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search view for Discharge Summary -->
+    <record id="view_hospital_discharge_summary_search" model="ir.ui.view">
+        <field name="name">hospital.discharge.summary.search</field>
+        <field name="model">hospital.discharge.summary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="inpatient_admission_id"/>
+                <field name="discharge_id"/>
+                <field name="state"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="inprogress" domain="[('state', '=', 'inprogress')]"/>
+                <filter string="Closed" name="close" domain="[('state', '=', 'close')]"/>
+                <filter string="Approved" name="approve" domain="[('state', '=', 'approve')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Discharge Summary -->`
+    <record id="action_hospital_discharge_summary" model="ir.actions.act_window">
+        <field name="name">Discharge Summary</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.discharge.summary</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_discharge_summary_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new discharge summary
+            </p>
+        </field>
+    </record>
+
+
+    <record id="view_hospital_counsellor_clearance_form" model="ir.ui.view">
+        <field name="name">hospital.counsellor.clearance.form</field>
+        <field name="model">hospital.counsellor.clearance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" 
+                            invisible="state != 'inprogress'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,close"/>
+                </header>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]"
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_id"/>
+                        </group>
+                        <group>
+                            <field name="discharge_id"/>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requisitions Details">
+                            <group string="Patient Requisition" colspan="4">
+                                <field name="pa_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="pr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" 
+                                                class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Service Requisition" colspan="4">
+                                <field name="sr_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_id"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" 
+                                                class="oe_highlight" invisible="state == 'rejected'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Caretaker Requisition" colspan="4">
+                                <field name="ct_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="cr_id"/>
+                                        <field name="type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" 
+                                                class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Special Privilege" colspan="4">
+                                <field name="sp_requisition_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="ref"/>
+                                        <field name="sp_id"/>
+                                        <field name="privilege_type"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                        <button name="action_cancel" string="Cancel" type="object" 
+                                                class="oe_highlight" invisible="state == 'cancelled'"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="processed_by"/>
+                                    <field name="processed_date"/>
+                                </group>
+                                <group>
+                                    <field name="campus"/>
+                                    <field name="company_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_counsellor_clearance_tree" model="ir.ui.view">
+        <field name="name">hospital.counsellor.clearance.tree</field>
+        <field name="model">hospital.counsellor.clearance</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="discharge_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hospital_counsellor_clearance_search" model="ir.ui.view">
+        <field name="name">hospital.counsellor.clearance.search</field>
+        <field name="model">hospital.counsellor.clearance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="discharge_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="inprogress" domain="[('state', '=', 'inprogress')]"/>
+                <filter string="Closed" name="close" domain="[('state', '=', 'close')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="patient_id" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Status" name="state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hospital_counsellor_clearance" model="ir.actions.act_window">
+        <field name="name">Counsellor Clearance</field>
+        <field name="res_model">hospital.counsellor.clearance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_counsellor_clearance_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first counsellor clearance record!
+            </p>
+        </field>
+    </record>
+
+   
 </odoo>

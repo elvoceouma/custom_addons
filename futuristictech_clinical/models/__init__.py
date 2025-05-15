@@ -13,7 +13,6 @@ from . import op_visit
 from . import medical_record
 from . import prescription
 from . import medical_record
-from . import discharge
 from . import food
 from . import block_duty
 from . import configuration
@@ -31,4 +30,5 @@ from . import hospital_caretaker_allotment
 from . import hospital_laboratory
 from . import hospital_room_inspection
 from .import  hospital_doctor_payout
+from . import discharge
 from . import models
