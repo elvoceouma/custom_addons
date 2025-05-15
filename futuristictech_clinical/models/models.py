@@ -64,10 +64,6 @@ class HospitalGynecology(models.Model):
     
 
 
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
-
 # Medicine Consumption Model
 # class HospitalMedicineConsumption(models.Model):
 #     _name = 'hospital.medicine.consumption'
@@ -2318,21 +2314,21 @@ class HospitalDrugAssays(models.Model):
     notes = fields.Text(string='Notes')
 
 
-class HospitalBillEstimation(models.Model):
-    _name = 'hospital.bill.estimation'
-    _description = 'Hospital Bill Estimation'
+# class HospitalBillEstimation(models.Model):
+#     _name = 'hospital.bill.estimation'
+#     _description = 'Hospital Bill Estimation'
     
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default='New')
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    estimated_amount = fields.Float(string='Estimated Amount')
-    actual_amount = fields.Float(string='Actual Amount')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default='New')
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     admission_id = fields.Many2one('hospital.admission', string='Admission')
+#     date = fields.Date(string='Date', default=fields.Date.today)
+#     estimated_amount = fields.Float(string='Estimated Amount')
+#     actual_amount = fields.Float(string='Actual Amount')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('confirmed', 'Confirmed'),
+#         ('done', 'Done')
+#     ], string='Status', default='draft')
 
 class HospitalBiochemistry(models.Model):
     _name = 'hospital.biochemistry'
@@ -2407,26 +2403,6 @@ class HospitalCounsellorClearance(models.Model):
     clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
     is_cleared = fields.Boolean(string='Is Cleared')
     notes = fields.Text(string='Notes')
-
-
-from odoo import models, fields, api
-from datetime import datetime
-
-class HospitalBillEstimation(models.Model):
-    _name = 'hospital.bill.estimation'
-    _description = 'Hospital Bill Estimation'
-    
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default='New')
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    estimated_amount = fields.Float(string='Estimated Amount')
-    actual_amount = fields.Float(string='Actual Amount')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='Status', default='draft')
 
 class HospitalBiochemistry(models.Model):
     _name = 'hospital.biochemistry'
@@ -2574,21 +2550,6 @@ class HospitalDischargeClearance(models.Model):
     
     def inprogress(self):
         self.write({'state': 'in_progress'})
-
-# class HospitalDoctorPayout(models.Model):
-#     _name = 'hospital.doctor.payout'
-#     _description = 'Doctor Payout'
-    
-#     name = fields.Char(string='Payout Reference', required=True)
-#     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-#     period_start = fields.Date(string='Period Start', required=True)
-#     period_end = fields.Date(string='Period End', required=True)
-#     amount = fields.Float(string='Payout Amount')
-#     state = fields.Selection([
-#         ('draft', 'Draft'),
-#         ('approved', 'Approved'),
-#         ('paid', 'Paid')
-#     ], string='Status', default='draft')
 
 
 

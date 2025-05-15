@@ -1,137 +1,150 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Discharge Record Views -->
     <record id="view_hospital_discharge_form" model="ir.ui.view">
         <field name="name">hospital.discharge.form</field>
         <field name="model">hospital.discharge</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Discharge">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" 
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" 
+                            invisible="state != 'waiting_for_approval'"/>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="medicine_register.group_close_discharge" 
+                            invisible="state != 'approve'"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" 
+                            invisible="state not in ('draft', 'waiting_for_approval')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_for_approval,approve,close,cancel"/>
+                </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
+                    <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
+                        <button type="object" class="oe_stat_button" string="Medicine Packing" name="action_medicine_packing" 
+                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
+                                icon="fa-list" groups="medicine_register.group_discharge_nurses"
+                                invisible="state != 'approve'">
+                        </button>
+                        <button type="object" class="oe_stat_button" string="Requisition Clearance" name="action_requisition_clearance" 
+                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
+                                icon="fa-list" groups="medicine_register.group_discharge_counsellors"
+                                invisible="state != 'approve'">
+                        </button>
+                        <button type="object" class="oe_stat_button" string="Store Clearance" name="action_store_clearance" 
+                                context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" 
+                                icon="fa-list" groups="medicine_register.group_discharge_stores"
+                                invisible="state != 'approve'">
+                        </button>
+                        <button type="object" class="oe_stat_button" string="Discharge Summary" name="action_discharge_summary" 
+                                context="{'search_default_inpatient_admission_id': inpatient_admission_id,'default_inpatient_admission_id': inpatient_admission_id,'default_patient_id': patient_id,'default_campus': campus}" 
+                                icon="fa-list" groups="medicine_register.group_discharge_counsellors"
+                                invisible="state != 'approve'">
+                        </button>
+                    </div>
+
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <label for="name" string="Discharge #" class="o_form_label"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="discharge_date"/>
-                            <field name="discharge_type"/>
+                            <field name="inpatient_admission_id" domain="[('state', '!=', 'Discharged')]" 
+                                   readonly="state != 'draft'"/>
+                            <field name="patient_id" readonly="state != 'draft'"/>
+                            <field name="requested_by" readonly="state not in ('draft','waiting_for_approval')" 
+                                   required="state == 'waiting_for_approval'" options="{&quot;no_create&quot;: True}"/>
                         </group>
                         <group>
-                            <field name="discharged_by"/>
-                            <field name="counsellor_clearance"/>
-                            <field name="store_clearance"/>
+                            <field name="discharge_date"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Clinical Information" name="clinical_info">
-                            <field name="primary_diagnosis" placeholder="Primary diagnosis"/>
-                            <field name="secondary_diagnoses" placeholder="Secondary diagnoses"/>
-                            <field name="procedures_performed" placeholder="Procedures performed during admission"/>
-                            <field name="discharge_medications" placeholder="Medications prescribed at discharge"/>
-                        </page>
-                        <page string="Follow-up" name="follow_up">
-                            <field name="follow_up_instructions" placeholder="Follow-up instructions"/>
-                            <field name="discharge_condition"/>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="approved_by"/>    
+                                    <field name="approved_date"/>
+                                </group>
+                                <group>
+                                    <field name="campus"/>    
+                                    <field name="company_id"/>    
+                                    <field name="prescription_id"/>
+                                </group>
+                            </group>
+
+                            <group string="Clearance Details">
+                                <group>
+                                    <field name="counsellor"/>    
+                                    <field name="nurse"/>
+                                    <field name="store_incharge"/>
+                                </group>
+                                <group>
+                                </group>
+                            </group>
+                            <field name="description" readonly="state != 'draft'" placeholder="Description..."/>    
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
     </record>
-    
-    <record id="view_hospital_discharge_tree" model="ir.ui.view">
-        <field name="name">hospital.discharge.tree</field>
-        <field name="model">hospital.discharge</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="admission_id"/>
-                <field name="discharge_date"/>
-                <field name="discharge_type"/>
-                <field name="discharged_by"/>
-            </tree>
-        </field>
-    </record>
-    
-    <record id="action_hospital_discharge" model="ir.actions.act_window">
-        <field name="name">Discharge Records</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.discharge</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
-    <!-- Discharge Summary Views -->
     <record id="view_hospital_discharge_summary_form" model="ir.ui.view">
         <field name="name">hospital.discharge.summary.form</field>
         <field name="model">hospital.discharge.summary</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Discharge Summary">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" 
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve_clinical_psychologist" string="Approve" type="object" class="oe_highlight" 
+                            groups="medicine_register.group_discharge_psychologist" 
+                            invisible="clinical_psychologist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_psychiatrist" string="Approve" type="object" class="oe_highlight" 
+                            groups="medicine_register.group_discharge_psychiatrist" 
+                            invisible="psychiatrist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_registrar" string="Approve" type="object" class="oe_highlight" 
+                            groups="medicine_register.group_discharge_registrar" 
+                            invisible="registrar_bool or state != 'inprogress'"/>
+                    <field name="state" statusbar_visible="draft,inprogress,approve" widget="statusbar"/>
+                </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
                     </div>
                     <group>
                         <group>
+                            <field name="inpatient_admission_id"/>
                             <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="discharge_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="campus"/>
+                            <field name="company_id"/>
                         </group>
                         <group>
-                            <field name="discharge_date" readonly="1"/>
-                            <field name="physician_id"/>
+                            <field name="clinical_psychologist"/>
+                            <field name="psychiatrist"/>
+                            <field name="registrar"/>
+                            <field name="clinical_psychologist_bool" invisible="1"/>
+                            <field name="psychiatrist_bool" invisible="1"/>
+                            <field name="registrar_bool" invisible="1"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Summary" name="summary">
-                            <field name="summary" placeholder="Discharge summary"/>
-                            <field name="admission_reason" placeholder="Reason for admission"/>
-                            <field name="hospital_course" placeholder="Hospital course"/>
-                        </page>
-                        <page string="Instructions" name="instructions">
-                            <field name="discharge_medications" placeholder="Discharge medications"/>
-                            <field name="discharge_instructions" placeholder="Discharge instructions"/>
-                            <field name="follow_up_plan" placeholder="Follow-up plan"/>
-                        </page>
-                    </notebook>
+                    <field name="description" placeholder="Description..."/>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
-    </record>
-    
-    <record id="view_hospital_discharge_summary_tree" model="ir.ui.view">
-        <field name="name">hospital.discharge.summary.tree</field>
-        <field name="model">hospital.discharge.summary</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="admission_id"/>
-                <field name="discharge_date"/>
-                <field name="physician_id"/>
-            </tree>
-        </field>
-    </record>
-    
-    <record id="action_hospital_discharge_summary" model="ir.actions.act_window">
-        <field name="name">Discharge Summaries</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.discharge.summary</field>
-        <field name="view_mode">tree,form</field>
     </record>
 </odoo>

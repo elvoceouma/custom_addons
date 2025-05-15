@@ -88,3 +88,125 @@ class HospitalDoctorPayoutLine(models.Model):
     def _compute_price_subtotal(self):
         for line in self:
             line.price_subtotal = line.quantity * line.price_unit
+
+class HospitalBillEstimation(models.Model):
+    _name = 'hospital.bill.estimation'
+    _description = 'Hospital Bill Estimation'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, 
+                      default='New', tracking=True)
+    estimate_date = fields.Date(string='Estimate Date', default=fields.Date.today, tracking=True)
+    estimate_no = fields.Char(string='Estimate No', tracking=True)
+    
+    # Patient information
+    related_patient = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+    patient_category = fields.Selection([
+        ('inpatient', 'Inpatient'),
+        ('outpatient', 'Outpatient'),
+        ('emergency', 'Emergency')
+    ], string='Patient Category', tracking=True)
+    
+    # Insurance information
+    plan_name = fields.Char(string='Plan Name', tracking=True)
+    plan_type = fields.Char(string='Plan Type', tracking=True)
+    insurance_company = fields.Many2one('res.partner', string='Insurance Company', tracking=True)
+    
+    # Hospitalization details
+    visit_type = fields.Selection([
+        ('op', 'OP'),
+        ('ip', 'IP'),
+        ('emergency', 'Emergency')
+    ], string='Visit Type', tracking=True)
+    bed_type = fields.Selection([
+        ('general', 'General'),
+        ('private', 'Private'),
+        ('semi_private', 'Semi-Private'),
+        ('icu', 'ICU')
+    ], string='Bed Type', tracking=True)
+    rate_plan = fields.Selection([
+        ('standard', 'Standard'),
+        ('premium', 'Premium')
+    ], string='Rate Plan', tracking=True)
+    
+    # Lines and totals
+    bill_estimation_line_id = fields.One2many('hospital.bill.estimation.line', 'bill_estimation_id', 
+                                             string='Estimation Lines')
+    amount_estimated = fields.Monetary(string='Estimated Total', compute='_compute_amount', store=True)
+    amount_net = fields.Monetary(string='Net Amount', compute='_compute_amount', store=True)
+    amount_discount = fields.Monetary(string='Discount', compute='_compute_amount', store=True)
+    amount_sponser = fields.Monetary(string='Sponsor Amount', compute='_compute_amount', store=True)
+    amount_patient_total = fields.Monetary(string='Patient Amount', compute='_compute_amount', store=True)
+    
+    # Notes
+    note = fields.Text(string='Remarks')
+    free_text = fields.Text(string='Free Text')
+    
+    # Administrative fields
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, required=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    currency_id = fields.Many2one('res.currency', string='Currency', 
+                                 related='company_id.currency_id', readonly=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='Status', default='draft', tracking=True)
+    
+    @api.depends('bill_estimation_line_id.estimated_total_amount', 
+                'bill_estimation_line_id.amount',
+                'bill_estimation_line_id.discount_amount',
+                'bill_estimation_line_id.sponsor_amount', 
+                'bill_estimation_line_id.patient_amount')
+    def _compute_amount(self):
+        for record in self:
+            amount_estimated = sum(line.estimated_total_amount for line in record.bill_estimation_line_id)
+            amount_net = sum(line.amount for line in record.bill_estimation_line_id)
+            amount_discount = sum(line.discount_amount for line in record.bill_estimation_line_id)
+            amount_sponser = sum(line.sponsor_amount for line in record.bill_estimation_line_id)
+            amount_patient_total = sum(line.patient_amount for line in record.bill_estimation_line_id)
+            
+            record.amount_estimated = amount_estimated
+            record.amount_net = amount_net
+            record.amount_discount = amount_discount
+            record.amount_sponser = amount_sponser
+            record.amount_patient_total = amount_patient_total
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.bill.estimation') or 'New'
+        return super(HospitalBillEstimation, self).create(vals_list)
+
+
+class HospitalBillEstimationLine(models.Model):
+    _name = 'hospital.bill.estimation.line'
+    _description = 'Hospital Bill Estimation Line'
+    
+    bill_estimation_id = fields.Many2one('hospital.bill.estimation', string='Bill Estimation')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    description = fields.Char(string='Description', required=True)
+    remarks = fields.Char(string='Remarks')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    unit_price = fields.Float(string='Unit Price')
+    estimated_total_amount = fields.Float(string='Estimated Total', compute='_compute_estimated_total', store=True)
+    discount_amount = fields.Float(string='Discount')
+    amount = fields.Float(string='Amount', compute='_compute_amount', store=True)
+    sponsor_amount = fields.Float(string='Sponsor Amount')
+    patient_amount = fields.Float(string='Patient Amount', compute='_compute_patient_amount', store=True)
+    
+    @api.depends('quantity', 'unit_price')
+    def _compute_estimated_total(self):
+        for line in self:
+            line.estimated_total_amount = line.quantity * line.unit_price
+    
+    @api.depends('estimated_total_amount', 'discount_amount')
+    def _compute_amount(self):
+        for line in self:
+            line.amount = line.estimated_total_amount - line.discount_amount
+    
+    @api.depends('amount', 'sponsor_amount')
+    def _compute_patient_amount(self):
+        for line in self:
+            line.patient_amount = line.amount - line.sponsor_amount
