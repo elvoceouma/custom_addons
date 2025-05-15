@@ -264,3 +264,6 @@ class ProductProduct(models.Model):
     debit_note = fields.Boolean(string='Debit Note')
     medicine_product = fields.Boolean(string='Medicine Product')
     procedure_product = fields.Boolean('procedure_product')
+    special_privilege = fields.Boolean(string='Special Privilege')
+    can_be_expensed = fields.Boolean(string='Can be Expensed') 
+    variable_billing = fields.Boolean(string='Variable Billing')

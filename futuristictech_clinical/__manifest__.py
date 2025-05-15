@@ -67,6 +67,11 @@
         'views/hospital_independent_examination_views.xml',
         'views/view_hospital_case_formulation_form.xml',
         'views/mental_health_forms_views.xml',
+        'views/patient_requisition_views.xml',
+        'views/hospital_caretaker_allotment_view.xml',
+        'views/investigation_form_views.xml',
+        'views/room_inspection_views.xml',
+        'views/hospital_doctor_payout_views.xml',
         'views/actions.xml',  
         'views/menu.xml',     
         

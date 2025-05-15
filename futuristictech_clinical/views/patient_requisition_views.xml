@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_patient_requisition_line_form" model="ir.ui.view">
+        <field name="name">patient.requisition.line.form</field>
+        <field name="model">patient.requisition.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="patient_requisition_id" string="Requisition Number" options="{'readonly': True}"/>
+                            <field name="inpatient_admission_id" options="{'readonly': True}"/>
+                            <field name="patient_id" options="{'readonly': True}"/>
+                            <field name="campus_id" options="{'readonly': True}"/>
+                            <field name="block_id" options="{'readonly': True}"/>
+                            <field name="room_id" options="{'readonly': True}"/>
+                            <field name="bed_id" options="{'readonly': True}"/>
+                        </group>
+                        <group>
+                            <field name="date" options="{'readonly': True}"/>
+                            <field name="product_id" options="{'readonly': True}"/>
+                            <field name="quantity" options="{'readonly': True}"/>
+                            <field name="price_unit" options="{'readonly': True}"/>
+                            <field name="price_subtotal" string="Total Amount" options="{'readonly': True}"/>
+                            <field name="company_id" options="{'readonly': True}"/>
+                            <field name="user_id" options="{'readonly': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree/List View -->
+    <record id="view_patient_requisition_line_tree" model="ir.ui.view">
+        <field name="name">patient.requisition.line.tree</field>
+        <field name="model">patient.requisition.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_requisition_id"/>
+                <field name="patient_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="price_subtotal" sum="Total"/>
+                <field name="date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_patient_requisition_line_search" model="ir.ui.view">
+        <field name="name">patient.requisition.line.search</field>
+        <field name="model">patient.requisition.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_requisition_id"/>
+                <field name="patient_id"/>
+                <field name="product_id"/>
+                <field name="inpatient_admission_id"/>
+                <filter string="Today" name="today" domain="[('date', '>=', context_today().strftime('%Y-%m-%d')), ('date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_patient_requisition_line" model="ir.actions.act_window">
+        <field name="name">Patient Requisition Lines</field>
+        <field name="res_model">patient.requisition.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_patient_requisition_line_search"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_patient_requisition_line"
+              name="Patient Requisitions"
+              action="action_patient_requisition_line"
+              parent="menu_registers_root"
+              sequence="10"/>
+</odoo>

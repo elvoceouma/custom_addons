@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_investigation_request_form" model="ir.ui.view">
+        <field name="name">hospital.investigation.request.form</field>
+        <field name="model">hospital.investigation.request</field>
+        <field name="arch" type="xml">
+            <form string="Investigation Request">
+            <sheet>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,completed" statusbar_colors='{"completed":"blue"}'/>
+                </header>
+                <div class="oe_title" style="text-align:center">
+                    <h2>
+                        <field name="name" readonly="1"/>
+                    </h2>
+                </div>
+                <div class="oe_title">
+                    <h2>
+                        <field name="name_seq" readonly="1"/>
+                    </h2>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="ip_number" required="1" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                        <field name="patient_name"/>
+                        <field name="gender"/>
+                        <field name="ref_doctor"/>
+                        <field name="req_no"/>
+                        <field name="clinic_details"/>
+                        <field name="ward_no"/>
+                    </group>
+                    <group>
+                        <field name="date" readonly="1"/>
+                        <field name="age"/>
+                        <field name="admitted_by"/>
+                        <field name="bill_no"/>
+                        <field name="collection_time"/>
+                        <field name="site"/>
+                        <field name="routine"/>
+                    </group>
+
+
+
+                    <group>
+                        <group string="Common Tests">
+                            <field name="hematology_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="biochemistry_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="hormones_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="microbiology_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="immunology_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Urine Tests">
+                            <field name="urine_che_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="urine_screening_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Special Tests">
+                            <field name="drug_assays_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="molecular_bio_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="miscelleneous_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="profile_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Additional Information">
+                            <field name="other_tests"/>
+                        </group>
+                    </group>
+                </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

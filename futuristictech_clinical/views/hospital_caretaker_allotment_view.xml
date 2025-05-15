@@ -1,0 +1,449 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_caretaker_allotment_form" model="ir.ui.view">
+        <field name="name">hospital.caretaker.allotment.form</field>
+        <field name="model">hospital.caretaker.allotment</field>
+        <field name="arch" type="xml">
+            <form string="Caretaker Requisition">
+                <header>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_right oe_button_box" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_caretaker_register" icon="fa-pencil-square-o" invisible="not caretaker_register_count">
+                            <field string="Caretaker Register" name="caretaker_register_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_admission_id" string="IP Number" readonly="state == 'approved'"/>
+                            <field name="patient_id"/>
+                            <field name="health_center_id"/>
+                            <field name="building_id"/>
+                            <field name="purpose" readonly="state == 'approved'"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="caretaker_type_id" readonly="state == 'approved'" options="{'no_open':True}"/>
+                            <field name="type" readonly="state == 'approved'"/>
+                            <field name="infinite_start_date" string="Start Date" invisible="type != 'infinite'" required="type == 'infinite'" readonly="state == 'approved'"/>
+                            <label for="start_date" string="Period" invisible="type != 'finite'"/>
+                            <div invisible="type != 'finite'">
+                                <field name="start_date" invisible="type != 'finite'" required="type == 'finite'" readonly="state == 'approved'" class="oe_inline"/>
+                                -
+                                <field name="end_date" invisible="type != 'finite'" required="type == 'finite'" readonly="state == 'approved'" class="oe_inline"/>
+                            </div>
+                            <field name="approved_date" readonly="1"/>
+                            <field name="caretaker_register_ids" widget="many2many_tags" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Others" name="others">
+                            <group>
+                                <group>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="approved_by" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="cancelled_date" readonly="1" invisible="not cancelled_date"/>
+                                    <field name="cancelled_by" readonly="1" invisible="not cancelled_by"/>
+                                    <field name="cancel_reason" readonly="1" invisible="not cancel_reason"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_special_privileges_form" model="ir.ui.view">
+        <field name="name">hospital.special.privileges.form</field>
+        <field name="model">hospital.special.privileges</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="billing_debit_note.group_approve_requisition" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel" type="object" context="{'privilege_id': active_id}" class="oe_highlight" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_special_privilege_register" icon="fa-pencil-square-o" invisible="special_privilege_register_count == 0">
+                            <field string="Special Privilege Register" name="special_privilege_register_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_admission_id" domain="[('state','!=','discharge_advised')]" readonly="state == 'approved'"/>
+                            <field name="patient_id"/>
+                            <field name="purpose" readonly="state == 'approved'"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="privilege_type" readonly="state == 'approved'"/>
+                            <field name="type" readonly="state == 'approved'"/>
+                            <label for="start_date" string="Period" readonly="state == 'approved'"/>
+                            <div>
+                                <field name="start_date" readonly="state == 'approved'" class="oe_inline"/>
+                                -
+                                <field name="end_date" invisible="privilege_type == 'infinite'" readonly="state == 'approved'" class="oe_inline"/>
+                            </div>
+                            <field name="special_privilege_register_ids" widget="many2many_tags" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="sunday" invisible="type != 'days'"/>
+                            <field name="monday" invisible="type != 'days'"/>
+                            <field name="tuesday" invisible="type != 'days'"/>
+                            <field name="wednesday" invisible="type != 'days'"/>
+                        </group>
+                        <group>
+                            <field name="thursday" invisible="type != 'days'"/>
+                            <field name="friday" invisible="type != 'days'"/>
+                            <field name="saturday" invisible="type != 'days'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="privilege_line_ids">
+                                <tree editable="bottom">
+                                    <field name="special_privilege_id" invisible="1"/>
+                                    <field name="product_id" domain="[('special_privilege','=',True)]"/>
+                                    <field name="morning"/>
+                                    <field name="afternoon"/>
+                                    <field name="evening"/>
+                                    <field name="night"/>
+                                    <field name="price_unit"/>
+                                    <field name="uom_id" invisible="1"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Others" name="others">
+                            <group>
+                                <group>
+                                    <field name="cancelled_date" readonly="1" invisible="not cancelled_date"/>
+                                    <field name="cancelled_by" readonly="1" invisible="not cancelled_by"/>
+                                    <field name="cancel_reason" readonly="1" invisible="not cancel_reason"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+
+
+        </field>
+    </record>
+
+    <record id="view_hospital_outing_expenses_form" model="ir.ui.view">
+        <field name="name">hospital.outing.expenses.form</field>
+        <field name="model">hospital.outing.expenses</field>
+        <field name="arch" type="xml">
+            <form string="Outing Expenses">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'new'"/>
+                    <!-- <button name="billing_debit_note.gatepass_report" string="Generate Gatepass" type="action" invisible="state != 'confirmed'"/> -->
+                    <button name="action_close" string="Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_vendor_bill" string="Vendor Bill" icon="fa-pencil-square-o" invisible="not invoice_id"/>
+                    </div>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="type" readonly="state != 'new'"/>
+                            <field name="partner_id" string="Vendor" options="{'no_create':True}"  readonly="state != 'new'"/>
+                            <field name="product_id" string="Nature of Outing" options="{'no_create':True}" domain="[('can_be_expensed','=',True)]" readonly="state != 'new'"/>
+                            <field name="date" readonly="state != 'new'"/>
+                        </group>
+                        <group>
+                            <field name="partner_payable" string="Vendor Payable" readonly="type == 'outside_consultation' or state == 'closed'"/>
+                            <field name="total_head_count"/>
+                            <field name="trip_cost" readonly="1"/>
+                            <field name="invoice_id"  invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Patient Details" name="patient_details">
+                            <field name="patient_expense_line_ids" readonly="state != 'new'">
+                                <tree editable="bottom">
+                                    <field name="outing_expense_id" invisible="1"/>
+                                    <field name="inpatient_admission_id" domain="[('state','!=','discharge_advised')]" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="patient_id" invisible="1" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="age"/>
+                                    <!-- <field name="sex"/> -->
+                                    <field name="campus_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="block_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="room_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="partner_expense"/>
+                                    <field name="misc_expense"/>
+                                    <field name="conveyance_expense"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Employees / Resources" name="employees">
+                            <field name="employee_ids" readonly="state != 'new'" options="{'no_create':True}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="work_phone"/>
+                                    <field name="work_email"/>
+                                    <field name="department_id"/>
+                                    <field name="job_id"/>
+                                    <field name="parent_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Transportation / Misc.Expenses" name="expenses">
+                            <group>
+                                <group string="Before Outing">
+                                    <field name="start_datetime" readonly="state == 'closed'"/>
+                                    <field name="vehicle_id" required="1" options="{'no_create':True}" readonly="state == 'closed'"/>
+                                    <field name="opening_km" required="1" readonly="state == 'closed'"/>
+                                    <field name="cost_per_km" readonly="state == 'closed'"/>
+                                    <field name="issued_to" string="Amount issued to" required="1" options="{'no_create':True}" readonly="state == 'closed'"/>
+                                    <field name="approved_amount" required="1" readonly="state == 'closed'"/>
+                                    <field name="return_charge" string="Amount to be returned"/>
+                                </group>
+                                <group string="After Outing">
+                                    <field name="end_datetime" readonly="state == 'closed'"/>
+                                    <field name="no_of_days"/>
+                                    <field name="closing_km" readonly="state == 'closed'"/>
+                                    <field name="total_km"/>
+                                    <field name="transportation_charge" string="Toll/Driver" readonly="state == 'closed'"/>
+                                    <field name="misc_expenditure" readonly="state == 'closed'"/>
+                                    <field name="total_misc_expenditure"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Patient Specific Expenses" name="patient_expenses" invisible="type == 'outing'">
+                            <field name="patient_specific_expense_line_ids" readonly="state == 'closed'" invisible="type == 'outing'">
+                                <tree editable="bottom">
+                                    <field name="outing_expense_id" invisible="1"/>
+                                    <field name="inpatient_admission_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="patient_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="partner_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="reference"/>
+                                    <field name="amount"/>
+                                    <field name="misc_expense" invisible="1"/>
+                                    <field name="misc_description" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Other Information">
+                            <group>
+                                <field name="company_id" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_variable_billing_form" model="ir.ui.view">
+        <field name="name">hospital.variable.billing.form</field>
+        <field name="model">hospital.variable.billing</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,billed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_vendor_bill" string="Vendor Bill" icon="fa-pencil-square-o" invisible="not invoice_id"/>
+                    </div>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="inpatient_admission_id" string="IP Number" options="{'no_create':True,'no_open':True}" domain="[('state','!=','Discharged')]" readonly="state != 'draft'"/>
+                            <field name="partner_id"  readonly="state != 'draft'"/>
+                            <field name="total_amount"/>
+                            <field name="invoice_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="order_date" readonly="state != 'draft'"/>
+                            <field name="company_id" options="{'no_create':True,'no_open':True}"/>
+                            <field name="user_id" options="{'no_create':True,'no_open':True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Variable Billing Lines" name="billing_lines">
+                            <field name="variable_billing_line_ids" readonly="state != 'draft'">
+                                <tree editable="bottom">
+                                    <field name="product_id" domain="[('variable_billing','=',True)]" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hospital_variable_billing_tree" model="ir.ui.view">
+        <field name="name">hospital.variable.billing.tree</field>
+        <field name="model">hospital.variable.billing</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="inpatient_admission_id"/>
+                <field name="partner_id"/>
+                <field name="order_date"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-primary="state == 'billed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hospital_variable_billing_search" model="ir.ui.view">
+        <field name="name">hospital.variable.billing.search</field>
+        <field name="model">hospital.variable.billing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="inpatient_admission_id"/>
+                <field name="partner_id"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Billed" name="billed" domain="[('state','=','billed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <filter string="Partner" name="partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Order Date" name="date" context="{'group_by':'order_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_hospital_variable_billing" model="ir.actions.act_window">
+        <field name="name">Variable Billing</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.variable.billing</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first variable billing!
+            </p>
+        </field>
+    </record>
+
+    <record id="view_hospital_provisional_bill_form" model="ir.ui.view">
+        <field name="name">hospital.provisional.bill.form</field>
+        <field name="model">hospital.provisional.bill</field>
+        <field name="arch" type="xml">
+            <form string="Medical Procedure">
+                <header>
+                    <button name="action_approve" string="Approve" type="object" 
+                            class="oe_highlight" groups="billing_debit_note.group_approve_requisition"
+                            invisible="not state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_admission_id" string="IP Number" readonly="state == 'approved'"/>
+                            <field name="patient_id"/>
+                            <field name="purpose" readonly="state == 'approved'"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="date_selection" invisible="1" readonly="state == 'approved'"/>
+                            <field name="requested_date" required="date_selection == 'by_date'" 
+                                   readonly="state == 'approved'" invisible="date_selection != 'by_date'"/>
+                            <label for="start_date" string="Period" 
+                                   readonly="state == 'approved'" invisible="date_selection != 'by_period'"/>
+                            <div readonly="state == 'approved'" invisible="date_selection != 'by_period'">
+                                <field name="start_date" required="date_selection == 'by_period'" 
+                                       class="oe_inline"/>
+                                -
+                                <field name="end_date" required="date_selection == 'by_period'" 
+                                       class="oe_inline"/>
+                            </div>
+                            <field name="required_date" invisible="1"/>
+                            <field name="approved_date"/>
+                            <field name="debit_note_id" invisible="not debit_note_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="requisition_line_ids" readonly="state == 'approved'">
+                                <tree editable="bottom">
+                                    <field name="date" invisible="1"/>
+                                    <field name="product_id" domain="[('debit_note','=',True),('type','=','service'),('procedure_product','=',True)]"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="internal_category_id" invisible="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Materials" name="materials">
+                            <field name="material_line_ids" readonly="state == 'approved'">
+                                <tree editable="bottom">
+                                    <field name="product_id" domain="[('medicine_product','=',True)]"/>
+                                    <field name="name"/>
+                                    <field name="internal_category_id" invisible="1"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Others" name="others">
+                            <group>
+                                <group>
+                                    <field name="user_id"/>
+                                    <field name="approved_by"/>
+                                </group>
+                                <group>
+                                    <field name="notes"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

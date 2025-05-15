@@ -84,6 +84,11 @@ class Patient(models.Model):
     # Insurance Information
     insurance_id = fields.Many2one('hospital.insurance', string='Insurance')
     medicine_register_ids = fields.One2many('medicine.register', 'patient_id', string='Medicine Registers')
+    date_of_birth = fields.Date(string='Date of Birth')
+
+
+    patient_id = fields.Char(string='Patient ID', readonly=True, copy=False, default=lambda self: _('New'))
+   
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -360,39 +365,7 @@ class Insurance(models.Model):
     patient_ids = fields.One2many('hospital.patient', 'insurance_id', string='Patients')
 
 
-class LabTestType(models.Model):
-    _name = 'hospital.lab.test.type'
-    _description = 'Lab Test Type'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    
-    name = fields.Char(string='Name', required=True, tracking=True)
-    code = fields.Char(string='Code', tracking=True)
-    description = fields.Text(string='Description')
-    active = fields.Boolean(default=True, tracking=True)
-    category = fields.Selection([
-        ('hematology', 'Hematology'),
-        ('biochemistry', 'Biochemistry'),
-        ('microbiology', 'Microbiology'),
-        ('immunology', 'Immunology'),
-        ('urine', 'Urine Analysis'),
-        ('molecular', 'Molecular Biology'),
-        ('other', 'Other')
-    ], string='Category', default='other')
 
-
-
-    def save(self):
-        # Save the document and return to the list view
-        self.ensure_one()
-        if not self.file:
-            raise ValidationError(_('Please upload a file.'))
-        if not self.file_name:
-            raise ValidationError(_('Please provide a file name.'))
-        self.write({'file_name': self.file_name})
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
-        }
 
 class IllnessTag(models.Model):
     _name = 'hospital.illness.tag'

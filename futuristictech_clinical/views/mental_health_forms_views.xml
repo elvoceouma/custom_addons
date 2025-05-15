@@ -680,4 +680,8 @@
 
         </field>
     </record>
+
+
+    <!-- form view  for the hospital.caretaker.allotment model -->
+    
 </odoo>

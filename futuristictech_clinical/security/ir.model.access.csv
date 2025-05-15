@@ -276,3 +276,18 @@ access_hospital_variable_billing_manager,hospital.variable.billing.manager,model
 access_hospital_vital_chart_user,hospital.vital.chart.user,model_hospital_vital_chart,base.group_user,1,1,1,0
 access_hospital_vital_chart_manager,hospital.vital.chart.manager,model_hospital_vital_chart,base.group_system,1,1,1,1
 access_hospital_inpatient_admission_internal,hospital.inpatient.admission.internal,model_hospital_inpatient_admission,base.group_user,1,1,1,1
+
+access_hospital_investigation_request,Investigation Request,model_hospital_investigation_request,base.group_user,1,1,1,1
+access_hematology_test,Hematology Tests,model_hematology_test,base.group_user,1,1,1,1
+access_biochemistry_test,Biochemistry Tests,model_biochemistry_test,base.group_user,1,1,1,1
+access_hormones_test,Hormones Tests,model_hormones_test,base.group_user,1,1,1,1
+access_microbiology_test,Microbiology Tests,model_microbiology_test,base.group_user,1,1,1,1
+access_immunology_test,Immunology Tests,model_immunology_test,base.group_user,1,1,1,1
+access_urine_chemistry_test,Urine Chemistry Tests,model_urine_chemistry_test,base.group_user,1,1,1,1
+access_urine_screening_test,Urine Screening Tests,model_urine_screening_test,base.group_user,1,1,1,1
+access_drug_assays_test,Drug Assays Tests,model_drug_assays_test,base.group_user,1,1,1,1
+access_molecular_biology_test,Molecular Biology Tests,model_molecular_biology_test,base.group_user,1,1,1,1
+access_miscelleneous_test,Miscelleneous Tests,model_miscelleneous_test,base.group_user,1,1,1,1
+access_profile_test,Profile Tests,model_profile_test,base.group_user,1,1,1,1
+
+access_room_inspection_wizard,Room Inspection Wizard,model_hospital_room_inspection_wizard,base.group_user,1,1,1,1

@@ -2,7 +2,7 @@
 <odoo>
     <!-- Main Menu -->
     <menuitem id="hospital_management_root" name="Clinical" sequence="10"/>
-    
+
     <!-- Campus Menu -->
     <menuitem id="menu_campus_root" name="Campus" parent="hospital_management_root" sequence="10"/>
     <menuitem id="menu_campus" name="Campus" parent="menu_campus_root" action="action_hospital_hospital" sequence="10"/>
@@ -10,7 +10,7 @@
     <menuitem id="menu_rooms" name="Rooms" parent="menu_campus_root" action="action_hospital_room" sequence="30"/>
     <menuitem id="menu_beds" name="Beds" parent="menu_campus_root" action="action_hospital_bed" sequence="40"/>
     <menuitem id="menu_pharmacies" name="Pharmacies" parent="menu_campus_root" action="action_hospital_pharmacy" sequence="50"/>
-    
+
     <!-- Patient Management Menu -->
     <menuitem id="menu_patient_management_root" name="Patient Management" parent="hospital_management_root" sequence="20"/>
     <menuitem id="menu_my_profile" name="My Profile" parent="menu_patient_management_root" action="action_hospital_my_profile" sequence="10"/>
@@ -35,14 +35,14 @@
     <menuitem id="menu_vital_charts" name="Vital Charts" parent="menu_patient_management_root" action="action_hospital_vital_chart" sequence="200"/>
     <menuitem id="menu_mental_status_examination" name="Mental Status Examination" parent="menu_patient_management_root" action="action_hospital_mental_status_examination" sequence="210"/>
     <menuitem id="menu_drug_chart" name="Drug Chart" parent="menu_patient_management_root" action="action_hospital_drug_chart" sequence="220"/>
-    
+
     <!-- Drug Chart Config Submenu -->
     <menuitem id="menu_drug_chart_config" name="Drug Chart Config" parent="menu_patient_management_root" sequence="230"/>
     <menuitem id="menu_drug_frequencies" name="Drug Frequencies" parent="menu_drug_chart_config" action="action_hospital_drug_frequency" sequence="10"/>
-    
+
     <!-- Activity Records Menu -->
     <menuitem id="menu_activity_records" name="Activity Records" parent="menu_patient_management_root" action="action_hospital_activity_record" sequence="240"/>
-    
+
     <!-- Consent Forms Menu -->
     <!-- <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
     <menuitem id="menu_medication_form" name="Medication Form" parent="menu_consent_forms_root" action="action_hospital_medication_form" sequence="10"/>
@@ -55,12 +55,12 @@
     <menuitem id="menu_prescriptions" name="Prescriptions" parent="menu_physicians_appointments_root" action="action_hospital_prescription" sequence="40"/>
     <menuitem id="menu_evaluations" name="Evaluations" parent="menu_physicians_appointments_root" action="action_hospital_evaluation" sequence="50"/>
     <menuitem id="menu_gynecology" name="Gynecology" parent="menu_physicians_appointments_root" action="action_hospital_gynecology" sequence="60"/>
-    
+
     <!-- Block Duty Menu -->
     <menuitem id="menu_block_duty_root" name="Block Duty" parent="hospital_management_root" sequence="50"/>
     <menuitem id="menu_block_duty_assignment" name="Block Duty Assignment" parent="menu_block_duty_root" action="action_hospital_block_duty_assignment" sequence="10"/>
     <menuitem id="menu_block_duty_register" name="Block Duty Register" parent="menu_block_duty_root" action="action_hospital_block_duty_register" sequence="20"/>
-    
+
     <!-- Medicine Register Menu -->
     <menuitem id="menu_medicine_register_root" name="Medicine Register" parent="hospital_management_root" sequence="60"/>
     <menuitem id="menu_view_medicine_register" name="View Medicine Register" parent="menu_medicine_register_root" action="action_medicine_register" sequence="10"/>
@@ -68,12 +68,12 @@
     <menuitem id="menu_tablet_capsule" name="Tablet / Capsule" parent="menu_medicine_register_root" action="action_hospital_tablet_capsule" sequence="30"/>
     <menuitem id="menu_injection_application" name="Injection / Application" parent="menu_medicine_register_root" action="action_hospital_injection_application" sequence="40"/>
     <menuitem id="menu_nurses_campus_duty" name="Nurses Campus Duty Allocation" parent="menu_medicine_register_root" action="action_hospital_nurses_campus_duty" sequence="50"/>
-    
+
     <!-- Medication Category Menu -->
     <menuitem id="menu_medication_category_root" name="Medication Category" parent="hospital_management_root" sequence="70"/>
     <menuitem id="menu_medication_category" name="Medication Category" parent="menu_medication_category_root" action="action_hospital_medication_category" sequence="10"/>
     <menuitem id="menu_medication_type" name="Medication Type" parent="menu_medication_category_root" action="action_hospital_medication_type" sequence="20"/>
-    
+
     <!-- Procedures Forms Menu -->
     <menuitem id="menu_procedures_forms_root" name="Procedures Forms" parent="hospital_management_root" sequence="80"/>
     <menuitem id="menu_informed_consent_form" name="Informed Consent Form" parent="menu_procedures_forms_root" action="action_hospital_informed_consent_form" sequence="10"/>
@@ -89,18 +89,18 @@
     <menuitem id="menu_discharge_clearance_checklist" name="Discharge Clearance Checklist" parent="menu_procedures_forms_root" action="action_hospital_discharge_clearance_checklist" sequence="110"/>
     <menuitem id="menu_dama_form" name="DAMA Form" parent="menu_procedures_forms_root" action="action_hospital_dama_form" sequence="120"/>
     <menuitem id="menu_lama_form" name="LAMA Form" parent="menu_procedures_forms_root" action="action_hospital_lama_form" sequence="130"/>
-    
+
     <!-- Mental Health Forms Menu -->
     <menuitem id="menu_mental_health_forms_root" name="Mental Health Forms" parent="hospital_management_root" sequence="90"/>
     <menuitem id="menu_form_c_section_86" name="Form C Section 86" parent="menu_mental_health_forms_root" action="action_hospital_form_c_section_86" sequence="10"/>
     <menuitem id="menu_mo_sr_section_86" name="MO/SR Section 86" parent="menu_mental_health_forms_root" action="action_hospital_mo_sr_section_86" sequence="20"/>
     <menuitem id="menu_minor_admission" name="Minor Admission" parent="menu_mental_health_forms_root" action="action_hospital_minor_admission" sequence="30"/>
     <menuitem id="menu_high_support_admission" name="High Support Admission" parent="menu_mental_health_forms_root" action="action_hospital_high_support_admission" sequence="40"/>
-    
+
     <!-- Outing Forms Menu -->
     <menuitem id="menu_outing_forms_root" name="Outing Forms" parent="hospital_management_root" sequence="100"/>
     <menuitem id="menu_outing_form" name="Outing Form" parent="menu_outing_forms_root" action="action_hospital_outing_form" sequence="10"/>
-    
+
     <!-- Provisional Bills Menu -->
     <menuitem id="menu_provisional_bills_root" name="Provisional Bills" parent="hospital_management_root" sequence="110"/>
     <menuitem id="menu_patient_requisition" name="Patient Requisition" parent="menu_provisional_bills_root" action="action_hospital_patient_requisition" sequence="10"/>
@@ -113,76 +113,75 @@
     <menuitem id="menu_outing_expenses" name="Outing Expenses" parent="menu_provisional_bills_root" action="action_hospital_outing_expenses" sequence="80"/>
     <menuitem id="menu_variable_billing" name="Variable Billing" parent="menu_provisional_bills_root" action="action_hospital_variable_billing" sequence="90"/>
     <menuitem id="menu_provisional_bills" name="Provisional Bills" parent="menu_provisional_bills_root" action="action_hospital_provisional_bill" sequence="100"/>
-    
+
     <!-- Registers Menu -->
     <menuitem id="menu_registers_root" name="Registers" parent="hospital_management_root" sequence="120"/>
-    <menuitem id="menu_patient_requisition_register" name="Patient Requisition Register" parent="menu_registers_root" action="action_hospital_patient_requisition_register" sequence="10"/>
+    <menuitem id="menu_patient_requisition_register" name="Patient Requisition Register" parent="menu_registers_root" action="action_patient_requisition_line" sequence="10"/>
     <menuitem id="menu_caretaker_register" name="Caretaker Register" parent="menu_registers_root" action="action_hospital_caretaker_register" sequence="20"/>
     <menuitem id="menu_caretaker_allotment" name="Caretaker Allotment" parent="menu_registers_root" action="action_hospital_caretaker_allotment" sequence="30"/>
     <menuitem id="menu_special_privilege_register" name="Special Privilege Register" parent="menu_registers_root" action="action_hospital_special_privilege_register" sequence="40"/>
     <menuitem id="menu_special_privilege_report" name="Special Privilege Report" parent="menu_registers_root" action="action_hospital_special_privilege_report" sequence="50"/>
     <menuitem id="menu_service_register" name="Service Register" parent="menu_registers_root" action="action_hospital_service_register" sequence="60"/>
-    
+
     <!-- Investigation Form Menu -->
     <menuitem id="menu_investigation_form_root" name="Investigation Form" parent="hospital_management_root" sequence="130"/>
     <menuitem id="menu_investigation_request" name="Investigation Request" parent="menu_investigation_form_root" action="action_hospital_investigation_request" sequence="10"/>
-    <menuitem id="menu_hematology" name="Hematology" parent="menu_investigation_form_root" action="action_hospital_hematology" sequence="20"/>
-    <menuitem id="menu_biochemistry" name="Biochemistry" parent="menu_investigation_form_root" action="action_hospital_biochemistry" sequence="30"/>
-    <menuitem id="menu_hormones" name="Hormones" parent="menu_investigation_form_root" action="action_hospital_hormones" sequence="40"/>
-    <menuitem id="menu_microbiology" name="Microbiology" parent="menu_investigation_form_root" action="action_hospital_microbiology" sequence="50"/>
-    <menuitem id="menu_immunology" name="Immunology" parent="menu_investigation_form_root" action="action_hospital_immunology" sequence="60"/>
-    <menuitem id="menu_urine_chemistry" name="Urine Chemistry" parent="menu_investigation_form_root" action="action_hospital_urine_chemistry" sequence="70"/>
-    <menuitem id="menu_urine_screening" name="Urine Screening" parent="menu_investigation_form_root" action="action_hospital_urine_screening" sequence="80"/>
-    <menuitem id="menu_drug_assays" name="Drug Assays" parent="menu_investigation_form_root" action="action_hospital_drug_assays" sequence="90"/>
-    <menuitem id="menu_molecular_biology" name="Molecular Biology" parent="menu_investigation_form_root" action="action_hospital_molecular_biology" sequence="100"/>
-    <menuitem id="menu_miscelleneous" name="Miscelleneous" parent="menu_investigation_form_root" action="action_hospital_miscelleneous" sequence="110"/>
-    <menuitem id="menu_profile" name="Profile" parent="menu_investigation_form_root" action="action_hospital_profile" sequence="120"/>
-    
+    <menuitem id="menu_hematology" name="Hematology" parent="menu_investigation_form_root" action="action_hematology_test" sequence="20"/>
+    <menuitem id="menu_biochemistry" name="Biochemistry" parent="menu_investigation_form_root" action="action_biochemistry_test" sequence="30"/>
+    <menuitem id="menu_hormones" name="Hormones" parent="menu_investigation_form_root" action="action_hormones_test" sequence="40"/>
+    <menuitem id="menu_microbiology" name="Microbiology" parent="menu_investigation_form_root" action="action_microbiology_test" sequence="50"/>
+    <menuitem id="menu_immunology" name="Immunology" parent="menu_investigation_form_root" action="action_immunology_test" sequence="60"/>
+    <menuitem id="menu_urine_chemistry" name="Urine Chemistry" parent="menu_investigation_form_root" action="action_urine_chemistry_test" sequence="70"/>
+    <menuitem id="menu_urine_screening" name="Urine Screening" parent="menu_investigation_form_root" action="action_urine_screening_test" sequence="80"/>
+    <menuitem id="menu_drug_assays" name="Drug Assays" parent="menu_investigation_form_root" action="action_drug_assays_test" sequence="90"/>
+    <menuitem id="menu_molecular_biology" name="Molecular Biology" parent="menu_investigation_form_root" action="action_molecular_biology_test" sequence="100"/>
+    <menuitem id="menu_miscelleneous" name="Miscelleneous" parent="menu_investigation_form_root" action="action_miscelleneous_test" sequence="110"/>
+    <menuitem id="menu_profile" name="Profile" parent="menu_investigation_form_root" action="action_profile_test" sequence="120"/>
     <!-- Laboratory Menu -->
     <menuitem id="menu_laboratory_root" name="Laboratory" parent="hospital_management_root" sequence="140"/>
     <menuitem id="menu_lab_test_requisition" name="Lab Test Requisition" parent="menu_laboratory_root" action="action_hospital_lab_test_requisition" sequence="10"/>
     <menuitem id="menu_lab_tests" name="Lab Tests" parent="menu_laboratory_root" action="action_hospital_lab_test" sequence="20"/>
-    
+
     <!-- Room Inspection Menu -->
     <menuitem id="menu_room_inspection_root" name="Room Inspection" parent="hospital_management_root" sequence="150"/>
     <menuitem id="menu_room_inspection" name="Room Inspection" parent="menu_room_inspection_root" action="action_hospital_room_inspection" sequence="10"/>
     <menuitem id="menu_room_inspection_report" name="Room Inspection Report" parent="menu_room_inspection_root" action="action_hospital_room_inspection_report" sequence="20"/>
-    
+
     <!-- Payout Menu -->
     <menuitem id="menu_payout_root" name="Payout" parent="hospital_management_root" sequence="160"/>
     <menuitem id="menu_doctor_payout" name="Doctor Payout" parent="menu_payout_root" action="action_hospital_doctor_payout" sequence="10"/>
     <menuitem id="menu_doctor_payout_report_wizard" name="Doctor Payout Report Wizard" parent="menu_payout_root" action="action_hospital_doctor_payout_report_wizard" sequence="20"/>
-    
+
     <!-- Bill Estimation Menu -->
     <menuitem id="menu_bill_estimation_root" name="Bill Estimation" parent="hospital_management_root" sequence="170"/>
     <menuitem id="menu_bill_estimation_form" name="Bill Estimation Form" parent="menu_bill_estimation_root" action="action_hospital_bill_estimation_form" sequence="10"/>
-    
+
     <!-- Patient Discharge Menu -->
     <menuitem id="menu_patient_discharge_root" name="Patient Discharge" parent="hospital_management_root" sequence="180"/>
     <menuitem id="menu_discharge" name="Discharge" parent="menu_patient_discharge_root" action="action_hospital_discharge" sequence="10"/>
     <menuitem id="menu_counsellor_clearance" name="Counsellor Clearance" parent="menu_patient_discharge_root" action="action_hospital_counsellor_clearance" sequence="20"/>
     <menuitem id="menu_store_clearance" name="Store Clearance" parent="menu_patient_discharge_root" action="action_hospital_store_clearance" sequence="30"/>
     <menuitem id="menu_discharge_summary" name="Discharge Summary" parent="menu_patient_discharge_root" action="action_hospital_discharge_summary" sequence="40"/>
-    
+
     <!-- Food Menu -->
     <menuitem id="menu_food_root" name="Food" parent="hospital_management_root" sequence="190"/>
     <menuitem id="menu_food_requisition" name="Food Requisition" parent="menu_food_root" action="action_hospital_food_requisition" sequence="10"/>
     <menuitem id="menu_food_register" name="Food Register" parent="menu_food_root" action="action_hospital_food_register" sequence="20"/>
     <menuitem id="menu_food_service_payout" name="Food Service Payout" parent="menu_food_root" action="action_hospital_food_service_payout" sequence="30"/>
     <menuitem id="menu_food_bills" name="Food Bills" parent="menu_food_root" action="action_hospital_food_bill" sequence="40"/>
-    
+
     <!-- Configuration Menu -->
     <menuitem id="menu_configuration_root" name="Configuration" parent="hospital_management_root" sequence="200"/>
-    
+
     <!-- Block Duty Configuration Submenu -->
     <menuitem id="menu_block_duty_config" name="Block Duty" parent="menu_configuration_root" sequence="10"/>
     <menuitem id="menu_block_duty_checklist" name="Checklist" parent="menu_block_duty_config" action="action_hospital_block_duty_checklist" sequence="10"/>
-    
+
     <!-- Block Duty Reporting Submenu -->
     <menuitem id="menu_block_duty_reporting" name="Reporting" parent="menu_block_duty_config" sequence="20"/>
     <menuitem id="menu_block_duty_reporting_block" name="Block" parent="menu_block_duty_reporting" action="action_hospital_block_duty_reporting_block" sequence="10"/>
     <menuitem id="menu_block_duty_reporting_patient" name="Patient" parent="menu_block_duty_reporting" action="action_hospital_block_duty_reporting_patient" sequence="20"/>
-    
+
     <!-- Registration Details Configuration Submenu -->
     <menuitem id="menu_registration_details" name="Registration details" parent="menu_configuration_root" sequence="20"/>
     <menuitem id="menu_registration_details_campus" name="Campus" parent="menu_registration_details" action="action_hospital_registration_details_campus" sequence="10"/>
@@ -197,7 +196,7 @@
     <menuitem id="menu_registration_details_physical_illness" name="Physical Illness" parent="menu_registration_details" action="action_hospital_registration_details_physical_illness" sequence="100"/>
     <menuitem id="menu_registration_details_sources" name="Sources" parent="menu_registration_details" action="action_hospital_registration_details_source" sequence="110"/>
     <menuitem id="menu_registration_details_physiatric_illness" name="Physiatric Illness" parent="menu_registration_details" action="action_hospital_registration_details_physiatric_illness" sequence="120"/>
-    
+
     <!-- Patient Configuration Submenu -->
     <menuitem id="menu_patient_config" name="Patient" parent="menu_configuration_root" sequence="30"/>
     <menuitem id="menu_patient_config_ethnic_groups" name="Ethnic Groups" parent="menu_patient_config" action="action_hospital_patient_ethnic_group" sequence="10"/>
@@ -206,11 +205,11 @@
     <menuitem id="menu_patient_config_recreational_drugs" name="Recreational Drugs" parent="menu_patient_config" action="action_hospital_patient_recreational_drug" sequence="40"/>
     <menuitem id="menu_patient_config_document_type" name="Document Type" parent="menu_patient_config" action="action_hospital_document_type" sequence="50"/>
     <menuitem id="menu_patient_config_aws_file_type" name="Aws File Type" parent="menu_patient_config" action="action_hospital_aws_file_type" sequence="60"/>
-    
+
     <!-- Physician Configuration Submenu -->
     <menuitem id="menu_physician_config" name="Physician" parent="menu_configuration_root" sequence="40"/>
     <menuitem id="menu_physician_config_specialities" name="Specialities" parent="menu_physician_config" action="action_hospital_physician_speciality" sequence="10"/>
     <menuitem id="menu_physician_config_degrees" name="Degrees" parent="menu_physician_config" action="action_hospital_physician_degree" sequence="20"/>
- 
- 
+
+
 </odoo>

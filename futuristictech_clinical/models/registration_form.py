@@ -464,3 +464,45 @@ class HospitalRegistrationDetailsSource(models.Model):
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
+
+
+
+class PatientRequisitionLine(models.Model):
+    _name = 'patient.requisition.line'
+    _description = 'Patient Requisition Line'
+    _rec_name = 'patient_requisition_id'
+
+    patient_requisition_id = fields.Char(string='Requisition Number', readonly=True, copy=False, default=lambda self: _('New'))
+    patient_id = fields.Many2one('res.partner', string='Patient', required=True)
+    inpatient_admission_id = fields.Many2one('inpatient.admission', string='Admission')
+    
+    # Location fields
+    campus_id = fields.Many2one('hospital.campus', string='Campus')
+    block_id = fields.Many2one('hospital.block', string='Block')
+    room_id = fields.Many2one('hospital.room', string='Room')
+    bed_id = fields.Many2one('hospital.bed', string='Bed')
+    
+    # Product and quantity information
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    
+    # Additional information
+    date = fields.Datetime(string='Date', default=fields.Datetime.now)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        """Compute the subtotal amount based on quantity and unit price"""
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create method to assign a unique sequence number to patient_requisition_id"""
+        for vals in vals_list:
+            if vals.get('patient_requisition_id', _('New')) == _('New'):
+                vals['patient_requisition_id'] = self.env['ir.sequence'].next_by_code('patient.requisition.line') or _('New')
+        return super(PatientRequisitionLine, self).create(vals_list)

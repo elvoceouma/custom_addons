@@ -1555,22 +1555,148 @@ class HospitalMOSRSection86(models.Model):
         self.state = 'completed'
         return True
     
+
 class HospitalOutingExpenses(models.Model):
     _name = 'hospital.outing.expenses'
     _description = 'Outing Expenses'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Reference', required=True, tracking=True)
+    type = fields.Selection([
+        ('outing', 'Outing'),
+        ('outside_consultation', 'Outside Consultation')
+    ], string='Type', default='outing', tracking=True)
     
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    date = fields.Date(string='Date', default=fields.Date.today)
-    purpose = fields.Char(string='Purpose')
-    amount = fields.Float(string='Amount')
-    notes = fields.Text(string='Notes')
+    # Partners and Products
+    partner_id = fields.Many2one('res.partner', string='Vendor', tracking=True)
+    product_id = fields.Many2one('product.product', string='Nature of Outing', domain="[('can_be_expensed','=',True)]")
+    partner_payable = fields.Float(string='Vendor Payable')
+    
+    # Date fields
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    start_datetime = fields.Datetime(string='Start Date & Time')
+    end_datetime = fields.Datetime(string='End Date & Time')
+    no_of_days = fields.Float(string='No. of Days', compute='_compute_no_of_days', store=True)
+    
+    # Vehicle and Transportation details
+    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
+    opening_km = fields.Float(string='Opening KM')
+    closing_km = fields.Float(string='Closing KM')
+    total_km = fields.Float(string='Total KM', compute='_compute_total_km', store=True)
+    cost_per_km = fields.Float(string='Cost Per KM')
+    transportation_charge = fields.Float(string='Toll/Driver Charges')
+    
+    # Financial fields
+    issued_to = fields.Many2one('res.users', string='Amount issued to')
+    approved_amount = fields.Float(string='Approved Amount')
+    return_charge = fields.Float(string='Amount to be returned', compute='_compute_return_charge', store=True)
+    misc_expenditure = fields.Float(string='Miscellaneous Expenditure')
+    total_misc_expenditure = fields.Float(string='Total Misc. Expenditure', compute='_compute_total_misc', store=True)
+    total_head_count = fields.Integer(string='Total Head Count', compute='_compute_total_head_count', store=True)
+    trip_cost = fields.Float(string='Trip Cost', compute='_compute_trip_cost', store=True)
+    
+    # Related records
+    invoice_id = fields.Many2one('account.move', string='Vendor Bill')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    
+    # Relationships
+    patient_expense_line_ids = fields.One2many('hospital.outing.expense.line', 'outing_expense_id', string='Patient Expense Lines')
+    patient_specific_expense_line_ids = fields.One2many('hospital.patient.specific.expense', 'outing_expense_id', string='Patient Specific Expense Lines')
+    employee_ids = fields.Many2many('hr.employee', string='Employees / Resources')
+    
+    # Status field
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('approved', 'Approved'),
-        ('paid', 'Paid')
-    ], string='Status', default='draft')
+        ('new', 'New'),
+        ('confirmed', 'Confirmed'),
+        ('closed', 'Completed')
+    ], string='Status', default='new', tracking=True)
+    
+    @api.depends('start_datetime', 'end_datetime')
+    def _compute_no_of_days(self):
+        for record in self:
+            if record.start_datetime and record.end_datetime:
+                delta = record.end_datetime - record.start_datetime
+                record.no_of_days = delta.total_seconds() / (24 * 60 * 60)
+            else:
+                record.no_of_days = 0.0
+    
+    @api.depends('opening_km', 'closing_km')
+    def _compute_total_km(self):
+        for record in self:
+            record.total_km = record.closing_km - record.opening_km
+    
+    @api.depends('approved_amount', 'partner_payable', 'transportation_charge', 'misc_expenditure')
+    def _compute_return_charge(self):
+        for record in self:
+            total_expenses = record.partner_payable + record.transportation_charge + record.misc_expenditure
+            record.return_charge = record.approved_amount - total_expenses
+    
+    @api.depends('patient_expense_line_ids.misc_expense', 'misc_expenditure')
+    def _compute_total_misc(self):
+        for record in self:
+            patient_misc = sum(record.patient_expense_line_ids.mapped('misc_expense'))
+            record.total_misc_expenditure = patient_misc + record.misc_expenditure
+    
+    @api.depends('patient_expense_line_ids')
+    def _compute_total_head_count(self):
+        for record in self:
+            record.total_head_count = len(record.patient_expense_line_ids)
+    
+    @api.depends('total_km', 'cost_per_km', 'transportation_charge', 'misc_expenditure')
+    def _compute_trip_cost(self):
+        for record in self:
+            km_cost = record.total_km * record.cost_per_km
+            record.trip_cost = km_cost + record.transportation_charge + record.misc_expenditure
+    
+    def action_confirm(self):
+        self.write({'state': 'confirmed'})
+    
+    def action_close(self):
+        self.write({'state': 'closed'})
+    
+    def view_vendor_bill(self):
+        self.ensure_one()
+        return {
+            'name': _('Vendor Bill'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': self.invoice_id.id,
+            'context': {'form_view_initial_mode': 'edit'}
+        }
+
+
+class HospitalOutingExpenseLine(models.Model):
+    _name = 'hospital.outing.expense.line'
+    _description = 'Outing Expense Line'
+    
+    outing_expense_id = fields.Many2one('hospital.outing.expenses', string='Outing Expense')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='Inpatient Admission', 
+                                           domain="[('state','!=','discharge_advised')]")
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    age = fields.Integer(string='Age', related='patient_id.age', store=True)
+    sex = fields.Selection(related='patient_id.gender', string='Gender', store=True)
+    campus_id = fields.Many2one('hospital.campus', string='Campus')
+    block_id = fields.Many2one('hospital.block', string='Block')
+    room_id = fields.Many2one('hospital.room', string='Room')
+    partner_expense = fields.Float(string='Partner Expense')
+    misc_expense = fields.Float(string='Misc. Expense')
+    conveyance_expense = fields.Float(string='Conveyance Expense')
+
+
+class HospitalPatientSpecificExpense(models.Model):
+    _name = 'hospital.patient.specific.expense'
+    _description = 'Patient Specific Expense'
+    
+    outing_expense_id = fields.Many2one('hospital.outing.expenses', string='Outing Expense')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='Inpatient Admission')
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    partner_id = fields.Many2one('res.partner', string='Partner')
+    reference = fields.Char(string='Reference')
+    amount = fields.Float(string='Amount')
+    misc_expense = fields.Float(string='Misc. Expense')
+    misc_description = fields.Text(string='Misc. Description')
 
 class HospitalOutingForm(models.Model):
     _name = 'hospital.outing.form'
@@ -1774,48 +1900,135 @@ class HospitalProfile(models.Model):
     family_history = fields.Text(string='Family History')
     lifestyle = fields.Text(string='Lifestyle')
 
+class PatientRequisitionLine(models.Model):
+    _name = 'patient.requisition.line'
+    _description = 'Patient Requisition Line'
+    
+    patient_requisition_id = fields.Char(string='Requisition Number')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient', string='Inpatient Admission')
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    campus_id = fields.Many2one('hospital.campus', string='Campus')
+    block_id = fields.Many2one('hospital.block', string='Block')
+    room_id = fields.Many2one('hospital.room', string='Room')
+    bed_id = fields.Many2one('hospital.bed', string='Bed')
+    
+    date = fields.Datetime(string='Date')
+    product_id = fields.Many2one('product.product', string='Product')
+    quantity = fields.Float(string='Quantity')
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+
 class HospitalProvisionalBill(models.Model):
     _name = 'hospital.provisional.bill'
     _description = 'Provisional Bill'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Bill Reference', required=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date = fields.Date(string='Date', default=fields.Date.today)
-    amount = fields.Float(string='Amount')
-    details = fields.Text(string='Bill Details')
+    inpatient_admission_id = fields.Many2one(
+        'hospital.admission', 
+        string='IP Number', 
+        domain="[('state','!=','Discharged')]"
+    )
+    purpose = fields.Text(string='Purpose')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    date_selection = fields.Selection([
+        ('by_date', 'By Date'),
+        ('by_period', 'By Period')
+    ], string='Date Selection')
+    requested_date = fields.Date(string='Requested Date')
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
+    required_date = fields.Date(string='Required Date', invisible=True)
+    approved_date = fields.Date(string='Approved Date', readonly=True)
+    debit_note_id = fields.Many2one('account.move', string='Debit Note', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
+        ('approved', 'Approved'),
         ('paid', 'Paid')
     ], string='Status', default='draft')
+    requisition_line_ids = fields.One2many(
+        'hospital.provisional.bill.line', 
+        'bill_id', 
+        string='Products',
+        domain=[('line_type', '=', 'product')]
+    )
+    material_line_ids = fields.One2many(
+        'hospital.provisional.bill.line', 
+        'bill_id', 
+        string='Materials',
+        domain=[('line_type', '=', 'material')]
+    )
+    user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, readonly=True)
+    approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)
     notes = fields.Text(string='Notes')
 
+    def action_approve(self):
+        for record in self:
+            record.write({
+                'state': 'approved',
+                'approved_by': self.env.user.id,
+                'approved_date': fields.Date.today()
+            })
 
-class HospitalRoomInspection(models.Model):
-    _name = 'hospital.room.inspection'
-    _description = 'Room Inspection'
+
+class HospitalProvisionalBillLine(models.Model):
+    _name = 'hospital.provisional.bill.line'
+    _description = 'Provisional Bill Line'
     
-    name = fields.Char(string='Inspection Reference', required=True)
-    room_id = fields.Many2one('hospital.room', string='Room', required=True)
-    inspector_id = fields.Many2one('res.users', string='Inspector')
-    inspection_date = fields.Datetime(string='Inspection Date', default=fields.Datetime.now)
-    cleanliness = fields.Selection([
-        ('excellent', 'Excellent'),
-        ('good', 'Good'),
-        ('fair', 'Fair'),
-        ('poor', 'Poor')
-    ], string='Cleanliness')
-    maintenance_required = fields.Boolean(string='Maintenance Required')
-    maintenance_notes = fields.Text(string='Maintenance Notes')
-    action_taken = fields.Text(string='Action Taken')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('inspected', 'Inspected'),
-        ('maintenance', 'Under Maintenance'),
-        ('completed', 'Completed')
-    ], string='Status', default='draft')
+    bill_id = fields.Many2one('hospital.provisional.bill', string='Bill')
+    line_type = fields.Selection([
+        ('product', 'Product'),
+        ('material', 'Material')
+    ], string='Line Type')
+    date = fields.Date(string='Date')
+    product_id = fields.Many2one('product.product', string='Product')
+    name = fields.Char(string='Description')
+    internal_category_id = fields.Many2one('product.category', string='Internal Category')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
 
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+
+
+# class HospitalRoomInspection(models.Model):
+#     _name = 'hospital.room.inspection'
+#     _description = 'Room Inspection'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+#     name = fields.Char(string='Inspection Reference', required=True, tracking=True)
+#     ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True, tracking=True)
+#     room_id = fields.Many2one('hospital.room', string='Room', required=True, tracking=True)
+#     block_id = fields.Many2one('hospital.block', string='Block', related='room_id.block_id', store=True, tracking=True)
+#     remarks = fields.Text(string='Remarks', tracking=True)
+#     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, tracking=True)
+#     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    
+#     # Fields from the original model that weren't in the form view
+#     inspector_id = fields.Many2one('res.users', string='Inspector', tracking=True)
+#     inspection_date = fields.Datetime(string='Inspection Date', default=fields.Datetime.now, tracking=True)
+#     cleanliness = fields.Selection([
+#         ('excellent', 'Excellent'),
+#         ('good', 'Good'),
+#         ('fair', 'Fair'),
+#         ('poor', 'Poor')
+#     ], string='Cleanliness', tracking=True)
+#     maintenance_required = fields.Boolean(string='Maintenance Required', tracking=True)
+#     maintenance_notes = fields.Text(string='Maintenance Notes', tracking=True)
+#     action_taken = fields.Text(string='Action Taken', tracking=True)
+    
 class HospitalServiceRequisition(models.Model):
     _name = 'hospital.service.requisition'
     _description = 'Service Requisition'
@@ -1958,23 +2171,23 @@ class HospitalServiceRequisitionLine(models.Model):
             self.price_unit = self.product_id.list_price
 
 
-class HospitalSpecialPrivileges(models.Model):
-    _name = 'hospital.special.privileges'
-    _description = 'Special Privileges'
+# class HospitalSpecialPrivileges(models.Model):
+#     _name = 'hospital.special.privileges'
+#     _description = 'Special Privileges'
     
-    name = fields.Char(string='Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    privilege_type = fields.Char(string='Privilege Type')
-    start_date = fields.Date(string='Start Date')
-    end_date = fields.Date(string='End Date')
-    approved_by = fields.Many2one('res.users', string='Approved By')
-    notes = fields.Text(string='Notes')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('requested', 'Requested'),
-        ('approved', 'Approved'),
-        ('expired', 'Expired')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Reference', required=True)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     privilege_type = fields.Char(string='Privilege Type')
+#     start_date = fields.Date(string='Start Date')
+#     end_date = fields.Date(string='End Date')
+#     approved_by = fields.Many2one('res.users', string='Approved By')
+#     notes = fields.Text(string='Notes')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('requested', 'Requested'),
+#         ('approved', 'Approved'),
+#         ('expired', 'Expired')
+#     ], string='Status', default='draft')
 
 class HospitalStoreClearance(models.Model):
     _name = 'hospital.store.clearance'
@@ -2026,20 +2239,69 @@ class HospitalUrineScreening(models.Model):
 class HospitalVariableBilling(models.Model):
     _name = 'hospital.variable.billing'
     _description = 'Variable Billing'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Bill Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+    name = fields.Char(string='Bill Reference', required=True, tracking=True)
+    inpatient_admission_id = fields.Many2one('hospital.admission', string='IP Number', tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Vendor',  tracking=True)
+    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True, tracking=True)
+    invoice_id = fields.Many2one('account.move', string='Invoice', tracking=True)
+    order_date = fields.Date(string='Order Date', default=fields.Date.today, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    variable_billing_line_ids = fields.One2many('hospital.variable.billing.line', 'variable_billing_id', string='Variable Billing Lines')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('billed', 'Billed')
+    ], string='Status', default='draft', tracking=True)
+    
+    # Fields from original model that are not in the view but keeping them for backward compatibility
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
     admission_id = fields.Many2one('hospital.admission', string='Admission')
     billing_date = fields.Date(string='Billing Date', default=fields.Date.today)
     service_description = fields.Text(string='Service Description')
     amount = fields.Float(string='Amount')
     approved_by = fields.Many2one('res.users', string='Approved By')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('approved', 'Approved'),
-        ('billed', 'Billed')
-    ], string='Status', default='draft')
+    
+    @api.depends('variable_billing_line_ids.price_subtotal')
+    def _compute_total_amount(self):
+        for record in self:
+            record.total_amount = sum(record.variable_billing_line_ids.mapped('price_subtotal'))
+    
+    def action_confirm(self):
+        self.state = 'confirmed'
+    
+    def view_vendor_bill(self):
+        self.ensure_one()
+        return {
+            'name': 'Vendor Bill',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': self.invoice_id.id,
+        }
+
+
+class HospitalVariableBillingLine(models.Model):
+    _name = 'hospital.variable.billing.line'
+    _description = 'Variable Billing Line'
+    
+    variable_billing_id = fields.Many2one('hospital.variable.billing', string='Variable Billing')
+    product_id = fields.Many2one('product.product', string='Product', domain="[('variable_billing','=',True)]")
+    quantity = fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+    
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.price_unit = self.product_id.list_price
 
 
 class HospitalDrugAssays(models.Model):
@@ -2083,31 +2345,57 @@ class HospitalBiochemistry(models.Model):
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
 
-class HospitalCaretakerAllotment(models.Model):
-    _name = 'hospital.caretaker.allotment'
-    _description = 'Caretaker Allotment'
+# class HospitalCaretakerAllotment(models.Model):
+#     _name = 'hospital.caretaker.allotment'
+#     _description = 'Caretaker Allotment'
     
-    name = fields.Char(string='Allotment Reference', required=True)
-    caretaker_id = fields.Many2one('hospital.caretaker', string='Caretaker', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    start_date = fields.Date(string='Start Date', required=True)
-    end_date = fields.Date(string='End Date')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('assigned', 'Assigned'),
-        ('completed', 'Completed')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Allotment Reference', required=True)
+#     caretaker_id = fields.Many2one('hospital.caretaker', string='Caretaker', required=True)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     start_date = fields.Date(string='Start Date', required=True)
+#     end_date = fields.Date(string='End Date')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('assigned', 'Assigned'),
+#         ('completed', 'Completed')
+#     ], string='Status', default='draft')
 
 
 class HospitalCaretaker(models.Model):
     _name = 'hospital.caretaker'
-    _description = 'Hospital Caretakers'
+    _description = 'Hospital Caretaker'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name'
     
-    name = fields.Char(string='Caretaker Name', required=True)
-    registration_number = fields.Char(string='Registration Number')
-    phone = fields.Char(string='Phone Number')
+    name = fields.Char(string='Name', required=True, tracking=True)
+    code = fields.Char(string='Code', tracking=True)
+    image = fields.Binary(string='Image')
+    gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Gender', tracking=True)
+    date_of_birth = fields.Date(string='Date of Birth')
+    phone = fields.Char(string='Phone')
     email = fields.Char(string='Email')
-    active = fields.Boolean(string='Active', default=True)
+    address = fields.Text(string='Address')
+    active = fields.Boolean(default=True)
+    caretaker_type_id = fields.Many2one('hospital.caretaker.type', string='Caretaker Type', required=True)
+    qualification = fields.Char(string='Qualification')
+    experience = fields.Text(string='Experience')
+    state = fields.Selection([
+        ('available', 'Available'),
+        ('engaged', 'Engaged'),
+        ('on_leave', 'On Leave'),
+        ('inactive', 'Inactive')
+    ], string='Status', default='available', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    
+    @api.constrains('phone')
+    def _check_phone(self):
+        for record in self:
+            if record.phone and not record.phone.isdigit():
+                raise ValidationError(_("Phone number should contain only digits"))
 
 class HospitalCounsellorClearance(models.Model):
     _name = 'hospital.counsellor.clearance'
@@ -2150,32 +2438,6 @@ class HospitalBiochemistry(models.Model):
     physician_id = fields.Many2one('hospital.physician', string='Requesting Physician')
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
-
-
-class HospitalCaretaker(models.Model):
-    _name = 'hospital.caretaker'
-    _description = 'Hospital Caretakers'
-    
-    name = fields.Char(string='Caretaker Name', required=True)
-    registration_number = fields.Char(string='Registration Number')
-    phone = fields.Char(string='Phone Number')
-    email = fields.Char(string='Email')
-    active = fields.Boolean(string='Active', default=True)
-
-class HospitalCaretakerAllotment(models.Model):
-    _name = 'hospital.caretaker.allotment'
-    _description = 'Caretaker Allotment'
-    
-    name = fields.Char(string='Allotment Reference', required=True)
-    caretaker_id = fields.Many2one('hospital.caretaker', string='Caretaker', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    start_date = fields.Date(string='Start Date', required=True)
-    end_date = fields.Date(string='End Date')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('assigned', 'Assigned'),
-        ('completed', 'Completed')
-    ], string='Status', default='draft')
 
 
 class HospitalCounsellorClearance(models.Model):
@@ -2313,20 +2575,20 @@ class HospitalDischargeClearance(models.Model):
     def inprogress(self):
         self.write({'state': 'in_progress'})
 
-class HospitalDoctorPayout(models.Model):
-    _name = 'hospital.doctor.payout'
-    _description = 'Doctor Payout'
+# class HospitalDoctorPayout(models.Model):
+#     _name = 'hospital.doctor.payout'
+#     _description = 'Doctor Payout'
     
-    name = fields.Char(string='Payout Reference', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    period_start = fields.Date(string='Period Start', required=True)
-    period_end = fields.Date(string='Period End', required=True)
-    amount = fields.Float(string='Payout Amount')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('approved', 'Approved'),
-        ('paid', 'Paid')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Payout Reference', required=True)
+#     physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
+#     period_start = fields.Date(string='Period Start', required=True)
+#     period_end = fields.Date(string='Period End', required=True)
+#     amount = fields.Float(string='Payout Amount')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('approved', 'Approved'),
+#         ('paid', 'Paid')
+#     ], string='Status', default='draft')
 
 
 
@@ -2629,31 +2891,60 @@ class HospitalImmunology(models.Model):
     result = fields.Text(string='Test Results')
     notes = fields.Text(string='Notes')
 
+from odoo import models, fields, api
+
 class HospitalInvestigationRequest(models.Model):
     _name = 'hospital.investigation.request'
     _description = 'Investigation Request'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Request Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Requesting Physician')
-    request_date = fields.Date(string='Request Date', default=fields.Date.today)
-    investigation_type = fields.Selection([
-        ('lab', 'Laboratory'),
-        ('radiology', 'Radiology'),
-        ('other', 'Other')
-    ], string='Investigation Type')
-    urgency = fields.Selection([
-        ('routine', 'Routine'),
-        ('urgent', 'Urgent'),
-        ('emergency', 'Emergency')
-    ], string='Urgency')
-    notes = fields.Text(string='Notes')
+    name = fields.Char(string='Request Reference', required=True, readonly=True, default='New')
+    name_seq = fields.Char(string='Sequence', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('requested', 'Requested'),
-        ('in_progress', 'In Progress'),
         ('completed', 'Completed')
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
+    
+    # Patient Information
+    ip_number = fields.Many2one('hospital.patient', string='IP Number', required=True)
+    patient_name = fields.Char(related='ip_number.name', string='Patient Name', readonly=True, store=True)
+    gender = fields.Selection(related='ip_number.gender', string='Gender', readonly=True, store=True)
+    age = fields.Integer(related='ip_number.age', string='Age', readonly=True, store=True)    
+    # Investigation Details
+    ref_doctor = fields.Many2one('hospital.physician', string='Referring Doctor')
+    req_no = fields.Char(string='Request Number')
+    clinic_details = fields.Char(string='Clinic Details')
+    ward_no = fields.Char(string='Ward Number')
+    date = fields.Date(string='Date', default=fields.Date.context_today, readonly=True)
+    admitted_by = fields.Char(string='Admitted By')
+    bill_no = fields.Char(string='Bill Number')
+    collection_time = fields.Datetime(string='Collection Time')
+    site = fields.Char(string='Site')
+    routine = fields.Boolean(string='Routine')
+    other_tests = fields.Text(string='Other Tests')
+    
+   # Test Categories (now using separate models)
+    hematology_ids = fields.Many2many('hematology.test', string='Hematology')
+    biochemistry_ids = fields.Many2many('biochemistry.test', string='Biochemistry')
+    hormones_ids = fields.Many2many('hormones.test', string='Hormones')
+    microbiology_ids = fields.Many2many('microbiology.test', string='Microbiology')
+    immunology_ids = fields.Many2many('immunology.test', string='Immunology')
+    urine_che_ids = fields.Many2many('urine.chemistry.test', string='Urine Chemistry')
+    urine_screening_ids = fields.Many2many('urine.screening.test', string='Urine for Drug Screening')
+    drug_assays_ids = fields.Many2many('drug.assays.test', string='Drug Assays')
+    molecular_bio_ids = fields.Many2many('molecular.biology.test', string='Molecular Biology')
+    miscelleneous_ids = fields.Many2many('miscelleneous.test', string='Miscelleneous')
+    profile_ids = fields.Many2many('profile.test', string='Profile')
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('hospital.investigation.request') or 'New'
+        return super(HospitalInvestigationRequest, self).create(vals)
+    
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+
 
 class HospitalLAMAForm(models.Model):
     _name = 'hospital.lama.form'

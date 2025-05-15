@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Room Inspection Form View -->
+    <record id="view_hospital_room_inspection_form" model="ir.ui.view">
+        <field name="name">hospital.room.inspection.form</field>
+        <field name="model">hospital.room.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1>
+                        <strong>ROOM INSPECTION</strong>
+                    </h1>
+                    <br/>
+                    <group>
+                        <group>
+                            <field name="ip_number" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="room_id" options="{'no_open': True, 'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="block_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="remarks"/>
+                    </group>
+                    <group>
+                        <field name="user_id" options="{'no_open': True, 'no_create': True}" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="company_id" options="{'no_open': True, 'no_create': True}" readonly="1"/>
+                    </group>
+                    <!-- Additional fields that were in the original model but not in the form view -->
+                    <group string="Inspection Details">
+                        <group>
+                            <field name="inspector_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="inspection_date"/>
+                        </group>
+                        <group>
+                            <field name="cleanliness"/>
+                            <field name="maintenance_required"/>
+                        </group>
+                    </group>
+                    <group string="Maintenance Information" invisible="not maintenance_required">
+                        <field name="maintenance_notes" placeholder="Describe maintenance requirements..."/>
+                        <field name="action_taken" placeholder="Actions taken for maintenance..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Room Inspection Wizard Form View -->
+    <record id="view_hospital_room_inspection_wizard_form" model="ir.ui.view">
+        <field name="name">hospital.room.inspection.wizard.form</field>
+        <field name="model">hospital.room.inspection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Room Inspection Wizard">
+                <group>
+                    <group>
+                        <field name="company_id" required="1" options="{'no_open': True, 'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="block_line_id"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="start_date" required="1"/>
+                    </group>
+                    <group>
+                        <field name="end_date" required="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" type="object" name="inspection_report" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Room Inspection Report Action -->
+    <record id="action_hospital_room_inspection_report" model="ir.actions.act_window">
+        <field name="name">Room Inspection Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.room.inspection.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu item for Room Inspection -->
+    <!-- <menuitem id="menu_hospital_room_inspection_report" name="Room Inspection Reports" parent="hospital_menu_reporting" action="action_hospital_room_inspection_report" sequence="20"/> -->
+
+
+    <template id="room_inspection_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="header">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <td style="font-size:14px" align="center">
+                                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 100px;"/>
+                                            <br/>
+                                            <h1 style="font-size:18px">
+                                                <strong>
+                                                    <span t-field="o.company_id.name"/>
+                                                </strong>
+                                            </h1>
+                                            <span t-field="o.company_id.street"/>
+                                            <span t-field="o.company_id.street2"/>
+                                            <span t-field="o.company_id.city"/>
+                                            -
+                                            <span t-field="o.company_id.zip"/>
+                                            ,
+                                            <span t-field="o.company_id.country_id"/>
+                                            <br/>
+                                            Phone:
+                                            <span t-field="o.company_id.phone"/>
+                                            Email:
+                                            <span t-field="o.company_id.email"/>
+                                            <t t-if="o.company_id.fax">
+                                                Fax:
+                                                <span t-field="o.company_id.fax"/>
+                                            </t>
+                                            <br/>
+                                            <br/>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="oe_structure"/>
+                        <div class="col-xs-12">
+                            <h2 align="center" style="font-size: 18px;padding-top:50px;">
+                                <u>
+                                    <strong>ROOM INSPECTION REPORT</strong>
+                                </u>
+                            </h2>
+                            <br/>
+                            <br/>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <t t-foreach="o.print_inspection_report()" t-as="h">
+                                    <h3 align="left" style="font-size: 18px;">
+                                        <strong>
+                                            <u>
+                                                <span t-esc="h['block']"/>
+                                            </u>
+                                        </strong>
+                                    </h3>
+                                    <table class="table table-bordered" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:20%">Room</th>
+                                                <th style="width:40%">Remarks</th>
+                                                <th style="width:20%">Date</th>
+                                                <th style="width:20%">Inspector</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="h['inspection_info']" t-as="x">
+                                                <tr>
+                                                    <td valign="middle" align="left" style="font-size: 16px;padding-left:10px;">
+                                                        <span t-esc="x['room_id']"/>
+                                                    </td>
+                                                    <td valign="middle" style="padding:10px">
+                                                        <span t-esc="x['remarks']"/>
+                                                    </td>
+                                                    <td valign="middle" align="center">
+                                                        <span t-esc="x['date']"/>
+                                                    </td>
+                                                    <td valign="middle" align="center">
+                                                        <span t-esc="x['user']"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="report_hospital_room_inspection" model="ir.actions.report">
+        <field name="name">Room Inspection Report</field>
+        <field name="model">hospital.room.inspection</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_clinical.room_inspection_report</field>
+        <field name="report_file">futuristictech_clinical.room_inspection_report</field>
+        <field name="binding_model_id" ref="model_hospital_room_inspection"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

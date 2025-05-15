@@ -40,16 +40,16 @@
 
     <!-- Patient Management Actions -->
     <record id="action_hospital_my_profile" model="ir.actions.act_window">
-         <field name="name">My Profile</field>
+        <field name="name">My Profile</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.patient</field>
         <field name="view_mode">tree,form</field>
         <!-- <field name="search_view_id" ref="view_hospital_patient_search"/> -->
     </record>
 
-        <!-- Patient Management Actions -->
+    <!-- Patient Management Actions -->
     <record id="action_hospital_patient" model="ir.actions.act_window">
-         <field name="name">Patients</field>
+        <field name="name">Patients</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.patient</field>
         <field name="view_mode">tree,form</field>
@@ -649,13 +649,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Biochemistry Actions -->
-    <record id="action_hospital_biochemistry" model="ir.actions.act_window">
-        <field name="name">Biochemistry Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.biochemistry</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
     <!-- Capacity Assessment Actions -->
     <record id="action_hospital_capacity_assessment" model="ir.actions.act_window">
@@ -735,13 +728,7 @@
         <field name="view_mode">pivot,graph</field>
     </record>
 
-    <!-- Drug Assays Actions -->
-    <record id="action_hospital_drug_assays" model="ir.actions.act_window">
-        <field name="name">Drug Assays</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.drug.assays</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+
 
     <!-- ECT Consent Form Actions -->
     <record id="action_hospital_ect_consent_form" model="ir.actions.act_window">
@@ -783,13 +770,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Hematology Actions -->
-    <record id="action_hospital_hematology" model="ir.actions.act_window">
-        <field name="name">Hematology Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.hematology</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+
 
     <!-- High Support Admission Actions -->
     <record id="action_hospital_high_support_admission" model="ir.actions.act_window">
@@ -799,21 +780,8 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Hormones Actions -->
-    <record id="action_hospital_hormones" model="ir.actions.act_window">
-        <field name="name">Hormone Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.hormones</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
-    <!-- Immunology Actions -->
-    <record id="action_hospital_immunology" model="ir.actions.act_window">
-        <field name="name">Immunology Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.immunology</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+
 
     <!-- Incident Report Actions -->
     <record id="action_hospital_incident_report" model="ir.actions.act_window">
@@ -838,16 +806,10 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.independent.examination.professional.ii</field>
         <field name="view_mode">tree,form</field>
-       
+
     </record>
 
-    <!-- Investigation Request Actions -->
-    <record id="action_hospital_investigation_request" model="ir.actions.act_window">
-        <field name="name">Investigation Requests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.investigation.request</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+
 
     <!-- LAMA Form Actions -->
     <record id="action_hospital_lama_form" model="ir.actions.act_window">
@@ -873,13 +835,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Microbiology Actions -->
-    <record id="action_hospital_microbiology" model="ir.actions.act_window">
-        <field name="name">Microbiology Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.microbiology</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
     <!-- Minor Admission Actions -->
     <record id="action_hospital_minor_admission" model="ir.actions.act_window">
@@ -889,21 +844,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Miscellaneous Actions -->
-    <record id="action_hospital_miscelleneous" model="ir.actions.act_window">
-        <field name="name">Miscellaneous Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.miscellaneous</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
-    <!-- Molecular Biology Actions -->
-    <record id="action_hospital_molecular_biology" model="ir.actions.act_window">
-        <field name="name">Molecular Biology Tests</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.molecular.biology</field>
-        <field name="view_mode">tree,form</field>
-    </record>
 
     <!-- MO/SR Section 86 Actions -->
     <record id="action_hospital_mo_sr_section_86" model="ir.actions.act_window">
@@ -939,7 +880,7 @@
     <record id="action_hospital_patient_requisition_register" model="ir.actions.act_window">
         <field name="name">Patient Requisition Register</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.patient.requisition</field>
+        <field name="res_model">hospital.patient.requisition.line</field>
         <field name="view_mode">tree,pivot,graph</field>
     </record>
 
@@ -948,14 +889,6 @@
         <field name="name">Procedural Form Section-86</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hospital.procedural.form.section.86</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- Profile Actions -->
-    <record id="action_hospital_profile" model="ir.actions.act_window">
-        <field name="name">Patient Profiles</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.profile</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -975,13 +908,13 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="action_hospital_room_inspection_report" model="ir.actions.act_window">
+   <record id="action_hospital_room_inspection_report" model="ir.actions.act_window">
         <field name="name">Room Inspection Reports</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.room.inspection</field>
-        <field name="view_mode">pivot,graph</field>
+        <field name="res_model">hospital.room.inspection.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
     </record>
-
     <!-- Service Related Actions -->
     <record id="action_hospital_service_register" model="ir.actions.act_window">
         <field name="name">Service Register</field>
@@ -1027,20 +960,92 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Urine Related Actions -->
-    <record id="action_hospital_urine_chemistry" model="ir.actions.act_window">
-        <field name="name">Urine Chemistry Tests</field>
+    <!-- Investigation Request Action -->
+    <record id="action_hospital_investigation_request" model="ir.actions.act_window">
+        <field name="name">Investigation Requests</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.urine.chemistry</field>
+        <field name="res_model">hospital.investigation.request</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="action_hospital_urine_screening" model="ir.actions.act_window">
-        <field name="name">Urine Screening Tests</field>
+    <!-- Test Type Actions -->
+    <record id="action_hematology_test" model="ir.actions.act_window">
+        <field name="name">Hematology Tests</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.urine.screening</field>
+        <field name="res_model">hematology.test</field>
         <field name="view_mode">tree,form</field>
     </record>
+
+    <record id="action_biochemistry_test" model="ir.actions.act_window">
+        <field name="name">Biochemistry Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">biochemistry.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_hormones_test" model="ir.actions.act_window">
+        <field name="name">Hormones Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hormones.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_microbiology_test" model="ir.actions.act_window">
+        <field name="name">Microbiology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">microbiology.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_immunology_test" model="ir.actions.act_window">
+        <field name="name">Immunology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">immunology.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_urine_chemistry_test" model="ir.actions.act_window">
+        <field name="name">Urine Chemistry Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">urine.chemistry.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_urine_screening_test" model="ir.actions.act_window">
+        <field name="name">Urine Screening Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">urine.screening.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_drug_assays_test" model="ir.actions.act_window">
+        <field name="name">Drug Assays Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">drug.assays.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_molecular_biology_test" model="ir.actions.act_window">
+        <field name="name">Molecular Biology Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">molecular.biology.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_miscelleneous_test" model="ir.actions.act_window">
+        <field name="name">Miscelleneous Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">miscelleneous.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_profile_test" model="ir.actions.act_window">
+        <field name="name">Profile Tests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">profile.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
 
     <!-- Variable Billing Actions -->
     <record id="action_hospital_variable_billing" model="ir.actions.act_window">

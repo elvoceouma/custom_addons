@@ -11,7 +11,8 @@ class Physician(models.Model):
 
     name = fields.Char(string='Physician Name', required=True, tracking=True)
     image = fields.Binary(string='Photo')
-    
+    partner_id = fields.Many2one('res.partner', string='Related Partner', tracking=True)
+
     # Qualifications
     degree_ids = fields.Many2many('hospital.physician.degree', string='Degrees', tracking=True)
     speciality_id = fields.Many2one('hospital.physician.speciality', string='Speciality', tracking=True)
@@ -52,7 +53,7 @@ class Physician(models.Model):
     user_id = fields.Many2one('res.users', string='Related User', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Related Partner', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    
+    investigation_ids = fields.One2many('hospital.investigation.request', 'ref_doctor', string='Investigations')
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
