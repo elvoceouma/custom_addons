@@ -268,3 +268,4 @@ class ProductProduct(models.Model):
     can_be_expensed = fields.Boolean(string='Can be Expensed') 
     variable_billing = fields.Boolean(string='Variable Billing')
     returnable_product = fields.Boolean(string='Returnable Product')
+    food_product = fields.Boolean(string='Food Product')

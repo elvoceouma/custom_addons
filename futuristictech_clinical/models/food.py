@@ -10,20 +10,38 @@ class FoodRequisition(models.Model):
     
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date = fields.Date(string='Date', default=fields.Date.context_today)
-    meal_type = fields.Selection([
-        ('breakfast', 'Breakfast'),
-        ('lunch', 'Lunch'),
-        ('dinner', 'Dinner'),
-        ('snack', 'Snack')
-    ], string='Meal Type')
-    food_item_ids = fields.One2many('hospital.food.requisition.line', 'requisition_id', string='Food Items')
-    special_instructions = fields.Text(string='Special Instructions')
+    inpatient_admission_id = fields.Many2one('hospital.admission', string='IP Number', domain="[('state','!=','discharge_advised')]")
+    purpose = fields.Char(string='Purpose')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    
+    # Date fields
+    date_selection = fields.Selection([
+        ('by_date', 'By Date'),
+        ('by_period', 'By Period')
+    ], string='Date Selection')
+    requested_date = fields.Date(string='Requested Date')
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
+    required_date = fields.Date(string='Required Date')
+    approved_date = fields.Date(string='Approved Date', readonly=True)
+    
+    # Related documents
+    debit_note_id = fields.Many2one('account.move', string='Debit Note', readonly=True)
+    
+    # User fields
+    user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, readonly=True)
+    approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)
+    
+    # Lines
+    requisition_line_ids = fields.One2many('hospital.food.requisition.line', 'requisition_id', string='Requisition Lines')
+    
+    # Statistics
+    food_register_count = fields.Integer(string='Food Register Count', compute='_compute_food_register_count')
+    
+    # Status
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('delivered', 'Delivered'),
+        ('approved', 'Approved'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
     
@@ -34,17 +52,32 @@ class FoodRequisition(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.requisition') or _('New')
         return super(FoodRequisition, self).create(vals_list)
     
-    def action_confirm(self):
+    def action_approve(self):
         for record in self:
-            record.state = 'confirmed'
-    
-    def action_deliver(self):
-        for record in self:
-            record.state = 'delivered'
+            record.state = 'approved'
+            record.approved_by = self.env.user.id
+            record.approved_date = fields.Date.today()
     
     def action_cancel(self):
         for record in self:
             record.state = 'cancelled'
+    
+    def _compute_food_register_count(self):
+        for record in self:
+            record.food_register_count = self.env['hospital.food.register'].search_count([
+                ('patient_id', '=', record.patient_id.id)
+            ])
+    
+    def view_food_register(self):
+        self.ensure_one()
+        return {
+            'name': _('Food Register'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hospital.food.register',
+            'view_mode': 'tree,form',
+            'domain': [('patient_id', '=', self.patient_id.id)],
+            'context': {'default_patient_id': self.patient_id.id},
+        }
 
 
 class FoodRequisitionLine(models.Model):
@@ -52,10 +85,25 @@ class FoodRequisitionLine(models.Model):
     _description = 'Food Requisition Line'
     
     requisition_id = fields.Many2one('hospital.food.requisition', string='Requisition')
-    food_item_id = fields.Many2one('hospital.food.item', string='Food Item')
+    date = fields.Date(string='Date', related='requisition_id.requested_date')
+    product_id = fields.Many2one('product.product', string='Product', 
+                                domain=[('type', '=', 'service'), ('food_product', '=', True)])
+    name = fields.Char(string='Description', related='product_id.name')
+    internal_category_id = fields.Many2one('product.category', string='Product Category', 
+                                          related='product_id.categ_id')
     quantity = fields.Float(string='Quantity', default=1.0)
-    uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
-    note = fields.Text(string='Note')
+    price_unit = fields.Float(string='Unit Price', readonly=True)
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
+    
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.price_unit = self.product_id.list_price
 
 
 class FoodItem(models.Model):
@@ -75,90 +123,46 @@ class FoodItem(models.Model):
     calories = fields.Float(string='Calories')
     active = fields.Boolean(default=True)
 
-
 class HospitalFoodRegister(models.Model):
     _name = 'hospital.food.register'
     _description = 'Hospital Food Register'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-
+    
     name = fields.Char(string='Food Register ID', required=True, readonly=True, copy=False, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    evaluation_date = fields.Datetime(string='Evaluation Date', required=True)
-    evaluation_type_id = fields.Many2one('hospital.evaluation.type', string='Evaluation Type')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft')
-    notes = fields.Text(string='Notes')
-    food_type = fields.Selection([
-        ('vegetarian', 'Vegetarian'),
-        ('non_vegetarian', 'Non-Vegetarian'),
-        ('vegan', 'Vegan'),
-    ], string='Food Type', required=True)
-    food_allergies = fields.Text(string='Food Allergies')
-    food_preferences = fields.Text(string='Food Preferences')
-    food_intolerance = fields.Text(string='Food Intolerance')
-    food_restrictions = fields.Text(string='Food Restrictions')
-    food_intake = fields.Text(string='Food Intake')
-    food_intake_time = fields.Datetime(string='Food Intake Time')
-    food_intake_quantity = fields.Float(string='Food Intake Quantity')
-    food_intake_unit = fields.Selection([
-        ('grams', 'Grams'),
-        ('liters', 'Liters'),
-        ('pieces', 'Pieces'),
-    ], string='Food Intake Unit')
-    food_intake_notes = fields.Text(string='Food Intake Notes')
-    food_intake_status = fields.Selection([
-        ('satisfied', 'Satisfied'),
-        ('unsatisfied', 'Unsatisfied'),
-        ('neutral', 'Neutral'),
-    ], string='Food Intake Status')
-    food_intake_feedback = fields.Text(string='Food Intake Feedback')
-    food_intake_rating = fields.Integer(string='Food Intake Rating', default=0, required=True)
-    food_intake_rating_comment = fields.Text(string='Food Intake Rating Comment')
-    food_intake_rating_date = fields.Datetime(string='Food Intake Rating Date')
-    food_intake_rating_time = fields.Datetime(string='Food Intake Rating Time')
-    food_intake_rating_quantity = fields.Float(string='Food Intake Rating Quantity')
-    food_intake_rating_unit = fields.Selection([
-        ('grams', 'Grams'),
-        ('liters', 'Liters'),
-        ('pieces', 'Pieces'),
-    ], string='Food Intake Rating Unit')
-    food_intake_rating_notes = fields.Text(string='Food Intake Rating Notes')
-    food_intake_rating_status = fields.Selection([
-        ('satisfied', 'Satisfied'),
-        ('unsatisfied', 'Unsatisfied'),
-        ('neutral', 'Neutral'),
-    ], string='Food Intake Rating Status')
-    food_intake_rating_feedback = fields.Text(string='Food Intake Rating Feedback')
-    food_intake_rating_feedback_date = fields.Datetime(string='Food Intake Rating Feedback Date')
-    food_intake_rating_feedback_time = fields.Datetime(string='Food Intake Rating Feedback Time')
-    food_intake_rating_feedback_quantity = fields.Float(string='Food Intake Rating Feedback Quantity')
-    food_intake_rating_feedback_unit = fields.Selection([
-        ('grams', 'Grams'),
-        ('liters', 'Liters'),
-        ('pieces', 'Pieces'),
-    ], string='Food Intake Rating Feedback Unit')
-    food_intake_rating_feedback_notes = fields.Text(string='Food Intake Rating Feedback Notes')
-    food_intake_rating_feedback_status = fields.Selection([
-        ('satisfied', 'Satisfied'),
-        ('unsatisfied', 'Unsatisfied'),
-        ('neutral', 'Neutral'),
-    ], string='Food Intake Rating Feedback Status')
-    food_intake_rating_feedback_feedback = fields.Text(string='Food Intake Rating Feedback Feedback')
-    food_intake_rating_feedback_feedback_date = fields.Datetime(string='Food Intake Rating Feedback Feedback Date')
-    food_intake_rating_feedback_feedback_time = fields.Datetime(string='Food Intake Rating Feedback Feedback Time')
-    food_intake_rating_feedback_feedback_quantity = fields.Float(string='Food Intake Rating Feedback Feedback Quantity')
-    food_intake_rating_feedback_feedback_unit = fields.Selection([
-        ('grams', 'Grams'),
-        ('liters', 'Liters'),
-        ('pieces', 'Pieces'),
-    ], string='Food Intake Rating Feedback Feedback Unit')
-
-
+        ('approved', 'Approved'),
+    ], string='Status', default='draft', tracking=True)
+    
+    # Header Fields
+    food_requisition_id = fields.Many2one('hospital.food.requisition', string='Food Requisition')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='Inpatient Admission', 
+                                           domain=[('state', '!=', 'discharge_advised')])
+    patient_id = fields.Many2one('hospital.patient', string='Patient', readonly=True)
+    date = fields.Date(string='Date', readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Vendor', domain=[('supplier', '=', True)], required=True)
+    
+    # Product Fields
+    product_id = fields.Many2one('product.product', string='Product', readonly=True)
+    qty = fields.Float(string='Quantity', readonly=True)
+    price_unit = fields.Float(string='Unit Price', readonly=True)
+    amount = fields.Float(string='Amount', readonly=True)
+    
+    # Company Fields
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, readonly=True)
+    
+    # Methods
+    def action_approve(self):
+        self.write({'state': 'approved'})
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.register') or _('New')
+        return super(HospitalFoodRegister, self).create(vals_list)
+    
 class HospitalFoodServicePayout(models.Model):
     _name = 'hospital.food.service.payout'
     _description = 'Hospital Food Service Payout'
@@ -174,7 +178,7 @@ class HospitalFoodServicePayout(models.Model):
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
     food_service_type = fields.Selection([
         ('hospital', 'Hospital'),
@@ -182,8 +186,15 @@ class HospitalFoodServicePayout(models.Model):
         ('other', 'Other'),
     ], string='Food Service Type', required=True)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.service.payout') or _('New')
+        return super(HospitalFoodServicePayout, self).create(vals_list)
 
-class HospitalFoodbill(models.Model):
+
+class HospitalFoodBill(models.Model):
     _name = 'hospital.food.bill'
     _description = 'Hospital Food Bill'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -198,5 +209,12 @@ class HospitalFoodbill(models.Model):
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.bill') or _('New')
+        return super(HospitalFoodBill, self).create(vals_list)
