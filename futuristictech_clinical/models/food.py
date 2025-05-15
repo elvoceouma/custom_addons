@@ -162,30 +162,36 @@ class HospitalFoodRegister(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.register') or _('New')
         return super(HospitalFoodRegister, self).create(vals_list)
-    
+
+
 class HospitalFoodServicePayout(models.Model):
     _name = 'hospital.food.service.payout'
     _description = 'Hospital Food Service Payout'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Food Service Payout ID', required=True, readonly=True, copy=False, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    physician_id = fields.Many2one('hospital.physician', string='Physician', required=True)
-    evaluation_date = fields.Datetime(string='Evaluation Date', required=True)
-    evaluation_type_id = fields.Many2one('hospital.evaluation.type', string='Evaluation Type')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
-    notes = fields.Text(string='Notes')
-    food_service_type = fields.Selection([
-        ('hospital', 'Hospital'),
-        ('home', 'Home'),
-        ('other', 'Other'),
-    ], string='Food Service Type', required=True)
-
+    
+    # Header Fields
+    partner_id = fields.Many2one('res.partner', string='Vendor', domain=[('supplier', '=', True)])
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
+    
+    # Payout Lines
+    payout_line_ids = fields.One2many('hospital.food.service.payout.line', 'payout_id', string='Payout Lines')
+    
+    # Company Fields
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    
+    # Methods
+    def action_complete(self):
+        self.write({'state': 'completed'})
+    
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -193,6 +199,25 @@ class HospitalFoodServicePayout(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.food.service.payout') or _('New')
         return super(HospitalFoodServicePayout, self).create(vals_list)
 
+
+class HospitalFoodServicePayoutLine(models.Model):
+    _name = 'hospital.food.service.payout.line'
+    _description = 'Food Service Payout Line'
+    
+    payout_id = fields.Many2one('hospital.food.service.payout', string='Payout')
+    date = fields.Date(string='Date')
+    reference = fields.Char(string='Reference')
+    product_id = fields.Many2one('product.product', string='Product', domain=[('food_product', '=', True)])
+    name = fields.Char(string='Description')
+    internal_category_id = fields.Many2one('product.category', string='Internal Category')
+    quantity = fields.Float(string='Quantity')
+    price_unit = fields.Float(string='Unit Price')
+    price_subtotal = fields.Float(string='Subtotal', compute='_compute_price_subtotal', store=True)
+    
+    @api.depends('quantity', 'price_unit')
+    def _compute_price_subtotal(self):
+        for line in self:
+            line.price_subtotal = line.quantity * line.price_unit
 
 class HospitalFoodBill(models.Model):
     _name = 'hospital.food.bill'
