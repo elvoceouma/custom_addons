@@ -2185,23 +2185,23 @@ class HospitalServiceRequisitionLine(models.Model):
 #         ('expired', 'Expired')
 #     ], string='Status', default='draft')
 
-class HospitalStoreClearance(models.Model):
-    _name = 'hospital.store.clearance'
-    _description = 'Store Clearance'
+# class HospitalStoreClearance(models.Model):
+#     _name = 'hospital.store.clearance'
+#     _description = 'Store Clearance'
     
-    name = fields.Char(string='Clearance Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
-    cleared_by = fields.Many2one('res.users', string='Cleared By')
-    items_returned = fields.Boolean(string='All Items Returned')
-    notes = fields.Text(string='Notes')
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('in_progress', 'In Progress'),
-        ('cleared', 'Cleared'),
-        ('not_cleared', 'Not Cleared')
-    ], string='Status', default='draft')
+#     name = fields.Char(string='Clearance Reference', required=True)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     admission_id = fields.Many2one('hospital.admission', string='Admission')
+#     clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
+#     cleared_by = fields.Many2one('res.users', string='Cleared By')
+#     items_returned = fields.Boolean(string='All Items Returned')
+#     notes = fields.Text(string='Notes')
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('in_progress', 'In Progress'),
+#         ('cleared', 'Cleared'),
+#         ('not_cleared', 'Not Cleared')
+#     ], string='Status', default='draft')
 
 class HospitalUrineChemistry(models.Model):
     _name = 'hospital.urine.chemistry'
@@ -2356,7 +2356,9 @@ class HospitalBiochemistry(models.Model):
 #         ('completed', 'Completed')
 #     ], string='Status', default='draft')
 
-
+from odoo.exceptions import ValidationError
+ 
+ 
 class HospitalCaretaker(models.Model):
     _name = 'hospital.caretaker'
     _description = 'Hospital Caretaker'
@@ -2393,16 +2395,16 @@ class HospitalCaretaker(models.Model):
             if record.phone and not record.phone.isdigit():
                 raise ValidationError(_("Phone number should contain only digits"))
 
-class HospitalCounsellorClearance(models.Model):
-    _name = 'hospital.counsellor.clearance'
-    _description = 'Counsellor Clearance'
+# class HospitalCounsellorClearance(models.Model):
+#     _name = 'hospital.counsellor.clearance'
+#     _description = 'Counsellor Clearance'
     
-    name = fields.Char(string='Clearance Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    counsellor_id = fields.Many2one('hospital.physician', string='Counsellor')
-    clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
-    is_cleared = fields.Boolean(string='Is Cleared')
-    notes = fields.Text(string='Notes')
+#     name = fields.Char(string='Clearance Reference', required=True)
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     counsellor_id = fields.Many2one('hospital.physician', string='Counsellor')
+#     clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
+#     is_cleared = fields.Boolean(string='Is Cleared')
+#     notes = fields.Text(string='Notes')
 
 class HospitalBiochemistry(models.Model):
     _name = 'hospital.biochemistry'
@@ -2416,16 +2418,6 @@ class HospitalBiochemistry(models.Model):
     notes = fields.Text(string='Notes')
 
 
-class HospitalCounsellorClearance(models.Model):
-    _name = 'hospital.counsellor.clearance'
-    _description = 'Counsellor Clearance'
-    
-    name = fields.Char(string='Clearance Reference', required=True)
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    counsellor_id = fields.Many2one('hospital.physician', string='Counsellor')
-    clearance_date = fields.Date(string='Clearance Date', default=fields.Date.today)
-    is_cleared = fields.Boolean(string='Is Cleared')
-    notes = fields.Text(string='Notes')
 
 class HospitalDAMAForm(models.Model):
     _name = 'hospital.dama.form'
