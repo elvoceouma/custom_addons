@@ -271,4 +271,65 @@
             </form>
         </field>
     </record>
+
+     <record id="view_hospital_food_bill_form" model="ir.ui.view">
+        <field name="name">hospital.food.bill.form</field>
+        <field name="model">hospital.food.bill</field>
+        <field name="arch" type="xml">
+            <form string="Food Bill">
+                <header>
+                    <button name="set_to_invoiced" string="Create Food Bill" type="object" class="oe_highlight"
+                            invisible="state != 'new'" confirm="Are you sure you want to create the invoice?"/>
+                    <button name="view_invoice" string="View Food Bill" type="object" class="oe_highlight"
+                            invisible="state != 'invoiced'" context="{'debit_note_id': active_id, 'inv_type': 'debitnote'}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="inpatient_admission_id" string="IP Number"/>
+                            <field name="patient_id"/>
+                            <field name="bed_id"/>
+                            <field name="ward_id" invisible="1"/>
+                            <field name="building_id" invisible="1"/>
+                            <field name="health_center_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Food Bill Lines">
+                            <button name="compute_price" string="Compute Items" type="object" class="oe_highlight"
+                                    invisible="state != 'new'"/>
+                            <field name="bill_line_ids" readonly="state == 'invoiced'">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="reference"/>
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="internal_category_id"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Others">
+                            <group>
+                                <field name="company_id" invisible="1"/>
+                                <field name="user_id" invisible="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
 </odoo>
