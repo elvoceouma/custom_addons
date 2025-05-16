@@ -1079,7 +1079,7 @@ class HospitalMedicalProcedure(models.Model):
 
     # Fields from the form view
     inpatient_admission_id = fields.Many2one(
-        'hospital.inpatient.admission', # Assuming this model exists
+        'hospital.inpatient.admission', 
         string='IP Number',
         tracking=True
     )
@@ -1877,7 +1877,7 @@ class PatientRequisitionLine(models.Model):
     _description = 'Patient Requisition Line'
     
     patient_requisition_id = fields.Char(string='Requisition Number')
-    inpatient_admission_id = fields.Many2one('hospital.inpatient', string='Inpatient Admission')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='Inpatient Admission')
     patient_id = fields.Many2one('hospital.patient', string='Patient')
     campus_id = fields.Many2one('hospital.hospital', string='Campus')
     block_id = fields.Many2one('hospital.block', string='Block')

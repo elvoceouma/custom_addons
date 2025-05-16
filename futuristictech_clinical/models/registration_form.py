@@ -288,7 +288,16 @@ class HospitalRegistrationDetailsRelationship(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
     # Add any additional fields as 
-    
+
+class HospitalPhysicalHealthCondition(models.Model):
+    _name = 'hospital.physical.health.condition'
+    _description = 'Physical Health Condition'
+
+    name = fields.Char(string='Condition Name', required=True)
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+
+
 class HospitalRegistrationDetailsPhysicalHelthCondition(models.Model):
     _name = 'hospital.registration.details.physical.health.condition'
     _description = 'Hospital Registration Details Physical Health Condition'
@@ -301,6 +310,17 @@ class HospitalRegistrationDetailsPhysicalHelthCondition(models.Model):
         ('severe', 'Severe')
     ], string='Severity Level')
     notes = fields.Text(string='Notes')
+
+
+class HospitalService(models.Model):
+    _name = 'hospital.service'
+    _description = 'Hospital Service'
+
+    name = fields.Char(string='Service Name', required=True)
+    code = fields.Char(string='Service Code')
+    description = fields.Text(string='Description')
+    price = fields.Float(string='Price')
+    active = fields.Boolean(default=True)
 
 class HospitalRegistrationDetailsServiceList(models.Model):
     _name = 'hospital.registration.details.service.list'
@@ -318,6 +338,14 @@ class HospitalRegistrationDetailsServiceList(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
 
+
+class HospitalAssessmentType(models.Model):
+    _name = 'hospital.assessment.type'
+    _description = 'Hospital Assessment Type'
+
+    name = fields.Char(string='Assessment Type', required=True)
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
 
 class  HospitalRegistrationDetailsAssessment(models.Model):
     _name = 'hospital.registration.details.risk.assessment'

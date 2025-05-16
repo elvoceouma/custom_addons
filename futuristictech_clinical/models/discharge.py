@@ -334,7 +334,21 @@ class ServiceRequisitionLine(models.Model):
             record.state = 'rejected'
 
 
-  
+class HospitalCaretakerRequisition(models.Model):
+    _name = 'hospital.caretaker.requisition'
+    _description = 'Hospital Caretaker Requisition'
+
+    name = fields.Char(string='Reference', required=True)
+    date = fields.Date(string='Date', default=fields.Date.context_today)
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    caretaker_id = fields.Many2one('res.partner', string='Caretaker')
+    line_ids = fields.One2many('hospital.caretaker.requisition.line', 'cr_id', string='Lines')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled')
+    ], string='Status', default='draft')
 
 class CaretakerRequisitionLine(models.Model):
     _name = 'hospital.caretaker.requisition.line'

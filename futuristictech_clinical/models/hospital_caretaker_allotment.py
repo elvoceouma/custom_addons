@@ -46,7 +46,7 @@ class HospitalCaretakerAllotment(models.Model):
         tracking=True
     )
     building_id = fields.Many2one(
-        'hospital.building',
+        'hospital.block',
         string='Building',
         tracking=True
     )
@@ -359,7 +359,21 @@ class HospitalSpecialPrivilegesLine(models.Model):
         for line in self:
             line.price_subtotal = line.price_unit
 
+class HospitalSpecialPrivilege(models.Model):
+    _name = 'hospital.special.privilege'
+    _description = 'Hospital Special Privilege'
 
+    name = fields.Char(string='Reference', required=True)
+    date = fields.Date(string='Date', default=fields.Date.context_today)
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
+    line_ids = fields.One2many('hospital.special.privilege.line', 'sp_id', string='Privilege Lines')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('approved', 'Approved'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled')
+    ], string='Status', default='draft')
+    
 class HospitalSpecialPrivilegeRegister(models.Model):
     _name = 'hospital.special.privilege.register'
     _description = 'Hospital Special Privilege Register'

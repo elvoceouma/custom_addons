@@ -1179,7 +1179,15 @@ class PhysicalIllness(models.Model):
     description = fields.Text(string='Description')
     active = fields.Boolean(default=True)
 
+class HospitalPsychiatricIllness(models.Model):
+    _name = 'hospital.psychiatric.illness'
+    _description = 'Psychiatric Illness'
 
+    name = fields.Char(string='Illness Name', required=True)
+    description = fields.Text(string='Description')
+    active = fields.Boolean(default=True)
+
+    
 class PsychomotorActivity(models.Model):
     _name = 'hospital.psychomotor.activity'
     _description = 'Psychomotor Activity'

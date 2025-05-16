@@ -93,6 +93,15 @@ class HospitalIndependentExamination(models.Model):
         """Change state to in_progress"""
         self.write({'state': 'in_progress'})
 
+class HospitalEmployee(models.Model):
+    _name = 'hospital.employee'
+    _description = 'Hospital Employee'
+
+    name = fields.Char(string='Name', required=True)
+    employee_id = fields.Char(string='Employee ID')
+    job_position = fields.Char(string='Job Position')
+    department_id = fields.Many2one('hr.department', string='Department')
+    active = fields.Boolean(default=True)
 
 class HospitalIndependentExaminationProfessional(models.Model):
     _name = 'hospital.independent.examination.professional'
