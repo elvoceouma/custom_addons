@@ -37,6 +37,13 @@ class MedicinePacking(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
     
+    picking_type = fields.Many2one('stock.picking.type', string='Picking Type', required=True, tracking=True)
+    packing_location = fields.Many2one('stock.location', string='Packing Location', required=True, tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company, tracking=True)
+    prescription_id = fields.Many2one('hospital.prescription', string='Prescription', tracking=True)
+    invisible_return_btn = fields.Boolean(string='Invisible Return Button', default=False)
+    
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

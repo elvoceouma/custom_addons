@@ -66,8 +66,19 @@
                                 </form>
                             </field>
                         </page>
-                        <page string="Other Details" name="other_details">
-                            <field name="notes"/>
+                        <page string="Other Details">
+                            <group>
+                                <group>
+                                    <field name="picking_type"/>
+                                    <field name="packing_location"/>
+                                    <field name="campus_id"/>
+                                </group>
+                                <group>
+                                    <field name="company_id"/>
+                                    <field name="prescription_id"/>
+                                    <field name="invisible_return_btn" invisible="1"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -79,7 +90,7 @@
             </form>
         </field>
     </record>
-    
+
     <!-- Medicine Packing Tree View -->
     <record id="view_hospital_medicine_packing_tree" model="ir.ui.view">
         <field name="name">hospital.medicine.packing.tree</field>
@@ -96,7 +107,7 @@
             </tree>
         </field>
     </record>
-    
+
     <!-- Medicine Packing Line Form View -->
     <record id="view_hospital_medicine_packing_line_form" model="ir.ui.view">
         <field name="name">hospital.medicine.packing.line.form</field>
@@ -121,7 +132,7 @@
             </form>
         </field>
     </record>
-    
+
     <!-- Medicine Packing Line Tree View -->
     <record id="view_hospital_medicine_packing_line_tree" model="ir.ui.view">
         <field name="name">hospital.medicine.packing.line.tree</field>
@@ -140,7 +151,7 @@
             </tree>
         </field>
     </record>
-    
+
     <!-- Medicine Packing Search View -->
     <record id="view_hospital_medicine_packing_search" model="ir.ui.view">
         <field name="name">hospital.medicine.packing.search</field>
@@ -163,7 +174,7 @@
             </search>
         </field>
     </record>
-    
+
     <!-- Medicine Packing Action -->
     <record id="action_hospital_medicine_packing" model="ir.actions.act_window">
         <field name="name">Medicine Packing</field>
