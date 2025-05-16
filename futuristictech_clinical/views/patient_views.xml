@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Patient Card/Profile Form View -->
+    <!-- Patient Card/Profile Form View -->
     <record id="view_hospital_patient_profile_form" model="ir.ui.view">
         <field name="name">hospital.patient.profile.form</field>
         <field name="model">hospital.patient</field>
@@ -72,23 +73,38 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Family &amp; Insurance" name="family_insurance">
-                            <group>
-                                <field name="insurance_id"/>
-                            </group>
-                            <group string="Family" name="family">
-                                <field name="family_member_ids" nolabel="1">
-                                    <tree editable="bottom">
-                                        <field name="name"/>
+                         <page string="Family &amp; Insurance" name="family_insurance">
+                        <group>
+                            <field name="insurance_id"/>
+                        </group>
+                        <label for="family_member_ids" string="Family"/>
+                        <field name="family_member_ids">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="age"/>
+                                <field name="gender" string="Sex"/>
+                                <field name="relation"/>
+                                <field name="mobile"/>
+                                <field name="email"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="name" required="1"/>
                                         <field name="age"/>
                                         <field name="gender" string="Sex"/>
+                                    </group>
+                                    <group>
                                         <field name="relation"/>
                                         <field name="mobile"/>
                                         <field name="email"/>
-                                    </tree>
-                                </field>
-                            </group>
-                        </page>
+                                    </group>
+                                </group>
+                                <field name="notes" placeholder="Notes..."/>
+                            </form>
+                        </field>
+                    </page>
+            
                         <page string="Medicines" name="medicines">
                             <field name="prescription_ids" nolabel="1">
                                 <tree>
@@ -191,7 +207,22 @@
             </form>
         </field>
     </record>
-    
+
+    <record id="view_hospital_family_member_tree" model="ir.ui.view">
+        <field name="name">hospital.family.member.tree</field>
+        <field name="model">hospital.family.member</field>
+        <field name="arch" type="xml">
+            <tree string="Family Members">
+                <field name="name"/>
+                <field name="age"/>
+                <field name="gender" string="Sex"/>
+                <field name="relation"/>
+                <field name="mobile"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="action_hospital_my_profile" model="ir.actions.act_window">
         <field name="name">My Profile</field>
         <field name="type">ir.actions.act_window</field>
