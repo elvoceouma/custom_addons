@@ -1,52 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Initial Assessment Views -->
+
     <record id="view_hospital_initial_assessment_form" model="ir.ui.view">
         <field name="name">hospital.initial.assessment.form</field>
         <field name="model">hospital.initial.assessment</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Initial Assessment">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="[['|', ('state', '!=', 'in_progress'), ('state', '=', 'completed')]]"/>
+                    <button name="action_inprogress" string="In Progress" type="object" class="oe_highlight" invisible="[['|', ('state', '!=', 'draft'), ('state', '=', 'completed')]]"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
                             <field name="name" readonly="1"/>
-                        </h1>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="assessment_date"/>
+                            <field name="ip_number" readonly="state == 'completed'"/>
+                            <field name="patient_name"/>
+                            <field name="age"/>
+                            <field name="mrn_no"/>
+                            <field name="campus_id"/>
+                            <field name="history_given_by" readonly="state == 'completed'"/>
                         </group>
                         <group>
-                            <field name="physician_id"/>
+                            <field name="date"/>
+                            <field name="doctor"/>
+                            <field name="patient_gender"/>
+                            <field name="history_taken_by" domain="[('job_id.name','in',['MEDICAL OFFICER', 'Senior Registrar/ Junior Consultant','Psychiatrist'])]"/>
+                            <field name="known_allergies" readonly="state == 'completed'"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="cheif_complain_line_ids" readonly="state == 'completed'">
+                            <tree editable="bottom">
+                                <field name="cheif_complaints"/>
+                                <field name="duration"/>
+                            </tree>
+                        </field>
+                        <field name="past_history_line_ids" readonly="state == 'completed'">
+                            <tree editable="bottom">
+                                <field name="past_history"/>
+                                <field name="past_duration"/>
+                            </tree>
+                        </field>
+                        <field name="history_present_illness" readonly="state == 'completed'"/>
+                        <field name="present_medication" readonly="state == 'completed'"/>
+                        <field name="family_history" readonly="state == 'completed'"/>
+                        <field name="personal_history" readonly="state == 'completed'"/>
+                        <field name="relevant_investigation" readonly="state == 'completed'"/>
+                    </group>
                     <notebook>
-                        <page string="History" name="history">
+                        <page string="General Physical Examination">
                             <group>
-                                <field name="chief_complaint" placeholder="Chief Complaint"/>
-                                <field name="history_present_illness" placeholder="History of Present Illness"/>
-                                <field name="past_medical_history" placeholder="Past Medical History"/>
-                                <field name="family_history" placeholder="Family History"/>
-                                <field name="social_history" placeholder="Social History"/>
+                                <group>
+                                    <field name="pulse_rate" readonly="state == 'completed'"/>
+                                    <field name="bp_rate" readonly="state == 'completed'"/>
+                                    <field name="cyanosis" readonly="state == 'completed'"/>
+                                    <field name="icterus" readonly="state == 'completed'"/>
+                                </group>
+                                <group>
+                                    <field name="sensorim" readonly="state == 'completed'"/>
+                                    <field name="pallor" readonly="state == 'completed'"/>
+                                    <field name="clubbing" readonly="state == 'completed'"/>
+                                    <field name="lymphadeonopathy" readonly="state == 'completed'"/>
+                                </group>
                             </group>
-                        </page>
-                        <page string="Assessment" name="assessment_page">
                             <group>
-                                <field name="allergies" placeholder="Allergies"/>
-                                <field name="current_medications" placeholder="Current Medications"/>
-                                <field name="physical_examination" placeholder="Physical Examination"/>
-                                <field name="assessment" placeholder="Assessment"/>
-                                <field name="plan" placeholder="Plan"/>
+                                <field name="other_assessment" readonly="state == 'completed'"/>
+                                <field name="systemac_examination" readonly="state == 'completed'"/>
+                                <field name="provisional_diagnosis" readonly="state == 'completed'"/>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -59,13 +98,12 @@
             <tree>
                 <field name="name"/>
                 <field name="patient_id"/>
-                <field name="admission_id"/>
+                <field name="ip_number"/>
                 <field name="assessment_date"/>
                 <field name="physician_id"/>
             </tree>
         </field>
     </record>
-
 
     <record id="action_hospital_initial_assessment" model="ir.actions.act_window">
         <field name="name">Initial Assessments</field>

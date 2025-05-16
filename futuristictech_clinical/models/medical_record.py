@@ -1,36 +1,106 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 
 class InitialAssessment(models.Model):
     _name = 'hospital.initial.assessment'
     _description = 'Initial Assessment'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _rec_name = 'name_seq'
     
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    name_seq = fields.Char(string='Assessment ID', readonly=True, index=True, copy=False, default=lambda self: _('New'))
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ], string='Status', default='draft', tracking=True)
+    
+    # Patient Information
+    ip_number = fields.Char(string='IP Number')
+    patient_name = fields.Char(string='Patient Name')
+    mrn_no = fields.Char(string='MRN No')
+    age = fields.Integer(string='Age')
+    patient_gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other'),
+    ], string='Gender')
+    campus_id = fields.Many2one('res.partner', string='Campus')
+    date = fields.Date(string='Date', default=fields.Date.context_today)
+    doctor = fields.Many2one('res.partner', string='Doctor')
+    known_allergies = fields.Text(string='Known Allergies')
+    assessment_date = fields.Datetime(string='Assessment Date', default=fields.Datetime.now)
+    physician_id = fields.Many2one('hr.employee', string='Physician')
+    # History Information
+    history_given_by = fields.Char(string='History Given By')
+    history_taken_by = fields.Many2one(
+        'hr.employee', 
+        string='History Taken By',
+        domain="[('job_id.name','in',['MEDICAL OFFICER', 'Senior Registrar/ Junior Consultant','Psychiatrist'])]"
+    )
+    
+    # Complaint Lines
+    cheif_complain_line_ids = fields.One2many(
+        'hospital.chief.complaint.line', 
+        'assessment_id', 
+        string='Chief Complaints'
+    )
+    
+    # Past History Lines
+    past_history_line_ids = fields.One2many(
+        'hospital.past.history.line', 
+        'assessment_id', 
+        string='Past History'
+    )
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    assessment_date = fields.Date(string='Assessment Date', default=fields.Date.context_today)
-    physician_id = fields.Many2one('res.partner', string='Physician')
-    chief_complaint = fields.Text(string='Chief Complaint')
+    # Medical Information
     history_present_illness = fields.Text(string='History of Present Illness')
-    past_medical_history = fields.Text(string='Past Medical History')
+    present_medication = fields.Text(string='Present Medication')
     family_history = fields.Text(string='Family History')
-    social_history = fields.Text(string='Social History')
-    allergies = fields.Text(string='Allergies')
-    current_medications = fields.Text(string='Current Medications')
-    physical_examination = fields.Text(string='Physical Examination')
-    assessment = fields.Text(string='Assessment')
-    plan = fields.Text(string='Plan')
+    personal_history = fields.Text(string='Personal History')
+    relevant_investigation = fields.Text(string='Relevant Investigation')
+    
+    # Physical Examination
+    pulse_rate = fields.Char(string='Pulse Rate')
+    bp_rate = fields.Char(string='BP Rate')
+    cyanosis = fields.Boolean(string='Cyanosis')
+    icterus = fields.Boolean(string='Icterus')
+    sensorim = fields.Boolean(string='Sensorim')
+    pallor = fields.Boolean(string='Pallor')
+    clubbing = fields.Boolean(string='Clubbing')
+    lymphadeonopathy = fields.Boolean(string='Lymphadenopathy')
+    other_assessment = fields.Text(string='Other Assessment')
+    systemac_examination = fields.Text(string='Systemic Examination')
+    provisional_diagnosis = fields.Text(string='Provisional Diagnosis')
+    
+    # Button Actions
+    def action_confirm(self):
+        self.write({'state': 'completed'})
+    
+    def action_inprogress(self):
+        self.write({'state': 'in_progress'})
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.initial.assessment') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('hospital.initial.assessment') or _('New')
         return super(InitialAssessment, self).create(vals_list)
 
+class ChiefComplaintLine(models.Model):
+    _name = 'hospital.chief.complaint.line'
+    _description = 'Chief Complaint Line'
+    
+    assessment_id = fields.Many2one('hospital.initial.assessment', string='Assessment')
+    cheif_complaints = fields.Char(string='Chief Complaint')
+    duration = fields.Char(string='Duration')
+
+class PastHistoryLine(models.Model):
+    _name = 'hospital.past.history.line'
+    _description = 'Past History Line'
+    
+    assessment_id = fields.Many2one('hospital.initial.assessment', string='Assessment')
+    past_history = fields.Char(string='Past History')
+    past_duration = fields.Char(string='Duration')
 
 class VitalChart(models.Model):
     _name = 'hospital.vital.chart'
