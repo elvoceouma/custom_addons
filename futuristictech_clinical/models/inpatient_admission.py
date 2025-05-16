@@ -177,6 +177,51 @@ class InpatientAdmission(models.Model):
     def view_vital_charts(self):
         # Action to view vital charts
         return True
+    
+    def view_high_support(self):
+        return {
+            'name': _('High Support Records'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.high.support',
+            'type': 'ir.actions.act_window',
+            'domain': [('patient_id', '=', self.patient_id.id)],
+        }
+
+    def view_mo_sr_admission(self):
+        return {
+            'name': _('MO/SR Admission Records'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.mo.sr.admission',
+            'type': 'ir.actions.act_window',
+            'domain': [('patient_id', '=', self.patient_id.id)],
+        }
+
+    def view_provisional_bills(self):
+        return {
+            'name': _('Provisional Bills'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.provisional.bill',
+            'type': 'ir.actions.act_window',
+            'domain': [('inpatient_id', '=', self.id)],
+        }
+
+    def view_ect_consent(self):
+        return {
+            'name': _('ECT Consent Forms'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.ect.consent',
+            'type': 'ir.actions.act_window',
+            'domain': [('inpatient_id', '=', self.id)],
+        }
+
+    def view_minor_admission(self):
+        return {
+            'name': _('Minor Admission Records'),
+            'view_mode': 'tree,form',
+            'res_model': 'hospital.minor.admission',
+            'type': 'ir.actions.act_window',
+            'domain': [('patient_id', '=', self.patient_id.id)],
+        }
 
 
 class InpatientDocument(models.Model):

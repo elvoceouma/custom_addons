@@ -90,6 +90,31 @@
                                 <span class="o_stat_text">Vital Charts</span>
                             </div>
                         </button>
+                        <button type="object" name="view_high_support" class="oe_stat_button" icon="fa-user-md">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">High Support</span>
+                            </div>
+                        </button>
+                        <button type="object" name="view_mo_sr_admission" class="oe_stat_button" icon="fa-file-o">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">MO/SR Admission</span>
+                            </div>
+                        </button>
+                        <button type="object" name="view_provisional_bills" class="oe_stat_button" icon="fa-file-text">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Provisional Bills</span>
+                            </div>
+                        </button>
+                        <button type="object" name="view_ect_consent" class="oe_stat_button" icon="fa-check-square-o">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">ECT Consent</span>
+                            </div>
+                        </button>
+                        <button type="object" name="view_minor_admission" class="oe_stat_button" icon="fa-child">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Minor Admission</span>
+                            </div>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1>
