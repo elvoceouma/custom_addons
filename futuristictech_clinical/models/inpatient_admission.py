@@ -224,6 +224,79 @@ class InpatientAdmission(models.Model):
         }
 
 
+    def action_save_form(self):
+            """Save the current form"""
+            return {'type': 'ir.actions.act_window_close'}
+    
+    def action_cancel_form(self):
+        """Cancel form editing"""
+        return {'type': 'ir.actions.act_window_close'}
+    
+    def action_open_socrates(self):
+        """Open SOCRATES form"""
+        return self._open_specific_form('socrates', 'SOCRATES Assessment')
+    
+    def action_open_dtcq_consultation_d(self):
+        """Open DTCQ Consultation(D) form"""
+        return self._open_specific_form('dtcq_d', 'DTCQ Consultation(D)')
+    
+    def action_open_dtcq_consultation_a(self):
+        """Open DTCQ Consultation(A) form"""
+        return self._open_specific_form('dtcq_a', 'DTCQ Consultation(A)')
+    
+    def action_open_assist(self):
+        """Open ASSIST form"""
+        return self._open_specific_form('assist', 'ASSIST Assessment')
+    
+    def action_open_pss_consultation(self):
+        """Open PSS Consultation form"""
+        return self._open_specific_form('pss', 'PSS Consultation')
+    
+    def action_open_basis(self):
+        """Open BASIS form"""
+        return self._open_specific_form('basis', 'BASIS Assessment')
+    
+    def _open_specific_form(self, form_type, form_name):
+        """Helper method to open a specific form type
+        
+        If a form of this type already exists for the current patient,
+        open that form. Otherwise, create a new one with the specified type.
+        """
+        # Get the current patient_id from context or related record
+        patient_id = self.env.context.get('patient_id', False)
+        
+        # Look for existing form of this type for this patient
+        domain = [('form_type', '=', form_type)]
+        if patient_id:
+            domain.append(('patient_id', '=', patient_id))
+            
+        existing_form = self.search(domain, limit=1)
+        
+        if existing_form:
+            # Open existing form
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'patient.forms',
+                'res_id': existing_form.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        else:
+            # Create new form
+            default_values = {
+                'name': form_name,
+                'form_type': form_type,
+            }
+            if patient_id:
+                default_values['patient_id'] = patient_id
+                
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'patient.forms',
+                'view_mode': 'form',
+                'target': 'current',
+                'context': {'default_name': form_name, 'default_form_type': form_type}
+            }
 class InpatientDocument(models.Model):
     _name = 'hospital.inpatient.document'
     _description = 'Inpatient Document'
