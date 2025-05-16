@@ -4,9 +4,11 @@ from odoo import fields, models
 
 
 class ConnectionApi(models.Model):
+    
     """This class is used to create an api model in which we can create
     records with models and fields, and also we can specify methods."""
     _name = 'connection.api'
+    _description = 'Connection API'
     _rec_name = 'model_id'
 
     model_id = fields.Many2one('ir.model', string="Model",

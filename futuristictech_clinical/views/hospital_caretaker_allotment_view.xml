@@ -70,7 +70,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="billing_debit_note.group_approve_requisition" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'draft'"/>
                     <button name="action_cancel" string="Cancel" type="object" context="{'privilege_id': active_id}" class="oe_highlight" invisible="state != 'approved'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -371,7 +371,7 @@
             <form string="Medical Procedure">
                 <header>
                     <button name="action_approve" string="Approve" type="object" 
-                            class="oe_highlight" groups="billing_debit_note.group_approve_requisition"
+                            class="oe_highlight"
                             invisible="not state == 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>

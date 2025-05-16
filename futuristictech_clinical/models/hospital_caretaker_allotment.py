@@ -74,18 +74,26 @@ class HospitalCaretakerAllotment(models.Model):
     start_date = fields.Date(
         string='Period Start Date',
         tracking=True,
-        states={'approved': [('readonly', True)]}
+        readonly=False
     )
     end_date = fields.Date(
         string='Period End Date',
         tracking=True,
-        states={'approved': [('readonly', True)]}
+        readonly=False
     )
     infinite_start_date = fields.Date(
         string='Assignment Start Date',
         tracking=True,
-        states={'approved': [('readonly', True)]}
+        readonly=False
     )
+
+    @api.depends('state')
+    def _compute_readonly_fields(self):
+        for record in self:
+            is_readonly = record.state == 'approved'
+            record.start_date_readonly = is_readonly
+            record.end_date_readonly = is_readonly
+            record.infinite_start_date_readonly = is_readonly
 
     # --- Approval and User Information ---
     user_id = fields.Many2one(

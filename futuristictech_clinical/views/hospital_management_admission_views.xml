@@ -124,10 +124,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_draft" string="Draft" type="object" invisible="state not in ('discharged','invoiced','completed','discharge_initiated')" groups="hospital_management.group_hospital_administrator"/>
-                    <button name="action_hospitalized" string="Hospitalized" type="object" invisible="state not in ('draft','discharged')" class="oe_highlight" groups="hospital_management.group_hospital_administrator,hospital_management.group_hospital_receptionist"/>
-                    <button name="action_invoiced" string="Invoiced" type="object" invisible="state not in ('admission_confirmed','discharged')" groups="hospital_management.group_hospital_administrator,hospital_management.group_hospital_accountant"/>
-                    <button name="action_discharged" string="Discharged" type="object" invisible="state not in ('admission_confirmed','invoiced','completed','discharge_initiated')" class="oe_highlight" groups="hospital_management.group_hospital_administrator,hospital_management.group_hospital_physician"/>
+                    <button name="action_draft" string="Draft" type="object" invisible="state not in ('discharged','invoiced','completed','discharge_initiated')"/>
+                    <button name="action_hospitalized" string="Hospitalized" type="object" invisible="state not in ('draft','discharged')" class="oe_highlight"/>
+                    <button name="action_invoiced" string="Invoiced" type="object" invisible="state not in ('admission_confirmed','discharged')"/>
+                    <button name="action_discharged" string="Discharged" type="object" invisible="state not in ('admission_confirmed','invoiced','completed','discharge_initiated')" class="oe_highlight"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,admission_confirmed,invoiced,discharged" readonly="1"/>
                 </header>
                 <sheet>

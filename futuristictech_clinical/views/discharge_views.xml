@@ -6,21 +6,21 @@
         <field name="arch" type="xml">
             <form string="Discharge">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" invisible="state != 'waiting_for_approval'"/>
-                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="medicine_register.group_close_discharge" invisible="state != 'approve'"/>
-                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" groups="medicine_register.group_approve_discharge" invisible="state not in ('draft', 'waiting_for_approval')"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"  invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight"  invisible="state != 'waiting_for_approval'"/>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight"  invisible="state != 'approve'"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight"  invisible="state not in ('draft', 'waiting_for_approval')"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,waiting_for_approval,approve,close,cancel"/>
                 </header>
                 <sheet>
                     <div class="oe_right oe_button_box" style="width: 500px;" name="buttons">
-                        <button type="object" class="oe_stat_button" string="Medicine Packing" name="action_medicine_packing" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_nurses" invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Medicine Packing" name="action_medicine_packing" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list"  invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Requisition Clearance" name="action_requisition_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_counsellors" invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Requisition Clearance" name="action_requisition_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list"  invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Store Clearance" name="action_store_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list" groups="medicine_register.group_discharge_stores" invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Store Clearance" name="action_store_clearance" context="{'search_default_discharge_id': active_id,'default_discharge_id': active_id}" icon="fa-list"  invisible="state != 'approve'">
                         </button>
-                        <button type="object" class="oe_stat_button" string="Discharge Summary" name="action_discharge_summary" context="{'search_default_inpatient_admission_id': inpatient_admission_id,'default_inpatient_admission_id': inpatient_admission_id,'default_patient_id': patient_id,'default_campus': campus}" icon="fa-list" groups="medicine_register.group_discharge_counsellors" invisible="state != 'approve'">
+                        <button type="object" class="oe_stat_button" string="Discharge Summary" name="action_discharge_summary" context="{'search_default_inpatient_admission_id': inpatient_admission_id,'default_inpatient_admission_id': inpatient_admission_id,'default_patient_id': patient_id,'default_campus': campus}" icon="fa-list"  invisible="state != 'approve'">
                         </button>
                     </div>
 
@@ -84,9 +84,9 @@
             <form string="Discharge Summary">
                 <header>
                     <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                    <button name="action_approve_clinical_psychologist" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_psychologist" invisible="clinical_psychologist_bool or state != 'inprogress'"/>
-                    <button name="action_approve_psychiatrist" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_psychiatrist" invisible="psychiatrist_bool or state != 'inprogress'"/>
-                    <button name="action_approve_registrar" string="Approve" type="object" class="oe_highlight" groups="medicine_register.group_discharge_registrar" invisible="registrar_bool or state != 'inprogress'"/>
+                    <button name="action_approve_clinical_psychologist" string="Approve" type="object" class="oe_highlight"  invisible="clinical_psychologist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_psychiatrist" string="Approve" type="object" class="oe_highlight"  invisible="psychiatrist_bool or state != 'inprogress'"/>
+                    <button name="action_approve_registrar" string="Approve" type="object" class="oe_highlight"  invisible="registrar_bool or state != 'inprogress'"/>
                     <field name="state" statusbar_visible="draft,inprogress,approve" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -301,8 +301,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_close" string="Close" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'inprogress'"/>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" groups="base.group_user" invisible="state != 'draft'"/>
+                    <button name="action_close" string="Close" type="object" class="oe_highlight"  invisible="state != 'inprogress'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"  invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,close"/>
                 </header>
                 <sheet>
@@ -381,22 +381,22 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Approvals" groups="base.group_system">
+                        <page string="Approvals" >
                             <group>
                                 <group>
                                     <field name="clinical_psychologist"/>
                                     <field name="clinical_psychologist_bool"/>
-                                    <button name="action_approve_clinical_psychologist" string="Approve as Clinical Psychologist" type="object" class="oe_highlight" groups="base.group_user" invisible="clinical_psychologist_bool"/>
+                                    <button name="action_approve_clinical_psychologist" string="Approve as Clinical Psychologist" type="object" class="oe_highlight"  invisible="clinical_psychologist_bool"/>
                                 </group>
                                 <group>
                                     <field name="psychiatrist"/>
                                     <field name="psychiatrist_bool"/>
-                                    <button name="action_approve_psychiatrist" string="Approve as Psychiatrist" type="object" class="oe_highlight" groups="base.group_user" invisible="psychiatrist_bool"/>
+                                    <button name="action_approve_psychiatrist" string="Approve as Psychiatrist" type="object" class="oe_highlight"  invisible="psychiatrist_bool"/>
                                 </group>
                                 <group>
                                     <field name="registrar"/>
                                     <field name="registrar_bool"/>
-                                    <button name="action_approve_registrar" string="Approve as Registrar" type="object" class="oe_highlight" groups="base.group_user" invisible="registrar_bool"/>
+                                    <button name="action_approve_registrar" string="Approve as Registrar" type="object" class="oe_highlight"  invisible="registrar_bool"/>
                                 </group>
                             </group>
                             <group>

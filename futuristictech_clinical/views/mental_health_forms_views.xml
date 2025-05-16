@@ -313,7 +313,7 @@
             <form string="Patient Requisition">
                 <header>
                     <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Approve" groups="billing_debit_note.group_approve_requisition" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
                     <field name="state" statusbar_visible="draft,waiting_for_approval,inprogress,issued" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -391,7 +391,7 @@
             <form string="Medicine Requisition">
                 <header>
                     <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Approve" groups="billing_debit_note.group_approve_requisition" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
                     <field name="state" statusbar_visible="draft,waiting_for_approval,inprogress,issued" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -462,7 +462,7 @@
         <field name="arch" type="xml">
             <form string="Service Requisition">
                 <header>
-                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" groups="billing_debit_note.group_approve_requisition" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -532,7 +532,7 @@
             <form string="Emergency Medicine Requisition">
                 <header>
                     <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                    <button name="action_approve" string="Approve" groups="billing_debit_note.group_approve_requisition" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state not in ['confirmed','waiting_for_approval']"/>
                     <field name="state" statusbar_visible="draft,waiting_for_approval,inprogress,issued" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -608,7 +608,7 @@
         <field name="arch" type="xml">
             <form string="Medical Procedure">
                 <header>
-                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="approved_by != False" groups="billing_debit_note.group_approve_requisition"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="approved_by != False"/>
                 </header>
                 <sheet>
                     <group>

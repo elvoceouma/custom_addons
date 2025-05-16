@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 class LabTestType(models.Model):
     _name = 'hospital.lab.test.type'
     _description = 'Lab Test Type'
-    # _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Name', required=True, tracking=True)
     code = fields.Char(string='Code', tracking=True)

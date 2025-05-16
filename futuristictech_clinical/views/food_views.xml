@@ -7,7 +7,7 @@
             <form string="Food Requisition">
                 <header>
                     <button name="action_approve" string="Approve" type="object" class="oe_highlight" 
-                            groups="billing_debit_note.group_approve_requisition"
+                           
                             invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
