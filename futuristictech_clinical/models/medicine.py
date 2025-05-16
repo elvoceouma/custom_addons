@@ -135,7 +135,7 @@ class HospitalMedicineConsumption(models.Model):
     date = fields.Datetime(string='Date', default=fields.Datetime.now)
     pharmacy_id = fields.Many2one('hospital.pharmacy', string='Pharmacy', required=True)
     time = fields.Char(string='Time', required=True)
-    campus_id = fields.Many2one('hospital.campus', string='Campus', required=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True)
 
 class MedicineRegister(models.Model):
     _name = 'medicine.register'
@@ -146,7 +146,7 @@ class MedicineRegister(models.Model):
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
     ip_number = fields.Char(string='IP Number', tracking=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
-    campus_id = fields.Many2one('hospital.campus', string='Campus', tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
     
     prescription_id = fields.Many2one('hospital.prescription', string='Prescription', tracking=True)
     date = fields.Date(string='Date', default=fields.Date.context_today, tracking=True)

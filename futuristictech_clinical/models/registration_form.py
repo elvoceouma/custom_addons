@@ -477,7 +477,7 @@ class PatientRequisitionLine(models.Model):
     inpatient_admission_id = fields.Many2one('inpatient.admission', string='Admission')
     
     # Location fields
-    campus_id = fields.Many2one('hospital.campus', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     block_id = fields.Many2one('hospital.block', string='Block')
     room_id = fields.Many2one('hospital.room', string='Room')
     bed_id = fields.Many2one('hospital.bed', string='Bed')

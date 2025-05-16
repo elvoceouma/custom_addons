@@ -41,7 +41,7 @@ class HospitalCaretakerAllotment(models.Model):
         tracking=True
     )
     health_center_id = fields.Many2one(
-        'hospital.campus',
+        'hospital.hospital',
         string='Health Center',
         tracking=True
     )
