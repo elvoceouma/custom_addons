@@ -3,12 +3,13 @@
 from odoo import models, fields, api, _
 from datetime import datetime, timedelta
 
+
 class MedicinePacking(models.Model):
     _name = 'hospital.medicine.packing'
     _description = 'Medicine Packing'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'), tracking=True)
     
     packing_for = fields.Selection([
         ('inpatient', 'Inpatient'),
@@ -43,6 +44,11 @@ class MedicinePacking(models.Model):
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company, tracking=True)
     prescription_id = fields.Many2one('hospital.prescription', string='Prescription', tracking=True)
     invisible_return_btn = fields.Boolean(string='Invisible Return Button', default=False)
+    
+    # Additional fields from the package details form
+    bed_type_id = fields.Many2one('hospital.bed.type', string='Bed Type')
+    referral_item_ids = fields.One2many('hospital.referral.item', 'referral_config_id', string='Referral Items')
+    scale_ids = fields.One2many('hospital.referral.scale', 'referral_config_id', string='Scales')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -102,7 +108,6 @@ class MedicinePackingLine(models.Model):
     afternoon = fields.Boolean(string='AN', default=False)
     evening = fields.Boolean(string='E', default=False)
     night = fields.Boolean(string='N', default=False)
-    
     notes = fields.Text(string='Notes')
     
     @api.onchange('packing_id')
@@ -110,3 +115,32 @@ class MedicinePackingLine(models.Model):
         if self.packing_id:
             self.start_date = self.packing_id.start_date
             self.end_date = self.packing_id.end_date
+
+
+class HospitalReferralItem(models.Model):
+    _name = 'hospital.referral.item'
+    _description = 'Hospital Referral Item'
+    
+    referral_config_id = fields.Many2one('hospital.medicine.packing', string='Referral Configuration')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
+    unit_price = fields.Float(string='Unit Price', default=0.0)
+
+
+class HospitalReferralScale(models.Model):
+    _name = 'hospital.referral.scale'
+    _description = 'Hospital Referral Scale'
+    
+    referral_config_id = fields.Many2one('hospital.medicine.packing', string='Referral Configuration')
+    scale_type = fields.Char(string='Scale Type', required=True)
+
+class HospitalBedType(models.Model):
+    _name = 'hospital.bed.type'
+    _description = 'Hospital Bed Type'
+    
+    name = fields.Char(string='Bed Type', required=True)
+    description = fields.Text(string='Description')
+    capacity = fields.Integer(string='Capacity', default=1)
+    hospital_id = fields.Many2one('hospital.hospital', string='Hospital', required=True)
+    
+  

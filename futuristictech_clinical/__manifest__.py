@@ -51,6 +51,7 @@
         'views/hospital_management_op_visits_views.xml',
         'views/hospital_management_outside_consultation_views.xml',
         'views/hospital_management_vaccine_views.xml',
+        # 'views/hospital_management_follow_up_sheet_views.xml',
         'views/hospital_appointment_views.xml',
         'views/hospital_medicine_register_views.xml',
         'views/registration_form_views.xml',
