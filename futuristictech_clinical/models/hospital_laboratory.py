@@ -214,3 +214,71 @@ class HospitalLabTestRequisitionLine(models.Model):
     price_unit = fields.Float(string='Unit Price', readonly=True)
     price_subtotal = fields.Float(string='Subtotal', readonly=True)
     tested = fields.Boolean(string='Tested')
+
+
+
+from odoo import models, fields, api
+
+class OeHealthMedicalLabTest(models.Model):
+    _name = 'oeh.medical.lab.test'
+    _description = 'Medical Lab Test'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Test ID', required=True, copy=False, readonly=True, default='New')
+    test_type = fields.Many2one('hospital.lab.test.type', string='Test Type', required=True)
+    patient = fields.Many2one('hospital.patient', string='Patient', required=True, 
+                            options="{'no_create': True}")
+    date_requested = fields.Datetime(string='Date Requested', default=fields.Datetime.now)
+    requestor = fields.Many2one('res.partner', string='Requested By', 
+                              options="{'no_create': True}")
+    pathologist = fields.Many2one('res.partner', string='Pathologist', 
+                                options="{'no_create': True}")
+    date_analysis = fields.Datetime(string='Date of Analysis')
+    
+    state = fields.Selection([
+        ('Draft', 'Draft'),
+        ('Test In Progress', 'Test In Progress'),
+        ('Completed', 'Completed'),
+        ('Invoiced', 'Invoiced')
+    ], string='State', default='Draft', tracking=True)
+    
+    lab_test_criteria = fields.One2many('oeh.medical.lab.test.criteria', 'test_id', 
+                                      string='Test Cases')
+    results = fields.Text(string='Test Results')
+    diagnosis = fields.Text(string='Diagnosis')
+    
+    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('oeh.medical.lab.test') or 'New'
+        return super(OeHealthMedicalLabTest, self).create(vals)
+    
+    def set_to_test_inprogress(self):
+        self.write({'state': 'Test In Progress'})
+    
+    def set_to_test_complete(self):
+        self.write({'state': 'Completed'})
+    
+    def action_lab_invoice_create(self):
+        # Implement invoice creation logic here
+        self.write({'state': 'Invoiced'})
+        return True
+    
+    def print_patient_labtest(self):
+        # Implement print lab test logic here
+        return self.env.ref('oehealth_medical.action_report_labtest').report_action(self)
+
+
+class OeHealthMedicalLabTestCriteria(models.Model):
+    _name = 'oeh.medical.lab.test.criteria'
+    _description = 'Lab Test Criteria'
+    _order = 'sequence'
+
+    test_id = fields.Many2one('oeh.medical.lab.test', string='Lab Test')
+    sequence = fields.Integer(string='Sequence', required=True, default=1)
+    name = fields.Char(string='Test Name', required=True)
+    result = fields.Char(string='Result')
+    normal_range = fields.Char(string='Normal Range')
+    units = fields.Char(string='Units')

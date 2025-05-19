@@ -140,7 +140,7 @@
     <!-- Laboratory Menu -->
     <menuitem id="menu_laboratory_root" name="Laboratory" parent="hospital_management_root" sequence="140"/>
     <menuitem id="menu_lab_test_requisition" name="Lab Test Requisition" parent="menu_laboratory_root" action="action_hospital_lab_test_requisition" sequence="10"/>
-    <menuitem id="menu_lab_tests" name="Lab Tests" parent="menu_laboratory_root" action="action_hospital_lab_test" sequence="20"/>
+    <menuitem id="menu_lab_tests" name="Lab Tests" parent="menu_laboratory_root" action="action_oeh_medical_lab_test" sequence="20"/>
 
     <!-- Room Inspection Menu -->
     <menuitem id="menu_room_inspection_root" name="Room Inspection" parent="hospital_management_root" sequence="150"/>
