@@ -113,5 +113,83 @@
         </field>
     </record>
     
-    
+
+    <record id="view_my_admission_form" model="ir.ui.view">
+        <field name="name">my.admission.form</field>
+        <field name="model">my.admission</field>
+        <field name="arch" type="xml">
+            <form string="My Admission">
+                <header>
+                    <field name="state" widget="statusbar" 
+                        statusbar_visible="draft,hospitalized,discharged,invoiced"
+                        statusbar_colors='{"hospitalized":"red","draft":"blue","invoiced":"grey","discharged":"green"}'/>
+                    <button name="action_hospitalize" string="Hospitalize" type="object" class="oe_highlight" invisible="[('state', '!=', 'draft')]"/>
+                    <button name="action_discharge" string="Discharge" type="object" class="oe_highlight" invisible="[('state', '!=', 'hospitalized')]"/>
+                    <button name="action_invoice" string="Create Invoice" type="object" class="oe_highlight" invisible="[('state', '!=', 'discharged')]"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="[('state', 'not in', ['hospitalized', 'discharged', 'invoiced'])]"/>
+                </header>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title" style="width: 390px;">
+                            <label class="oe_edit_only" for="name" string="Inpatient #"/>
+                            <h1><field name="name" class="oe_inline"/></h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient"/>
+                            <field name="admission_reason"/>
+                            <field name="ward"/>
+                            <field name="bed"/>
+                        </group>
+                        <group>
+                            <field name="admission_type"/>
+                            <field name="attending_physician"/>
+                            <field name="operating_physician"/>
+                        </group>
+                    </group>
+                    <group string="Dates">
+                        <group>
+                            <field name="admission_date"/>
+                        </group>
+                        <group>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <group>
+                                <field name="admission_condition"/>
+                            </group>
+                            <group>
+                                <field name="nursing_plan"/>
+                            </group>
+                            <group>
+                                <field name="discharge_plan"/>
+                            </group>
+                        </page>
+                        <page string="Extra Information">
+                            <field name="info" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+        <record id="view_my_admission_tree" model="ir.ui.view">
+        <field name="name">my.admission.tree</field>
+        <field name="model">my.admission</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient"/>
+                <field name="admission_date"/>
+                <field name="discharge_date"/>
+                <field name="state" widget="statusbar"/>
+            </tree>
+        </field>
+    </record>
+
 </odoo>

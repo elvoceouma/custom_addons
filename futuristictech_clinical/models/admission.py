@@ -149,3 +149,50 @@ class OPVisit(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.op.visit') or _('New')
         return super(OPVisit, self).create(vals_list)
+    
+
+class MyAdmission(models.Model):
+    _name = 'my.admission'
+    _description = 'Patient Admission'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(string='Inpatient #', required=True, copy=False, readonly=True, default=lambda self: self.env['ir.sequence'].next_by_code('my.admission'))
+    patient = fields.Many2one('res.partner', string='Patient', required=True, tracking=True)
+    admission_reason = fields.Text(string='Admission Reason', required=True)
+    ward = fields.Many2one('hospital.block', string='Ward')
+    bed = fields.Many2one('hospital.bed', string='Bed')
+    admission_type = fields.Selection([
+        ('emergency', 'Emergency'),
+        ('routine', 'Routine'),
+        ('elective', 'Elective'),
+    ], string='Admission Type', default='routine')
+    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+    room_id = fields.Many2one('hospital.room', string='Room', required=True, tracking=True)
+    bed_id = fields.Many2one('hospital.bed', string='Bed', required=True, tracking=True)
+    attending_physician = fields.Many2one('res.users', string='Attending Physician', tracking=True)
+    operating_physician = fields.Many2one('res.users', string='Operating Physician')
+    admission_date = fields.Datetime(string='Admission Date', default=fields.Datetime.now)
+    discharge_date = fields.Datetime(string='Discharge Date')
+    admission_condition = fields.Text(string='Admission Condition')
+    nursing_plan = fields.Text(string='Nursing Plan')
+    discharge_plan = fields.Text(string='Discharge Plan')
+    info = fields.Html(string='Extra Information')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('hospitalized', 'Hospitalized'),
+        ('discharged', 'Discharged'),
+        ('invoiced', 'Invoiced'),
+    ], string='Status', default='draft', tracking=True)
+    
+    # Add any necessary methods here
+    def action_hospitalize(self):
+        self.state = 'hospitalized'
+        
+    def action_discharge(self):
+        self.state = 'discharged'
+        
+    def action_invoice(self):
+        self.state = 'invoiced'
+        
+    def action_draft(self):
+        self.state = 'draft'
