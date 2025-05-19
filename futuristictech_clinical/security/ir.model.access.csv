@@ -355,4 +355,5 @@ access_hospital_assessment_type,access_hospital_assessment_type,model_hospital_a
 access_hospital_chief_complaint_line,access_hospital_chief_complaint_line,model_hospital_chief_complaint_line,base.group_user,1,1,1,1
 access_hospital_past_history_line,access_hospital_past_history_line,model_hospital_past_history_line,base.group_user,1,1,1,1
 
-accss_hospital_my_admission,access_hospital_my_admission,futuristictech_clinical.model_my_admission,base.group_user,1,1,1,1
+access_hospital_my_admission,access_hospital_my_admission,futuristictech_clinical.model_my_admission,base.group_user,1,1,1,1
+hospital.case.history,hospital.case.history,futuristictech_clinical.model_hospital_case_history,base.group_user,1,1,1,1
