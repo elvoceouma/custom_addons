@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 class FollowUpSheet(models.Model):
     _name = 'hospital.follow.up.sheet'
     _description = 'Follow-Up Sheet'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    # _inherit = ['mail.thread', 'mail.activity.mixin']
     
     title = fields.Char(string='Title', default='Follow-Up Sheet')
     ip_number = fields.Char(string='IP Number', required=True, tracking=True)

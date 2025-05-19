@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Follow-Up Sheet Form View -->
+    <!-- Follow-Up Sheet Form View  -->
     <record id="view_hospital_follow_up_sheet_form" model="ir.ui.view">
         <field name="name">hospital.follow.up.sheet.form</field>
         <field name="model">hospital.follow.up.sheet</field>
