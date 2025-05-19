@@ -113,18 +113,19 @@
         </field>
     </record>
 
-    <!-- Views for Lab Test Requisitions -->
+    <!-- Tree View -->
     <record id="view_hospital_lab_test_requisition_tree" model="ir.ui.view">
         <field name="name">hospital.lab.test.requisition.tree</field>
         <field name="model">hospital.lab.test.requisition</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'" decoration-danger="state == 'cancelled'" decoration-success="state == 'completed'">
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="requisition_date"/>
-                <field name="physician_id"/>
-                <field name="urgency"/>
-                <field name="state"/>
+            <tree string="Lab Test Requisitions">
+                <field name="name" string="Reference"/>
+                <field name="patient_id" string="Patient"/>
+                <field name="type"/>
+                <field name="state" widget="badge" decoration-success="state == 'report_generated'" 
+                       decoration-danger="state == 'sample_rejected'" decoration-warning="state in ['approved', 'sample_received', 'sent_for_testing']"/>
+                <field name="requested_date"/>
+                <field name="lab_id" string="Lab"/>
             </tree>
         </field>
     </record>
@@ -133,94 +134,103 @@
         <field name="name">hospital.lab.test.requisition.form</field>
         <field name="model">hospital.lab.test.requisition</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Lab Test Requisition">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="type == 'external' or state != 'draft'"/>
+                    <button name="action_sample_received" string="Sample Received" type="object" class="oe_highlight"
+                            invisible="type == 'external' or state != 'approved'"/>
+                    <button name="action_sample_received" string="Sample Received" type="object" class="oe_highlight"
+                            invisible="type != 'external' or state != 'draft'"/>
+                    <button name="action_sent_for_testing" string="Sent for Testing" type="object" class="oe_highlight"
+                            invisible="type == 'external' or state != 'sample_received'"/>
+                    <button name="action_sample_rejected" string="Sample Rejected" type="object" class="oe_highlight"
+                            invisible="type == 'external' or state != 'sent_for_testing'"/>
+                    <button name="action_sample_rejected" string="Sample Rejected" type="object" class="oe_highlight"
+                            invisible="type != 'external' or state != 'sample_received'"/>
+                    <button name="action_report_generated" string="Report Generated" type="object" class="oe_highlight"
+                            invisible="type == 'external' or state != 'sent_for_testing'"/>
+                    <button name="action_report_generated" string="Report Generated" type="object" class="oe_highlight"
+                            invisible="type != 'external' or state != 'sample_received'"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="buttons">
+                        <button type="object" class="oe_stat_button" name="view_labtest" icon="fa-pencil-square-o">
+                            <field name="labtest_count" widget="statinfo" string="Lab Tests"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1"/>
+                            <field name="name"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id"/>
-                            <field name="physician_id"/>
-                            <field name="admission_id"/>
+                            <field name="type" readonly="state != 'draft'"/>
+                            <field name="reference" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="ip_no" string="IP Number" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="patient_name" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="age" invisible="type != 'external'" readonly="state != 'draft'"/>
+                            <field name="sex" invisible="type != 'external'" readonly="state != 'draft'"/>
+                            <field name="partner_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
+                                   invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="inpatient_admission_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
+                                   domain="[('state','!=','discharge_advised')]" invisible="type != 'inpatient'" 
+                                   required="type == 'inpatient'" readonly="state != 'draft'"/>
+                            <field name="op_visit_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
+                                    invisible="type != 'outpatient'" 
+                                   required="type == 'outpatient'" readonly="state != 'draft'"/>
+                            <field name="patient_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
+                                   invisible="type not in ['inpatient','outpatient']" 
+                                   required="type in ['inpatient','outpatient']" readonly="state != 'draft'"/>
+                            <field name="prescribing_doctor" invisible="type != 'inpatient'" 
+                                   required="type == 'inpatient'" readonly="state != 'draft'"
+                                   domain="[('team_role','in',('psychiatrist','physician'))]"/>
+                            <field name="purpose" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="requisition_date"/>
-                            <field name="urgency"/>
+                            <field name="requested_date" readonly="state != 'draft'"/>
+                            <field name="required_date" invisible="1"/>
+                            <field name="approved_date" readonly="state != 'draft'"/>
+                            <field name="mrn_no" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="treating_doctor" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <field name="lab_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" required="1" domain="[('active','=',True)]"/>
+                            <field name="company_id" options="{'no_create':True,'no_open':True}"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Tests">
-                            <field name="test_ids">
-                                <tree editable="bottom">
-                                    <field name="test_type"/>
-                                    <field name="specific_test"/>
-                                    <field name="notes"/>
-                                    <field name="state"/>
+                        <page string="Products" name="products">
+                            <field name="requisition_line_ids" readonly="state != 'draft'">
+                                <tree decoration-success="tested == True" editable="bottom">
+                                    <field name="date" invisible="1"/>
+                                    <field name="labtest_type_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}"/>
+                                    <field name="product_id" invisible="1" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" domain="['|',('type','=','service'),('debit_note','=',True)]"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="internal_category_id" invisible="1"/>
+                                    <field name="quantity" invisible="1"/>
+                                    <field name="price_unit" readonly="1" invisible="1"/>
+                                    <field name="price_subtotal" invisible="1"/>
+                                    <field name="tested" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="Clinical Information">
+                        <page string="Others" name="others">
                             <group>
-                                <field name="clinical_history"/>
-                                <field name="diagnosis"/>
+                                <group>
+                                    <field name="user_id" options="{'no_create':True,'no_open':True}" readonly="1"/>
+                                    <field name="approved_by" options="{'no_create':True,'no_open':True}" readonly="1"/>
+                                </group>
+                                <group>
+                                </group>
                             </group>
-                        </page>
-                        <page string="Notes">
-                            <field name="notes"/>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
             </form>
         </field>
     </record>
 
-    <record id="view_hospital_lab_test_requisition_search" model="ir.ui.view">
-        <field name="name">hospital.lab.test.requisition.search</field>
-        <field name="model">hospital.lab.test.requisition</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="physician_id"/>
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-                <filter string="Urgent" name="urgent" domain="[('urgency', '=', 'urgent')]"/>
-                <filter string="Emergency" name="emergency" domain="[('urgency', '=', 'emergency')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
-                    <filter string="Physician" name="physician" context="{'group_by': 'physician_id'}"/>
-                    <filter string="Status" name="status" context="{'group_by': 'state'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
 
-    <!-- Lab Test Requisition Action -->
-    <record id="action_hospital_lab_test_requisition" model="ir.actions.act_window">
-        <field name="name">Lab Test Requisitions</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.lab.test.requisition</field>
-        <field name="view_mode">tree,form,calendar,pivot,graph</field>
-        <field name="search_view_id" ref="view_hospital_lab_test_requisition_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your first lab test requisition!
-            </p>
-            <p>
-                Create laboratory test requisitions to request tests for patients.
-            </p>
-        </field>
-    </record>
+    
 </odoo>
