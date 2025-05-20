@@ -430,9 +430,8 @@
     <record id="action_hospital_block_duty_reporting_patient" model="ir.actions.act_window">
         <field name="name">Block Duty Reporting - Patient</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.block.duty.report</field>
-        <field name="view_mode">tree,pivot,graph</field>
-        <field name="context">{'group_by': 'patient_id'}</field>
+        <field name="res_model">block.duty.reporting.patient</field>
+        <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Registration Details Actions -->
@@ -446,28 +445,28 @@
     <record id="action_hospital_registration_details_service" model="ir.actions.act_window">
         <field name="name">Services</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.service</field>
+        <field name="res_model">services.master</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="action_hospital_registration_details_language" model="ir.actions.act_window">
         <field name="name">Languages</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.language</field>
+        <field name="res_model">language.master</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="action_hospital_registration_details_relationship" model="ir.actions.act_window">
         <field name="name">Relationship</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.relationship</field>
+        <field name="res_model">relationship.master</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="action_hospital_registration_details_physical_health_condition" model="ir.actions.act_window">
         <field name="name">Physical Health Condition</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.physical.health.condition</field>
+        <field name="res_model">physical.condition</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -598,7 +597,7 @@
     <record id="action_hospital_registration_details_psychomotor_activity" model="ir.actions.act_window">
         <field name="name">Psychomotor Activity</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.psychomotor.activity</field>
+        <field name="res_model">psychomotor.activity</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -606,7 +605,7 @@
     <record id="action_hospital_registration_details_catatonic_sign" model="ir.actions.act_window">
         <field name="name">Catatonic Signs</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.catatonic.sign</field>
+        <field name="res_model">catatonic.signs</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -614,7 +613,7 @@
     <record id="action_hospital_registration_details_physical_illness" model="ir.actions.act_window">
         <field name="name">Physical Illness</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.physical.illness</field>
+        <field name="res_model">physical.illness</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -622,7 +621,7 @@
     <record id="action_hospital_registration_details_source" model="ir.actions.act_window">
         <field name="name">Sources</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.source</field>
+        <field name="res_model">utm.source</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -630,7 +629,7 @@
     <record id="action_hospital_registration_details_physiatric_illness" model="ir.actions.act_window">
         <field name="name">Physiatric Illness</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.registration.details.physiatric.illness</field>
+        <field name="res_model">psychiatric.illness</field>
         <field name="view_mode">tree,form</field>
     </record>
 

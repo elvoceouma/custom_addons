@@ -159,7 +159,7 @@ class HospitalBlockDutyReport(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    # block_id = fields.Many2one('hospital.block', string='Block', required=True)
+    block_id = fields.Many2one('hospital.block', string='Block', required=True)
     date = fields.Date(string='Date', default=fields.Date.context_today)
     shift = fields.Selection([
         ('morning', 'Morning Shift'),
@@ -228,3 +228,11 @@ class HospitalBlockDutyBlockReporting(models.Model):
     register_id = fields.Many2one('hospital.block.duty.register', string='Register')
     type = fields.Char(string='Type')
     description = fields.Text(string='Description')
+
+
+class BlockDutyReportingPatient(models.Model):
+    _name = 'block.duty.reporting.patient'
+    _description = 'Block Duty Patient Reporting'
+    
+    name = fields.Char(string='Name', required=True)
+    patient_id  = fields.Many2one('hospital.patient', string='Patient', required=True)
