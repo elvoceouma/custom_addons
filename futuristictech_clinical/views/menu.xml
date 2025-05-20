@@ -211,5 +211,35 @@
     <menuitem id="menu_physician_config_specialities" name="Specialities" parent="menu_physician_config" action="action_hospital_physician_speciality" sequence="10"/>
     <menuitem id="menu_physician_config_degrees" name="Degrees" parent="menu_physician_config" action="action_hospital_physician_degree" sequence="20"/>
 
+    <!-- Laboratory Configuration Submenu -->
+    <menuitem id="menu_laboratory_config" name="Laboratory" parent="menu_configuration_root" sequence="50"/>
+    <menuitem id="menu_lab_units" name="Lab Units" parent="menu_laboratory_config" action="action_hospital_lab_unit" sequence="10"/>
+    <menuitem id="menu_lab_test_types" name="Lab Test Types" parent="menu_laboratory_config" action="action_hospital_lab_test_type" sequence="20"/>
+    <menuitem id="menu_lab_config" name="Lab" parent="menu_laboratory_config" action="action_hospital_lab" sequence="30"/>
 
+    <!-- Pathology Configuration Submenu -->
+    <menuitem id="menu_pathology_config" name="Pathology" parent="menu_configuration_root" sequence="60"/>
+    <menuitem id="menu_diseases" name="Diseases" parent="menu_pathology_config" action="action_hospital_disease" sequence="10"/>
+    <menuitem id="menu_disease_categories" name="Disease Categories" parent="menu_pathology_config" action="action_hospital_disease_category" sequence="20"/>
+
+    <!-- Health Products Configuration Submenu -->
+    <menuitem id="menu_health_products_config" name="Health Products" parent="menu_configuration_root" sequence="70"/>
+    <menuitem id="menu_medicines" name="Medicines" parent="menu_health_products_config" action="action_hospital_medicine" sequence="10"/>
+    <menuitem id="menu_vaccines_config" name="Vaccines" parent="menu_health_products_config" action="action_hospital_vaccine_config" sequence="20"/>
+    <menuitem id="menu_dose_units" name="Dose Units" parent="menu_health_products_config" action="action_hospital_dose_unit" sequence="30"/>
+    <menuitem id="menu_drug_routes" name="Drug Routes" parent="menu_health_products_config" action="action_hospital_drug_route" sequence="40"/>
+    <menuitem id="menu_drug_forms" name="Drug Forms" parent="menu_health_products_config" action="action_hospital_drug_form" sequence="50"/>
+    <menuitem id="menu_medicines_dosage" name="Medicines Dosage" parent="menu_health_products_config" action="action_hospital_medicine_dosage" sequence="60"/>
+
+    <!-- Caretaker Configuration Submenu -->
+    <menuitem id="menu_caretaker_config" name="Caretaker" parent="menu_configuration_root" sequence="80"/>
+    <menuitem id="menu_caretaker_type" name="Caretaker Type" parent="menu_caretaker_config" action="action_hospital_caretaker_type" sequence="10"/>
+
+    <!-- Insurance Configuration Submenu -->
+    <menuitem id="menu_insurance_config" name="Insurances" parent="menu_configuration_root" sequence="90"/>
+    <menuitem id="menu_insurance_types" name="Insurance Types" parent="menu_insurance_config" action="action_hospital_insurance_type" sequence="10"/>
+    <menuitem id="menu_insurances" name="Insurances" parent="menu_insurance_config" action="action_hospital_insurance" sequence="20"/>
+
+    <!-- Barcode Configuration Menu -->
+    <menuitem id="menu_barcode_label" name="Bar-code Label" parent="menu_configuration_root" action="action_hospital_barcode_label" sequence="100"/>
 </odoo>
