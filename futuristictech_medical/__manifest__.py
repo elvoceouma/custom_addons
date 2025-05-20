@@ -57,6 +57,8 @@
         'views/sales_menu.xml',
         
         # Reports
+        'report/consultation_admission_report.xml',
+        'report/report_actions.xml',
         'report/medical_reports.xml',
         'report/report_templates.xml',
     ],

@@ -49,10 +49,12 @@ class Consultation(models.Model):
     
    
     name = fields.Char(string='Name', required=True, default='New', tracking=True)
-    psychiatrist_id = fields.Many2one('hr.employee', string='Consultant', required=True, tracking=True)
+    psychiatrist_id = fields.Many2one('hr.employee', string='Consultant', tracking=True)
     team_role = fields.Selection(TEAM_ROLE, related='psychiatrist_id.team_role', readonly=True, store=True, string='Team Role')
     type = fields.Selection([('ip', 'IP'), ('op', 'OP')], string='Type', required=True, default='ip', tracking=True)
-    inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', tracking=True, ondelete='set null')
+    inpatient_admission_id = fields.Many2one('hospital.admission', string='IP Number', required=True, tracking=True)
+
+    # inpatient_admission_id = fields.Many2one('oeh.medical.inpatient', string='IP Number', tracking=True, ondelete='set null')
     op_visit_id = fields.Many2one('op.visits', string='OP Reference', tracking=True, ondelete='set null')
     age = fields.Integer(string='Age', tracking=True)
     sex = fields.Selection([('male','Male'),
@@ -60,7 +62,8 @@ class Consultation(models.Model):
                             ('other','Other')],
                             string="Sex"
                             )
-    patient_id = fields.Many2one('oeh.medical.patient', compute='_compute_patient', string='Patient', store=True, tracking=True, ondelete='set null')
+    patient_id = fields.Many2one('hospital.patient', compute='_compute_patient', string='Patient', store=True, tracking=True, ondelete='set null')
+    # patient_id = fields.Many2one('oeh.medical.patient', compute='_compute_patient', string='Patient', store=True, tracking=True, ondelete='set null')
     date = fields.Date(string='Date', default=fields.Date.context_today, tracking=True)
     start_datetime = fields.Datetime(string='Start Time', tracking=True)
     end_datetime = fields.Datetime(string='End Time', tracking=True)
@@ -194,16 +197,16 @@ class Consultation(models.Model):
     def _compute_patient(self):
         for record in self:
             if record.type == 'ip' and record.inpatient_admission_id:
-                record.patient_id = record.inpatient_admission_id.patient.id
+                record.patient_id = record.inpatient_admission_id.patient_id
                 record.op_visit_id = False
             elif record.type == 'op' and record.op_visit_id:
-                record.patient_id = record.op_visit_id.patient_id.id
+                # Assuming op_visit_id also references hospital.patient
+                record.patient_id = record.op_visit_id.patient_id
                 record.inpatient_admission_id = False
             else:
                 record.patient_id = False
                 record.op_visit_id = False
                 record.inpatient_admission_id = False
-
     @api.onchange('bed_type_id')
     def _onchange_bed_type_id(self):
         if self.bed_type_id:
@@ -390,7 +393,7 @@ class Consultation(models.Model):
             labtest_vals = {
                 'type': 'inpatient',
                 'inpatient_admission_id': self.inpatient_admission_id.id,
-                'patient_id': self.inpatient_admission_id.patient.id,
+                'patient_id': self.inpatient_admission_id.patient_id,
                 'patient_name': self.inpatient_admission_id.patient.name,
                 'purpose': self.lab_advice,
                 'requested_date': fields.Date.context_today(self),
@@ -476,7 +479,7 @@ class Consultation(models.Model):
                     vals = {
                         'type': 'ip',
                         'inpatient_id': self.inpatient_admission_id.id,
-                        'name': self.inpatient_admission_id.patient.id,
+                        'name': self.inpatient_admission_id.patient_id,
                         'counsellor': employee_id,
                         'datetime': fields.Datetime.now()
                     }
@@ -566,7 +569,7 @@ class Consultation(models.Model):
                 'reference': self.inpatient_admission_id.name,
                 'internal_reference': self.name,
                 'type': 'credit',
-                'patient_id': self.inpatient_admission_id.patient.id,
+                'patient_id': self.inpatient_admission_id.patient_id,
                 'name': self.followup_type_id.product_id.name,
                 'quantity': 1.0,
                 'price_subtotal': payout_amount,
@@ -673,7 +676,7 @@ class Consultation(models.Model):
             'reference': self.inpatient_admission_id.name,
             'internal_reference': self.name,
             'type': 'credit',
-            'patient_id': self.inpatient_admission_id.patient.id,
+            'patient_id': self.inpatient_admission_id.patient_id,
             'name': self.followup_type_id.product_id.name,
             'quantity': 1.0,
             'price_subtotal': payout_amount,
@@ -752,7 +755,7 @@ class Consultation(models.Model):
             else:
                 debit_note_vals = {
                     'inpatient_admission_id': self.inpatient_admission_id.id,
-                    'patient_id': self.inpatient_admission_id.patient.id,
+                    'patient_id': self.inpatient_admission_id.patient_id,
                     'bed_id': self.inpatient_admission_id.bed.id,
                     'ward_id': self.inpatient_admission_id.bed.ward.id,
                     'building_id': self.inpatient_admission_id.bed.building.id,
@@ -828,7 +831,7 @@ class Consultation(models.Model):
             vals.update({
                 'inpatient_id': self.inpatient_admission_id.id,
                 'op_visit_id': False,
-                'patient': self.inpatient_admission_id.patient.id,
+                'patient': self.inpatient_admission_id.patient_id,
                 'patient_id': self.inpatient_admission_id.patient.identification_code,
                 'company_id': self.inpatient_admission_id.patient.company_id.id,
             })
@@ -1016,7 +1019,7 @@ class Consultation(models.Model):
             'name': _('Prescriptions'),
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
-            'res_model': 'oeh.medical.prescription',
+            'res_model': 'hospital.prescription',  # Changed from oeh.medical.prescription
             'domain': domain,
             'context': {"search_default_confirmed_slip": 1},
         }
@@ -1151,3 +1154,5 @@ class Consultation(models.Model):
                 'default_op_visit_id': self.op_visit_id.id if self.type == 'op' else False
             }
         }
+    def print_admission_request(self):
+        return self.env.ref('futuristictech_medical.action_report_consultation_admission').report_action(self)

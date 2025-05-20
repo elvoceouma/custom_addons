@@ -269,8 +269,8 @@ access_hospital_vaccine_type_user,hospital.vaccine.type.user,model_hospital_vacc
 access_hospital_vaccine_type_manager,hospital.vaccine.type.manager,model_hospital_vaccine_type,base.group_system,1,1,1,1
 access_hospital_variable_billing_user,hospital.variable.billing.user,model_hospital_variable_billing,base.group_user,1,1,1,0
 access_hospital_variable_billing_manager,hospital.variable.billing.manager,model_hospital_variable_billing,base.group_system,1,1,1,1
-access_hospital_vital_chart_user,hospital.vital.chart.user,model_hospital_vital_chart,base.group_user,1,1,1,0
-access_hospital_vital_chart_manager,hospital.vital.chart.manager,model_hospital_vital_chart,base.group_system,1,1,1,1
+access_vital_charts_user,vital.charts.user,model_vital_charts,base.group_user,1,1,1,0
+access_vital_charts_manager,vital.charts.manager,model_vital_charts,base.group_system,1,1,1,1
 access_hospital_inpatient_admission_internal,hospital.inpatient.admission.internal,model_hospital_inpatient_admission,base.group_user,1,1,1,1
 
 access_hospital_investigation_request,Investigation Request,model_hospital_investigation_request,base.group_user,1,1,1,1

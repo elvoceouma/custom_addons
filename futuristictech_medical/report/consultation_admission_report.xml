@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Define the report template -->
+ <template id="report_consultation_admission_request">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.2;">
+                        <!-- Header Section with Logo -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h4 style="color: #444; margin-bottom: 0; font-weight: bold;">SPECIALIST IN NEUROLOGY &amp; PSYCHIATRY</h4>
+                            </div>
+                            <div class="col-6 text-right">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo" style="max-height: 50px;"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Request Title -->
+                        <div class="text-center">
+                            <h4 style="font-weight: bold; margin-bottom: 15px;">REQUEST FOR ADMISSION</h4>
+                        </div>
+                        
+                        <!-- Top Row: Doctor, Referral, Location -->
+                        <table class="table table-bordered" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 33%; border: 1px solid #000; padding: 5px;">
+                                    <strong>Name of Doctor requesting Admission</strong><br/>
+                                    <span t-field="doc.psychiatrist_id.name"/>
+                                </td>
+                                <td style="width: 33%; border: 1px solid #000; padding: 5px;">
+                                    <strong>Referred by:</strong><br/>
+                                    <span t-if="doc.advised_doctor">Dr. <span t-field="doc.advised_doctor.name"/></span>
+                                </td>
+                                <td style="width: 34%; border: 1px solid #000; padding: 5px;">
+                                    <strong>Location:</strong><br/>
+                                    <span t-field="doc.company_id.name"/>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Patient and Hospital Number -->
+                        <table class="table table-bordered mt-0" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 65%; border: 1px solid #000; padding: 5px;">
+                                    <strong>NAME OF THE PATIENT</strong><br/>
+                                    <span t-field="doc.patient_id.name"/>
+                                </td>
+                                <td style="width: 35%; border: 1px solid #000; padding: 5px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 65%; border: 1px solid #000; padding: 5px;">
+                                    <strong>HOSPITAL No.</strong><br/>
+                                    <span t-if="doc.inpatient_admission_id" t-field="doc.inpatient_admission_id"/>
+                                    <span t-if="not doc.inpatient_admission_id"></span>
+                                </td>
+                                <td style="width: 35%; border: 1px solid #000; padding: 5px;">
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Bed Category -->
+                        <table class="table table-bordered mt-0" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>BED CATEGORY</strong>
+                                </td>
+                                <td style="width: 13%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    GENERAL
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'GENERAL'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 13%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    SEMI-PRIVATE
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'SEMI-PRIVATE'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                
+                                <td style="width: 13%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    PRIVATE
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'PRIVATE'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 13%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    DELUXE
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'DELUXE'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 13%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    SUITES
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'SUITES'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 15%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    DAY CARE/ECT
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.bed_type_id.name == 'DAY CARE/ECT'" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Diagnosis and Treatment -->
+                        <table class="table table-bordered mt-0" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>PROVISIONAL DIAGNOSIS</strong>
+                                </td>
+                                <td style="width: 80%; border: 1px solid #000; padding: 5px; height: 80px; vertical-align: top;">
+                                    <span t-foreach="doc.provisional_diagnosis_ids" t-as="diagnosis">
+                                        <span t-field="diagnosis.name"/>
+                                        <t t-if="diagnosis_index != len(doc.provisional_diagnosis_ids)-1">, </t>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>TREATMENT / PROCEDURE PLANNED</strong>
+                                </td>
+                                <td style="width: 80%; border: 1px solid #000; padding: 5px; height: 60px; vertical-align: top;">
+                                    <span t-field="doc.treatment_planned"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>EXPECTED LENGTH OF HOSPITALIZATION</strong>
+                                </td>
+                                <td style="width: 80%; border: 1px solid #000; padding: 5px;">
+                                    <span t-field="doc.hospitalization_length"/> days
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Consultation Requirements -->
+                        <table class="table table-bordered mt-0" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>REQUIREMENT FOR ANOTHER CONSULTATION</strong>
+                                </td>
+                                <td style="width: 10%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    YES
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="doc.consultation_require" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 10%; border: 1px solid #000; padding: 5px; text-align: center;">
+                                    NO
+                                    <div style="display: inline-block; width: 15px; height: 15px; border: 1px solid #000; vertical-align: middle; margin-left: 5px;">
+                                        <div t-if="not doc.consultation_require" style="width: 100%; height: 100%; background-color: #000;"></div>
+                                    </div>
+                                </td>
+                                <td style="width: 60%; border: 1px solid #000; padding: 5px;" colspan="4">
+                                    <span t-if="doc.consultation_require">
+                                        <span t-foreach="doc.consultation_require_ids" t-as="speciality">
+                                            <span t-field="speciality.name"/>
+                                            <t t-if="speciality_index != len(doc.consultation_require_ids)-1">, </t>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Cost and Date -->
+                        <table class="table table-bordered mt-0" style="border: 1px solid #000; width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>APPROX. COST OF HOSPITALIZATION [*]</strong>
+                                </td>
+                                <td style="width: 80%; border: 1px solid #000; padding: 5px;">
+                                    <span t-field="doc.approx_cost"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20%; border: 1px solid #000; padding: 5px;">
+                                    <strong>PROVISIONAL DATE OF ADMISSION</strong>
+                                </td>
+                                <td style="width: 80%; border: 1px solid #000; padding: 5px;">
+                                    <span t-field="doc.provisional_admission_date" t-options='{"format": "dd MMM yyyy"}'/>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Footer Text -->
+                        <div style="margin-top: 15px; padding-left: 5px;">
+                            <p>The provisional diagnosis, proposed care plan, results and complications thereof have been explained to the patient / Attendees</p>
+                        </div>
+                        
+                        <!-- Signature Line -->
+                        <div style="margin-top: 50px; border-top: 1px solid #000; width: 40%; margin-left: 30px;">
+                            <p style="text-align: center; width: 40%;">Signature of the Admitting Doctor</p>
+                        </div>
+                        
+                        <!-- Footnote -->
+                        <div style="margin-top: 30px; font-size: 0.8em; padding-left: 5px;">
+                            <p>[*] Cost of hospitalization is only an estimate figure and can change depending on varied factors.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

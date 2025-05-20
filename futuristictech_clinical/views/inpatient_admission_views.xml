@@ -242,11 +242,7 @@ Consultation</span>
                                     <field name="administrative_closure_by"/>
                                 </group>
                             </group>
-                            <group>
-                                <field name="condition_before_admission"/>
-                                <field name="nursing_plan"/>
-                                <field name="discharge_plan"/>
-                            </group>
+                           
                         </page>
                     </notebook>
                 </sheet>

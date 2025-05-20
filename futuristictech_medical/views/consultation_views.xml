@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Consultation Form View -->
-
- 
-
     <record id="view_consultation_form" model="ir.ui.view">
         <field name="name">consultation.consultation.form</field>
         <field name="model">consultation.consultation</field>

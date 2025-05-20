@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Report registration -->
+    <record id="action_report_consultation_admission_request" model="ir.actions.report">
+        <field name="name">Admission Request</field>
+        <field name="model">consultation.consultation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_medical.report_consultation_admission_request</field>
+        <field name="report_file">futuristictech_medical.report_consultation_admission_request</field>
+        <field name="print_report_name">'Admission Request - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_consultation_consultation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Add print button to form view -->
+    <!-- <record id="view_consultation_form" model="ir.ui.view">
+        <field name="name">consultation.consultation.form</field>
+        <field name="model">consultation.consultation</field>
+        <field name="inherit_id" ref="view_consultation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(action_report_consultation_admission_request)d" string="Print Admission Request" type="action" class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record> -->
+</odoo>

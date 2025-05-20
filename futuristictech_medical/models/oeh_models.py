@@ -111,7 +111,7 @@ class OPVisits(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='OP Reference', required=True, readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('oeh.medical.patient', string='Patient', required=True, tracking=True)
+    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
     visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, required=True)
     purpose = fields.Text(string='Purpose of Visit')
     state = fields.Selection([

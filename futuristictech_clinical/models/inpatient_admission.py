@@ -46,9 +46,9 @@ class InpatientAdmission(models.Model):
     next_bill_date = fields.Datetime(string='Next Bill Date', tracking=True)
     
     # Medical information
-    condition_before_admission = fields.Text(string='Condition Before Admission')
-    nursing_plan = fields.Text(string='Nursing Plan')
-    discharge_plan = fields.Text(string='Discharge Plan')
+    # condition_before_admission = fields.Text(string='Condition Before Admission')
+    # nursing_plan = fields.Text(string='Nursing Plan')
+    # discharge_plan = fields.Text(string='Discharge Plan')
     advice_for_discharge = fields.Text(string='Advice for Discharge')
     
     # Team information

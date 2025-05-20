@@ -35,7 +35,7 @@
                             <field name="days_packed"/>
                         </group>
                     </group>
-                    <!-- <notebook>
+                    <notebook>
                         <page string="Medicine Details" name="medicine_details">
                             <field name="medicine_line_ids">
                                 <tree editable="bottom">
@@ -79,32 +79,8 @@
                                     <field name="invisible_return_btn" invisible="1"/>
                                 </group>
                             </group>
-                        </page> -->
-                        <!-- <page string="Package Details">
-                            <sheet> -->
-                            <sheet>
-                                <group>
-                                    <field name="name"/>
-                                    <field name="bed_type_id" options="{'no_create':True,'no_open':True}" invisible="1"/>
-                                    <field name="referral_item_ids">
-                                        <tree editable="bottom">
-                                            <field name="referral_config_id" invisible="1"/>
-                                            <field name="product_id"/>
-                                            <field name="quantity"/>
-                                            <field name="unit_price"/>
-                                        </tree>
-                                    </field>
-                                    <field name="scale_ids">
-                                        <tree editable="bottom">
-                                            <field name="referral_config_id" invisible="1"/>
-                                            <field name="scale_type"/>
-                                        </tree>
-                                    </field>
-                                </group>
-                            </sheet>
-                            <!-- </sheet> -->
-                        <!-- </page>
-                    </notebook> -->
+                        </page> 
+                    </notebook> 
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>

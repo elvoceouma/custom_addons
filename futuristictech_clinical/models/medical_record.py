@@ -103,31 +103,87 @@ class PastHistoryLine(models.Model):
     past_duration = fields.Char(string='Duration')
 
 class VitalChart(models.Model):
-    _name = 'hospital.vital.chart'
+    _name = 'vital.charts'
     _description = 'Vital Chart'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'datetime desc'
+    _order = 'date desc'
     
     name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    datetime = fields.Datetime(string='Date and Time', default=fields.Datetime.now)
-    temperature = fields.Float(string='Temperature (°C)')
-    pulse = fields.Integer(string='Pulse (bpm)')
-    respiratory_rate = fields.Integer(string='Respiratory Rate (bpm)')
-    blood_pressure_systolic = fields.Integer(string='Blood Pressure (Systolic)')
-    blood_pressure_diastolic = fields.Integer(string='Blood Pressure (Diastolic)')
-    oxygen_saturation = fields.Float(string='Oxygen Saturation (%)')
-    pain_score = fields.Integer(string='Pain Score (0-10)')
+    name_seq = fields.Char(string='Vital Chart ID', readonly=True, default=lambda self: _('New'))
+    
+    # Patient Information
+    ip_number = fields.Char(string='IP Number', tracking=True)
+    patient_name = fields.Char(string='Patient Name', tracking=True)
+    age = fields.Integer(string='Age', tracking=True)
+    mrn_no = fields.Char(string='MRN Number', tracking=True)
+    patient_gender = fields.Selection([
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other')
+    ], string='Gender', tracking=True)
+    patient_id = fields.Many2one('hospital.patient',string='Patient')
+    datetime = fields.Datetime(string='DateTime')
+    temperature = fields.Integer(string='temperature')
+    pulse = fields.Integer('pulse')
+    blood_pressure_systolic = fields.Integer(string='Blood pressure systolic')
+    blood_pressure_diastolic = fields.Integer('blood 0pressure diastolic')
     recorded_by = fields.Many2one('res.users', string='Recorded By', default=lambda self: self.env.user)
-    notes = fields.Text(string='Notes')
+    
+    # Date and Consultant
+    date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    consultant_id = fields.Many2one('hr.employee', string='Consultant', tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
+    
+    # Vital Chart Lines
+    vital_chart_line_ids = fields.One2many('vital.charts.line', 'vital_chart_id', string='Vital Chart Lines')
+    
+    # Notes
+    vital_notes = fields.Text(string='Notes', tracking=True)
+    
+    # State Management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], string='Status', default='draft', tracking=True)
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.vital.chart') or _('New')
+                vals['name'] = self.env['ir.sequence'].next_by_code('vital.charts') or _('New')
+            if vals.get('name_seq', _('New')) == _('New'):
+                vals['name_seq'] = self.env['ir.sequence'].next_by_code('vital.charts.sequence') or _('New')
         return super(VitalChart, self).create(vals_list)
+    
+    def action_inprogress(self):
+        self.state = 'in_progress'
+    
+    def action_confirm(self):
+        self.state = 'completed'
+
+
+class VitalChartLine(models.Model):
+    _name = 'vital.charts.line'
+    _description = 'Vital Chart Line'
+    _order = 'vital_datetime desc'
+    
+    vital_chart_id = fields.Many2one('vital.charts', string='Vital Chart', ondelete='cascade')
+    vital_datetime = fields.Datetime(string='Date & Time', default=fields.Datetime.now)
+    vital_temp = fields.Float(string='Temperature (°C)')
+    vital_pulse = fields.Integer(string='Pulse (bpm)')
+    vital_resp = fields.Integer(string='Respiratory Rate')
+    vital_bp = fields.Char(string='Blood Pressure')
+    vital_spo2 = fields.Float(string='SpO2 (%)')
+    vital_intake = fields.Float(string='Intake')
+    vital_output = fields.Float(string='Output')
+    vital_Total = fields.Float(string='Total', compute='_compute_total')
+    vital_user = fields.Many2one('res.users', string='Recorded By', default=lambda self: self.env.user)
+    
+    @api.depends('vital_intake', 'vital_output')
+    def _compute_total(self):
+        for record in self:
+            record.vital_Total = record.vital_intake - record.vital_output
 
 
 class MentalStatusExamination(models.Model):

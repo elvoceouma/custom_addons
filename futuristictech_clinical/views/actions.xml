@@ -134,7 +134,7 @@
     <record id="action_hospital_vital_chart" model="ir.actions.act_window">
         <field name="name">Vital Charts</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.vital.chart</field>
+        <field name="res_model">vital.charts</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -1068,4 +1068,21 @@
             </p>
         </field>
     </record>
+
+<!-- action_hospital_lab_unit
+action_hospital_lab_test_type
+action_hospital_lab
+action_hospital_disease
+action_hospital_disease_category
+action_hospital_medicine
+action_hospital_vaccine_config
+action_hospital_dose_unit
+action_hospital_drug_route
+action_hospital_drug_form
+action_hospital_medicine_dosage
+action_hospital_caretaker_type
+action_hospital_insurance_type
+action_hospital_insurance
+action_hospital_barcode_label -->
+
 </odoo>

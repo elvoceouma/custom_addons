@@ -58,7 +58,7 @@
         <!-- Vital Chart Sequence -->
         <record id="seq_hospital_vital_chart" model="ir.sequence">
             <field name="name">Hospital Vital Chart</field>
-            <field name="code">hospital.vital.chart</field>
+            <field name="code">vital.charts</field>
             <field name="prefix">VC</field>
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>

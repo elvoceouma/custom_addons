@@ -1,7 +1,8 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
-
+import logging 
+_logger = logging.getLogger(__name__)
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
@@ -51,7 +52,7 @@ class CrmLead(models.Model):
             record.address = ', '.join(filter(None, address_parts))
 
     # Patient Identification Fields
-    patient_id = fields.Many2one('medical.patient', string='Patient')
+    patient_id = fields.Many2one('hospital.patient', string='Patient')
     is_new_patient = fields.Boolean(string='Is New Patient', default=True)
 
     # Patient Personal Information
@@ -252,14 +253,138 @@ class CrmLead(models.Model):
             if lead.is_new_patient and lead.patient_name and not lead.patient_id:
                 lead.create_patient_from_lead()
         return res
+    
+   
+
+
+    def create_patient_from_lead(self):
+        """Create a new patient record from the lead information"""
+        self.ensure_one()
+        
+        _logger.info("Starting create_patient_from_lead for lead: %s", self.id)
+        
+        # Skip if no patient name or if already linked to a patient
+        if not self.patient_name or self.patient_id:
+            _logger.info("Skipping patient creation: patient_name=%s, patient_id=%s", 
+                        self.patient_name, self.patient_id)
+            return False
+        
+        # Check if patient already exists with same mobile or email
+        domain = []
+        
+        # Build domain correctly for OR conditions
+        if self.patient_mobile and self.patient_email:
+            _logger.info("Searching by both mobile and email: %s, %s", 
+                        self.patient_mobile, self.patient_email)
+            domain = ['|', '|',
+                    ('mobile', '=', self.patient_mobile),
+                    ('phone', '=', self.patient_mobile),
+                    ('email', '=', self.patient_email)]
+        elif self.patient_mobile:
+            _logger.info("Searching by mobile only: %s", self.patient_mobile)
+            domain = ['|',
+                    ('mobile', '=', self.patient_mobile),
+                    ('phone', '=', self.patient_mobile)]
+        elif self.patient_email:
+            _logger.info("Searching by email only: %s", self.patient_email)
+            domain = [('email', '=', self.patient_email)]
+        
+        _logger.info("Search domain: %s", domain)
+        
+        existing_patient = False
+        if domain:
+            try:
+                existing_patient = self.env['hospital.patient'].search(domain, limit=1)
+                _logger.info("Existing patient search result: %s", existing_patient)
+            except Exception as e:
+                _logger.error("Error searching for existing patient: %s", e)
+                # Fall back to a simpler search if complex domain fails
+                if self.patient_mobile:
+                    existing_patient = self.env['hospital.patient'].search([
+                        ('mobile', '=', self.patient_mobile)
+                    ], limit=1)
+                    _logger.info("Fallback mobile search result: %s", existing_patient)
+        
+        if existing_patient:
+            # Link to existing patient
+            _logger.info("Linking lead to existing patient: %s", existing_patient.id)
+            self.patient_id = existing_patient.id
+            return existing_patient
+        
+        # Create new patient
+        _logger.info("Creating new patient record for: %s", self.patient_name)
+        patient_vals = {
+            'name': self.patient_name,
+            'mobile': self.patient_mobile,
+            'email': self.patient_email,
+            'gender': self.patient_sex.lower() if self.patient_sex else 'other',
+            'blood_group': self.blood_group.lower() if self.blood_group else False,
+            'dob': self.date_of_birth,
+            'date_of_birth': self.date_of_birth,
+        }
+        
+        # Add address fields if they exist
+        if hasattr(self, 'street') and self.street:
+            patient_vals['street'] = self.street
+        
+        if hasattr(self, 'city') and self.city:
+            patient_vals['city'] = self.city
+        
+        if hasattr(self, 'state_id') and self.state_id:
+            patient_vals['state_id'] = self.state_id.name if hasattr(self.state_id, 'name') else self.state_id
+        
+        if hasattr(self, 'zip') and self.zip:
+            patient_vals['zip'] = self.zip
+        
+        if hasattr(self, 'country_id') and self.country_id:
+            patient_vals['country_id'] = self.country_id.name if hasattr(self.country_id, 'name') else self.country_id
+        
+        # Add referred by if it exists
+        if hasattr(self, 'referred_by') and self.referred_by:
+            partner = self.env['res.partner'].search([('name', '=', self.referred_by)], limit=1)
+            if partner:
+                patient_vals['referred_by'] = partner.id
+        
+        # Add marital status if it exists
+        if hasattr(self, 'marital_status') and self.marital_status:
+            patient_vals['marital_status'] = self.marital_status.lower() if self.marital_status else 'single'
+        
+        _logger.info("Patient values for creation: %s", patient_vals)
+        
+        try:
+            # Create the patient record
+            new_patient = self.env['hospital.patient'].create(patient_vals)
+            _logger.info("Successfully created patient: %s", new_patient.id)
+            
+            # Update the sequence for patient_id field if it uses 'New'
+            if new_patient.patient_id == 'New':
+                new_patient.patient_id = self.env['ir.sequence'].next_by_code('hospital.patient') or 'P-000'
+                _logger.info("Updated patient ID to: %s", new_patient.patient_id)
+            
+            # Link this lead to the created patient
+            self.patient_id = new_patient.id
+            self.is_new_patient = False
+            
+            # Log a note in the chatter
+            self.message_post(
+                body=_("Created new patient record: %s") % new_patient.name,
+                subtype_xmlid="mail.mt_note"
+            )
+            
+            return new_patient
+        
+        except Exception as e:
+            _logger.error("Failed to create patient: %s", e)
+            raise ValidationError(_("Failed to create patient: %s") % str(e))
+    
     @api.onchange('patient_id')
     def _onchange_patient_id(self):
         if self.patient_id:
             self.is_new_patient = False
-            self.patient_name = self.patient_id.partner_id.name
-            self.patient_mobile = self.patient_id.partner_id.phone
-            self.patient_email = self.patient_id.partner_id.email
-            self.date_of_birth = self.patient_id.date_of_birth
+            self.patient_name = self.patient_id.name
+            self.patient_mobile = self.patient_id.mobile
+            self.patient_email = self.patient_id.email
+            self.date_of_birth = self.patient_id.dob or self.patient_id.date_of_birth
             self.patient_sex = self.patient_id.gender
             self.blood_group = self.patient_id.blood_group
             # Copy other relevant fields from patient record
@@ -272,22 +397,22 @@ class CrmLead(models.Model):
         if self.patient_mobile or self.patient_email:
             domain = []
             if self.patient_mobile:
+                domain.append('|')
+                domain.append(('mobile', '=', self.patient_mobile))
                 domain.append(('phone', '=', self.patient_mobile))
             if self.patient_email:
                 domain.append(('email', '=', self.patient_email))
             
             if domain:
-                partner = self.env['res.partner'].search(domain, limit=1)
-                if partner:
-                    patient = self.env['medical.patient'].search([('partner_id', '=', partner.id)], limit=1)
-                    if patient and not self.patient_id:
-                        self.patient_id = patient.id
-                        return {
-                            'warning': {
-                                'title': _('Existing Patient Found'),
-                                'message': _('An existing patient was found and linked to this lead.')
-                            }
+                existing_patient = self.env['hospital.patient'].search(domain, limit=1)
+                if existing_patient and not self.patient_id:
+                    self.patient_id = existing_patient.id
+                    return {
+                        'warning': {
+                            'title': _('Existing Patient Found'),
+                            'message': _('An existing patient was found and linked to this lead.')
                         }
+                    }
 
 
     def _prepare_patient_values(self):
@@ -432,3 +557,7 @@ class CrmLead(models.Model):
             lead.visit_count = self.env['crm.visits'].search_count([
                 ('lead_id', '=', lead.id)
             ])
+
+
+                
+
