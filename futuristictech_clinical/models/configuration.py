@@ -28,6 +28,6 @@ class PhysicianDegree(models.Model):
     _name = 'hospital.physician.degree'
     _description = 'Physician Degree'
     
-    name = fields.Char(string='Name', required=True)
+    degree = fields.Char(string='Name', required=True)
     code = fields.Char(string='Code')
-    active = fields.Boolean(default=True)
+    full_name = fields.Char(string='Full Name')
