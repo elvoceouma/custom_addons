@@ -488,14 +488,14 @@
     <record id="action_hospital_patient_ethnic_group" model="ir.actions.act_window">
         <field name="name">Ethnic Groups</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.patient.ethnic.group</field>
+        <field name="res_model">oeh.medical.ethnicity</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <record id="action_hospital_patient_genetic_risk" model="ir.actions.act_window">
         <field name="name">Genetic Risks</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.patient.genetic.risk</field>
+        <field name="res_model">oeh.medical.genetics</field>
         <field name="view_mode">tree,form</field>
     </record>
 

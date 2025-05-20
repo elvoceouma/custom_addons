@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Patient Card/Profile Form View -->
-    <!-- Patient Card/Profile Form View -->
     <record id="view_hospital_patient_profile_form" model="ir.ui.view">
         <field name="name">hospital.patient.profile.form</field>
         <field name="model">hospital.patient</field>
@@ -240,4 +238,209 @@
             </p>
         </field>
     </record>
+
+    <record id="view_oeh_medical_genetics_form" model="ir.ui.view">
+        <field name="name">oeh.medical.genetics.form</field>
+        <field name="model">oeh.medical.genetics</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title" style="width: 390px;">
+                            <label for="long_name"/>
+                            <h1><field name="long_name" class="oe_inline"/></h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="chromosome"/>
+                            <field name="dominance"/>
+                        </group>
+                        <group>
+                            <field name="gene_id"/>
+                            <field name="location"/>
+                        </group>
+                    </group>
+                    <group string="Extra Info">
+                        <field name="info" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_oeh_medical_genetics_tree" model="ir.ui.view">
+        <field name="name">oeh.medical.genetics.tree</field>
+        <field name="model">oeh.medical.genetics</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="long_name"/>
+                <field name="chromosome"/>
+                <field name="gene_id"/>
+                <field name="dominance"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_oeh_medical_genetics_search" model="ir.ui.view">
+        <field name="name">oeh.medical.genetics.search</field>
+        <field name="model">oeh.medical.genetics</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="long_name"/>
+                <field name="chromosome"/>
+                <field name="gene_id"/>
+                <field name="dominance"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_oeh_medical_genetics" model="ir.actions.act_window">
+        <field name="name">Genetic Risks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">oeh.medical.genetics</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first genetic risk record
+            </p>
+        </field>
+    </record>
+
+
+
+    <record id="view_hospital_patient_recreational_drug_form" model="ir.ui.view">
+        <field name="name">hospital.patient.recreational.drug.form</field>
+        <field name="model">hospital.patient.recreational.drug</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_left" style="width: 500px;">
+                        <div class="oe_title" style="width: 390px;">
+                            <label for="name" string="Drug Name"/>
+                            <h1><field name="name" class="oe_inline"/></h1>
+                            <label for="street_name"/>
+                            <field name="street_name"/>
+                        </div>
+                    </div>
+                    <group string="General">
+                        <group>
+                            <field name="toxicity"/>
+                            <field name="legal_status"/>
+                        </group>
+                        <group>
+                            <field name="addiction_level"/>
+                            <field name="category"/>
+                        </group>
+                    </group>
+                    <group string="DEA Schedule Level">
+                        <group>
+                            <field name="dea_schedule_i"/>
+                            <field name="dea_schedule_iii"/>
+                            <field name="dea_schedule_v"/>
+                        </group>
+                        <group>
+                            <field name="dea_schedule_ii"/>
+                            <field name="dea_schedule_iv"/>
+                        </group>
+                    </group>
+                    <group string="Henningfield Rating">
+                        <p class="text-muted">
+                            Please enter level values between 1 and 6 (1=highest and 6=lowest)
+                        </p>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="withdrawal_level"/>
+                            <field name="tolerance_level"/>
+                            <field name="intoxication_level"/>
+                        </group>
+                        <group>
+                            <field name="reinforcement_level"/>
+                            <field name="dependence_level"/>
+                        </group>
+                    </group>
+                    <group string="Administration Routes">
+                        <group>
+                            <field name="route_oral"/>
+                            <field name="route_popping"/>
+                            <field name="route_injection"/>
+                        </group>
+                        <group>
+                            <field name="route_inhaling"/>
+                            <field name="route_sniffing"/>
+                        </group>
+                    </group>
+                    <group string="Additional Info and Effects">
+                        <field name="info" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_patient_recreational_drug_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.recreational.drug.tree</field>
+        <field name="model">hospital.patient.recreational.drug</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="street_name"/>
+                <field name="category"/>
+                <field name="toxicity"/>
+                <field name="addiction_level"/>
+                <field name="legal_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_patient_recreational_drug_search" model="ir.ui.view">
+        <field name="name">hospital.patient.recreational.drug.search</field>
+        <field name="model">hospital.patient.recreational.drug</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="street_name"/>
+                <field name="category"/>
+                <filter string="Legal" name="legal" domain="[('legal_status', '=', 'legal')]"/>
+                <filter string="Illegal" name="illegal" domain="[('legal_status', '=', 'illegal')]"/>
+                <filter string="Restricted" name="restricted" domain="[('legal_status', '=', 'restricted')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category'}"/>
+                    <filter name="group_by_toxicity" string="Toxicity" context="{'group_by': 'toxicity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hospital_patient_recreational_drug" model="ir.actions.act_window">
+        <field name="name">Recreational Drugs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient.recreational.drug</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first recreational drug record
+            </p>
+        </field>
+    </record>
+
 </odoo>

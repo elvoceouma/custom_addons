@@ -391,27 +391,34 @@ class DocumentType(models.Model):
 
 
 class HospitalPatientEthnicGroup(models.Model):
-    _name = 'hospital.patient.ethnic.group'
+    _name = 'oeh.medical.ethnicity'
     _description = 'Hospital Patient'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    # _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'name'          
 
     name = fields.Char(string='Name', required=True, tracking=True)
-    code = fields.Char(string='Code', tracking=True)
-    description = fields.Text(string='Description')
-    active = fields.Boolean(default=True, tracking=True)
-    color = fields.Integer(string='Color Index')
-
-
+    
 class HospitalPatientGeneticRisk(models.Model):
-    _name = 'hospital.patient.genetic.risk'
+    _name = 'oeh.medical.genetics'
     _description = 'Hospital Patient Genetic Risk'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'name'          
-
+    _rec_name = 'name'
+    
     name = fields.Char(string='Name', required=True, tracking=True)
+    long_name = fields.Char(string='Complete Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
     description = fields.Text(string='Description')
+    
+    # Fields from form view that weren't in the original model
+    chromosome = fields.Char(string='Chromosome', tracking=True)
+    dominance = fields.Selection([
+        ('dominant', 'Dominant'),
+        ('recessive', 'Recessive')
+    ], string='Dominance', tracking=True)
+    gene_id = fields.Char(string='Gene ID', tracking=True)
+    location = fields.Char(string='Location', tracking=True)
+    info = fields.Html(string='Additional Information')
+    
     active = fields.Boolean(default=True, tracking=True)
     color = fields.Integer(string='Color Index')
 
@@ -420,14 +427,86 @@ class HospitalPatientRecreationalDrug(models.Model):
     _name = 'hospital.patient.recreational.drug'
     _description = 'Hospital Patient Recreational Drug'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'name'          
-
-    name = fields.Char(string='Name', required=True, tracking=True)
+    _rec_name = 'name'
+    
+    name = fields.Char(string='Drug Name', required=True, tracking=True)
     code = fields.Char(string='Code', tracking=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(default=True, tracking=True)
     color = fields.Integer(string='Color Index')
-
+    
+    # Fields from the form view
+    street_name = fields.Char(string='Street Name', tracking=True)
+    
+    # General section fields
+    toxicity = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('extreme', 'Extreme')
+    ], string='Toxicity', tracking=True)
+    
+    legal_status = fields.Selection([
+        ('legal', 'Legal'),
+        ('illegal', 'Illegal'),
+        ('restricted', 'Restricted')
+    ], string='Legal Status', tracking=True)
+    
+    addiction_level = fields.Selection([
+        ('none', 'None'),
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('extreme', 'Extreme')
+    ], string='Addiction Level', tracking=True)
+    
+    category = fields.Selection([
+        ('opioid', 'Opioid'),
+        ('stimulant', 'Stimulant'),
+        ('depressant', 'Depressant'),
+        ('hallucinogen', 'Hallucinogen'),
+        ('cannabis', 'Cannabis'),
+        ('inhalant', 'Inhalant'),
+        ('other', 'Other')
+    ], string='Category', tracking=True)
+    
+    # DEA Schedule Level fields
+    dea_schedule_i = fields.Boolean(string='Schedule I', tracking=True)
+    dea_schedule_ii = fields.Boolean(string='Schedule II', tracking=True)
+    dea_schedule_iii = fields.Boolean(string='Schedule III', tracking=True)
+    dea_schedule_iv = fields.Boolean(string='Schedule IV', tracking=True)
+    dea_schedule_v = fields.Boolean(string='Schedule V', tracking=True)
+    
+    # Henningfield Rating fields
+    withdrawal_level = fields.Integer(string='Withdrawal', tracking=True, help='Level between 1 and 6 (1=highest and 6=lowest)')
+    tolerance_level = fields.Integer(string='Tolerance', tracking=True, help='Level between 1 and 6 (1=highest and 6=lowest)')
+    intoxication_level = fields.Integer(string='Intoxication', tracking=True, help='Level between 1 and 6 (1=highest and 6=lowest)')
+    reinforcement_level = fields.Integer(string='Reinforcement', tracking=True, help='Level between 1 and 6 (1=highest and 6=lowest)')
+    dependence_level = fields.Integer(string='Dependence', tracking=True, help='Level between 1 and 6 (1=highest and 6=lowest)')
+    
+    # Administration Routes fields
+    route_oral = fields.Boolean(string='Oral', tracking=True)
+    route_popping = fields.Boolean(string='Popping', tracking=True)
+    route_injection = fields.Boolean(string='Injection', tracking=True)
+    route_inhaling = fields.Boolean(string='Inhaling', tracking=True)
+    route_sniffing = fields.Boolean(string='Sniffing', tracking=True)
+    
+    # Additional Info
+    info = fields.Html(string='Additional Information and Effects')
+    
+    @api.constrains('withdrawal_level', 'tolerance_level', 'intoxication_level', 'reinforcement_level', 'dependence_level')
+    def _check_henningfield_rating(self):
+        """Validate that Henningfield ratings are between 1 and 6"""
+        for record in self:
+            fields_to_check = [
+                'withdrawal_level', 'tolerance_level', 'intoxication_level',
+                'reinforcement_level', 'dependence_level'
+            ]
+            
+            for field in fields_to_check:
+                value = getattr(record, field, False)
+                if value and (value < 1 or value > 6):
+                    raise models.ValidationError(f"{field.replace('_', ' ').title()} must be between 1 and 6")
 
 class HospitalAwsFileType(models.Model):
     _name = 'hospital.aws.file.type'

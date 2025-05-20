@@ -193,10 +193,10 @@ access_hospital_patient_user,hospital.patient.user,model_hospital_patient,base.g
 access_hospital_patient_manager,hospital.patient.manager,model_hospital_patient,base.group_system,1,1,1,1
 access_hospital_patient_document_user,hospital.patient.document.user,model_hospital_patient_document,base.group_user,1,1,1,0
 access_hospital_patient_document_manager,hospital.patient.document.manager,model_hospital_patient_document,base.group_system,1,1,1,1
-access_hospital_patient_ethnic_group_user,hospital.patient.ethnic.group.user,model_hospital_patient_ethnic_group,base.group_user,1,1,1,0
-access_hospital_patient_ethnic_group_manager,hospital.patient.ethnic.group.manager,model_hospital_patient_ethnic_group,base.group_system,1,1,1,1
-access_hospital_patient_genetic_risk_user,hospital.patient.genetic.risk.user,model_hospital_patient_genetic_risk,base.group_user,1,1,1,0
-access_hospital_patient_genetic_risk_manager,hospital.patient.genetic.risk.manager,model_hospital_patient_genetic_risk,base.group_system,1,1,1,1
+access_hospital_patient_ethnic_group_user,oeh.medical.ethnicity.user,model_oeh_medical_ethnicity,base.group_user,1,1,1,0
+access_hospital_patient_ethnic_group_manager,oeh.medical.ethnicity.manager,model_oeh_medical_ethnicity,base.group_system,1,1,1,1
+access_hospital_patient_genetic_risk_user,oeh.medical.genetics.user,model_oeh_medical_genetics,base.group_user,1,1,1,0
+access_hospital_patient_genetic_risk_manager,oeh.medical.genetics.manager,model_oeh_medical_genetics,base.group_system,1,1,1,1
 access_hospital_patient_occupation_user,hospital.patient.occupation.user,model_hospital_patient_occupation,base.group_user,1,1,1,0
 access_hospital_patient_occupation_manager,hospital.patient.occupation.manager,model_hospital_patient_occupation,base.group_system,1,1,1,1
 access_hospital_patient_recreational_drug_user,hospital.patient.recreational.drug.user,model_hospital_patient_recreational_drug,base.group_user,1,1,1,0
