@@ -86,9 +86,10 @@ class DrugFrequency(models.Model):
     _name = 'hospital.drug.frequency'
     _description = 'Drug Frequency'
     
-    name = fields.Char(string='Name', required=True)
-    code = fields.Char(string='Code')
-    active = fields.Boolean(default=True)
+    name = fields.Char('Frequency')
+    morning = fields.Float('morning')
+    afternoon = fields.Float('afternoon')
+    night = fields.Float('night')
 
 
 class DrugRoute(models.Model):
