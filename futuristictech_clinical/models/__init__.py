@@ -32,4 +32,5 @@ from . import hospital_room_inspection
 from . import hospital_doctor_payout
 from . import discharge
 from . import activity_records
+from .import nurse_assessment
 from . import models

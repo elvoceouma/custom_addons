@@ -123,12 +123,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="action_hospital_nurse_assessment" model="ir.actions.act_window">
-        <field name="name">Nurse Assessments</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.nurse.assessment</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+ 
 
     <!-- Vital Signs Actions -->
     <record id="action_hospital_vital_chart" model="ir.actions.act_window">

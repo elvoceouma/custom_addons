@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_nurse_assessment_form" model="ir.ui.view">
+        <field name="name">nurse.assessment.form</field>
+        <field name="model">nurse.assessment</field>
+        <field name="arch" type="xml">
+            <form string="Nurse Assessment">
+                <header>
+                    <button name="action_inprogress" string="In Progress" type="object" 
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            invisible="state != 'in_progress'" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title"> 
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number" readonly="state == 'completed'"/>
+                            <field name="patient_name"/>
+                            <field name="age"/>
+                            <field name="mrn_no"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="patient_gender"/>
+                            <field name="campus_id"/>
+                        </group>
+                    </group>
+                    <group string="Vitals">
+                        <group>
+                            <field name="nurse_bp" readonly="state == 'completed'"/>
+                            <field name="temperature" readonly="state == 'completed'"/>
+                            <field name="weight" readonly="state == 'completed'"/>
+                            <field name="saturation" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="nurse_pulse" readonly="state == 'completed'"/>
+                            <field name="respiratory_rate" readonly="state == 'completed'"/>
+                            <field name="grbs" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group string="Examination">
+                        <group>
+                            <field name="level_consciousness" readonly="state == 'completed'"/>
+                            <field name="respiratory_status" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="skin_integrity" readonly="state == 'completed'"/>
+                            <field name="any_other_finding" readonly="state == 'completed'"/>
+                            <field name="finding_notes" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="current_medications" readonly="state == 'completed'"/>
+                            <field name="diet" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="investigation_ordered" readonly="state == 'completed'"/>
+                            <field name="diet_note" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="vulnerable" readonly="state == 'completed'"/>
+                            <field name="pain_score" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="special_care" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="pressure_sores" readonly="state == 'completed'"/>
+                            <field name="restraints" readonly="state == 'completed'"/>
+                            <field name="fall" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="pressure_note" readonly="state == 'completed'"/>
+                            <field name="restraints_used" readonly="state == 'completed'"/>
+                            <field name="dvt" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_nurse_assessment_tree" model="ir.ui.view">
+        <field name="name">nurse.assessment.tree</field>
+        <field name="model">nurse.assessment</field>
+        <field name="arch" type="xml">
+            <tree string="Nurse Assessments">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_nurse_assessment_search" model="ir.ui.view">
+        <field name="name">nurse.assessment.search</field>
+        <field name="model">nurse.assessment</field>
+        <field name="arch" type="xml">
+            <search string="Nurse Assessment">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="ip_number"/>
+                <field name="mrn_no"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state','=','in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <filter string="Date" name="date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_nurse_assessment" model="ir.actions.act_window">
+        <field name="name">Nurse Assessment</field>
+        <field name="res_model">nurse.assessment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_nurse_assessment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first nurse assessment!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <!-- <menuitem id="menu_nurse_assessment"
+              name="Nurse Assessments"
+              action="action_nurse_assessment"
+              parent="your_parent_menu"
+              sequence="10"/>
+               -->
+    <!-- Sequence for Nurse Assessment -->
+    <record id="seq_nurse_assessment" model="ir.sequence">
+        <field name="name">Nurse Assessment</field>
+        <field name="code">nurse.assessment</field>
+        <field name="prefix">NA</field>
+        <field name="padding">6</field>
+    </record>
+    
+</odoo>

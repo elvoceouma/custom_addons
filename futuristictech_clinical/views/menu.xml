@@ -31,7 +31,7 @@
     <menuitem id="menu_illness_tag" name="Illness Tag" parent="menu_patient_management_root" action="action_hospital_illness_tag" sequence="160"/>
     <menuitem id="menu_initial_assessments" name="Initial Assessments" parent="menu_patient_management_root" action="action_hospital_initial_assessment" sequence="170"/>
     <menuitem id="menu_care_plan" name="Care Plan" parent="menu_patient_management_root" action="action_hospital_care_plan" sequence="180"/>
-    <menuitem id="menu_nurse_assessment" name="Nurse Assessment" parent="menu_patient_management_root" action="action_hospital_nurse_assessment" sequence="190"/>
+    <menuitem id="menu_nurse_assessment" name="Nurse Assessment" parent="menu_patient_management_root" action="action_nurse_assessment" sequence="190"/>
     <menuitem id="menu_vital_charts" name="Vital Charts" parent="menu_patient_management_root" action="action_hospital_vital_chart" sequence="200"/>
     <menuitem id="menu_mental_status_examination" name="Mental Status Examination" parent="menu_patient_management_root" action="action_hospital_mental_status_examination" sequence="210"/>
     <menuitem id="menu_drug_chart" name="Drug Chart" parent="menu_patient_management_root" action="action_hospital_drug_chart" sequence="220"/>

@@ -74,6 +74,7 @@
         'views/room_inspection_views.xml',
         'views/hospital_doctor_payout_views.xml',
         'views/activity_record_views.xml',
+        'views/nurse_assessment_view.xml',
         'views/actions.xml',  
         'views/menu.xml',     
         

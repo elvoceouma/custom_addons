@@ -363,3 +363,6 @@ access_psychoassessment_line_user,psychoassessment.line user,model_psychoassessm
 access_alternative_line_user,alternative.line user,model_alternative_line,base.group_user,1,1,1,1
 access_radiology_line_user,radiology.line user,model_radiology_line,base.group_user,1,1,1,1
 access_lab_line_user,lab.line user,model_lab_line,base.group_user,1,1,1,1
+
+access_nurse_assessment_user,nurse.assessment.user,model_nurse_assessment,base.group_user,1,1,1,0
+access_nurse_assessment_manager,nurse.assessment.manager,model_nurse_assessment,base.group_system,1,1,1,1

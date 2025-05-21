@@ -457,72 +457,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Nurse Assessment Views -->
-    <record id="view_hospital_nurse_assessment_form" model="ir.ui.view">
-        <field name="name">hospital.nurse.assessment.form</field>
-        <field name="model">hospital.nurse.assessment</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="assessment_date"/>
-                            <field name="nurse_id"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Assessment" name="assessment">
-                            <field name="vital_signs" placeholder="Vital signs observations"/>
-                            <field name="general_appearance" placeholder="General appearance notes"/>
-                            <field name="neurological" placeholder="Neurological assessment"/>
-                            <field name="cardiovascular" placeholder="Cardiovascular assessment"/>
-                            <field name="respiratory" placeholder="Respiratory assessment"/>
-                            <field name="gastrointestinal" placeholder="Gastrointestinal assessment"/>
-                            <field name="genitourinary" placeholder="Genitourinary assessment"/>
-                            <field name="musculoskeletal" placeholder="Musculoskeletal assessment"/>
-                            <field name="skin" placeholder="Skin assessment"/>
-                            <field name="pain" placeholder="Pain assessment"/>
-                            <field name="interventions" placeholder="Nursing interventions performed"/>
-                            <field name="notes" placeholder="Additional notes"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_hospital_nurse_assessment_tree" model="ir.ui.view">
-        <field name="name">hospital.nurse.assessment.tree</field>
-        <field name="model">hospital.nurse.assessment</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="assessment_date"/>
-                <field name="nurse_id"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="action_hospital_nurse_assessment" model="ir.actions.act_window">
-        <field name="name">Nurse Assessments</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.nurse.assessment</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
+   
     <!-- Drug Chart Views -->
     <record id="view_hospital_drug_chart_form" model="ir.ui.view">
         <field name="name">hospital.drug.chart.form</field>
