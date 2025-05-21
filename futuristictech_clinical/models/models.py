@@ -3,19 +3,19 @@
 from odoo import models, fields, api, _
 
 # For missing action models referenced in menus
-class HospitalActivityRecord(models.Model):
-    _name = 'hospital.activity.record'
-    _description = 'Hospital Activity Record'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class HospitalActivityRecord(models.Model):
+#     _name = 'hospital.activity.record'
+#     _description = 'Hospital Activity Record'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    follow_up_sheet_id = fields.Many2one('hospital.follow.up.sheet', string='Follow-Up Sheet', required=True, ondelete='cascade')
-    date = fields.Date(string='Date', default=fields.Date.context_today)
-    activity = fields.Char(string='Activity')
-    comments = fields.Text(string='Comments')
-    activity_type = fields.Selection([
-        ('formal', 'Formal'),
-        ('informal', 'Informal')
-    ], string='Activity Type', required=True, default='formal')
+#     follow_up_sheet_id = fields.Many2one('hospital.follow.up.sheet', string='Follow-Up Sheet', required=True, ondelete='cascade')
+#     date = fields.Date(string='Date', default=fields.Date.context_today)
+#     activity = fields.Char(string='Activity')
+#     comments = fields.Text(string='Comments')
+#     activity_type = fields.Selection([
+#         ('formal', 'Formal'),
+#         ('informal', 'Informal')
+#     ], string='Activity Type', required=True, default='formal')
 
 # class HospitalAppointment(models.Model):
 #     _name = 'hospital.appointment'

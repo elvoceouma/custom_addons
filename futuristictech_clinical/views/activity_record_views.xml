@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_activity_record_form" model="ir.ui.view">
+        <field name="name">activity.records.form</field>
+        <field name="model">activity.records</field>
+        <field name="arch" type="xml">
+            <form string="Activity Record">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_inprogress" string="In Progress" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number"/>
+                            <field name="patient_name"/>
+                            <field name="age"/>
+                            <field name="mrn_no"/>
+                            <field name="campus_id"/>
+                            <field name="patient_gender"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="doctor"/>
+                            <field name="ward"/>
+                            <field name="room"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ward Transfer">
+                            <field name="ward_transfer_line_ids">
+                                <tree editable="bottom" string="Ward Transfer">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Transferred Date Time" readonly="1"/>
+                                    <field name="from_ward_id" string="From Ward"/>
+                                    <field name="from_room_id" string="From Room"/>
+                                    <field name="to_ward_id" string="To Ward"/>
+                                    <field name="to_room_id" string="To Room"/>
+                                    <field name="hand_over_nurse" string="Handing Over Nurse"/>
+                                    <field name="take_over_nurse" string="Taking Over Nurse"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="from_ward_id"/>
+                                        <field name="from_room_id"/>
+                                        <field name="to_ward_id"/>
+                                        <field name="to_room_id"/>
+                                        <field name="hand_over_nurse"/>
+                                        <field name="take_over_nurse"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Medical Equipment(Ward and Recovery Room Usage)">
+                            <field name="medical_equipments_line_ids">
+                                <tree editable="bottom" string="Medical Equipment">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="equipmet_name" string="Equipment Name"/>
+                                    <field name="connect_time" widget="float_time" string="Connect Time"/>
+                                    <field name="disconnect_time" widget="float_time" string="Disconnect Time"/>
+                                    <field name="incharge_id" string="Incharge"/>
+                                    <field name="remarks" string="Remarks"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="equipmet_name"/>
+                                        <field name="connect_time" widget="float_time"/>
+                                        <field name="disconnect_time" widget="float_time"/>
+                                        <field name="incharge_id"/>
+                                        <field name="remarks"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="ECT Chart">
+                            <field name="ect_chart_line_ids">
+                                <tree editable="bottom" string="ECT Chart">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="psychiatrist_id" string="Psychiatrist"/>
+                                    <field name="assistant_id" string="Assistant"/>
+                                    <field name="anaesthetist" string="Anaesthetist"/>
+                                    <field name="equipment_used" string="Equipment Used"/>
+                                    <field name="any_other" string="Any Other"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="psychiatrist_id"/>
+                                        <field name="assistant_id"/>
+                                        <field name="anaesthetist"/>
+                                        <field name="equipment_used"/>
+                                        <field name="any_other"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Consultation Visit">
+                            <field name="consultation_line_ids">
+                                <tree editable="bottom" string="Consultation Visit">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="consultant_name" string="Consultant Name"/>
+                                    <field name="visit_time" string="Visit Time"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="consultant_name"/>
+                                        <field name="visit_time"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Psychotheraphy Assessment">
+                            <field name="psychoassessment_line_ids">
+                                <tree editable="bottom" string="Psychotherapy Assessment">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="consultant_name" string="Consultant Name"/>
+                                    <field name="procedure" string="Procedure"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="consultant_name"/>
+                                        <field name="procedure"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Alternative Supportive">
+                            <field name="alternaive_line_ids">
+                                <tree editable="bottom" string="Alternative Supportive">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="consultant_name" string="Consultant Name"/>
+                                    <field name="therapy" string="Therapy"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="consultant_name"/>
+                                        <field name="therapy"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Radiology">
+                            <field name="radiology_line_ids">
+                                <tree editable="bottom" string="Radiology">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="radiology" string="Radiology"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="radiology"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Lab Procedure">
+                            <field name="lab_line_ids">
+                                <tree editable="bottom" string="Lab Procedure">
+                                    <field name="activity_id" invisible="1"/>
+                                    <field name="date_time" string="Date Time" readonly="1"/>
+                                    <field name="lab_procedure" string="Lab Procedure"/>
+                                    <field name="no_of_units" string="No. of Units"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date_time"/>
+                                        <field name="lab_procedure"/>
+                                        <field name="no_of_units"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_activity_record_tree" model="ir.ui.view">
+        <field name="name">activity.records.tree</field>
+        <field name="model">activity.records</field>
+        <field name="arch" type="xml">
+            <tree string="Activity Records">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="ip_number"/>
+                <field name="date"/>
+                <field name="doctor"/>
+                <field name="ward"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_activity_record_search" model="ir.ui.view">
+        <field name="name">activity.records.search</field>
+        <field name="model">activity.records</field>
+        <field name="arch" type="xml">
+            <search string="Activity Records">
+                <field name="name_seq"/>
+                <field name="patient_name"/>
+                <field name="ip_number"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'date'}"/>
+                    <filter name="group_by_doctor" string="Doctor" context="{'group_by': 'doctor'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_activity_record" model="ir.actions.act_window">
+        <field name="name">Activity Records</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activity.records</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_activity_record_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Activity Record!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <!-- <menuitem id="menu_activity_record_root" name="Activity Records" sequence="10"/>
+    <menuitem id="menu_activity_record" name="Activity Records" parent="menu_activity_record_root" action="action_activity_record" sequence="1"/> -->
+</odoo>

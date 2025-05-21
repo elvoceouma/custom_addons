@@ -284,7 +284,7 @@
     <record id="action_hospital_activity_record" model="ir.actions.act_window">
         <field name="name">Activity Records</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.activity.record</field>
+        <field name="res_model">activity.records</field>
         <field name="view_mode">tree,form</field>
     </record>
 

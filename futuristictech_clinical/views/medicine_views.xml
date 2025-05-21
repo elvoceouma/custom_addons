@@ -38,7 +38,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_medicine_tree" model="ir.ui.view">
         <field name="name">hospital.medicine.tree</field>
         <field name="model">hospital.medicine</field>
@@ -52,7 +52,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_medicine" model="ir.actions.act_window">
         <field name="name">Medicines</field>
         <field name="type">ir.actions.act_window</field>
@@ -61,7 +61,7 @@
     </record>
 
     <!-- Medication Category Views -->
- <!-- Medication Category Views -->
+    <!-- Medication Category Views -->
     <record id="view_hospital_medication_category_form" model="ir.ui.view">
         <field name="name">hospital.medication.category.form</field>
         <field name="model">hospital.medication.category</field>
@@ -98,7 +98,7 @@
         </field>
     </record>
 
-    
+
     <record id="view_hospital_medication_category_tree" model="ir.ui.view">
         <field name="name">hospital.medication.category.tree</field>
         <field name="model">hospital.medication.category</field>
@@ -110,7 +110,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_medication_category" model="ir.actions.act_window">
         <field name="name">Medication Categories</field>
         <field name="type">ir.actions.act_window</field>
@@ -138,7 +138,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_medication_type_tree" model="ir.ui.view">
         <field name="name">hospital.medication.type.tree</field>
         <field name="model">hospital.medication.type</field>
@@ -150,7 +150,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_medication_type" model="ir.actions.act_window">
         <field name="name">Medication Types</field>
         <field name="type">ir.actions.act_window</field>
@@ -171,26 +171,28 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="code"/>
-                        <field name="active"/>
+                        <field name="morning"/>
+                        <field name="afternoon"/>
+                        <field name="night"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_drug_frequency_tree" model="ir.ui.view">
         <field name="name">hospital.drug.frequency.tree</field>
         <field name="model">hospital.drug.frequency</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
-                <field name="code"/>
-                <field name="active"/>
+                <field name="morning"/>
+                <field name="afternoon"/>
+                <field name="night"/>
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_frequency" model="ir.actions.act_window">
         <field name="name">Drug Frequencies</field>
         <field name="type">ir.actions.act_window</field>
@@ -218,7 +220,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_drug_route_tree" model="ir.ui.view">
         <field name="name">hospital.drug.route.tree</field>
         <field name="model">hospital.drug.route</field>
@@ -230,7 +232,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_route" model="ir.actions.act_window">
         <field name="name">Drug Routes</field>
         <field name="type">ir.actions.act_window</field>
@@ -258,7 +260,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_drug_form_tree" model="ir.ui.view">
         <field name="name">hospital.drug.form.tree</field>
         <field name="model">hospital.drug.form</field>
@@ -270,7 +272,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_form" model="ir.actions.act_window">
         <field name="name">Drug Forms</field>
         <field name="type">ir.actions.act_window</field>
@@ -298,7 +300,7 @@
             </form>
         </field>
     </record>
-    
+
     <record id="view_hospital_dose_unit_tree" model="ir.ui.view">
         <field name="name">hospital.dose.unit.tree</field>
         <field name="model">hospital.dose.unit</field>
@@ -310,7 +312,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_dose_unit" model="ir.actions.act_window">
         <field name="name">Dose Units</field>
         <field name="type">ir.actions.act_window</field>
@@ -348,7 +350,7 @@
     </record>
 
     <!-- Create Medicine Consumption Views   -->
-        <record id="view_hospital_medicine_consumption_form" model="ir.ui.view">
+    <record id="view_hospital_medicine_consumption_form" model="ir.ui.view">
         <field name="name">hospital.medicine.consumption.form</field>
         <field name="model">hospital.medicine.consumption</field>
         <field name="arch" type="xml">
@@ -360,8 +362,8 @@
                         </h1>
                     </div>
                     <group>
-                            <field name="register_type"/>
-                            <field name="date"/>
+                        <field name="register_type"/>
+                        <field name="date"/>
                         <field name="time"/>
                         <field name="campus_id"/>
                     </group>
@@ -372,7 +374,7 @@
 
     <!-- Create teh  views for the Tablet/Capsule Model -->
 
-    <record  id="view_hospital_tablet_capsule_form" model="ir.ui.view">
+    <record id="view_hospital_tablet_capsule_form" model="ir.ui.view">
         <field name="name">hospital.tablet.capsule.form</field>
         <field name="model">hospital.tablet.capsule</field>
         <field name="arch" type="xml">
@@ -387,7 +389,7 @@
                         <field name="date"/>
                         <field name="campus_id"/>
                         <field name="person_responsible"/>
-                        
+
                     </group>
                     <notebook>
                         <page string="Details" name="details">
@@ -416,7 +418,7 @@
             </tree>
         </field>
     </record>
-    
+
     <record id="action_hospital_drug_frequency_config" model="ir.actions.act_window">
         <field name="name">Drug Frequency Configurations</field>
         <field name="type">ir.actions.act_window</field>

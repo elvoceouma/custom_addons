@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hospital_activity_record_user,hospital.activity.record.user,model_hospital_activity_record,base.group_user,1,1,1,0
-access_hospital_activity_record_manager,hospital.activity.record.manager,model_hospital_activity_record,base.group_system,1,1,1,1
+access_activity_record_user,.activity.record.user,model_activity_records,base.group_user,1,1,1,0
+access_activity_record_manager,.activity.record.manager,model_activity_records,base.group_system,1,1,1,1
 access_hospital_admission_user,hospital.admission.user,model_hospital_admission,base.group_user,1,1,1,0
 access_hospital_admission_manager,hospital.admission.manager,model_hospital_admission,base.group_system,1,1,1,1
 access_hospital_admission_type_user,hospital.admission.type.user,model_hospital_admission_type,base.group_user,1,1,1,0
@@ -353,3 +353,13 @@ access_hospital_past_history_line,access_hospital_past_history_line,model_hospit
 access_hospital_my_admission,access_hospital_my_admission,futuristictech_clinical.model_my_admission,base.group_user,1,1,1,1
 hospital.case.history,hospital.case.history,futuristictech_clinical.model_hospital_case_history,base.group_user,1,1,1,1
 access_catatonic_signs,catatonic.signs,model_catatonic_signs,base.group_user,1,1,1,1
+
+access_activity_record_user,activity.record user,model_activity_records,base.group_user,1,1,1,1
+access_ward_transfer_line_user,ward.transfer.line user,model_ward_transfer_line,base.group_user,1,1,1,1
+access_medical_equipments_line_user,medical.equipments.line user,model_medical_equipments_line,base.group_user,1,1,1,1
+access_ect_chart_line_user,ect.chart.line user,model_ect_chart_line,base.group_user,1,1,1,1
+access_consultation_line_user,consultation.line user,model_consultation_line,base.group_user,1,1,1,1
+access_psychoassessment_line_user,psychoassessment.line user,model_psychoassessment_line,base.group_user,1,1,1,1
+access_alternative_line_user,alternative.line user,model_alternative_line,base.group_user,1,1,1,1
+access_radiology_line_user,radiology.line user,model_radiology_line,base.group_user,1,1,1,1
+access_lab_line_user,lab.line user,model_lab_line,base.group_user,1,1,1,1

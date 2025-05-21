@@ -2,7 +2,7 @@ from . import hospital
 from . import patient
 from . import block
 from . import admission
-from .import inpatient_admission
+from . import inpatient_admission
 from . import room
 from . import bed
 from . import pharmacy
@@ -29,6 +29,7 @@ from . import hospital_independent_examination
 from . import hospital_caretaker_allotment
 from . import hospital_laboratory
 from . import hospital_room_inspection
-from .import  hospital_doctor_payout
+from . import hospital_doctor_payout
 from . import discharge
+from . import activity_records
 from . import models
