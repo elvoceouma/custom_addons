@@ -57,7 +57,6 @@ class CaseHistory(models.Model):
     
     occupation = fields.Many2one('hospital.patient.occupation', string='Occupation')
     vocation = fields.Char(string='Vocation')
-    
     # Informants
     informant_name = fields.Char(string='Name')
     relationship_id = fields.Many2one('hospital.patient.relationship', string='Relationship')
@@ -140,7 +139,36 @@ class CaseHistory(models.Model):
         ('Moderately Abnormal', 'Moderately Abnormal'),
         ('Normal', 'Normal')
     ], string='Dresses and takes care of him/ herself')
-    
+    suicidal_tendency = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Suicidal tendency')
+    self_harm = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Self harm')
+    self_harm_specify = fields.Text(string='Specify Self Harm')
+    self_harm_others = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Self harm to others')
+    self_harm_others_specify = fields.Text(string='Specify Self Harm to Others')    
+    goes_out = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Goes out')
+    violence_tendency = fields.Selection([
+
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')    
+    ], string='Violence tendency')
+
     goes_work = fields.Selection([
         ('Severely Abnormal', 'Severely Abnormal'),
         ('Moderately Abnormal', 'Moderately Abnormal'),
@@ -1089,7 +1117,202 @@ class CaseHistory(models.Model):
     grade_6 = fields.Boolean(string='Grade VI: Can anticipate recurrences and takes preventive action')
     
     summary = fields.Text(string='Summary')
+      # Basic patient information - missing name field
+    name = fields.Char(string='Name', related='patient_id.name', store=True)
     
+    # Social Functioning - Missing fields
+    self_harm = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Self harm')
+    
+    self_harm_specify = fields.Text(string='Specify Self Harm')
+    
+    self_harm_others = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Self harm to others')
+    
+    self_harm_others_specify = fields.Text(string='Specify Self Harm to Others')
+    
+    goes_out = fields.Selection([
+        ('Severely Abnormal', 'Severely Abnormal'),
+        ('Moderately Abnormal', 'Moderately Abnormal'),
+        ('Normal', 'Normal')
+    ], string='Goes out')
+    
+    # Override these fields to be Boolean for visibility control
+    suicidal_tendency = fields.Boolean(string='Suicidal Tendency', default=False)
+    violence_tendency = fields.Boolean(string='Violence Tendency', default=False)
+    
+    # Suicidal Risk Assessment Fields
+    date_assessment = fields.Date(string='Date of Assessment')
+    date_attempt = fields.Date(string='Date of Attempt')
+    patient_reliability = fields.Selection([
+        ('reliable', 'Reliable'),
+        ('unreliable', 'Unreliable'),
+        ('partially_reliable', 'Partially Reliable')
+    ], string='Patient Reliability')
+    
+    informant_reliability = fields.Selection([
+        ('reliable', 'Reliable'),
+        ('unreliable', 'Unreliable'),
+        ('partially_reliable', 'Partially Reliable')
+    ], string='Informant Reliability')
+    
+    patient_adequency = fields.Selection([
+        ('adequate', 'Adequate'),
+        ('inadequate', 'Inadequate'),
+        ('partially_adequate', 'Partially Adequate')
+    ], string='Patient Adequacy')
+    
+    informant_adequency = fields.Selection([
+        ('adequate', 'Adequate'),
+        ('inadequate', 'Inadequate'),
+        ('partially_adequate', 'Partially Adequate')
+    ], string='Informant Adequacy')
+    
+    #
+    suicidal_lines = fields.One2many('hospital.suicidal.assessment.line', 'case_history_id', string='Suicidal Assessment Lines')
+    total_score = fields.Integer(string='Total Score', compute='_compute_total_score', store=True)
+    
+    # Violence Risk Assessment Fields
+    violence_assessment_date = fields.Date(string='Violence Assessment Date')
+    
+    # Historical Scale
+    previous_violence = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Previous Violence')
+    
+    young_age = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Young Age')
+    
+    relnship_instability = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Relationship Instability')
+    
+    emp_prblms = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Employment Problems')
+    
+    substance_prblms = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Substance Problems')
+    
+    major_illness_violence = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Major Illness Violence')
+    
+    psycopathy = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Psychopathy')
+    
+    early_adjustment = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Early Adjustment')
+    
+    personality_disorder = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Personality Disorder')
+    
+    supervision_failure = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Supervision Failure')
+    
+    # Clinical Scale
+    lack_insight = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Lack of Insight')
+    
+    neg_attitute = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Negative Attitude')
+    
+    active_symp_major_illness = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Active Symptoms of Major Illness')
+    
+    impulsivity = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Impulsivity')
+    
+    unresponsive_treatment = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Unresponsive to Treatment')
+    
+    # Risk Management Scale
+    feasibility = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Feasibility')
+    
+    destabilizers = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Destabilizers')
+    
+    personal_support = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Personal Support')
+    
+    noncompliance_remediation_attempt = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Noncompliance Remediation Attempt')
+    
+    stress = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Stress')
+    
+    # Computed field for total score
+    @api.depends('suicidal_lines.score')
+    def _compute_total_score(self):
+        for record in self:
+            record.total_score = sum(record.suicidal_lines.mapped('score'))
+    
+    # Method for getting questions button
+    def get_questions(self):
+        """Method to populate suicidal assessment questions"""
+        # Create suicidal assessment lines with predefined questions
+        questions = self.env['hospital.suicidal.question'].search([])
+        
+        # Clear existing lines
+        self.suicidal_lines.unlink()
+        
+        # Create new lines for each question
+        lines = []
+        for i, question in enumerate(questions, 1):
+            lines.append({
+                'serial_number': i,
+                'quen_id': question.id,
+                'case_history_id': self.id,
+            })
+        
+        if lines:
+            self.env['hospital.suicidal.assessment.line'].create(lines)
+        
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         return super(CaseHistory, self).create(vals_list)
@@ -1221,3 +1444,33 @@ class PatientRelationship(models.Model):
     name = fields.Char(string='Name', required=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(default=True)
+
+
+class SuicidalQuestion(models.Model):
+    _name = 'hospital.suicidal.question'
+    _description = 'Suicidal Assessment Question'
+    
+    name = fields.Char(string='Question', required=True)
+    sequence = fields.Integer(string='Sequence', default=10)
+    active = fields.Boolean(default=True)
+
+
+class SuicidalAnswer(models.Model):
+    _name = 'hospital.suicidal.answer'
+    _description = 'Suicidal Assessment Answer'
+    
+    name = fields.Char(string='Answer', required=True)
+    question_id = fields.Many2one('hospital.suicidal.question', string='Question', required=True)
+    score = fields.Integer(string='Score', default=0)
+    active = fields.Boolean(default=True)
+
+
+class SuicidalAssessmentLine(models.Model):
+    _name = 'hospital.suicidal.assessment.line'
+    _description = 'Suicidal Assessment Line'
+    
+    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    serial_number = fields.Integer(string='Serial Number')
+    quen_id = fields.Many2one('hospital.suicidal.question', string='Question', required=True)
+    ans_id = fields.Many2one('hospital.suicidal.answer', string='Answer')
+    score = fields.Integer(string='Score', related='ans_id.score', store=True)

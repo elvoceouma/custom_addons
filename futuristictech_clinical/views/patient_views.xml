@@ -8,6 +8,8 @@
             <form string="My Profile">
                 <header>
                     <button string="Patient Card" type="object" name="action_hospital_patient" class="oe_highlight"/>
+               <button name="action_print_registration_form" string="Print Registration Form" 
+            type="object" class="oe_highlight"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

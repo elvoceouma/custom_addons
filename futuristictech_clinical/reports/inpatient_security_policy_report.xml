@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Report registration remains the same -->
+    <record id="action_report_inpatient_security_policy" model="ir.actions.report">
+        <field name="name">Security Policy</field>
+        <field name="model">hospital.inpatient.admission</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_clinical.report_inpatient_security_policy</field>
+        <field name="report_file">futuristictech_clinical.report_inpatient_security_policy</field>
+        <field name="print_report_name">'Print Security Policy - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_hospital_inpatient_admission"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Modified template to use "doc" instead of "object" -->
+    <template id="report_inpatient_security_policy">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.internal_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; padding: 20px;">
+                        <!-- Header -->
+                        <div class="text-center" style="margin-bottom: 20px;">
+                            <h2 style="font-size: 14px; font-weight: bold;">HOSPITAL SECURITY POLICY</h2>
+                        </div>
+
+                        <!-- Patient Information -->
+                        <div style="margin-bottom: 15px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="width: 50%; padding-bottom: 10px;">
+                                        <span style="font-weight: normal;">PATIENT NAME: </span>
+                                        <span t-field="doc.patient_id.name"/>
+                                    </td>
+                                    <td style="width: 50%; padding-bottom: 10px;">
+                                        <span style="font-weight: normal;">DATE: </span>
+                                        <span t-field="doc.admission_date" t-options='{"format": "dd MMM yyyy"}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding-bottom: 10px;">
+                                        <span style="font-weight: normal;">ROOM NO: </span>
+                                        <span t-field="doc.room_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Policy Content -->
+                        <div style="margin-bottom: 20px;">
+                            <ol style="margin-top: 0; padding-left: 20px; line-height: 1.4; margin-bottom: 0;">
+                                <li>INPATIENT ONLY ONE ATTENDER IS ALLOWED.</li>
+                                <li>WE WILL PROVIDED ONE ATTENDANT PASSES ( CLEARENCE ) TO STAY AND ONE  VISITING PASSES FOR VISITORS.</li>
+                                <li>VISITORS AND ATTENDER IS EXPECTED TO WEAR RESPECTIVE TAGS AND HANDOVER TO SECURITY WHEN DISCHARGED.</li>
+                                <li>ONE AFTER ONE VISITOR WILL BE ALLOWED IN VISITING HOURS (9AM TO 6PM).</li>
+                                <li>POST 7:30PM HOSPITAL EXIT WILL BE CLOSED AND NO VISITOR WILL BE ALLOWED.</li>
+                                <li>IN VISITING HOURS THE ATTENDANT SHOULD ESCORT THE VISITOR.</li>
+                                <li>MOBILE PHONES/LAPTOP/ ACCESS TO INTERNET IS NOT ALLOWED
+                                    <ol type="a" style="padding-left: 20px; margin-bottom: 0;">
+                                        <li>FOR PATIENT, ATTENDANT, AND VISITORS.</li>
+                                    </ol>
+                                </li>
+                                <li>CHILDREN BELOW 10YRS IS NOT ALLOWED TO ACCESS INPATIENT WARDS.</li>
+                                <li>IN CASE OF ANY HOSPITAL PROPERTY DAMAGE WILL BE CHARGEABLE.</li>
+                                <li>ALL FAMILY SESSION WILL BE IN FIRST FLOOR,NOT IN PATIENT WARDS.
+                                    <ol type="a" style="padding-left: 20px; margin-bottom: 0;">
+                                        <li>PLS INFORM SECURITY AND WAIT FOR CLEARANCE.</li>
+                                    </ol>
+                                </li>
+                                <li>YOU WILL BE PROVIDED THE LOCKER TO KEEP YOUR VALUABLES.
+                                    <ol type="a" style="padding-left: 20px; margin-bottom: 0;">
+                                        <li>(HOSPITAL WILL NOT BE RESPONSIBLE FOR ANY VALUABLES)</li>
+                                    </ol>
+                                </li>
+                                <li>YOU WILL BE PROVIDED DEDICATED LANDLINE WITH DIRECT INCOMING CALL</li>
+                                <li>FACILITIES.
+                                    <ol type="a" style="padding-left: 20px; margin-bottom: 0;">
+                                        <li>OUTGOING CALL FACILITY WILL NOT PROVIDED.</li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <!-- Acknowledgement Section -->
+                        <div style="margin-top: 30px;">
+                            <p>I ...................................................................FATHER/MOTHER/GUARDIAN OF</p>
+                            <p>MASTER/MR/MISS/MRS......................................................................................</p>
+                            <p>AGE.......... HAVE UNDERSTOOD NATURE OF PSYCHIATRIC HOSPITAL AND ITS PROPRIETY.</p>
+
+                            <p style="margin-top: 15px;">I will be taking Responsibility for Nominated Representative</p>
+
+                            <div style="margin-top: 25px;">
+                                <p>Full name :- </p>
+                                <p>Phone Number : </p>
+                                <p style="margin-top: 25px;">Signature : </p>
+                            </div>
+                        </div>
+                    </div>
+              
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>

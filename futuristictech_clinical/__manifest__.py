@@ -38,7 +38,7 @@
         'views/block_views.xml',
         'views/block_duty_views.xml',
         'views/patient_document_views.xml',
-        # 'views/case_history_views.xml',
+        'views/case_history_views.xml',
         'views/configuration_views.xml',
         'views/discharge_views.xml',
         'views/medication_consent_form_views.xml',
@@ -78,7 +78,8 @@
         'views/actions.xml',  
         'views/menu.xml',     
         
-        # 'reports/patient_card.xml',
+        'reports/hospital_reports.xml',
+        'reports/inpatient_security_policy_report.xml',
         # 'reports/admission_report.xml',
         # 'reports/discharge_summary.xml',
         # 'reports/prescription_report.xml',

@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_report_hospital_patient" model="ir.actions.report">
+        <field name="name">Patient Registration Form</field>
+        <field name="model">hospital.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_clinical.report_hospital_patient</field>
+        <field name="report_file">futuristictech_clinical.report_hospital_patient</field>
+        <field name="binding_model_id" ref="model_hospital_patient"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Report Template -->
+  <!-- QWeb Report Template -->
+    <template id="report_hospital_patient">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.internal_layout">
+                    <div class="page" style="font-size: 0.9em; padding-top: 0;">
+                        <div class="row mt-0 mb-2">
+                            <div class="col-6">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height: 60px;" alt="Logo"/>
+                            </div>
+                            <div class="col-6 text-right">
+                                <h3 style="margin-top: 0;">REGISTRATION FORM</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-1">
+                            <div class="col-12">
+                                <div class="alert alert-secondary py-1">
+                                    <strong>Please help us serve you better by giving us basic information</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-1">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Patient Name:*</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.name"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Last Name:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-1">
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4">Age:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.age"/></div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4">DOB:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.dob"/></div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4">Gender:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.gender"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-1">
+                            <div class="col-2">Address:</div>
+                            <div class="col-10 border-bottom">
+                                <span t-field="o.street"/>, <span t-field="o.city"/>, <span t-field="o.state_id"/>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-12 border-bottom">
+                                <span t-field="o.zip"/>, <span t-field="o.country_id"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Landline No.:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.phone"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Mobile:*</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.mobile"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">E-Mail id:*</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.email"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-6">Education Qualification:</div>
+                                    <div class="col-6 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Occupation:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.occupation_id.name"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Religion:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Nationality:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Language Known:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-3">Marital Status:</div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" t-att-checked="o.marital_status == 'single'"/>
+                                            <label class="custom-control-label">Single</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" t-att-checked="o.marital_status == 'married'"/>
+                                            <label class="custom-control-label">Married</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" t-att-checked="o.marital_status == 'divorced'"/>
+                                            <label class="custom-control-label">Divorced</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" t-att-checked="o.marital_status == 'widowed'"/>
+                                            <label class="custom-control-label">Widowed</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" t-att-checked="o.marital_status == 'separated'"/>
+                                            <label class="custom-control-label">Separated</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input"/>
+                                            <label class="custom-control-label">Remarried</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-3">Do you have Children:</div>
+                            <div class="col-9">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"/>
+                                    <label class="form-check-label">YES</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"/>
+                                    <label class="form-check-label">NO</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-3">Number of Children:</div>
+                            <div class="col-1 border p-2"></div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <strong>Emergency Contact:</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Name*</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">Mobile*</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4">E-mail ID:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-6">Relationship with patient:*</div>
+                                    <div class="col-6 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6">Have you consulted any other psychologist/psychiatrist/counsellor:</div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"/>
+                                            <label class="form-check-label">YES</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"/>
+                                            <label class="form-check-label">NO</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-3">How did you get to know about us?</div>
+                                    <div class="col-9">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Media</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Social Media</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Word of mouth</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Website</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Flyer</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Doctor</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-3">Other. Please specify:</div>
+                            <div class="col-9 border-bottom"></div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-3">Whom do you want to meet?</div>
+                                    <div class="col-9">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Psychologist</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Psychiatrist</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Any one</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">Both</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"/>
+                                                    <label class="custom-control-label">I don't know whom to meet</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-2">If yes, Name:</div>
+                            <div class="col-10 border-bottom"></div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-8">Would you like to subscribe to our newsletter?</div>
+                                    <div class="col-4">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"/>
+                                            <label class="form-check-label">YES</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio"/>
+                                            <label class="form-check-label">NO</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-12">Please Give us your business Card, if you have</div>
+                                </div>
+                            </div>
+                            <div class="col-5 text-right">
+                                <strong>Thank you for your Co-operation</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2 text-center">
+                            <div class="col-12">
+                                <strong>For OFFICE USE ONLY</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4">Date:</div>
+                                    <div class="col-8 border-bottom"></div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-4">MR No.:</div>
+                                    <div class="col-8 border-bottom"><span t-field="o.mrn"/></div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-5">Attended by GRT:</div>
+                                    <div class="col-7 border-bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-12 text-right">
+                                <small>* Mandatory fields for Registration</small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+

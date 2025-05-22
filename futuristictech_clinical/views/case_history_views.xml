@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hospital_case_history_form" model="ir.ui.view">
+        <field name="name">hospital.case.history.form</field>
+        <field name="model">hospital.case.history</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_save" string="Save" type="object" class="oe_highlight"/>
+                    <button name="action_discard" string="Discard" type="object"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="patient_id" options="{'no_create': True}" widget="selection"/>
+                            <field name="age"/>
+                            <field name="marital_status"/>
+                            <field name="languages_known" widget="many2many_tags"/>
+                            <field name="education"/>
+                        </group>
+                        <group>
+                            <field name="dob"/>
+                            <field name="sex"/>
+                            <field name="religion"/>
+                            <field name="other_religion" invisible="religion != 'other'"/>
+                            <field name="socio_economic_status"/>
+                            <field name="occupation"/>
+                            <field name="vocation" invisible="occupation != 'specify_any'"/>
+                        </group>
+                    </group>
+
+                    <group col="4" colspan="2" string="Informants">
+                        <field name="informant_name"/>
+                        <field name="relationship_id" widget="selection"/>
+                        <field name="duration_stay"/>
+                    </group>
+
+                    <group string="INFORMATION : Reliable and Adequate">
+                        <field name="information" nolabel="1" placeholder="Enter reliable and adequate information about the patient's case..."/>
+                    </group>
+
+                    <group string="CHIEF COMPLAINTS : - (Chronological order with duration)">
+                        <field name="complaint_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="chrono_no"/>
+                                <field name="chief_compaints"/>
+                                <field name="duration"/>
+                                <field name="year"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="Onset of Illness: (Check appropriate box and describe about the onset)">
+                        <field name="onset_of_ill" widget="radio"/>
+                        <field name="abrupt_desc" invisible="onset_of_ill != 'Abrupt'"/>
+                        <field name="acute_desc" invisible="onset_of_ill != 'Acute'"/>
+                        <field name="subacute_desc" invisible="onset_of_ill != 'Sub-acute'"/>
+                        <field name="insidious_desc" invisible="onset_of_ill != 'Insidious'"/>
+                    </group>
+
+                    <group>
+                        <field name="course" placeholder="Describe the course of the illness..."/>
+                    </group>
+
+                    <group col="4" colspan="2" string="Duration of Illness (Specify Month or Years)">
+                        <field name="duration_illness" widget="radio"/>
+                        <field name="ill_months" invisible="duration_illness != 'Months'"/>
+                        <field name="ill_years" invisible="duration_illness != 'Years'"/>
+                    </group>
+
+                    <group>
+                        <field name="precipitating_factors"/>
+                    </group>
+
+                    <group string="HISTORY OF PRESENT ILLNESS (Describe Chief Complaints)">
+                        <field name="history_present_ill" nolabel="1"/>
+                    </group>
+
+                    <group string="Biological Functioning">
+                        <group string="Appetite">
+                            <field name="appetite" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Sleep">
+                            <field name="sleep" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Bladder">
+                            <field name="bladder" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Bowel">
+                            <field name="bowel" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Weight">
+                            <field name="weight" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Sexual">
+                            <field name="sexual" nolabel="1" widget="radio"/>
+                            <field name="other_sex_issues" nolabel="1"  invisible="sexual != 'Other issues'"/>
+                        </group>
+                    </group>
+
+                    <group string="Social Functioning" col="1" colspan="1">
+                        <field name="dress_take_care_himself" widget="radio"/>
+                        <field name="goes_work" widget="radio"/>
+                        <field name="does_husehold" widget="radio"/>
+                        <field name="gets_along_wit_family" widget="radio"/>
+                        <field name="gets_along_wit_neighbours" widget="radio"/>
+                    </group>
+
+                    <group string="Treatment History">
+                        <group col="1" colspan="1" string="1.Psychiatric Treatment History (Specify with the year, duration and Response)">
+                            <field name="previous_hospitalization"/>
+                            <field name="opd"/>
+                            <field name="day_care_centre"/>
+                        </group>
+                    </group>
+
+                    <group string="Interval functioning (what is the patient like between episodes/when 'well'):">
+                        <field name="interval_functioning" nolabel="1"/>
+                    </group>
+
+                    <group string="Suicide attempts (If present, refer Suicidal Risk Assessment - Becks Suicide Intent Scale)/drug and alcohol abuse">
+                        <field name="suicide_attempts" nolabel="1"/>
+                    </group>
+
+                    <group col="1" colspan="1" string="2. Medical Treatment History">
+                        <field name="physical_illness"/>
+                        <group col="4" colspan="2">
+                            <field name="head_injury" widget="radio"/>
+                            <field name="specify_injury" invisible="head_injury != 'Present'"/>
+                        </group>
+                        <group col="4" colspan="2">
+                            <field name="past_surgeris" widget="radio"/>
+                            <field name="specify_surgeries" invisible="past_surgeris != 'Present'"/>
+                        </group>
+                        <group col="4" colspan="2">
+                            <field name="seizure" widget="radio"/>
+                            <field name="specify_seizure" invisible="seizure != 'Present'"/>
+                        </group>
+                        <group col="4" colspan="2">
+                            <field name="substance_use" widget="radio"/>
+                            <field name="specify_substance" invisible="substance_use != 'Present'"/>
+                        </group>
+                        <field name="allergies"/>
+                        <group col="4" colspan="2">
+                            <field name="epilepsy" widget="radio"/>
+                            <field name="specify_episodes" invisible="epilepsy != 'Present'"/>
+                        </group>
+                    </group>
+
+                    <group string="Check if the client has or had any of these issues:"/>
+                    <group>
+                        <group col="4" colspan="3" string="Constitutional">
+                            <field name="weight_loss" widget="radio"/>
+                            <field name="fatigue" widget="radio"/>
+                            <field name="fever" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Respiratory">
+                            <field name="cough_easy" widget="radio"/>
+                            <field name="cough_blood" widget="radio"/>
+                            <field name="wheezing" widget="radio"/>
+                            <field name="chills" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Hematology/Lymph">
+                            <field name="easy_bruising" widget="radio"/>
+                            <field name="gums_bleed_easily" widget="radio"/>
+                            <field name="enlarged_glands" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Eyes">
+                            <field name="glass_contact" widget="radio"/>
+                            <field name="eye_pain" widget="radio"/>
+                            <field name="double_vision" widget="radio"/>
+                            <field name="cataracts" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Gastrointestinal">
+                            <field name="heartburn_reflux" widget="radio"/>
+                            <field name="nausea_vomiting" widget="radio"/>
+                            <field name="constipation" widget="radio"/>
+                            <field name="change_in_bm" widget="radio"/>
+                            <field name="diarrhea" widget="radio"/>
+                            <field name="jauntice" widget="radio"/>
+                            <field name="abdominal_pain" widget="radio"/>
+                            <field name="black_bloody_bm" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Musculoskeletal">
+                            <field name="joint_pain" widget="radio"/>
+                            <field name="stiffness" widget="radio"/>
+                            <field name="muscle_pain" widget="radio"/>
+                            <field name="back_pain" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Skin">
+                            <field name="rash_shores" widget="radio"/>
+                            <field name="lesions" widget="radio"/>
+                            <field name="itching_burning" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Ears,Nose,Throat">
+                            <field name="difficulty_hearing" widget="radio"/>
+                            <field name="ringing_ears" widget="radio"/>
+                            <field name="vertigo" widget="radio"/>
+                            <field name="sinus_trouble" widget="radio"/>
+                            <field name="nasal_stuffiness" widget="radio"/>
+                            <field name="freq_sore_throat" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Genitourinary">
+                            <field name="burning_freq" widget="radio"/>
+                            <field name="nighttime" widget="radio"/>
+                            <field name="blood_in_urine" widget="radio"/>
+                            <field name="erictile_dysfunction" widget="radio"/>
+                            <field name="abnormal_discharge" widget="radio"/>
+                            <field name="bladder_leakage" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Neurological">
+                            <field name="loss_strength" widget="radio"/>
+                            <field name="numbness" widget="radio"/>
+                            <field name="headaches" widget="radio"/>
+                            <field name="tremors" widget="radio"/>
+                            <field name="memory_loss" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Cardiovascular">
+                            <field name="murmur" widget="radio"/>
+                            <field name="chest_pain" widget="radio"/>
+                            <field name="palpitations" widget="radio"/>
+                            <field name="dizziness" widget="radio"/>
+                            <field name="fainting_spells" widget="radio"/>
+                            <field name="shortness_of_breathe" widget="radio"/>
+                            <field name="difficult_lying_flat" widget="radio"/>
+                            <field name="swelling_ankles" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Endocrine">
+                            <field name="loss_of_hair" widget="radio"/>
+                            <field name="heat_cold_intolerance" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Allergic/Immunologic">
+                            <field name="hives_eczema" widget="radio"/>
+                            <field name="hay_fever" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="3" string="Females Only">
+                            <field name="last_date_mammogram"/>
+                            <field name="mammogram_options" widget="radio"/>
+                            <field name="date_last_pap"/>
+                            <field name="pap_options" widget="radio"/>
+                            <field name="age_onset_periods"/>
+                            <field name="age_onset_menopause"/>
+                            <field name="regular_periods" widget="radio"/>
+                            <field name="no_pregnancies"/>
+                        </group>
+                    </group>
+
+                    <group string="Psychiatric Medication">
+                        <field name="physiatric_medication_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="dosage"/>
+                                <field name="frequency"/>
+                                <field name="administration"/>
+                                <field name="prescriber_name"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="General Medication">
+                        <field name="general_medication_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="dosage"/>
+                                <field name="frequency"/>
+                                <field name="administration"/>
+                                <field name="prescriber_name"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="Psychiatric Medication Effects">
+                        <field name="physiatric_effect_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="side_effects"/>
+                                <field name="actions_taken"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="General Medication Effects">
+                        <field name="general_effect_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="side_effects"/>
+                                <field name="actions_taken"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="History of Medicines Prescribed:">
+                        <field name="history_medicines" nolabel="1"/>
+                    </group>
+
+                    <group string="FAMILY HISTORY"/>
+                    <group col="1" colspan="1" string="1. Consanguinity in parents">
+                        <field name="consanguinity_in_parents" nolabel="1"/>
+                        <field name="consanguinity_specify" invisible="consanguinity_in_parents != 'Present'"/>
+                    </group>
+                    <group col="1" colspan="1" string="2. Family history of psychiatric and physical illness (Suicide, Substance abuse, Epilepsy, Mental retardation etc)">
+                        <field name="family_history_pp" nolabel="1"/>
+                        <field name="present_specify" invisible="family_history_pp != 'Present'"/>
+                    </group>
+                    <group col="1" colspan="1" string="3.Interpersonal Relations">
+                        <field name="interpersonal_relations" nolabel="1"/>
+                        <field name="family_comm"/>
+                        <field name="leadership_pattern"/>
+                        <field name="role_functions"/>
+                        <field name="social_support"/>
+                        <field name="reinforcement"/>
+                    </group>
+                    <group string="4.Type of Family">
+                        <field name="type_family" nolabel="1"/>
+                    </group>
+                    <group string="5.Family Environment">
+                        <field name="family_environ" nolabel="1"/>
+                    </group>
+
+                    <group string="Personal History (Check if there were any issues during the period mentioned)"/>
+                    <group col="1" colspan="1" string="1.Birth">
+                        <group string="Prenatal">
+                            <field name="drug_exposure"/>
+                            <field name="medical_complication"/>
+                        </group>
+                        <group string="Perinatal">
+                            <field name="complication_during_preg"/>
+                        </group>
+                        <group string="Postnatal">
+                            <field name="major_illness"/>
+                        </group>
+                        <group string="Delivery when mother was above the age of 30">
+                            <field name="whether_client_first_child"/>
+                        </group>
+                    </group>
+                    <group string="2.Early Development: (Mile stones of development, Behaviour problems and Physical illness)"/>
+                    <group col="1" colspan="1">
+                        <field name="delayed_milestones"/>
+                        <field name="behaviour_probs"/>
+                        <field name="physical_illness_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="3.Childhood / Academic History [Peer group interaction, Physical Abuse, Substance Use]"/>
+                    <group>
+                        <field name="history_bullying"/>
+                        <field name="check_boarding"/>
+                    </group>
+                    <group col="4" colspan="2">
+                        <field name="parenting_style" widget="radio"/>
+                        <field name="academic_performance" widget="radio"/>
+                    </group>
+                    <group string="4.Menstrual History">
+                        <field name="menstrual_history" nolabel="1"/>
+                    </group>
+                    <group string="5.Adolescence">
+                        <field name="relationship_with_family" widget="radio"/>
+                        <field name="specify_relationship" string="Specify if it was not good)" invisible="relationship_with_family not in ['Poor', 'Average']"/>
+                        <field name="substance_usage"/>
+                        <field name="bullying_history"/>
+                        <field name="check_if_boarding"/>
+                        <field name="parenting_style_adol" widget="radio"/>
+                        <field name="academic_performance_adol" widget="radio"/>
+                        <field name="specify_not_good"/>
+                    </group>
+                    <group string="6.Occupational History">
+                        <field name="interaction_with_coll" widget="radio"/>
+                        <field name="interaction_specify"/>
+                        <field name="consistency_work" widget="radio"/>
+                        <field name="consistency_specify"/>
+                        <field name="other_issues"/>
+                    </group>
+                    <group col="4" colspan="2" string="7.Sexual History ( get these information in private keeping confidentiality)">
+                        <field name="premarital_relationship" widget="radio"/>
+                        <field name="history_masturbation" widget="radio"/>
+                        <field name="if_yes_premarital"/>
+                        <field name="if_yes_masturbation"/>
+                        <field name="homosexuality" widget="radio"/>
+                    </group>
+                    <group col="4" colspan="2" string="8.Marital History">
+                        <field name="relation_wife" widget="radio"/>
+                        <field name="extra_marital" widget="radio"/>
+                        <field name="if_no_good_relationship"/>
+                        <field name="specify_if_extra"/>
+                    </group>
+                    <group string="PRE-MORBID Personality:  (Client's details i.e. before onset of illness)">
+                        <group string="Social Relations: (Attachment/ Dependence to family, friends, groups, society, work and workmates)"/>
+                        <newline/>
+                        <field name="social_relations" nolabel="1"/>
+                        <newline/>
+                        <group string="Moral and religious Standards"/>
+                        <newline/>
+                        <field name="moral_religious" nolabel="1"/>
+                        <newline/>
+                        <group string="Intellectual Activities: (Hobbies and Interest)"/>
+                        <newline/>
+                        <field name="intellectual_activity" nolabel="1"/>
+                        <newline/>
+                        <group string="Predominant Mood: (Cheerful, Optimistic, Pessimistic, Stable, Fluctuating etc)"/>
+                        <newline/>
+                        <field name="predominant_mood" nolabel="1"/>
+                        <newline/>
+                        <group string="Character: (Attitude to work and responsibility, Interpersonal relationship, Standards in moral, religious)"/>
+                        <newline/>
+                        <field name="character" nolabel="1"/>
+                        <newline/>
+                        <group string="Use of Leisure Time:"/>
+                        <newline/>
+                        <field name="use_of_leisure" nolabel="1"/>
+                        <newline/>
+                        <group string="Habits: (Smoking, Alcohol, Chemicals, Panparang, Gutka, Panmasala, etc)"/>
+                        <newline/>
+                        <field name="habits" nolabel="1"/>
+                        <newline/>
+                        <group string="If any, specify in detail: (Mention the method of intake):"/>
+                        <newline/>
+                        <field name="if_any_special_detail" nolabel="1"/>
+                    </group>
+                    <group col="1" colspan="1" string="Any Legal Involments: (If yes, details)">
+                        <field name="present_involvment"/>
+                        <field name="past_involvment"/>
+                    </group>
+                    <group string="Expectations of the Family (purpose of admission in the order of priority)">
+                        <field name="expectations_family" nolabel="1"/>
+                    </group>
+                    <group string="Additional Remarks: (Escaping/ Suicidal/ Homicidal/ Aggressive/ Destructive/ if any others, specify)">
+                        <field name="additional_remarks" nolabel="1"/>
+                    </group>
+                    <group string="Risk Assessment Information instead of Suicidal tendency (Attempt)">
+                        <field name="risk_assessment_ids" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="never"/>
+                                <field name="past_week_month"/>
+                                <field name="past_month_year"/>
+                                <field name="past_2_years"/>
+                                <field name="details"/>
+                            </tree>
+                            <form string="Risk Assessment">
+                                <group>
+                                    <field name="name" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="never"/>
+                                    <field name="past_week_month"/>
+                                    <field name="past_month_year"/>
+                                    <field name="past_2_years"/>
+                                    <field name="details"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+
+                    <field name="suicidal_tendency" invisible="1"/>
+                    <field name="violence_tendency" invisible="1"/>
+                    <notebook>
+                        <page string="Suicidal Risk Assessments" >
+                            <button name="get_questions" string="Get Questions" type="object" class="oe_highlight"/>
+                            <group string="Suicidal Risk Assessment">
+                                <group>
+                                    <field name="date_assessment"/>
+                                    <field name="date_attempt"/>
+                                </group>
+                                <group>
+                                    <field name="patient_reliability"/>
+                                    <field name="informant_reliability"/>
+                                    <field name="patient_adequency"/>
+                                    <field name="informant_adequency"/>
+                                </group>
+                            </group>
+                            <field name="suicidal_lines">
+                                <tree editable="bottom" create="false">
+                                    <field name="serial_number" readonly="1"/>
+                                    <field name="quen_id" readonly="1"/>
+                                    <field name="ans_id" domain="[('question_id', '=', quen_id)]" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="score" readonly="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_score" string="Score" class="oe_subtotal_footer_separator"/>
+                                <span>Note: 15-19 Low Intent 20-28 Medium Intent 29+ High Intent
+                                There is also a greater risk of repeated attempts the
+                                higher the
+                                intent rating
+                                </span>
+                            </group>
+                        </page>
+                        <page string="Violence Risk Assessment" >
+                            <group string="Violence Risk Assessment">
+                                <field name="violence_assessment_date"/>
+                            </group>
+                            <group>
+                                <group string="Historical Scale" col="1" colspan="1">
+                                    <field name="previous_violence" widget="radio"/>
+                                    <field name="young_age" widget="radio"/>
+                                    <field name="relnship_instability" widget="radio"/>
+                                    <field name="emp_prblms" widget="radio"/>
+                                    <field name="substance_prblms" widget="radio"/>
+                                    <field name="major_illness_violence" widget="radio"/>
+                                    <field name="psycopathy" widget="radio"/>
+                                    <field name="early_adjustment" widget="radio"/>
+                                    <field name="personality_disorder" widget="radio"/>
+                                    <field name="supervision_failure" widget="radio"/>
+                                </group>
+                                <group string="Clinical Scale" col="1" colspan="1">
+                                    <field name="lack_insight" widget="radio"/>
+                                    <field name="neg_attitute" widget="radio"/>
+                                    <field name="active_symp_major_illness" widget="radio"/>
+                                    <field name="impulsivity" widget="radio"/>
+                                    <field name="unresponsive_treatment" widget="radio"/>
+                                </group>
+                                <group string="Risk Management Scale" col="1" colspan="1">
+                                    <field name="feasibility" widget="radio"/>
+                                    <field name="destabilizers" widget="radio"/>
+                                    <field name="personal_support" widget="radio"/>
+                                    <field name="noncompliance_remediation_attempt" widget="radio"/>
+                                    <field name="stress" widget="radio"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <group string="Mental Status Examination"/>
+                    <group string="1.General Appearance and Behaviour:">
+                        <field name="general_appearance" nolabel="1" widget="radio"/>
+                    </group>
+
+                    <group col="4" colspan="2">
+                        <field name="dress" widget="radio"/>
+                        <field name="eye_contact" widget="radio"/>
+                        <field name="touch_with_surrounding" widget="radio"/>
+                        <field name="rapport" widget="radio"/>
+                        <field name="attitude_to_interviewer" widget="radio"/>
+                    </group>
+
+                    <group string="Psycomotot Activity">
+                        <field name="psychomotor_activity_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+
+                    <group string="Catatonic signs">
+                        <field name="catatonic_signs" nolabel="1" widget="many2many_tags"/>
+                    </group>
+
+                    <group col="4" colspan="2" string="Speech">
+                        <field name="speech_initiation" widget="radio"/>
+                        <field name="reaction_time" widget="radio"/>
+                        <field name="intensity" widget="radio"/>
+                        <field name="pitch" widget="radio"/>
+                        <field name="speed" widget="radio"/>
+                        <field name="pressure_speech" widget="radio"/>
+                        <field name="volume" widget="radio"/>
+                        <field name="relevance" widget="radio"/>
+                        <field name="coherence" widget="radio"/>
+                        <field name="deviation" widget="radio"/>
+                    </group>
+
+                    <group string="4.Thought">
+                        <group string="Form">
+                            <group string="Check for Formal thought disorder;"/>
+                            <newline/>
+                            <field name="check_for_disorder" nolabel="1" widget="radio"/>
+                        </group>
+                        <group col="4" colspan="2" string="Flow/Stream of thought">
+                            <field name="flow_stream_normal" widget="radio"/>
+                            <field name="flow_stream_abnormal" widget="radio"/>
+                            <field name="relationship_in_patient" widget="radio"/>
+                            <field name="blocking_distractibility" widget="radio"/>
+                        </group>
+                        <group string="Possession">
+                            <field name="possession" nolabel="1" widget="radio"/>
+                            <group string="Obsessions: elicit their nature">
+                                <field name="obsession" nolabel="1" widget="radio"/>
+                            </group>
+                            <group string="Compulsions: nature of compulsion">
+                                <field name="compulsions" nolabel="1" widget="radio"/>
+                            </group>
+                            <group string="Thought Alienation">
+                                <field name="thought_alienation" nolabel="1" widget="radio"/>
+                            </group>
+                        </group>
+                    </group>
+
+                    <group string="Content">
+                        <group string="Delusions">
+                            <field name="delusions_prior" nolabel="1" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="delusion_persecutory" widget="radio"  />
+                        </group>
+                        <group>
+                            <field name="delusion" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="grandiose" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="delusion_list" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="conviction_validity" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="how_affects_life" widget="radio"/>
+                        </group>
+                        <group string="Depressive Cognition">
+                            <field name="depressive_cognition" nolabel="1" widget="radio"/>
+                            <newline/>
+                            <field name="depressive_overhauled" widget="radio"/>
+                        </group>
+                        <group string="Preoccupation">
+                            <field name="preoccupation" nolabel="1" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="preoccupation_list" nolabel="1" widget="radio"/>
+                        </group>
+                        <group string="Somatisation">
+                            <field name="somatisation" nolabel="1"/>
+                        </group>
+                        <group string="Describe hallucinations:">
+                            <field name="thought_sample" nolabel="1"/>
+                        </group>
+                    </group>
+
+                    <group string="5.Mood">
+                        <group string="Subjective">
+                            <field name="subjective" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Fluctuations of Mood">
+                            <field name="fluctuation_of_mood" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Objective">
+                            <field name="objective" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Intensity">
+                            <field name="intensity_mood" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Range">
+                            <field name="range" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Reactivity">
+                            <field name="reactivity" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Communicability">
+                            <field name="communicability" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Appropriateness">
+                            <field name="appropriateness" widget="radio" nolabel="1"/>
+                        </group>
+                        <group string="Congruence">
+                            <field name="congruence" widget="radio" nolabel="1"/>
+                        </group>
+                    </group>
+
+                    <group string="6.Perceptual Disturbances">
+                        <field name="perceptual_disturbances" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Sense distortion: (Comment on dulled or heightened perception and changes in quality)">
+                        <field name="sense_distortion" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Body image disturbance">
+                        <field name="body_image_disturb" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Sense deception: Perceptual disturbances">
+                        <field name="sense_deception" widget="radio" nolabel="1"/>
+                    </group>
+                    <group>
+                        <field name="hallucination_illusion" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Sensory modality:">
+                        <field name="sensory_modality" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="First Rank Symptom Timing">
+                        <field name="first_rank_symptom" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="b.Depersonalization, Derealisation: extreme feelings of detachment from self or the environment">
+                        <field name="depersonalization" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Describe hallucinations:">
+                        <field name="hallucinations_describe" nolabel="1"/>
+                    </group>
+
+                    <group string="6.Cognitive Functions:"/>
+                    <group string="A) Attention and Concentration">
+                        <field name="attention" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="B)Orientation">
+                        <field name="orientation" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="C) Memory">
+                        <field name="memory" widget="radio" nolabel="1"/>
+                    </group>
+                    <group string="Assess By">
+                        <field name="assess_by" nolabel="1"/>
+                    </group>
+                    <group string="Short term: Immediate">
+                        <field name="short_term_immediate" nolabel="1"/>
+                    </group>
+                    <group string="Short term: Recent">
+                        <field name="short_term_recent" nolabel="1"/>
+                    </group>
+                    <group string="Long term: Remote">
+                        <field name="long_time_remote" nolabel="1"/>
+                    </group>
+                    <group string="D)Intelligence">
+                        <field name="intelligence" widget="radio" nolabel="1"/>
+                    </group>
+                    <group col="1" colspan="1">
+                        <field name="general_fund_information"/>
+                        <field name="comprehension"/>
+                        <field name="simple_arithmetic"/>
+                        <field name="abstract_thinking" widget="radio"/>
+                        <field name="differences"/>
+                        <field name="similarities"/>
+                        <field name="proverb"/>
+                    </group>
+                    <group string="E)Judgement">
+                        <field name="judgement" widget="radio" nolabel="1"/>
+                    </group>
+                    <group>
+                        <field name="test"/>
+                        <field name="social"/>
+                        <field name="personal"/>
+                    </group>
+                    <group string="F)Insight">
+                        <field name="insight" widget="radio" nolabel="1"/>
+                    </group>
+                    <group col="1" colspan="1">
+                        <field name="grade_1"/>
+                        <field name="grade_2"/>
+                        <field name="grade_3"/>
+                        <field name="grade_4"/>
+                        <field name="grade_5"/>
+                        <field name="grade_6"/>
+                        <field name="summary"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+</odoo>

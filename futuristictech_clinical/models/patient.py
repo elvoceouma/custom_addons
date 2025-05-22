@@ -175,6 +175,11 @@ class Patient(models.Model):
             'type': 'ir.actions.act_window',
             'domain': [('id', '=', self.id)],
         }
+    
+    def action_print_registration_form(self):
+        """Print patient registration form"""
+        return self.env.ref('futuristictech_clinical.action_report_hospital_patient').report_action(self)
+
 
 class FamilyMember(models.Model):
     _name = 'hospital.family.member'

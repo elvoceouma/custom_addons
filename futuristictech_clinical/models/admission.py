@@ -138,10 +138,8 @@ class OPVisit(models.Model):
     reason = fields.Text(string='Reason for Visit')
     diagnosis = fields.Text(string='Diagnosis')
     prescription_ids = fields.One2many('hospital.prescription', 'op_visit_id', string='Prescriptions')
-    type = fields.Selection([
-        ('follow_up', 'Follow Up'),
-        ('new_case', 'New Case')
-    ], string='Visit Type', default='new_case')
+    type = fields.Many2one('hospital.appointment', string='Visit Type', tracking=True)
+ 
     
     @api.model_create_multi
     def create(self, vals_list):
