@@ -1120,13 +1120,7 @@ class CaseHistory(models.Model):
       # Basic patient information - missing name field
     name = fields.Char(string='Name', related='patient_id.name', store=True)
     
-    # Social Functioning - Missing fields
-    self_harm = fields.Selection([
-        ('Severely Abnormal', 'Severely Abnormal'),
-        ('Moderately Abnormal', 'Moderately Abnormal'),
-        ('Normal', 'Normal')
-    ], string='Self harm')
-    
+    # Social Functioning - Fields related to self-harm, social interactions, and tendencies
     self_harm_specify = fields.Text(string='Specify Self Harm')
     
     self_harm_others = fields.Selection([
