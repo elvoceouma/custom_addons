@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_care_plan_form" model="ir.ui.view">
+        <field name="name">care.plan.form</field>
+        <field name="model">hospital.care.plan</field>
+        <field name="arch" type="xml">
+            <form string="Care Plan">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_inprogress" string="In Progress" type="object" class="oe_highlight" invisible="state != 'draft'"/> 
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
+                            <field name="name" readonly="1"/>
+                        </h2>
+                    </div>
+                   <div class="oe_title"> 
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ip_number" readonly="state == 'completed'"/>
+                            <field name="patient_name"/>
+                            <field name="age"/>
+                            <field name="mrn_no"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="patient_gender"/>
+                            <field name="campus_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="care_plan" readonly="state == 'completed'"/>
+                            <field name="diet_type" readonly="state == 'completed'"/>
+                            <field name="diet_consultation" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="labtest_ids" widget="many2many_tags"/>
+                            <field name="diet_note" readonly="state == 'completed'"/>
+                            <field name="diet_screening" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="miscellaneous_line_ids" readonly="state == 'completed'">
+                            <tree editable="bottom">
+                                <field name="miscellaneous_id"/>
+                                <field name="miscellaneous_note"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="physio_required" readonly="state == 'completed'"/>
+                            <field name="restraint_required" readonly="state == 'completed'"/>
+                        </group>
+                        <group>
+                            <field name="physio_note" readonly="state == 'completed'"/>
+                            <field name="restraint_note" readonly="state == 'completed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="procedures_theraphy" readonly="state == 'completed'"/>
+                    </group>
+                    <group>
+                        <field name="cross_consultationline_ids" readonly="state == 'completed'">
+                            <tree editable="bottom">
+                                <field name="consulation_doctor"/>
+                                <field name="consultation_department"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="additional_notes"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

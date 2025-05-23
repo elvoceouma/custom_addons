@@ -76,9 +76,5 @@
     </record>
 
     <!-- Menu Item -->
-    <menuitem id="menu_patient_requisition_line"
-              name="Patient Requisitions"
-              action="action_patient_requisition_line"
-              parent="menu_registers_root"
-              sequence="10"/>
+
 </odoo>

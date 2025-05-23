@@ -1,118 +1,78 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
-class OPVisit(models.Model):
-    _name = 'hospital.op.visit'
-    _description = 'Outpatient Visit'
+
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+class OpVisit(models.Model):
+    _name = 'op.visit'
+    _description = 'OP Visits'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'date desc, id desc'
     
-    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-    related_partner = fields.Many2one('res.partner', string='Related Partner')
-    date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, tracking=True)
-    physician_id = fields.Many2one('res.partner', string='Treating Doctor', 
-                                  domain=[('is_physician', '=', True)], tracking=True)
-    
-    visit_type = fields.Selection([
-        ('initial', 'Initial Visit'),
-        ('follow_up', 'Follow-Up'),
-        ('emergency', 'Emergency'),
-        ('referral', 'Referral')
-    ], string='Type', default='initial', tracking=True)
-    
-    consultation_type = fields.Selection([
-        ('general', 'General'),
-        ('specialist', 'Specialist'),
-        ('emergency', 'Emergency')
-    ], string='Consultation Type', default='general', tracking=True)
-    
-    title = fields.Char(string='Title', default='New')
-    free_screening = fields.Boolean(string='Free Screening', default=False)
+    name = fields.Char(string='Reference', readonly=True, default='New')
+    patient_id = fields.Many2one('res.partner', string='Patient', required=True, tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', tracking=True)
+    visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, tracking=True)
+    treating_doctor = fields.Many2one('res.users', string='Treating Doctor', tracking=True)
+    tot_amount = fields.Float(string='Total Amount', invisible=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
-    ], string='State', default='draft', tracking=True)
+        ('canceled', 'Canceled')
+    ], string='Status', default='draft', tracking=True)
     
-    reason = fields.Text(string='Reason for Visit')
-    diagnosis = fields.Text(string='Diagnosis')
-    treatment = fields.Text(string='Treatment')
-    notes = fields.Text(string='Notes')
+    prescription_count = fields.Integer(string='Prescriptions Count', compute='_compute_prescription_count')
+    invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     
-    prescription_ids = fields.One2many('hospital.prescription', 'op_visit_id', string='Prescriptions')
-    prescription_count = fields.Integer(string='Prescription Count', compute='_compute_prescription_count')
+    message_follower_ids = fields.Many2many('mail.followers', 'mail_followers_rel', 'res_id', 'partner_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
     
-    bill_ids = fields.One2many('hospital.op.bill', 'op_visit_id', string='OP Bills')
-    bill_count = fields.Integer(string='Bill Count', compute='_compute_bill_count')
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('op.visit') or 'New'
+        return super(OpVisit, self).create(vals)
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.op.visit') or _('New')
-        return super(OPVisit, self).create(vals_list)
-    
-    @api.depends('prescription_ids')
     def _compute_prescription_count(self):
-        for record in self:
-            record.prescription_count = len(record.prescription_ids)
+        # Implement your logic to count prescriptions
+        for visit in self:
+            visit.prescription_count = 0
     
-    @api.depends('bill_ids')
-    def _compute_bill_count(self):
-        for record in self:
-            record.bill_count = len(record.bill_ids)
-    
-    @api.onchange('patient_id')
-    def _onchange_patient_id(self):
-        if self.patient_id:
-            self.related_partner = self.patient_id.partner_id
-    
-    def action_confirm(self):
-        for record in self:
-            record.state = 'confirmed'
-    
-    def action_complete(self):
-        for record in self:
-            record.state = 'completed'
-    
-    def action_cancel(self):
-        for record in self:
-            record.state = 'cancelled'
+    def _compute_invoice_count(self):
+        # Implement your logic to count invoices
+        for visit in self:
+            visit.invoice_count = 0
     
     def action_draft(self):
-        for record in self:
-            record.state = 'draft'
+        self.write({'state': 'draft'})
     
-    def action_save(self):
-        return True
+    def action_confirmed(self):
+        self.write({'state': 'confirmed'})
     
-    def action_discard(self):
-        return {'type': 'ir.actions.act_window_close'}
+    def action_complete(self):
+        self.write({'state': 'completed'})
     
-    def action_view_prescriptions(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Prescriptions'),
-            'res_model': 'hospital.prescription',
-            'view_mode': 'tree,form',
-            'domain': [('op_visit_id', '=', self.id)],
-            'context': {'default_op_visit_id': self.id, 'default_patient_id': self.patient_id.id},
-        }
+    def action_cancel(self):
+        self.write({'state': 'canceled'})
+
+        
+# Extend hospital.prescription to include op_visit_id if it doesn't exist
+class HospitalPrescription(models.Model):
+    _inherit = 'hospital.prescription'
     
-    def action_view_bills(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('OP Bills'),
-            'res_model': 'hospital.op.bill',
-            'view_mode': 'tree,form',
-            'domain': [('op_visit_id', '=', self.id)],
-            'context': {'default_op_visit_id': self.id, 'default_patient_id': self.patient_id.id},
-        }
+    op_visit_id = fields.Many2one('op.visit', string='OP Visit')
+
+
+# Extend account.move to include op_visit_id if it doesn't exist
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+    
+    op_visit_id = fields.Many2one('op.visit', string='OP Visit')
 
 
 class OPBill(models.Model):
@@ -121,7 +81,7 @@ class OPBill(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Bill Number', readonly=True, default=lambda self: _('New'))
-    op_visit_id = fields.Many2one('hospital.op.visit', string='OP Visit', required=True)
+    op_visit_id = fields.Many2one('op.visit', string='OP Visit', required=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', related='op_visit_id.patient_id', store=True)
     date = fields.Date(string='Bill Date', default=fields.Date.context_today)
     

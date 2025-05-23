@@ -1,141 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <odoo>
-    <!-- OP Visits Tree View -->
-    <record id="view_hospital_op_visit_tree" model="ir.ui.view">
-        <field name="name">hospital.op.visit.tree</field>
-        <field name="model">hospital.op.visit</field>
+    <record id="view_op_visit_form" model="ir.ui.view">
+        <field name="name">op.visit.form</field>
+        <field name="model">op.visit</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-muted="state == 'completed'">
-                <field name="name" string="Ref No."/>
-                <field name="patient_id" string="Patient Name"/>
-                <field name="date" string="Visit Date"/>
-                <field name="physician_id" string="Treating Doctor"/>
-                <field name="state"/>
-            </tree>
-        </field>
-    </record>
-    
-    <!-- OP Visits Form View -->
-    <record id="view_hospital_op_visit_form" model="ir.ui.view">
-        <field name="name">hospital.op.visit.form</field>
-        <field name="model">hospital.op.visit</field>
-        <field name="arch" type="xml">
-            <form>
+            <form string="OP Visits">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" invisible="state != 'draft'" class="oe_highlight"/>
-                    <button name="action_complete" string="Complete" type="object" invisible="state != 'confirmed'" class="oe_highlight"/>
-                    <button name="action_draft" string="Set to Draft" type="object" invisible="state not in ('confirmed', 'completed')"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed,canceled"/>
+                    <button name="action_draft" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_confirmed" type="object" string="Complete" class="oe_highlight" invisible="state != 'confirmed'"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_prescriptions" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="prescription_count == 0">
-                            <field name="prescription_count" widget="statinfo" string="Prescriptions"/>
+                    <div class="oe_button_box" name="buttons">
+                        <!-- <button type="action" class="oe_stat_button" name="931" context="{'search_default_patient': patient_id,'search_default_patient': patient_id,'default_prescription_type':'op','default_op_visit_id':active_id}" icon="fa-list">
+                            <field string="Prescriptions" name="prescription_count" widget="statinfo"/>
                         </button>
-                        <button name="action_view_bills" type="object" class="oe_stat_button" icon="fa-money" invisible="bill_count == 0">
-                            <field name="bill_count" widget="statinfo" string="OP Bills"/>
-                        </button>
+                        <button type="action" class="oe_stat_button" name="188" context="{'search_default_op_visit': active_id,'default_op_visit': active_id}" icon="fa-pencil-square-o">
+                            <field string="OP Bills" name="invoice_count" widget="statinfo"/>
+                        </button> -->
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1" invisible="name == 'New'"/>
-                            <field name="name" invisible="1"/>
+                            <field name="name" readonly="1"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id" options="{'no_create': True}" readonly="state != 'draft'"/>
-                            <field name="related_partner" options="{'no_create': True}"/>
-                            <field name="visit_type" widget="radio"/>
-                            <field name="consultation_type" widget="selection"/>
+                            <field name="patient_id" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="date" readonly="state != 'draft'"/>
-                            <field name="physician_id" string="Treating Doctor" options="{'no_create': True}" domain="[('is_physician', '=', True)]"/>
-                            <field name="free_screening"/>
+                            <field name="visit_date" readonly="state != 'draft'"/>
+                            <field name="treating_doctor" readonly="state != 'draft'"/>
+                            <field name="tot_amount" invisible="1"/>
                         </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
-        </field>
-    </record>
-    
-    <!-- OP Visits Form View for New Records -->
-    <record id="view_hospital_op_visit_form_new" model="ir.ui.view">
-        <field name="name">hospital.op.visit.form.new</field>
-        <field name="model">hospital.op.visit</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="action_save" string="Save" type="object" class="oe_highlight"/>
-                    <button name="action_discard" string="Discard" type="object"/>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="title" readonly="1" string="New"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="patient_id" options="{'no_create': True}" widget="selection"/>
-                            <field name="related_partner" options="{'no_create': True}" widget="selection"/>
-                            <!-- <field name="type" widget="radio"/> -->
-                            <field name="consultation_type" widget="selection"/>
-                        </group>
-                        <group>
-                            <field name="date" string="Visit Date"/>
-                            <field name="physician_id" string="Treating Doctor" options="{'no_create': True}" domain="[('is_physician', '=', True)]"/>
-                            <field name="free_screening"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-    
-    <!-- OP Visits Search View -->
-    <record id="view_hospital_op_visit_search" model="ir.ui.view">
-        <field name="name">hospital.op.visit.search</field>
-        <field name="model">hospital.op.visit</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="physician_id"/>
-                <field name="date"/>
-                <separator/>
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
-                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
-                    <filter string="Physician" name="group_by_physician" context="{'group_by': 'physician_id'}"/>
-                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Month" name="group_by_month" context="{'group_by': 'date:month'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-    
-    <!-- OP Visits Action -->
-    <record id="action_hospital_op_visit" model="ir.actions.act_window">
-        <field name="name">OP Visits</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.op.visit</field>
-        <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_hospital_op_visit_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your first OP visit!
-            </p>
         </field>
     </record>
 </odoo>

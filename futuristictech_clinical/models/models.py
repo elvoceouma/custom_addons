@@ -1762,9 +1762,10 @@ class HospitalPatientRequisition(models.Model):
     # Patient information
     inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='IP Number', tracking=True,
                                             domain="[('state','!=','discharge_advised')]")
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+    patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
     purpose = fields.Text(string='Purpose', tracking=True)
     
+
     # Date fields
     date_selection = fields.Selection([
         ('by_date', 'By Date'),

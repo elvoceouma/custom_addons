@@ -383,6 +383,6 @@ Consultation</span>
     </record>
 
     <!-- Menu Items -->
-    <menuitem id="menu_inpatient_admissions" name="Inpatient Admissions" parent="menu_patient_management_root" action="action_hospital_inpatient_admission" sequence="40"/>
+   
     <!-- <menuitem id="menu_my_inpatient_admissions" name="My Inpatient Admissions" parent="menu_patient_management_root" action="action_hospital_my_inpatient_admission" sequence="50"/> -->
 </odoo>

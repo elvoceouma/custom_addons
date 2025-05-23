@@ -101,8 +101,6 @@
 
     <!-- Menu item for Room Inspection -->
     <!-- <menuitem id="menu_hospital_room_inspection_report" name="Room Inspection Reports" parent="hospital_menu_reporting" action="action_hospital_room_inspection_report" sequence="20"/> -->
-
-
     <template id="room_inspection_report">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">

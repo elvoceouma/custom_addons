@@ -224,8 +224,7 @@
     </record>
     
     <!-- Menu Items -->
-    <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
-    <menuitem id="menu_medication_form" name="Medication Form" parent="menu_consent_forms_root" action="action_medication_consent_form" sequence="10"/>
+    
     
     <!-- <menuitem id="menu_medicine_configuration" name="Medicine Configuration" parent="hospital_management_configuration" sequence="30"/>
     <menuitem id="menu_hospital_medicine" name="Medicines" parent="menu_medicine_configuration" action="action_hospital_medicine" sequence="10"/>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="view_hospital_case_history_form" model="ir.ui.view">
         <field name="name">hospital.case.history.form</field>
         <field name="model">hospital.case.history</field>
@@ -13,7 +12,7 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="patient_id" options="{'no_create': True}" widget="selection"/>
+                            <field name="patient_id" options="{'no_create': True}" widget="selection" string='Name'/>
                             <field name="age"/>
                             <field name="marital_status"/>
                             <field name="languages_known" widget="many2many_tags"/>
@@ -37,19 +36,29 @@
                     </group>
 
                     <group string="INFORMATION : Reliable and Adequate">
-                        <field name="information" nolabel="1" placeholder="Enter reliable and adequate information about the patient's case..."/>
+                        <field name="information" nolabel="1" widget="text"/>
                     </group>
 
-                    <group string="CHIEF COMPLAINTS : - (Chronological order with duration)">
-                        <field name="complaint_ids" nolabel="1">
-                            <tree editable="bottom">
-                                <field name="chrono_no"/>
-                                <field name="chief_compaints"/>
-                                <field name="duration"/>
-                                <field name="year"/>
-                            </tree>
-                        </field>
-                    </group>
+                   <group string="CHIEF COMPLAINTS : - (Chronological order with duration)">
+                    <field name="complaint_ids" nolabel="1">
+                        <tree>
+                            <field name="chrono_no" string="Chrono. Order"/>
+                            <field name="chief_compaints" string="Chief Complaints"/>
+                            <field name="duration" string="Duration"/>
+                            <field name="year" string="Year"/>
+                        </tree>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="chrono_no" string="Chrono. Order"/>
+                                    <field name="chief_compaints" string="Chief Complaints"/>
+                                    <field name="duration" string="Duration"/>
+                                    <field name="year" string="Year"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </group>
 
                     <group string="Onset of Illness: (Check appropriate box and describe about the onset)">
                         <field name="onset_of_ill" widget="radio"/>

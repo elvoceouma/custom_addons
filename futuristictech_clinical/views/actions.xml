@@ -153,9 +153,9 @@
     <record id="action_hospital_op_visit" model="ir.actions.act_window">
         <field name="name">OP Visits</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.op.visit</field>
+        <field name="res_model">op.visit</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_hospital_op_visit_search"/>
+        <!-- <field name="search_view_id" ref="view_hospital_op_visit_search"/> -->
     </record>
 
     <!-- Food Service Actions -->
@@ -263,7 +263,7 @@
     <record id="action_hospital_package_details" model="ir.actions.act_window">
         <field name="name">Package Details</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.medicine.packing</field>
+        <field name="res_model">admission.referral.config</field>
         <field name="view_mode">tree,form</field>
     </record>
 

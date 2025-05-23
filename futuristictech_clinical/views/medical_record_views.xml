@@ -390,72 +390,7 @@
 
 
 
-    <!-- Care Plan Views -->
-    <record id="view_hospital_care_plan_form" model="ir.ui.view">
-        <field name="name">hospital.care.plan.form</field>
-        <field name="model">hospital.care.plan</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed,cancelled"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="patient_id"/>
-                            <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="created_by"/>
-                        </group>
-                        <group>
-                            <field name="date_from"/>
-                            <field name="date_to"/>
-                            <field name="state"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Plan Details" name="plan_details">
-                            <field name="problems" placeholder="List of identified problems"/>
-                            <field name="goals" placeholder="Treatment goals"/>
-                            <field name="interventions" placeholder="Planned interventions"/>
-                            <field name="evaluation" placeholder="Evaluation criteria"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_hospital_care_plan_tree" model="ir.ui.view">
-        <field name="name">hospital.care.plan.tree</field>
-        <field name="model">hospital.care.plan</field>
-        <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'" decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="date_from"/>
-                <field name="date_to"/>
-                <field name="state"/>
-                <field name="created_by"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="action_hospital_care_plan" model="ir.actions.act_window">
-        <field name="name">Care Plans</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.care.plan</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+   
 
    
     <!-- Drug Chart Views -->

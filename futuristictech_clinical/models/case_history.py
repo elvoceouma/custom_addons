@@ -601,8 +601,12 @@ class CaseHistory(models.Model):
     drug_exposure = fields.Text(string='Drug Exposure')
     medical_complication = fields.Text(string='Medical Complication')
     complication_during_preg = fields.Text(string='Complication During Pregnancy')
-    major_illness = fields.Text(string='Major Illness')
-    whether_client_first_child = fields.Text(string='Whether Client First Child')
+    major_illness = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent'),
+        ('not_known', 'Not Known'),
+    ], string='H6 Major Mental Illness')
+    whether_client_first_child = fields.Boolean(string='Whether Client is First Child')
     
     # Early development
     delayed_milestones = fields.Text(string='Delayed Milestones')
@@ -1105,7 +1109,8 @@ class CaseHistory(models.Model):
     personal = fields.Text(string='Personal')
     
     insight = fields.Selection([
-        ('Normal', 'Normal'),
+        ('present', 'Present'),
+        ('partial', 'Partial'),
         ('Impaired', 'Impaired')
     ], string='Insight')
     

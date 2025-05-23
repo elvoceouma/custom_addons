@@ -326,7 +326,7 @@
                         <group>
                             <field name="name"/>
                             <field name="inpatient_admission_id" string="IP Number" domain="[('state','!=','discharge_advised')]" readonly="state not in ['draft','waiting_for_approval']"/>
-                            <field name="patient_id" readonly="1"/>
+                            <field name="patient_id" />
                             <field name="purpose" readonly="state not in ['draft','waiting_for_approval']"/>
                             <field name="company_id"/>
                         </group>

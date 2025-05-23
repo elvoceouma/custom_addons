@@ -6,8 +6,8 @@ class HospitalDoctorPayout(models.Model):
     _description = 'Doctor Payout'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Name', required=True, tracking=True)
-    doctor_id = fields.Many2one('hospital.physician', string='Doctor', required=True, tracking=True)
+    name = fields.Char(string='Name', tracking=True, compute='compute_name', store=True)
+    doctor_id = fields.Many2one('res.partner', string='Doctor', required=True, tracking=True)
     start_date = fields.Date(string='Start Date', required=True, tracking=True)
     end_date = fields.Date(string='End Date', required=True, tracking=True)
     invoice_id = fields.Many2one('account.move', string='Invoice', tracking=True)
@@ -24,10 +24,42 @@ class HospitalDoctorPayout(models.Model):
         if not self.payout_line_ids:
             raise UserError(_('Please add payout lines first.'))
         
-        # Create vendor bill logic here
+        # Prepare invoice lines from payout lines
+        invoice_lines = []
+        for line in self.payout_line_ids:
+            if not line.is_cancelled:  # Skip cancelled lines
+                invoice_line_vals = {
+                    'product_id': line.product_id.id if line.product_id else False,
+                    'quantity': line.quantity,
+                    'price_unit': line.price_unit,
+                    'name': line.name or (line.product_id.name if line.product_id else 'Doctor Payout'),
+                }
+                invoice_lines.append((0, 0, invoice_line_vals))
         
+        if not invoice_lines:
+            raise UserError(_('No valid payout lines found to create vendor bill.'))
+        
+        # Create vendor bill
+        invoice_vals = {
+            'partner_id': self.doctor_id.id,  # Fixed: removed .partner_id
+            'move_type': 'in_invoice',  # Vendor bill type
+            'invoice_date': fields.Date.today(),
+            'ref': self.name,  # Reference to payout
+            'invoice_line_ids': invoice_lines,
+            'company_id': self.company_id.id,
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        self.invoice_id = invoice.id
         self.state = 'paid'
-        return True
+        
+        return {
+            'name': _('Vendor Bill Created'),
+            'view_mode': 'form',
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'type': 'ir.actions.act_window',
+        }
         
     def view_vendor_bill(self):
         """View the created vendor bill"""
@@ -41,29 +73,53 @@ class HospitalDoctorPayout(models.Model):
             'res_id': self.invoice_id.id,
             'type': 'ir.actions.act_window',
         }
+    
+    @api.depends('doctor_id', 'start_date', 'end_date')
+    def compute_name(self):
+        for record in self:
+            if record.doctor_id and record.start_date and record.end_date:
+                record.name = _('Payout for Doctor %s, Start Date: %s, End Date: %s') % (
+                    record.doctor_id.name, record.start_date, record.end_date)
+            else:
+                record.name = _('Doctor Payout')
+    
+    @api.onchange('doctor_id')
+    def _onchange_doctor_id(self):
+        """Update the name field when doctor_id is changed"""
+        if self.doctor_id:
+            if self.start_date and self.end_date:
+                self.name = _('Payout for Doctor: %s, Start Date: %s, End Date: %s') % (
+                    self.doctor_id.name, self.start_date, self.end_date)
+            else:
+                self.name = _('Payout for Doctor: %s') % (self.doctor_id.name)
+    
+    @api.onchange('start_date', 'end_date')
+    def _onchange_dates(self):
+        """Update the name field when start_date or end_date is changed"""
+        if self.doctor_id and self.start_date and self.end_date:
+            self.name = _('Payout for Doctor: %s, Start Date: %s, End Date: %s') % (
+                self.doctor_id.name, self.start_date, self.end_date)
+    @api.depends('doctor_id', 'start_date', 'end_date')
+    def compute_name(self):
+        # Wrute teh  name to compute teh  name  be {Payout for Doctor} + {Doctor Name} + {Start Date} + {End Date}
+        for record in self:
+            record.name = _('Payout for Doctor %s, Start Date: %s, End Date: %s') % (
+                record.doctor_id.name, record.start_date, record.end_date)
+    @api.onchange('doctor_id')
+    def _onchange_doctor_id(self):
+        """Update the name field when doctor_id is changed"""
+        if self.doctor_id:
+            self.name = _('Payout for Doctor: %s') % (self.doctor_id.name)
+    @api.onchange('start_date', 'end_date')
+    def _onchange_dates(self):
+        """Update the name field when start_date or end_date is changed"""
+        if self.start_date and self.end_date:
+            self.name = _('Payout for Doctor: %s, Start Date: %s, End Date: %s') % (
+                self.doctor_id.name, self.start_date, self.end_date)
 
-    def create_vendor_bill(self):
-        """Create vendor bill based on the payout lines"""
-        if not self.payout_line_ids:
-            raise UserError(_('Please add payout lines first.'))
+    
         
-        # Create vendor bill logic here
-        invoice_vals = {
-            'partner_id': self.doctor_id.partner_id.id,
-            'date_invoice': fields.Date.today(),
-            'invoice_line_ids': [(0, 0, {
-                'product_id': line.product_id.id,
-                'quantity': line.quantity,
-                'price_unit': line.price_unit,
-                'name': line.name,
-            }) for line in self.payout_line_ids],
-        }
-        
-        invoice = self.env['account.move'].create(invoice_vals)
-        self.invoice_id = invoice.id
-        self.state = 'paid'
-        
-        return True
+    
 
 class HospitalDoctorPayoutLine(models.Model):
     _name = 'hospital.doctor.payout.line'
@@ -79,8 +135,8 @@ class HospitalDoctorPayoutLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product')
     name = fields.Char(string='Description')
     internal_category_id = fields.Many2one('product.category', string='Internal Category')
-    quantity = fields.Float(string='Quantity', default=1.0)
-    price_unit = fields.Float(string='Unit Price')
+    quantity = fields.Float(string='Quantity', default=1.0, readonly=False)
+    price_unit = fields.Float(string='Unit Price', related='product_id.lst_price', readonly=False)
     price_subtotal = fields.Float(string='Amount', compute='_compute_price_subtotal', store=True)
     is_cancelled = fields.Boolean(string='Is Cancelled', default=False)
     

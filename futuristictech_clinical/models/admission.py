@@ -126,26 +126,26 @@ class HospitalAdmissionType(models.Model):
     active = fields.Boolean(string='Active', default=True)
     code = fields.Char(string='Code', required=True)
 
-class OPVisit(models.Model):
-    _name = 'hospital.op.visit'
-    _description = 'Outpatient Visit'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class OPVisit(models.Model):
+#     _name = 'op.visit'
+#     _description = 'Outpatient Visit'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='Name', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    date = fields.Datetime(string='Visit Date', default=fields.Datetime.now)
-    physician_id = fields.Many2one('res.partner', string='Physician')
-    reason = fields.Text(string='Reason for Visit')
-    diagnosis = fields.Text(string='Diagnosis')
-    prescription_ids = fields.One2many('hospital.prescription', 'op_visit_id', string='Prescriptions')
-    type = fields.Many2one('hospital.appointment', string='Visit Type', tracking=True)
+#     name = fields.Char(string='Name', readonly=True, default=lambda self: _('New'))
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
+#     date = fields.Datetime(string='Visit Date', default=fields.Datetime.now)
+#     physician_id = fields.Many2one('res.partner', string='Physician')
+#     reason = fields.Text(string='Reason for Visit')
+#     diagnosis = fields.Text(string='Diagnosis')
+#     prescription_ids = fields.One2many('hospital.prescription', 'op_visit_id', string='Prescriptions')
+#     type = fields.Many2one('hospital.appointment', string='Visit Type', tracking=True)
  
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.op.visit') or _('New')
+                vals['name'] = self.env['ir.sequence'].next_by_code('op.visit') or _('New')
         return super(OPVisit, self).create(vals_list)
     
 

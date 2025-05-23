@@ -12,7 +12,7 @@ class Prescription(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     physician_id = fields.Many2one('res.partner', string='Physician', required=True)
     prescription_date = fields.Date(string='Prescription Date', default=fields.Date.context_today)
-    op_visit_id = fields.Many2one('hospital.op.visit', string='OP Visit')
+    op_visit_id = fields.Many2one('op.visit', string='OP Visit')
     admission_id = fields.Many2one('hospital.admission', string='Admission')
     line_ids = fields.One2many('hospital.prescription.line', 'prescription_id', string='Prescription Lines')
     pharmacy_id = fields.Many2one('hospital.pharmacy', string='Pharmacy')

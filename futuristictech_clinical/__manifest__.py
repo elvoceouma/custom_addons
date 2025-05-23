@@ -75,6 +75,8 @@
         'views/hospital_doctor_payout_views.xml',
         'views/activity_record_views.xml',
         'views/nurse_assessment_view.xml',
+        'views/care_plan_view.xml',
+        'views/admission_referral_config_view.xml',
         'views/actions.xml',  
         'views/menu.xml',     
         

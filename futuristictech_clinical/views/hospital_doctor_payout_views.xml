@@ -31,8 +31,8 @@
                             <field name="payout_line_ids" readonly="state != 'new'" 
                                    context="{'default_partner_id': doctor_id.partner_id}">
                                 <tree editable="bottom">
-                                    <field name="doctor_payout_id" invisible="1"/>
-                                    <field name="partner_id" invisible="1"/>
+                                    <!-- <field name="doctor_payout_id" invisible="1"/>
+                                    <field name="partner_id" invisible="1"/> -->
                                     <field name="date"/>
                                     <field name="type"/>
                                     <field name="reference"/>
@@ -41,8 +41,8 @@
                                     <field name="product_id" options="{'no_create':True}"/>
                                     <field name="name" invisible="1"/>
                                     <field name="internal_category_id" invisible="1"/>
-                                    <field name="quantity" invisible="1"/>
-                                    <field name="price_unit" invisible="1"/>
+                                    <field name="quantity" />
+                                    <field name="price_unit" />
                                     <field name="price_subtotal" sum="Total"/>
                                     <field name="is_cancelled" invisible="1"/>
                                 </tree>
