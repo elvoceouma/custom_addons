@@ -3,11 +3,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
-# -*- coding: utf-8 -*-
-
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
-
 class OpVisit(models.Model):
     _name = 'op.visit'
     _description = 'OP Visits'
@@ -17,27 +12,26 @@ class OpVisit(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Partner', tracking=True)
     visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, tracking=True)
-    treating_doctor_od = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
+    treating_doctor = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
+    treating_doctor_id = fields.Many2one('hr.employee', string='Treating Doctor ID', tracking=True)
     free_screening = fields.Boolean(string='Free Screening', default=False, tracking=True)
     followup_type_id = fields.Many2one('followup.type', string='Follow-up Type', tracking=True)
-    tot_amount = fields.Float(string='Total Amount', invisible=True)
+    tot_amount = fields.Float(string='Total Amount')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
         ('canceled', 'Canceled')
     ], string='Status', default='draft', tracking=True)
-    treating_doctor = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
     prescription_count = fields.Integer(string='Prescriptions Count', compute='_compute_prescription_count')
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     team_role = fields.Many2one('hr.department', string='Team Role', tracking=True)
     consultation_type = fields.Selection([
         ('in_person', 'In Person'),
         ('virtual', 'Virtual'),
-        ('home_based_cconsultation', 'Home Based Consultation')
+        ('home_based_consultation', 'Home Based Consultation')
     ], string='Consultation Type', default='in_person', tracking=True)
 
-    treating_doctor_id = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
@@ -47,18 +41,20 @@ class OpVisit(models.Model):
     def _compute_prescription_count(self):
         # Implement your logic to count prescriptions
         for visit in self:
-            visit.prescription_count = 0
+            prescriptions = self.env['hospital.prescription'].search([('op_visit_id', '=', visit.id)])
+            visit.prescription_count = len(prescriptions)
     
     def _compute_invoice_count(self):
         # Implement your logic to count invoices
         for visit in self:
-            visit.invoice_count = 0
+            invoices = self.env['account.move'].search([('op_visit_id', '=', visit.id)])
+            visit.invoice_count = len(invoices)
     
     def action_draft(self):
-        self.write({'state': 'draft'})
+        self.write({'state': 'confirmed'})
     
     def action_confirmed(self):
-        self.write({'state': 'confirmed'})
+        self.write({'state': 'completed'})
     
     def action_complete(self):
         self.write({'state': 'completed'})
@@ -66,17 +62,40 @@ class OpVisit(models.Model):
     def action_cancel(self):
         self.write({'state': 'canceled'})
 
+    def action_view_prescriptions(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Prescriptions',
+            'res_model': 'hospital.prescription',
+            'view_mode': 'tree,form',
+            'domain': [('op_visit_id', '=', self.id)],
+            'context': {'default_op_visit_id': self.id}
+        }
 
+    def action_view_invoices(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Invoices',
+            'res_model': 'account.move',
+            'view_mode': 'tree,form',
+            'domain': [('op_visit_id', '=', self.id)],
+            'context': {'default_op_visit_id': self.id}
+        }
 
-class FolowupType(models.Model):
+class FollowupType(models.Model):
     _name = 'followup.type'
     _description = 'Follow-up Type'
     
-    type = fields.Char(string='Name', required=True)
+    name = fields.Char(string='Name', required=True)
+    type = fields.Selection([
+        ('ip', 'Inpatient'),
+        ('op', 'Outpatient')
+    ], string='Type', required=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
     team_role = fields.Many2one('hr.department', string='Team Role')
     
+
 # Extend hospital.prescription to include op_visit_id if it doesn't exist
 class HospitalPrescription(models.Model):
     _inherit = 'hospital.prescription'
