@@ -10,32 +10,28 @@
                     <button name="action_draft" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
                     <button name="action_confirmed" type="object" string="Complete" class="oe_highlight" invisible="state != 'confirmed'"/>
                 </header>
+
                 <sheet>
-                    <div class="oe_button_box" name="buttons">
-                        <!-- <button type="action" class="oe_stat_button" name="931" context="{'search_default_patient': patient_id,'search_default_patient': patient_id,'default_prescription_type':'op','default_op_visit_id':active_id}" icon="fa-list">
-                            <field string="Prescriptions" name="prescription_count" widget="statinfo"/>
-                        </button>
-                        <button type="action" class="oe_stat_button" name="188" context="{'search_default_op_visit': active_id,'default_op_visit': active_id}" icon="fa-pencil-square-o">
-                            <field string="OP Bills" name="invoice_count" widget="statinfo"/>
-                        </button> -->
-                    </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
+                
+
                     <group>
                         <group>
+                            <field name="name" string="OP Visit No." readonly="1"/>
                             <field name="patient_id" readonly="state != 'draft'"/>
                             <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="followup_type_id" domain="[('type','=','op'),('team_role','=',team_role)]" options="{'no_open':True,'no_create':True}"/>
+                            <field name="team_role" />
+                            <field name="consultation_type" />
                         </group>
                         <group>
                             <field name="visit_date" readonly="state != 'draft'"/>
                             <field name="treating_doctor" readonly="state != 'draft'"/>
-                            <field name="tot_amount" invisible="1"/>
+                            <field name="treating_doctor_id" readonly="state != 'draft'" />
+                            <field name="tot_amount" />
                         </group>
                     </group>
                 </sheet>
+
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
@@ -43,4 +39,27 @@
             </form>
         </field>
     </record>
+
+    <record id="view_op_visit_tree" model="ir.ui.view">
+        <field name="name">op.visit.tree</field>
+        <field name="model">op.visit</field>
+        <field name="arch" type="xml">
+            <tree string="OP Visits">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="partner_id"/>
+                <field name="visit_date"/>
+                <field name="treating_doctor"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- write the  code for the action -->
+    <record id="action_op_visit" model="ir.actions.act_window">
+        <field name="name">OP Visits</field>
+        <field name="res_model">op.visit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_op_visit_tree"/>
+    </record>    
 </odoo>

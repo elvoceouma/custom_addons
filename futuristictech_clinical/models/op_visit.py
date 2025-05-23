@@ -14,10 +14,12 @@ class OpVisit(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string='Reference', readonly=True, default='New')
-    patient_id = fields.Many2one('res.partner', string='Patient', required=True, tracking=True)
+    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Partner', tracking=True)
     visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, tracking=True)
-    treating_doctor = fields.Many2one('res.users', string='Treating Doctor', tracking=True)
+    treating_doctor_od = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
+    free_screening = fields.Boolean(string='Free Screening', default=False, tracking=True)
+    followup_type_id = fields.Many2one('followup.type', string='Follow-up Type', tracking=True)
     tot_amount = fields.Float(string='Total Amount', invisible=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -25,13 +27,17 @@ class OpVisit(models.Model):
         ('completed', 'Completed'),
         ('canceled', 'Canceled')
     ], string='Status', default='draft', tracking=True)
-    
+    treating_doctor = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
     prescription_count = fields.Integer(string='Prescriptions Count', compute='_compute_prescription_count')
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
-    
-    message_follower_ids = fields.Many2many('mail.followers', 'mail_followers_rel', 'res_id', 'partner_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    
+    team_role = fields.Many2one('hr.department', string='Team Role', tracking=True)
+    consultation_type = fields.Selection([
+        ('in_person', 'In Person'),
+        ('virtual', 'Virtual'),
+        ('home_based_cconsultation', 'Home Based Consultation')
+    ], string='Consultation Type', default='in_person', tracking=True)
+
+    treating_doctor_id = fields.Many2one('hr.employee', string='Treating Doctor', tracking=True)
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
@@ -60,7 +66,17 @@ class OpVisit(models.Model):
     def action_cancel(self):
         self.write({'state': 'canceled'})
 
-        
+
+
+class FolowupType(models.Model):
+    _name = 'followup.type'
+    _description = 'Follow-up Type'
+    
+    type = fields.Char(string='Name', required=True)
+    description = fields.Text(string='Description')
+    active = fields.Boolean(string='Active', default=True)
+    team_role = fields.Many2one('hr.department', string='Team Role')
+    
 # Extend hospital.prescription to include op_visit_id if it doesn't exist
 class HospitalPrescription(models.Model):
     _inherit = 'hospital.prescription'

@@ -36,4 +36,5 @@ from . import nurse_assessment
 from . import case_history
 from . import hospital_care_plan
 from . import admission_referral_config
+from . import hr_employee
 from . import models

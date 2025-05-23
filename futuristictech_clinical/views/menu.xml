@@ -22,7 +22,8 @@
     <menuitem id="menu_my_vaccines" name="My Vaccines" parent="menu_patient_management_root" action="action_hospital_my_vaccine" sequence="70"/>
     <menuitem id="menu_case_history" name="Case History" parent="menu_patient_management_root" action="action_hospital_case_history" sequence="80"/>
     <menuitem id="menu_patient_documents" name="Patient Documents" parent="menu_patient_management_root" action="action_hospital_patient_document" sequence="90"/>
-    <menuitem id="menu_op_visits" name="OP Visits" parent="menu_patient_management_root" action="action_hospital_op_visit" sequence="100"/>
+    <!-- <menuitem id="menu_op_visits" name="OP Visits" parent="menu_patient_management_root" action="action_hospital_op_visit" sequence="100"/> -->
+    <menuitem id="menu_op_visits" name="OP Visits" parent="menu_patient_management_root" action="action_op_visit" sequence="100"/>
     <menuitem id="menu_medicine_box" name="Medicine Box" parent="menu_patient_management_root" action="action_hospital_medicine_box" sequence="110"/>
     <menuitem id="menu_medicine_packing" name="Medicine Packing" parent="menu_patient_management_root" action="action_hospital_medicine_packing" sequence="120"/>
     <menuitem id="menu_outside_consultation" name="Outside Consultation Advice" parent="menu_patient_management_root" action="action_hospital_outside_consultation" sequence="130"/>

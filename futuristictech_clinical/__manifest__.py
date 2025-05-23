@@ -20,7 +20,7 @@
         'base',
         'mail',
         'stock',
-        'account',
+        'base_accounting_kit',
         'product',
         'uom',
     ],

@@ -32,7 +32,7 @@
         <record id="seq_hospital_op_visit" model="ir.sequence">
             <field name="name">Hospital OP Visit</field>
             <field name="code">op.visit</field>
-            <field name="prefix">OP</field>
+            <field name="prefix">OPV</field>
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
