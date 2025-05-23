@@ -17,7 +17,7 @@
     <menuitem id="menu_registration_forms" name="Registration Forms" parent="menu_patient_management_root" action="action_hospital_registration_form" sequence="20"/>
     <menuitem id="menu_patients" name="Patients" parent="menu_patient_management_root" action="action_hospital_patient" sequence="30"/>
     <!-- <menuitem id="menu_inpatient_admissions" name="Inpatient Admissions" parent="menu_patient_management_root" action="action_hospital_admission" sequence="40"/>-->
-    <menuitem id="menu_my_admissions" name="My Admissions" parent="menu_patient_management_root" action="action_hospital_my_admission" sequence="50"/> 
+    <menuitem id="menu_my_admissions" name="My Admissions" parent="menu_patient_management_root" action="action_hospital_my_admission" sequence="50"/>
     <menuitem id="menu_vaccines" name="Vaccines" parent="menu_patient_management_root" action="action_hospital_vaccine" sequence="60"/>
     <menuitem id="menu_my_vaccines" name="My Vaccines" parent="menu_patient_management_root" action="action_hospital_my_vaccine" sequence="70"/>
     <menuitem id="menu_case_history" name="Case History" parent="menu_patient_management_root" action="action_hospital_case_history" sequence="80"/>
@@ -246,12 +246,11 @@
     <!-- <menuitem id="menu_barcode_label" name="Bar-code Label" parent="menu_configuration_root" action="action_hospital_barcode_label" sequence="100"/> -->
 
 
-<menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
+    <menuitem id="menu_consent_forms_root" name="Consent Forms" parent="hospital_management_root" sequence="30"/>
     <menuitem id="menu_medication_form" name="Medication Form" parent="menu_consent_forms_root" action="action_medication_consent_form" sequence="10"/>
 
-        <menuitem id="menu_patient_requisition_line"
-              name="Patient Requisitions"
-              action="action_patient_requisition_line"
-              parent="menu_registers_root"
-              sequence="10"/>
+    <menuitem id="menu_patient_requisition_line" name="Patient Requisitions" action="action_patient_requisition_line" parent="menu_registers_root" sequence="10"/>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_op_visit" name="OP Visits" parent="menu_patient_management_root" action="action_op_visit" sequence="10"/>
 </odoo>

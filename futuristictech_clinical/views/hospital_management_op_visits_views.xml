@@ -239,10 +239,5 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
-    <menuitem id="menu_op_visit" 
-              name="OP Visits" 
-              parent="menu_patient_management_root" 
-              action="action_op_visit" 
-              sequence="10"/>
+  
 </odoo>
