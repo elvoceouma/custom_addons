@@ -23,6 +23,7 @@
         'base_accounting_kit',
         'product',
         'uom',
+        'hr',
     ],
     'data': 
     [
