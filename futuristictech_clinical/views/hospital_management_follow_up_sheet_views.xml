@@ -5,115 +5,306 @@
         <field name="name">hospital.follow.up.sheet.form</field>
         <field name="model">hospital.follow.up.sheet</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Follow-Up Sheet">
                 <header>
-                    <button name="action_get_details" string="Get Details" type="object" class="oe_highlight" states="draft"/>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" states="draft"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    <button name="get_all_details" string="Get Details" type="object" class="oe_highlight" invisible="state == 'Confirmed'"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state == 'Confirmed' or not datetime"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="title" string="Follow-Up Sheet"/>
-                        </h1>
-                    </div>
-                    <group>
+                    <group string="Follow-Up Sheet">
                         <group>
-                            <field name="ip_number"/>
+                            <field name="ip_number" readonly="state == 'Confirmed'"/>
                             <field name="patient_id"/>
                         </group>
                         <group>
                             <field name="user_id"/>
                             <field name="company_id"/>
-                            <field name="last_updated_date"/>
+                            <field name="datetime" readonly="1"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Hygiene Details" name="hygiene_details">
-                            <field name="hygiene_detail_ids">
-                                <tree editable="bottom">
-                                    <field name="parameter"/>
-                                    <field name="value"/>
-                                    <field name="notes"/>
-                                </tree>
-                                <form>
-                                    <group>
-                                        <field name="parameter"/>
-                                        <field name="value"/>
-                                        <field name="notes"/>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                        <page string="Formal Activities" name="formal_activities">
-                            <field name="formal_activity_ids">
-                                <tree editable="bottom">
-                                    <field name="date"/>
-                                    <field name="activity"/>
-                                    <field name="comments"/>
-                                </tree>
-                                <form>
-                                    <group>
-                                        <field name="date"/>
-                                        <field name="activity"/>
-                                        <field name="comments"/>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                        <page string="Informal Activities" name="informal_activities">
-                            <field name="informal_activity_ids">
-                                <tree editable="bottom">
-                                    <field name="date"/>
-                                    <field name="activity"/>
-                                    <field name="comments"/>
-                                </tree>
-                                <form>
-                                    <group>
-                                        <field name="date"/>
-                                        <field name="activity"/>
-                                        <field name="comments"/>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                        <page string="Family Session Details" name="family_sessions">
-                            <field name="family_session_ids">
-                                <tree editable="bottom">
+                    <group string="Hygiene Details">
+                        <field name="hygiene_details_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="parameter_id"/>
+                                <button name="hygiene_report" string="Hygiene Report" type="object" icon="fa-list" context="{'parameter_id':parameter_id}"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Formal Activities" name="formal_activities">
+                        <field name="formal_activities_ids" readonly="state == 'Confirmed'" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="date" required="1"/>
+                                <field name="comments" required="1"/>
+                            </tree>
+                            <form>
+                                <field name="date" required="1"/>
+                                <field name="comments" required="1"/>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Informal Activities" name="informal_activities">
+                        <field name="informal_activities_ids" readonly="state == 'Confirmed'" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="date" required="1"/>
+                                <field name="comments" required="1"/>
+                            </tree>
+                            <form>
+                                <field name="date" required="1"/>
+                                <field name="comments" required="1"/>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Family Session Details">
+                        <field name="family_session_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="date"/>
+                                <field name="purpose"/>
+                                <field name="discussed"/>
+                                <field name="observation"/>
+                                <field name="outcome"/>
+                                <field name="future_plan"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="members_ids" string="Members">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="relationship_id"/>
+                                            <field name="visitor_age"/>
+                                            <field name="sex"/>
+                                            <field name="mobile_number"/>
+                                            <field name="email"/>
+                                        </tree>
+                                    </field>
+
                                     <field name="date"/>
                                     <field name="purpose"/>
-                                    <field name="matters_discussed"/>
+                                    <field name="discussed"/>
                                     <field name="observation"/>
                                     <field name="outcome"/>
                                     <field name="future_plan"/>
-                                </tree>
-                                <form>
-                                    <group>
-                                        <group>
-                                            <field name="date"/>
-                                            <field name="purpose"/>
-                                            <field name="matters_discussed"/>
-                                        </group>
-                                        <group>
-                                            <field name="observation"/>
-                                            <field name="outcome"/>
-                                            <field name="future_plan"/>
-                                        </group>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                    </notebook>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Hospitalization" name="hospitalization">
+                        <field name="doa" readonly="1"/>
+                        <field name="dod" readonly="state == 'Confirmed'"/>
+                        <field name="admission_reason" readonly="state == 'Confirmed'"/>
+                    </group>
+                    <group string="Disturbed Behaviour Details">
+                        <field name="incident_details_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="datetime"/>
+                                <field name="incident_type"/>
+                                <field name="location"/>
+                                <field name="description"/>
+                                <field name="action"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="datetime"/>
+                                    <field name="incident_type"/>
+                                    <field name="location"/>
+                                    <field name="description"/>
+                                    <field name="action"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Emergency Medicine Details">
+                        <field name="emergency_medicine_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom" limit="10">
+                                <field name="name" required="1"/>
+                                <field name="requested_date"/>
+                                <field name="advising_doctor_id"/>
+                                <field name="purpose"/>
+                                <field name="notes"/>
+                                <field name="medicine"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="requested_date"/>
+                                    <field name="approved_date"/>
+                                    <field name="advising_doctor_id"/>
+                                    <field name="purpose"/>
+                                    <field name="notes"/>
+                                    <field name="medicine"/>
+                                    <field name="state"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Medicine Not Taken Details">
+                        <field name="medicine_unconsumed_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="time"/>
+                                <field name="date"/>
+                                <field name="details"/>
+                                <field name="info"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="time"/>
+                                    <field name="date"/>
+                                    <field name="details"/>
+                                    <field name="info"/>
+                                    <field name="responsible"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Outing Details">
+                        <field name="outing_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="date"/>
+                                <field name="vendor_id"/>
+                                <field name="nature_of_outing"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="vendor_id"/>
+                                    <field name="nature_of_outing"/>
+                                    <field name="state"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+
+                    <group string="Lab Test">
+                        <field name="lab_test_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="date_analysis"/>
+                                <field name="test_type_id"/>
+                                <field name="results"/>
+                                <field name="diagnosis"/>
+                                <field name="pathologist"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="date_analysis"/>
+                                    <field name="test_type_id"/>
+                                    <field name="results"/>
+                                    <field name="diagnosis"/>
+                                    <field name="pathologist"/>
+                                    <field name="state"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Outside Consultation">
+                        <field name="outside_consultation_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="date"/>
+                                <field name="specialist_id"/>
+                                <field name="speciality_id"/>
+                                <field name="advice"/>
+                                <field name="referred_by"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="date"/>
+                                    <field name="specialist_id"/>
+                                    <field name="speciality_id"/>
+                                    <field name="advice"/>
+                                    <field name="referred_by"/>
+                                    <field name="state"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Phone Call Logs">
+                        <field name="phone_call_ids" nolabel="1" readonly="1">
+                            <tree editable="bottom">
+                                <field name="datetime"/>
+                                <field name="caller"/>
+                                <field name="caller_name"/>
+                                <field name="phone"/>
+                                <field name="points_discussed"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="datetime"/>
+                                    <field name="caller"/>
+                                    <field name="caller_name"/>
+                                    <field name="phone"/>
+                                    <field name="points_discussed"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Individual Sessions">
+                        <field name="counselling_session_ids" readonly="1" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="date"/>
+                                <field name="session_type" required="1"/>
+                                <field name="comments"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                <field name="date"/>
+                                <field name="session_type"/>
+                                <field name="state"/>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Group Therapy">
+                        <field name="group_therapy_ids" readonly="1" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="start_datetime"/>
+                                <field name="end_datetime"/>
+                                <field name="program_id"/>
+                                <field name="presence"/>
+                                <field name="remarks"/>
+                            </tree>
+                            <form>
+                                <field name="name"/>
+                                <field name="start_datetime"/>
+                                <field name="end_datetime"/>
+                                <field name="program_id"/>
+                                <field name="presence"/>
+                                <field name="remarks"/>
+                            </form>
+                        </field>
+                    </group>
+                    <group string="Epileptic Attack" name="epileptic_attack">
+                        <group>
+                            <field name="epileptic_attack" widget="radio" readonly="state == 'Confirmed'"/>
+                        </group>
+                    </group>
+                    <group string="Mental Status Examination" name="mental_status_examination">
+                        <field name="general_observation" readonly="state == 'Confirmed'"/>
+                        <field name="speech" readonly="state == 'Confirmed'"/>
+                        <field name="mood" readonly="state == 'Confirmed'"/>
+                        <field name="thought" readonly="state == 'Confirmed'"/>
+                        <field name="perception" readonly="state == 'Confirmed'"/>
+                        <field name="cognitive_function" readonly="state == 'Confirmed'"/>
+                        <field name="insight" readonly="state == 'Confirmed'"/>
+                    </group>
+                    <group string="General Observation of the Counsellor">
+                        <field name="counsellor_observation" nolabel="1" readonly="state == 'Confirmed'"/>
+                    </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
     </record>
-    
+
     <!-- Follow-Up Sheet Tree View -->
     <record id="view_hospital_follow_up_sheet_tree" model="ir.ui.view">
         <field name="name">hospital.follow.up.sheet.tree</field>
@@ -129,7 +320,7 @@
             </tree>
         </field>
     </record>
-    
+
     <!-- Follow-Up Sheet Search View -->
     <record id="view_hospital_follow_up_sheet_search" model="ir.ui.view">
         <field name="name">hospital.follow.up.sheet.search</field>
@@ -150,7 +341,7 @@
             </search>
         </field>
     </record>
-    
+
     <!-- Hygiene Detail Form View -->
     <record id="view_hospital_hygiene_detail_form" model="ir.ui.view">
         <field name="name">hospital.hygiene.detail.form</field>
@@ -166,9 +357,9 @@
             </form>
         </field>
     </record>
-    
 
-    
+
+
     <!-- Family Session Form View -->
     <record id="view_hospital_family_session_form" model="ir.ui.view">
         <field name="name">hospital.family.session.form</field>
@@ -181,6 +372,7 @@
                         <field name="date"/>
                         <field name="purpose"/>
                         <field name="matters_discussed"/>
+                        <field name="discussed"/>
                     </group>
                     <group>
                         <field name="observation"/>
@@ -191,7 +383,7 @@
             </form>
         </field>
     </record>
-    
+
     <!-- Follow-Up Sheet Action -->
     <record id="action_hospital_follow_up_sheet" model="ir.actions.act_window">
         <field name="name">Follow-Up Sheet</field>

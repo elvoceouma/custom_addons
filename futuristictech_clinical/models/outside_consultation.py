@@ -14,12 +14,16 @@ class OutsideConsultation(models.Model):
     # Basic information fields from screenshots
     age = fields.Integer(string='Age', related='patient_id.age', readonly=True)
     sex = fields.Selection(related='patient_id.gender', string='Sex', readonly=True)
-    
+    date = fields.Date(string='Date', default=fields.Date.context_today)
+    specialist_id = fields.Many2one('res.partner', string='Specialist')
+    speciality_id = fields.Many2one('medical.speciality', string='Speciality')
     # Fields from original implementation
     admission_id = fields.Many2one('hospital.admission', string='Admission', tracking=True)
     speciality_id = fields.Many2one('hospital.physician.speciality', string='Speciality', required=True, tracking=True)
     reason_for_referral = fields.Text(string='Reason for Referral')
     referral_date = fields.Date(string='Referral Date', default=fields.Date.context_today, tracking=True)
+    advice = fields.Text(string='Advice')
+    referred_by = fields.Char(string='Referred By')
     
     priority = fields.Selection([
         ('low', 'Low'),
@@ -34,6 +38,7 @@ class OutsideConsultation(models.Model):
     findings = fields.Text(string='Findings')
     recommendations = fields.Text(string='Recommendations')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+    follow_up_sheet_id = fields.Many2one('hospital.follow.up.sheet', string='Follow-Up Sheet', required=True, ondelete='cascade')
     
     # Additional fields for new UI
     type = fields.Selection([
@@ -66,6 +71,9 @@ class OutsideConsultation(models.Model):
     
     # Extended states for new UI
     state = fields.Selection([
+        ('scheduled', 'Scheduled'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('trip_planned', 'Trip Planned'),

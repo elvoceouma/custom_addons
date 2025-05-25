@@ -173,8 +173,8 @@
                             <field name="patient_name" invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
                             <field name="age" invisible="type != 'external'" readonly="state != 'draft'"/>
                             <field name="sex" invisible="type != 'external'" readonly="state != 'draft'"/>
-                            <field name="partner_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
-                                   invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/>
+                            <!-- <field name="partner_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
+                                   invisible="type != 'external'" required="type == 'external'" readonly="state != 'draft'"/> -->
                             <field name="inpatient_admission_id" options="{'no_create':True,'no_open':True,'no_create_edit':True,'no_edit':True}" 
                                    domain="[('state','!=','discharge_advised')]" invisible="type != 'inpatient'" 
                                    required="type == 'inpatient'" readonly="state != 'draft'"/>
@@ -186,7 +186,7 @@
                                    required="type in ['inpatient','outpatient']" readonly="state != 'draft'"/>
                             <field name="prescribing_doctor" invisible="type != 'inpatient'" 
                                    required="type == 'inpatient'" readonly="state != 'draft'"
-                                   domain="[('team_role','in',('psychiatrist','physician'))]"/>
+                                   />
                             <field name="purpose" readonly="state != 'draft'"/>
                         </group>
                         <group>

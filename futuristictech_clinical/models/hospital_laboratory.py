@@ -141,10 +141,10 @@ class HospitalLabTestRequisition(models.Model):
     
     partner_id = fields.Many2one('res.partner', string='Partner')
     inpatient_admission_id = fields.Many2one('hospital.admission', string='Inpatient Admission')
-    op_visit_id = fields.Many2one('op.visit', string='Outpatient Visit')
+    op_visit_id = fields.Many2one('op.visits', string='Outpatient Visit')
     patient_id = fields.Many2one('hospital.patient', string='Patient')
     prescribing_doctor = fields.Many2one('hospital.physician', string='Prescribing Doctor',
-                                       domain="[('team_role','in',('psychiatrist','physician'))]")
+                                   )
     purpose = fields.Text(string='Purpose')
     
     requested_date = fields.Datetime(string='Requested Date')

@@ -40,7 +40,7 @@ class Physician(models.Model):
     work_location = fields.Char(string='Work Location', tracking=True)
     
     responsible = fields.Char(string='Responsible', tracking=True)
-    team_role = fields.Char(string='Team Role', tracking=True)
+    # team_role = fields.Char(string='Team Role', tracking=True)
     
     # Schedule
     availability_ids = fields.One2many('hospital.physician.availability', 'physician_id', string='Weekly Availability')

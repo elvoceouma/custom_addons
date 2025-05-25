@@ -98,13 +98,22 @@
                                 <field name="concerns_problems" string="Concerns/Problems"/>
                             </group>
                             <group string="CRM Remarks" name="crm_remarks">
-                                <field name="crm_remarks_ids" nolabel="1">
+                                <field name="crm_remarks_ids">
                                     <tree editable="bottom">
                                         <field name="date" string="Date"/>
                                         <field name="points_of_discussion" string="Points of Discussion"/>
                                         <field name="remarks" string="Remarks"/>
                                         <field name="employee_id" string="Employee"/>
                                     </tree>
+                                    <form>
+                                        <group>
+                                            <field name="date" string="Date"/>
+                                            <field name="points_of_discussion" string="Points of Discussion"/>
+                                            <field name="remarks" string="Remarks"/>
+                                            <field name="employee_id" string="Employee"/>
+                                        </group>
+                                    </form>
+
                                 </field>
                             </group>
                             <field name="physical_condition" string="Physical Condition"/>

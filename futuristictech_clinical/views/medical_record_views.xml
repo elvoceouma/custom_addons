@@ -388,11 +388,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-
-
-   
-
-   
     <!-- Drug Chart Views -->
     <record id="view_hospital_drug_chart_form" model="ir.ui.view">
         <field name="name">hospital.drug.chart.form</field>
@@ -409,14 +404,42 @@
                         <group>
                             <field name="patient_id"/>
                             <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
+                            <field name="age" />
+                            <field name="mrn_no"/>
+                            <field name="campus_id"/>
+                            <field name="gender" />
+                            <field name="drug_allergies"/>
                         </group>
                         <group>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
+                            <field name="date"/>
+                            <field name="doctor" />
+                            <field name="ward" />
+                            <field name="room" />
+                            <field name="diet" />
+                            <field name="blood_group"/>
                         </group>
                     </group>
+                    <group >
+                    <notebook name="drug_chart_notebook">
+                        <page name="prescription" string="Prescription">
+                            
+                        </page>
+
+                        <page name="regular_prescription" string="Regular Prescrition">
+                            
+                        </page>
+
+                        <page name="only_once_drug" string="Only Once Drug">
+                           
+                            
+                        </page>
+                        <page name="variable_drugs" string="Variable Drugs">
+                            
+                        </page>
+                    </notebook>
+                    </group>
                     <field name="line_ids">
-                        <tree>
+                        <tree name='drug_chart_tree' editable="bottom">
                             <field name="medicine_id"/>
                             <field name="dosage"/>
                             <field name="frequency_id"/>

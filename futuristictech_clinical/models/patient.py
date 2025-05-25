@@ -75,7 +75,7 @@ class Patient(models.Model):
     admission_ids = fields.One2many('hospital.admission', 'patient_id', string='Admissions')
     document_ids = fields.One2many('hospital.patient.document', 'patient_id', string='Documents')
     vaccine_ids = fields.One2many('hospital.patient.vaccine', 'patient_id', string='Vaccines')
-    op_visit_ids = fields.One2many('op.visit', 'patient_id', string='OP Visits')
+    op_visit_ids = fields.One2many('op.visits', 'patient_id', string='OP Visits')
     evaluation_ids = fields.One2many('hospital.evaluation', 'patient_id', string='Evaluations')
     lab_test_ids = fields.One2many('hospital.lab.test', 'patient_id', string='Lab Tests')
     crm_document_ids = fields.One2many('crm.document', 'patient_id', string='CRM Documents')
@@ -161,7 +161,7 @@ class Patient(models.Model):
         return {
             'name': _('OP Visits'),
             'view_mode': 'tree,form',
-            'res_model': 'op.visit',
+            'res_model': 'op.visits',
             'type': 'ir.actions.act_window',
             'domain': [('patient_id', '=', self.id)],
             'context': {'default_patient_id': self.id}

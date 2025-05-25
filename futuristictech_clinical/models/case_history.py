@@ -79,7 +79,12 @@ class CaseHistory(models.Model):
     insidious_desc = fields.Text(string='Insidious Description')
     
     # Course and duration
-    course = fields.Text(string='Course')
+    course = fields.Selection(
+        [('continuous', 'Continuous'),
+            ('episodic', 'Episodic'),
+            ('flutuating', 'Fluctuating'),],
+        string='Course of Illness'
+    )
     duration_illness = fields.Selection([
         ('Months', 'Months'),
         ('Years', 'Years')
@@ -296,7 +301,7 @@ class CaseHistory(models.Model):
     glass_contact = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
-    ], string='Glass Contact')
+    ], string='Glass/Contact')
     
     eye_pain = fields.Selection([
         ('Yes', 'Yes'),
@@ -317,12 +322,12 @@ class CaseHistory(models.Model):
     heartburn_reflux = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
-    ], string='Heartburn Reflux')
+    ], string='Heartburn/Reflux')
     
     nausea_vomiting = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
-    ], string='Nausea Vomiting')
+    ], string='Nausea/Vomiting')
     
     constipation = fields.Selection([
         ('Yes', 'Yes'),
@@ -358,7 +363,7 @@ class CaseHistory(models.Model):
     joint_pain = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
-    ], string='Joint Pain')
+    ], string='Joint Pain/Swelling')
     
     stiffness = fields.Selection([
         ('Yes', 'Yes'),
@@ -594,8 +599,16 @@ class CaseHistory(models.Model):
     reinforcement = fields.Text(string='Reinforcement')
     
     # Type of family
-    type_family = fields.Text(string='Type of Family')
-    family_environ = fields.Text(string='Family Environment')
+    type_family = fields.Selection([
+        ('joint_family', 'Joinit Family'),
+        ('nuclear_family', 'Nuclear Family'),
+        ('extended_family', 'extended_family'),
+        ('single_family', 'single_family'),
+    ],string='Type of Family')
+    family_environ = fields.Selection([
+        ('cordial', 'Cordial'),
+        ('strained', 'Strained')
+    ],string='Family Environment')
     
     # Personal history - birth
     drug_exposure = fields.Text(string='Drug Exposure')
@@ -614,15 +627,21 @@ class CaseHistory(models.Model):
     physical_illness_ids = fields.Many2many('hospital.physical.illness', string='Physical Illness')
     
     # Childhood / Academic history
-    history_bullying = fields.Text(string='History of Bullying')
-    check_boarding = fields.Text(string='Check if Boarding')
+    history_bullying = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='History of Bullying')
+    
+    check_boarding = fields.Selection([
+        ('yes', 'Yes'), 
+        ('no', 'No')
+    ], string='Check if Boarding')
     
     parenting_style = fields.Selection([
         ('permissive', 'Permissive'),
         ('authoritarian', 'Authoritarian'),
-        ('harsh', 'Harsh'),
-        ('indulgent', 'Indulgent'),
-        ('indifferent', 'Indifferent')
+        ('authoitative', 'Authoitative'),
+        
     ], string='Parenting Style')
     
     academic_performance = fields.Selection([
@@ -649,10 +668,8 @@ class CaseHistory(models.Model):
     parenting_style_adol = fields.Selection([
         ('permissive', 'Permissive'),
         ('authoritarian', 'Authoritarian'),
-        ('harsh', 'Harsh'),
-        ('indulgent', 'Indulgent'),
-        ('indifferent', 'Indifferent')
-    ], string='Parenting Style (Adolescence)')
+        ('authoitative', 'Authoitative'),],
+        string= "Parenting Style")
     
     academic_performance_adol = fields.Selection([
         ('excellent', 'Excellent'),
@@ -742,30 +759,46 @@ class CaseHistory(models.Model):
     
     dress = fields.Selection([
         ('Appropriate', 'Appropriate'),
+        ('shabby', 'shabby'),
         ('Inappropriate', 'Inappropriate')
     ], string='Dress')
     
     eye_contact = fields.Selection([
-        ('Good', 'Good'),
-        ('Poor', 'Poor'),
-        ('Avoids', 'Avoids')
+        ('maintained', 'Maintained'),
+        ('partial', 'Partial'), 
+        ('not_maintained', 'Not Maintained')
     ], string='Eye Contact')
     
     touch_with_surrounding = fields.Selection([
         ('Good', 'Good'),
+        ('partial', 'Partial'),
         ('Poor', 'Poor')
     ], string='Touch with Surrounding')
     
     rapport = fields.Selection([
-        ('Good', 'Good'),
-        ('Poor', 'Poor')
+        ('easily_established', 'Easily Established'),
+        ('established_with_difficulty', 'Established with difficulty'),
+        ('not_possible', 'Not Possible')
     ], string='Rapport')
     
     attitude_to_interviewer = fields.Selection([
-        ('Cooperative', 'Cooperative'),
-        ('Hostile', 'Hostile'),
-        ('Guarded', 'Guarded'),
-        ('Mistrustful', 'Mistrustful')
+        ('cooperative', 'Cooperative'),
+        ('uncooperative', 'Uncooperative'), 
+        ('seductive', 'Seductive'),
+        ('hostile', 'Hostile'),
+        ('playful', 'Playful'),
+        ('evasive', 'Evasive'),
+        ('guarded', 'Guarded'),
+        ('ingratiating', 'Ingratiating'),
+        ('attention_seeking', 'Attention seeking'),
+        ('suspicious', 'Suspicious'),
+        ('tense', 'Tense'),
+        ('withdrawn', 'Withdrawn'),
+        ('apathetic', 'Apathetic'),
+        ('perplexed', 'Perplexed'),
+        ('disinhibited', 'Disinhibited'),
+        ('attentive', 'Attentive'),
+        ('frank', 'Frank')
     ], string='Attitude to Interviewer')
     
     psychomotor_activity_ids = fields.Many2many('hospital.psychomotor.activity', string='Psychomotor Activity')
@@ -773,9 +806,14 @@ class CaseHistory(models.Model):
     
     # Speech
     speech_initiation = fields.Selection([
-        ('Spontaneous', 'Spontaneous'),
-        ('Hesitant', 'Hesitant'),
-        ('Mute', 'Mute')
+        ('spontaneous', 'Spontaneous'),
+        ('speaks_when_spoken', 'Speaks When Spoken To'),
+        ('hesitant', 'Hesitant'), 
+        ('mute', 'Mute'),
+        ('slurring', 'Slurring'),
+        ('stuttering', 'Stuttering'),
+        ('whispering', 'Whispering'),
+        ('muttering', 'Muttering')
     ], string='Speech Initiation')
     
     reaction_time = fields.Selection([
@@ -785,9 +823,9 @@ class CaseHistory(models.Model):
     ], string='Reaction Time')
     
     intensity = fields.Selection([
-        ('Normal', 'Normal'),
-        ('High', 'High'),
-        ('Low', 'Low')
+        ('audible', 'Audible'),
+        ('excessively_loud', 'Excessively Loud'), 
+        ('abnormally_soft', 'Abnormally Soft')
     ], string='Intensity')
     
     pitch = fields.Selection([
@@ -803,8 +841,8 @@ class CaseHistory(models.Model):
     ], string='Speed')
     
     pressure_speech = fields.Selection([
-        ('Normal', 'Normal'),
-        ('Pressurized', 'Pressurized')
+        ('Present', 'Present'),
+        ('Absent', 'Absent')
     ], string='Pressure of Speech')
     
     volume = fields.Selection([
@@ -815,6 +853,7 @@ class CaseHistory(models.Model):
     
     relevance = fields.Selection([
         ('Relevant', 'Relevant'),
+        ('off_target', 'Off Target'),
         ('Irrelevant', 'Irrelevant')
     ], string='Relevance')
     
@@ -824,16 +863,33 @@ class CaseHistory(models.Model):
     ], string='Coherence')
     
     deviation = fields.Selection([
-        ('Yes', 'Yes'),
-        ('No', 'No')
+        ('nil', 'Nil'),
+        ('rhyming_punning', 'Rhyming and punnin'),
+        ('neologism', 'Neologism'),
+        ('condensation', 'condensation'),
+        ('clang', 'clang'),
+        ('association', 'association'), 
+        ('stereotyping', 'stereotyping'),
+        ('perseveration', 'perseveration'),
+        ('word_salad', 'word salad'),
+        ('over_inclusion', 'over inclusion'),
+        ('drivelling', 'Drivelling'),
+        ('desultory', 'Desultory'),
+        ('derailment', 'derailment'),
+        ('loosening_association', 'loosening of association')
     ], string='Deviation')
     
     # Thought form
     check_for_disorder = fields.Selection([
-        ('normal', 'Normal'),
-        ('disordered', 'Disordered')
+        ('loosening_of_association', 'Loosening of Association'),
+        ('derailment', 'Derailment'),
+        ('neologism', 'Neologism'),
+        ('perseveration', 'Perseveration'), 
+        ('word_salad', 'Word Salad'),
+        ('over_inclusion', 'Over Inclusion'),
+        ('drivelling', 'Drivelling'),
+        ('desultory', 'Desultory')
     ], string='Check for Formal thought disorder')
-    
     # Thought form (continuing)
     flow_stream_normal = fields.Selection([
         ('Normal', 'Normal'),
@@ -848,13 +904,18 @@ class CaseHistory(models.Model):
     ], string='Flow/Stream of thought Abnormal')
     
     relationship_in_patient = fields.Selection([
-        ('Logical', 'Logical'),
-        ('Illogical', 'Illogical')
+        ('illogical', 'Illogical'),
+        ('tangential', 'Tangential'), 
+        ('circumstantial', 'Circumstantial'),
+        ('rambling', 'Rambling'),
+        ('evasive', 'Evasive'),
+        ('perseverative', 'Perseverative Statements')
     ], string='Relationship in Patient')
     
     blocking_distractibility = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('flight_of_ideas', 'Flight of Ideas'),
+        ('retardation_thinking', 'Retardation of thinking'),
+        ('circumstantialities', 'circumstantialities')
     ], string='Blocking/Distractibility')
     
     # Possession
@@ -880,8 +941,7 @@ class CaseHistory(models.Model):
     
     # Delusions
     delusions_prior = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent'),
+        ('preferencial', 'preferencial'),
         ('Persecutory', 'Persecutory')
     ], string='Delusions')
     
@@ -891,10 +951,17 @@ class CaseHistory(models.Model):
     ], string='Delusion Persecutory')
     
     delusion = fields.Selection([
-        ('Reference', 'Reference'),
-        ('Grandiose', 'Grandiose'),
-        ('Nihilism', 'Nihilism'),
-        ('Guilt', 'Guilt')
+        ('love', 'Love'),
+        ('control', 'Control'), 
+        ('guilt', 'Guilt'),
+        ('infidelity', 'Infidelity'),
+        ('reference', 'Reference'),
+        ('persecution', 'Persecution'),
+        ('sin_guilt', 'Sin & Guilt'),
+        ('poverty', 'Poverty'),
+        ('grandiose', 'Grandiose'),
+        ('nihilism', 'Nihilism'),
+        ('guilt', 'Guilt')
     ], string='Delusion of')
     
     grandiose = fields.Selection([
@@ -919,9 +986,8 @@ class CaseHistory(models.Model):
     ], string='Conviction of Validity')
     
     how_affects_life = fields.Selection([
-        ('Mildly', 'Mildly'),
-        ('Moderately', 'Moderately'),
-        ('Severely', 'Severely')
+        ('significantly', 'Significantly'), 
+        ('not_significantly', 'Not Significantly')
     ], string='How it affects life')
     
     # Depressive cognition
@@ -944,9 +1010,17 @@ class CaseHistory(models.Model):
     ], string='Preoccupation')
     
     preoccupation_list = fields.Selection([
-        ('Mild', 'Mild'),
-        ('Moderate', 'Moderate'),
-        ('Severe', 'Severe')
+        ('absent', 'Absent'),
+        ('present', 'Present'),
+        ('illness', 'About the Illness'),
+        ('environmental', 'Environmental problems'), 
+        ('obsessions', 'Obsessions'),
+        ('compulsions', 'Compulsions'),
+        ('phobias', 'Phobias'),
+        ('suicide', 'Obsessions or plans about suicide'),
+        ('homicide', 'Homicide'),
+        ('hypochondriacal', 'Hypochondriacal symptoms'),
+        ('antisocial', 'Specific Antisocial urges or impulses')
     ], string='Preoccupation List')
     
     somatisation = fields.Text(string='Somatisation')
@@ -954,24 +1028,68 @@ class CaseHistory(models.Model):
     
     # Mood
     subjective = fields.Selection([
-        ('Euthymic', 'Euthymic'),
-        ('Dysphoric', 'Dysphoric'),
-        ('Euphoric', 'Euphoric'),
-        ('Irritable', 'Irritable'),
-        ('Anxious', 'Anxious')
+        ('depressed', 'Depressed'),
+        ('despairing', 'Despairing'),
+        ('irritable', 'Irritable'), 
+        ('anxious', 'Anxious'),
+        ('terrified', 'Terrified'),
+        ('angry', 'Angry'),
+        ('expansive', 'Expansive'),
+        ('euphoric', 'Euphoric'),
+        ('empty', 'Empty'),
+        ('guilty', 'Guilty'),
+        ('awed', 'Awed'),
+        ('futile', 'Futile'),
+        ('self_contemptuous', 'Self-Contemptuous'),
+        ('anhedonic', 'Anhedonic'),
+        ('alexithymic', 'Alexithymic')
     ], string='Subjective')
     
     fluctuation_of_mood = fields.Selection([
-        ('Stable', 'Stable'),
-        ('Labile', 'Labile')
+        ('absent', 'Absent'),
+        ('normal_excessive', 'Normal/ Excessive')
     ], string='Fluctuations of Mood')
     
     objective = fields.Selection([
-        ('Euthymic', 'Euthymic'),
-        ('Dysphoric', 'Dysphoric'),
-        ('Euphoric', 'Euphoric'),
-        ('Irritable', 'Irritable'),
-        ('Anxious', 'Anxious')
+        ('euthymic', 'Euthymic'),
+        ('fearful', 'Fearful'),
+        ('afraid', 'Afraid'), 
+        ('tense', 'Tense'),
+        ('nervous', 'Nervous'),
+        ('shy', 'Shy'),
+        ('ashamed', 'Ashamed'),
+        ('guilt', 'Guilt'),
+        ('sad', 'Sad'),
+        ('upset', 'Upset'),
+        ('fatigue', 'Fatigue'),
+        ('surprise', 'Surprise'),
+        ('joviality', 'Joviality'),
+        ('self_assurance', 'Self-Assurance'),
+        ('attentiveness', 'Attentiveness'),
+        ('serene', 'Serene'),
+        ('annoyed', 'Annoyed'),
+        ('irritable', 'Irritable'),
+        ('resentment', 'Resentment'),
+        ('hostile', 'Hostile'),
+        ('fury_rage', 'Fury and Rage'),
+        ('negativism', 'Negativism'),
+        ('normal', 'Normal'),
+        ('disturbed', 'Disturbed'),
+        ('depressed', 'Depressed'),
+        ('despairing', 'Despairing'),
+        ('anxious', 'Anxious'),
+        ('panicky', 'Panicky'),
+        ('terrified', 'Terrified'),
+        ('angry', 'Angry'),
+        ('expansive', 'Expansive'),
+        ('euphoric', 'Euphoric'),
+        ('elated', 'Elated'),
+        ('blunted', 'Blunted'),
+        ('apathetic', 'Apathetic'),
+        ('labile', 'Labile'),
+        ('weeping', 'Weeping'),
+        ('estrangement', 'Feelings of Estrangement'),
+        ('la_belle_indifference', 'La-belle Indifference')
     ], string='Objective')
     
     intensity_mood = fields.Selection([
@@ -981,10 +1099,10 @@ class CaseHistory(models.Model):
     ], string='Intensity')
     
     range = fields.Selection([
-        ('Normal', 'Normal'),
-        ('Restricted', 'Restricted'),
-        ('Blunted', 'Blunted'),
-        ('Flat', 'Flat')
+        ('normal_broad', 'Normal and Broad'),
+        ('restricted', 'Constricted/Restricted'),
+        ('blunted_flat', 'Blunted or Flat'),
+        ('shallow', 'Shallow')
     ], string='Range')
     
     reactivity = fields.Selection([
@@ -1056,14 +1174,37 @@ class CaseHistory(models.Model):
     
     # Cognitive functions
     attention = fields.Selection([
-        ('Normal', 'Normal'),
-        ('Impaired', 'Impaired')
+        ('easily_sustained', 'Easily aroused & sustained'),
+        ('easy_not_sustained', 'Easy to arouse but not sustained'),
+        ('difficult_sustain', 'Difficult to arouse and sustain'),
+        ('difficult_sustained', 'Difficult to arouse but sustained'),
+        ('distractible', 'Distractible'),
+      
     ], string='Attention and Concentration')
     
     orientation = fields.Selection([
-        ('Time', 'Time'),
-        ('Place', 'Place'),
-        ('Person', 'Person')
+        ('time_present', 'Time (Present)'),
+        ('time_absent', 'Time (Absent)'),
+        ('date_present', 'Date (Present)'),
+        ('date_absent', 'Date (Absent)'),
+        ('day_present', 'Day (Present)'),
+        ('day_absent', 'Day (Absent)'),
+        ('month_present', 'Month (Present)'),
+        ('month_absent', 'Month (Absent)'),
+        ('year_present', 'Year (Present)'),
+        ('year_absent', 'Year (Absent)'),
+        ('place_present', 'Place (Present)'),
+        ('place_absent', 'Place (Absent)'),
+        ('state_present', 'State (Present)'),
+        ('state_absent', 'State (Absent)'),
+        ('country_present', 'Country (Present)'),
+        ('country_absent', 'Country (Absent)'),
+        ('relatives_present', 'Person - relatives (Present)'),
+        ('relatives_absent', 'Person - relatives (Absent)'),
+        ('staff_present', 'Hospital staff (Present)'),
+        ('staff_absent', 'Hospital staff (Absent)'),
+        ('self_present', 'Self (Present)'),
+        ('self_absent', 'Self (Absent)')
     ], string='Orientation')
     
     memory = fields.Selection([

@@ -11,8 +11,8 @@ from . import medicine_box
 from . import medicine_packing  
 from . import medical_record
 from . import prescription
-from . import op_visit
 from . import medical_record
+from . import op_visit
 from . import food
 from . import block_duty
 from . import configuration
@@ -33,7 +33,7 @@ from . import hospital_doctor_payout
 from . import discharge
 from . import activity_records
 from . import nurse_assessment
-from . import case_history
+# from . import case_history
 from . import hospital_care_plan
 from . import admission_referral_config
 from . import hr_employee

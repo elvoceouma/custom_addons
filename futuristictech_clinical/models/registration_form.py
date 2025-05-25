@@ -168,7 +168,7 @@ class RegistrationForm(models.Model):
     ], string='Physical Condition')
     
     # CRM Remarks
-    crm_remarks_ids = fields.One2many('hospital.registration.crm.remarks', 'registration_id', string='CRM Remarks')
+    crm_remarks_ids = fields.One2many('hospital.registration.crm.remarks', 'id', string='CRM Remarks')
     
     # Emergency Contact Information
     emergency_person_name = fields.Char(string='Emergency Person Name')

@@ -252,5 +252,5 @@
     <menuitem id="menu_patient_requisition_line" name="Patient Requisitions" action="action_patient_requisition_line" parent="menu_registers_root" sequence="10"/>
 
     <!-- Menu Item -->
-    <menuitem id="menu_op_visit" name="OP Visits" parent="menu_patient_management_root" action="action_op_visit" sequence="10"/>
+    <!-- <menuitem id="menu_op_visit" name="OP Visits" parent="menu_patient_management_root" action="action_op_visit" sequence="10"/> -->
 </odoo>

@@ -181,8 +181,8 @@ access_hospital_op_bill_user,hospital.op.bill.user,model_hospital_op_bill,base.g
 access_hospital_op_bill_manager,hospital.op.bill.manager,model_hospital_op_bill,base.group_system,1,1,1,1
 access_hospital_op_bill_line_user,hospital.op.bill.line.user,model_hospital_op_bill_line,base.group_user,1,1,1,0
 access_hospital_op_bill_line_manager,hospital.op.bill.line.manager,model_hospital_op_bill_line,base.group_system,1,1,1,1
-access_hospital_op_visit_user,op.visit.user,model_op_visit,base.group_user,1,1,1,0
-access_hospital_op_visit_manager,op.visit.manager,model_op_visit,base.group_system,1,1,1,1
+access_hospital_op_visit_user,op.visits.user,model_op_visits,base.group_user,1,1,1,0
+access_hospital_op_visit_manager,op.visits.manager,model_op_visits,base.group_system,1,1,1,1
 access_hospital_outing_expenses_user,hospital.outing.expenses.user,model_hospital_outing_expenses,base.group_user,1,1,1,0
 access_hospital_outing_expenses_manager,hospital.outing.expenses.manager,model_hospital_outing_expenses,base.group_system,1,1,1,1
 access_hospital_outing_form_user,hospital.outing.form.user,model_hospital_outing_form,base.group_user,1,1,1,0
