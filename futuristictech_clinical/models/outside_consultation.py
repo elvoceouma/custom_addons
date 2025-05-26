@@ -16,7 +16,7 @@ class OutsideConsultation(models.Model):
     sex = fields.Selection(related='patient_id.gender', string='Sex', readonly=True)
     date = fields.Date(string='Date', default=fields.Date.context_today)
     specialist_id = fields.Many2one('res.partner', string='Specialist')
-    speciality_id = fields.Many2one('medical.speciality', string='Speciality')
+    # speciality_id = fields.Many2one('medical.speciality', string='Speciality')
     # Fields from original implementation
     admission_id = fields.Many2one('hospital.admission', string='Admission', tracking=True)
     speciality_id = fields.Many2one('hospital.physician.speciality', string='Speciality', required=True, tracking=True)

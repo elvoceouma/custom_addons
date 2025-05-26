@@ -6,6 +6,7 @@ from . import inpatient_admission
 from . import room
 from . import bed
 from . import pharmacy
+from . import res_partner
 from . import medicine
 from . import medicine_box
 from . import medicine_packing  
