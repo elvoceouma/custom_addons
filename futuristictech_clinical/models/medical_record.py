@@ -655,7 +655,7 @@ class DrugChart(models.Model):
     start_date = fields.Date(string='Start Date', default=fields.Date.context_today)
     end_date = fields.Date(string='End Date')
     line_ids = fields.One2many('hospital.drug.chart.line', 'drug_chart_id', string='Drug Lines')
-    
+    age = fields.Integer(string='Age', store=True)
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
