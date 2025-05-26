@@ -24,7 +24,7 @@
                         </group>
                     </group>
                     <group string="Hygiene Details">
-                        <field name="hygiene_details_ids" nolabel="1" readonly="1">
+                        <field name="hygiene_details_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="parameter_id"/>
                                 <button name="hygiene_report" string="Hygiene Report" type="object" icon="fa-list" context="{'parameter_id':parameter_id}"/>
@@ -32,7 +32,7 @@
                         </field>
                     </group>
                     <group string="Formal Activities" name="formal_activities">
-                        <field name="formal_activities_ids" readonly="state == 'Confirmed'" nolabel="1">
+                        <field name="formal_activities_ids" readonly="state == 'Confirmed'" >
                             <tree editable="bottom">
                                 <field name="date" required="1"/>
                                 <field name="comments" required="1"/>
@@ -44,7 +44,7 @@
                         </field>
                     </group>
                     <group string="Informal Activities" name="informal_activities">
-                        <field name="informal_activities_ids" readonly="state == 'Confirmed'" nolabel="1">
+                        <field name="informal_activities_ids" readonly="state == 'Confirmed'" >
                             <tree editable="bottom">
                                 <field name="date" required="1"/>
                                 <field name="comments" required="1"/>
@@ -56,7 +56,7 @@
                         </field>
                     </group>
                     <group string="Family Session Details">
-                        <field name="family_session_ids" nolabel="1" readonly="1">
+                        <field name="family_session_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="date"/>
                                 <field name="purpose"/>
@@ -94,7 +94,7 @@
                         <field name="admission_reason" readonly="state == 'Confirmed'"/>
                     </group>
                     <group string="Disturbed Behaviour Details">
-                        <field name="incident_details_ids" nolabel="1" readonly="1">
+                        <field name="incident_details_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="datetime"/>
                                 <field name="incident_type"/>
@@ -114,7 +114,7 @@
                         </field>
                     </group>
                     <group string="Emergency Medicine Details">
-                        <field name="emergency_medicine_ids" nolabel="1" readonly="1">
+                        <field name="emergency_medicine_ids"  readonly="1">
                             <tree editable="bottom" limit="10">
                                 <field name="name" required="1"/>
                                 <field name="requested_date"/>
@@ -139,7 +139,7 @@
                         </field>
                     </group>
                     <group string="Medicine Not Taken Details">
-                        <field name="medicine_unconsumed_ids" nolabel="1" readonly="1">
+                        <field name="medicine_unconsumed_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="time"/>
                                 <field name="date"/>
@@ -158,7 +158,7 @@
                         </field>
                     </group>
                     <group string="Outing Details">
-                        <field name="outing_ids" nolabel="1" readonly="1">
+                        <field name="outing_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="name"/>
                                 <field name="date"/>
@@ -179,7 +179,7 @@
                     </group>
 
                     <group string="Lab Test">
-                        <field name="lab_test_ids" nolabel="1" readonly="1">
+                        <field name="lab_test_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="name"/>
                                 <field name="date_analysis"/>
@@ -203,7 +203,7 @@
                         </field>
                     </group>
                     <group string="Outside Consultation">
-                        <field name="outside_consultation_ids" nolabel="1" readonly="1">
+                        <field name="outside_consultation_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="date"/>
                                 <field name="specialist_id"/>
@@ -225,7 +225,7 @@
                         </field>
                     </group>
                     <group string="Phone Call Logs">
-                        <field name="phone_call_ids" nolabel="1" readonly="1">
+                        <field name="phone_call_ids"  readonly="1">
                             <tree editable="bottom">
                                 <field name="datetime"/>
                                 <field name="caller"/>
@@ -245,7 +245,7 @@
                         </field>
                     </group>
                     <group string="Individual Sessions">
-                        <field name="counselling_session_ids" readonly="1" nolabel="1">
+                        <field name="counselling_session_ids" readonly="1" >
                             <tree editable="bottom">
                                 <field name="date"/>
                                 <field name="session_type" required="1"/>
@@ -260,7 +260,7 @@
                         </field>
                     </group>
                     <group string="Group Therapy">
-                        <field name="group_therapy_ids" readonly="1" nolabel="1">
+                        <field name="group_therapy_ids" readonly="1" >
                             <tree editable="bottom">
                                 <field name="name"/>
                                 <field name="start_datetime"/>
@@ -279,11 +279,11 @@
                             </form>
                         </field>
                     </group>
-                    <group string="Epileptic Attack" name="epileptic_attack">
+                   
                         <group>
                             <field name="epileptic_attack" widget="radio" readonly="state == 'Confirmed'"/>
                         </group>
-                    </group>
+                   
                     <group string="Mental Status Examination" name="mental_status_examination">
                         <field name="general_observation" readonly="state == 'Confirmed'"/>
                         <field name="speech" readonly="state == 'Confirmed'"/>
@@ -294,7 +294,7 @@
                         <field name="insight" readonly="state == 'Confirmed'"/>
                     </group>
                     <group string="General Observation of the Counsellor">
-                        <field name="counsellor_observation" nolabel="1" readonly="state == 'Confirmed'"/>
+                        <field name="counsellor_observation"  readonly="state == 'Confirmed'"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter">

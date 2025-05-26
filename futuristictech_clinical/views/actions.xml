@@ -166,12 +166,10 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-        <!-- Action for OP Visits -->
-    <!-- <record id="action_op_visit" model="ir.actions.act_window">
+    <record id="action_op_visit" model="ir.actions.act_window">
         <field name="name">OP Visits</field>
         <field name="res_model">op.visits</field>
         <field name="view_mode">tree,form</field>
-       
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first OP Visit!
@@ -180,8 +178,8 @@
                 Track patient visits, manage appointments, and maintain medical records efficiently.
             </p>
         </field>
-    </record> -->
-
+    </record>
+    
     <!-- Block Duty Actions -->
     <record id="action_hospital_block_duty_assignment" model="ir.actions.act_window">
         <field name="name">Block Duty Assignments</field>

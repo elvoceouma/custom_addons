@@ -38,7 +38,6 @@
         'views/bed_views.xml',
         'views/block_views.xml',
         'views/block_duty_views.xml',
-        'views/hospital_management_op_visits_views.xml',
         'views/patient_document_views.xml',
         'views/case_history_views.xml',
         'views/configuration_views.xml',
