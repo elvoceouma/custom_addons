@@ -25,7 +25,10 @@ class FollowUpSheet(models.Model):
     doa = fields.Date(string='Date of Admission', readonly=True)
     dod = fields.Date(string='Date of Discharge')
     admission_reason = fields.Text(string='Admission Reason')
-    epileptic_attack = fields.Boolean(string='Epileptic Attack')
+    epileptic_attack = fields.Selection([
+        ('present', 'Present'),
+        ('absent', 'Absent')
+    ], string='Epileptic Attack')
     
      # Mental Status Examination
     general_observation = fields.Text(string='General Observation')

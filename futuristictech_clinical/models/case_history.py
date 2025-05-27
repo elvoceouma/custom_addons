@@ -1157,7 +1157,7 @@ class CaseHistory(models.Model):
         ('Auditory', 'Auditory'),
         ('Visual', 'Visual'),
         ('Tactile', 'Tactile'),
-        ('Gustatory', 'Gustatory')
+        ('Gustatory', 'Gustatory'),
         ('Olfactory', 'Olfactory not a first hand symptom'),
     ], string='Sensory Modality')
     
@@ -1203,7 +1203,11 @@ class CaseHistory(models.Model):
         ('Impaired', 'Impaired')
     ], string='Memory')
     
-    assess_by = fields.Char(string='Assess By')
+    assess_by = fields.Selection([
+        ('Clinical Behavior', 'Clinical Behavior'),
+        ('Formal Tests', 'Formal Tests')
+    ], string='Assess By')
+    
     short_term_immediate = fields.Text(string='Short Term: Immediate')
     short_term_recent = fields.Text(string='Short Term: Recent')
     long_time_remote = fields.Text(string='Long Time: Remote')
@@ -1220,7 +1224,7 @@ class CaseHistory(models.Model):
     
     abstract_thinking = fields.Selection([
         ('intact', 'Intact'),
-        ('Impaired', 'Impaired')
+        ('Impaired', 'Impaired'),
         ('Concentrate', 'Concentrate'),
         ('conceptual', 'Conceptual'),
         ('functional', 'Functional'),
