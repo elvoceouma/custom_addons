@@ -656,6 +656,37 @@ class DrugChart(models.Model):
     end_date = fields.Date(string='End Date')
     line_ids = fields.One2many('hospital.drug.chart.line', 'drug_chart_id', string='Drug Lines')
     age = fields.Integer(string='Age', store=True)
+    ip_number = fields.Char(string='IP Number', store=True)
+    mrn_no = fields.Char(string='MRN No', store=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', store=True)
+    gender = fields.Selection([
+        ('male','Male'),
+        ('feemale', 'Female'),
+        ('other', 'Other'),
+    ],string="Sex")
+    drug_allergies = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ], string='Drug Allergies', default='no')
+    patient_name = fields.Char(related='patient_id.name', string='Patient Name', store=True)
+    ward = fields.Many2one('hospital.block', string='Ward', store=True)
+    room = fields.Integer('Room')
+    diet = fields.Selection([
+        ('veg_diet', 'Vega\etable Diet'),
+        ('non_veg_diet', 'Non-Vegetable  Diet'),
+        ('mixed_diet', 'Mixed Diet'),
+    ], string='Diet', default='veg_diet', store=True)
+    blood_group = fields.Selection([
+        ('a_positive', 'A+'),
+        ('a_negative', 'A-'),
+        ('b_positive', 'B+'),
+        ('b_negative', 'B-'),
+        ('ab_positive', 'AB+'),
+        ('ab_negative', 'AB-'),
+        ('o_positive', 'O+'),
+        ('o_negative', 'O-')
+    ], string='Blood Group', store=True)
+    doctor = fields.Many2one('res.partner', string='Doctor', store=True)
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -717,7 +748,6 @@ class DrugAdministration(models.Model):
             record.administered = True
             record.administered_by = self.env.user.id
             record.administered_datetime = fields.Datetime.now()
-
 
 class DrugFrequencyConfiguration(models.Model):
     _name = 'hospital.drug.frequency.config'

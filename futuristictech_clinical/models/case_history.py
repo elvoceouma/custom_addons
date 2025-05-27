@@ -8,6 +8,7 @@ class CaseHistory(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'patient_id'
     
+
     # Basic patient information
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
     name = fields.Char(string='Name', related='patient_id.name')
@@ -1156,17 +1157,18 @@ class CaseHistory(models.Model):
         ('Auditory', 'Auditory'),
         ('Visual', 'Visual'),
         ('Tactile', 'Tactile'),
-        ('Olfactory', 'Olfactory'),
         ('Gustatory', 'Gustatory')
+        ('Olfactory', 'Olfactory not a first hand symptom'),
     ], string='Sensory Modality')
     
     first_rank_symptom = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('hypnogogic', 'Hypnagogic hallucination(While sleeping)'),
+        ('hypnoponmic', 'Hypnoponmic hallucination(While waking up)'),
     ], string='First Rank Symptom')
     
     depersonalization = fields.Selection([
         ('Present', 'Present'),
+        ('probable', 'Probable'),
         ('Absent', 'Absent')
     ], string='Depersonalization')
     
@@ -1183,28 +1185,17 @@ class CaseHistory(models.Model):
     ], string='Attention and Concentration')
     
     orientation = fields.Selection([
-        ('time_present', 'Time (Present)'),
-        ('time_absent', 'Time (Absent)'),
-        ('date_present', 'Date (Present)'),
-        ('date_absent', 'Date (Absent)'),
-        ('day_present', 'Day (Present)'),
-        ('day_absent', 'Day (Absent)'),
-        ('month_present', 'Month (Present)'),
-        ('month_absent', 'Month (Absent)'),
-        ('year_present', 'Year (Present)'),
-        ('year_absent', 'Year (Absent)'),
-        ('place_present', 'Place (Present)'),
-        ('place_absent', 'Place (Absent)'),
-        ('state_present', 'State (Present)'),
-        ('state_absent', 'State (Absent)'),
-        ('country_present', 'Country (Present)'),
-        ('country_absent', 'Country (Absent)'),
-        ('relatives_present', 'Person - relatives (Present)'),
-        ('relatives_absent', 'Person - relatives (Absent)'),
-        ('staff_present', 'Hospital staff (Present)'),
-        ('staff_absent', 'Hospital staff (Absent)'),
-        ('self_present', 'Self (Present)'),
-        ('self_absent', 'Self (Absent)')
+        ('time_present', 'Time(P/A)'),
+        ('date_present', 'Date(P/A)'),
+        ('day_present', 'DAY(P/A)'),
+        ('month_present', 'Month(P/A)'),
+        ('year_present', 'Year(P/A)'),
+        ('place_present', 'Place(P/A)'),
+        ('state_present', 'State(P/A)'),
+        ('country_present', 'Country(P/A)'),
+        ('relatives_present', 'Person- relatives(P/A)'),
+        ('staff_present', 'hospital staff (P/A)'),
+        ('self_present', 'Self(P/A)')
     ], string='Orientation')
     
     memory = fields.Selection([
@@ -1212,11 +1203,7 @@ class CaseHistory(models.Model):
         ('Impaired', 'Impaired')
     ], string='Memory')
     
-    assess_by = fields.Selection([
-        ('Clinical Behavior', 'Clinical Behavior'),
-        ('Formal Tests', 'Formal Tests')
-    ], string='Assess By')
-    
+    assess_by = fields.Char(string='Assess By')
     short_term_immediate = fields.Text(string='Short Term: Immediate')
     short_term_recent = fields.Text(string='Short Term: Recent')
     long_time_remote = fields.Text(string='Long Time: Remote')
@@ -1232,8 +1219,12 @@ class CaseHistory(models.Model):
     simple_arithmetic = fields.Text(string='Simple Arithmetic')
     
     abstract_thinking = fields.Selection([
-        ('Normal', 'Normal'),
+        ('intact', 'Intact'),
         ('Impaired', 'Impaired')
+        ('Concentrate', 'Concentrate'),
+        ('conceptual', 'Conceptual'),
+        ('functional', 'Functional'),
+        ('abstract', 'Abstract'),
     ], string='Abstract Thinking')
     
     differences = fields.Text(string='Differences')

@@ -678,7 +678,7 @@ Please provide specific details of each of them'/>
                         <field name="depersonalization" widget="radio" nolabel="1"/>
                     </group>
                     <group string="Describe hallucinations:">
-                        <field name="hallucinations_describe" nolabel="1"/>
+                        <field name="hallucinations_describe" nolabel="1" widget="long_text"/>
                     </group>
 
                     <group string="6.Cognitive Functions:"/>
