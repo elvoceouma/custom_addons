@@ -3,7 +3,7 @@
 from odoo import models, fields, api, _
 
 class CaseHistory(models.Model):
-    _name = 'hospital.case.history'
+    _name = 'case.history'
     _description = 'Case History'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'patient_id'
@@ -1250,13 +1250,12 @@ class CaseHistory(models.Model):
         ('Impaired', 'Impaired')
     ], string='Insight')
     
-    grade_1 = fields.Boolean(string='Grade I: Absence of insight')
-    grade_2 = fields.Boolean(string='Grade II: Partial acknowledgement of illness but blame external factors')
-    grade_3 = fields.Boolean(string='Grade III: Awareness that sick but blames factors other than current problems')
-    grade_4 = fields.Boolean(string='Grade IV: Intellectual insight only')
-    grade_5 = fields.Boolean(string='Grade V: True emotional insight with awareness of current illness')
-    grade_6 = fields.Boolean(string='Grade VI: Can anticipate recurrences and takes preventive action')
-    
+    grade_1 = fields.Boolean(string='Grade I: Absence of Insight')
+    grade_2 = fields.Boolean(string='Grade II: Complete denial of illness')
+    grade_3 = fields.Boolean(string='Grade III: Slight awareness of being sick and needing help')
+    grade_4 = fields.Boolean(string='Grade IV: Aware of being sick but blaming it on others, external factors')
+    grade_5 = fields.Boolean(string='Grade V: Intellectual insight')
+    grade_6 = fields.Boolean(string='Grade VI: True emotional insight')
     summary = fields.Text(string='Summary')
       # Basic patient information - missing name field
     name = fields.Char(string='Name', related='patient_id.name', store=True)
@@ -1466,7 +1465,7 @@ class ChiefComplaint(models.Model):
     name = fields.Char(string='Name', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     chrono_no = fields.Integer(string='Chrono. Order')
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     chief_compaints = fields.Text(string='Chief Complaints', required=True)
     duration = fields.Char(string='Duration')
     year = fields.Char(string='Year')
@@ -1476,7 +1475,7 @@ class PsychiatricMedication(models.Model):
     _name = 'hospital.psychiatric.medication'
     _description = 'Psychiatric Medication'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     name = fields.Char(string='Name of Medication', required=True)
     dosage = fields.Char(string='Dosage')
     frequency = fields.Char(string='Frequency')
@@ -1488,7 +1487,7 @@ class GeneralMedication(models.Model):
     _name = 'hospital.general.medication'
     _description = 'General Medication'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     name = fields.Char(string='Name of Medication', required=True)
     dosage = fields.Char(string='Dosage')
     frequency = fields.Char(string='Frequency')
@@ -1500,7 +1499,7 @@ class PsychiatricEffect(models.Model):
     _name = 'hospital.psychiatric.effect'
     _description = 'Psychiatric Medication Effect'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     name = fields.Char(string='Name of Medication', required=True)
     side_effects = fields.Text(string='Side Effects')
     actions_taken = fields.Text(string='Actions Taken')
@@ -1510,7 +1509,7 @@ class GeneralEffect(models.Model):
     _name = 'hospital.general.effect'
     _description = 'General Medication Effect'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     name = fields.Char(string='Name of Medication', required=True)
     side_effects = fields.Text(string='Side Effects')
     actions_taken = fields.Text(string='Actions Taken')
@@ -1520,7 +1519,7 @@ class RiskAssessment(models.Model):
     _name = 'hospital.risk.assessment'
     _description = 'Risk Assessment'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     name = fields.Char(string='Risk Type')
     never = fields.Boolean(string='Never')
     past_week_month = fields.Boolean(string='Past Week - Month')
@@ -1604,7 +1603,7 @@ class SuicidalAssessmentLine(models.Model):
     _name = 'hospital.suicidal.assessment.line'
     _description = 'Suicidal Assessment Line'
     
-    case_history_id = fields.Many2one('hospital.case.history', string='Case History', ondelete='cascade')
+    case_history_id = fields.Many2one('case.history', string='Case History', ondelete='cascade')
     serial_number = fields.Integer(string='Serial Number')
     quen_id = fields.Many2one('hospital.suicidal.question', string='Question', required=True)
     ans_id = fields.Many2one('hospital.suicidal.answer', string='Answer')

@@ -37,8 +37,8 @@ access_hospital_caretaker_allotment_user,hospital.caretaker.allotment.user,model
 access_hospital_caretaker_allotment_manager,hospital.caretaker.allotment.manager,model_hospital_caretaker_allotment,base.group_system,1,1,1,1
 access_hospital_case_formulation_user,hospital.case.formulation.user,model_hospital_case_formulation,base.group_user,1,1,1,0
 access_hospital_case_formulation_manager,hospital.case.formulation.manager,model_hospital_case_formulation,base.group_system,1,1,1,1
-access_hospital_case_history_user,hospital.case.history.user,model_hospital_case_history,base.group_user,1,1,1,0
-access_hospital_case_history_manager,hospital.case.history.manager,model_hospital_case_history,base.group_system,1,1,1,1
+access_hospital_case_history_user,case.history.user,model_case_history,base.group_user,1,1,1,0
+access_hospital_case_history_manager,case.history.manager,model_case_history,base.group_system,1,1,1,1
 access_hospital_chief_complaint_user,hospital.chief.complaint.user,model_hospital_chief_complaint,base.group_user,1,1,1,0
 access_hospital_chief_complaint_manager,hospital.chief.complaint.manager,model_hospital_chief_complaint,base.group_system,1,1,1,1
 access_hospital_counsellor_clearance_user,hospital.counsellor.clearance.user,model_hospital_counsellor_clearance,base.group_user,1,1,1,0
@@ -351,7 +351,7 @@ access_hospital_chief_complaint_line,access_hospital_chief_complaint_line,model_
 access_hospital_past_history_line,access_hospital_past_history_line,model_hospital_past_history_line,base.group_user,1,1,1,1
 
 access_hospital_my_admission,access_hospital_my_admission,futuristictech_clinical.model_my_admission,base.group_user,1,1,1,1
-hospital.case.history,hospital.case.history,futuristictech_clinical.model_hospital_case_history,base.group_user,1,1,1,1
+case.history,case.history,futuristictech_clinical.model_case_history,base.group_user,1,1,1,1
 access_catatonic_signs,catatonic.signs,model_catatonic_signs,base.group_user,1,1,1,1
 
 access_activity_record_user,activity.record user,model_activity_records,base.group_user,1,1,1,1

@@ -101,7 +101,7 @@ class Patient(models.Model):
         return {
             'name': _('Case History'),
             'view_mode': 'form',
-            'res_model': 'hospital.case.history',
+            'res_model': 'case.history',
             'type': 'ir.actions.act_window',
             'target': 'new',
             'context': {'default_patient_id': self.id}

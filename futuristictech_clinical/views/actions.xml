@@ -253,7 +253,7 @@
     <record id="action_hospital_case_history" model="ir.actions.act_window">
         <field name="name">Case History</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.case.history</field>
+        <field name="res_model">case.history</field>
         <field name="view_mode">tree,form</field>
     </record>
 
