@@ -642,7 +642,7 @@ Please provide specific details of each of them'/>
                         <field name="sense_deception" widget="radio" nolabel="1"/>
                     </group>
                     <group>
-                        <field name="hallucination_illusion" widget="radio" nolabel="1"/>
+                        <field name="hallucination_illusion" widget="radio"/>
                     </group>
                     <group string="Sensory modality:">
                         <field name="sensory_modality" widget="radio" nolabel="1"/>

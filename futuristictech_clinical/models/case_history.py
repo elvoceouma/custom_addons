@@ -1140,12 +1140,14 @@ class CaseHistory(models.Model):
     
     sense_distortion = fields.Selection([
         ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('Absent', 'Absent'),
+        ('Probable', 'Probable')
     ], string='Sense Distortion')
     
     body_image_disturb = fields.Selection([
         ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('Absent', 'Absent'),
+        ('Probable', 'Probable')
     ], string='Body Image Disturbance')
     
     sense_deception = fields.Selection([
@@ -1154,8 +1156,9 @@ class CaseHistory(models.Model):
     ], string='Sense Deception')
     
     hallucination_illusion = fields.Selection([
-        ('Hallucination', 'Hallucination'),
-        ('Illusion', 'Illusion')
+        ('Present', 'Present'),
+        ('Absent', 'Absent'),
+        ('Probable', 'Probable')
     ], string='Hallucination/Illusion')
     
     sensory_modality = fields.Selection([
