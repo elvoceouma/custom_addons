@@ -1223,9 +1223,12 @@ class CaseHistory(models.Model):
     long_time_remote = fields.Text(string='Long Time: Remote')
     
     intelligence = fields.Selection([
-        ('Below Average', 'Below Average'),
-        ('Average', 'Average'),
-        ('Above Average', 'Above Average')
+        ('average', 'Average'),
+        ('above average', 'Above Average'),
+        ('subnormal- mild', 'Subnormal- Mild'),
+        ('moderate', 'Moderate'),
+        ('severe', 'Severe'),
+        ('profound', 'Profound')
     ], string='Intelligence')
     
     general_fund_information = fields.Text(string='General Fund of Information')
