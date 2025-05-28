@@ -583,51 +583,27 @@ Please provide specific details of each of them'/>
                     </group>
 
                     <group string="Content">
-                        <group string="Delusions">
-                            <field name="delusions_prior" nolabel="1" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="delusion_persecutory" widget="radio" />
-                        </group>
-                        <group>
-                            <field name="delusion" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="grandiose" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="delusion_list" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="conviction_validity" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="how_affects_life" widget="radio"/>
-                        </group>
-                        <group string="Depressive Cognition">
-                            <field name="depressive_cognition" nolabel="1" widget="radio"/>
-                            <newline/>
-                            <field name="depressive_overhauled" widget="radio"/>
-                        </group>
-                        <group string="Preoccupation">
-                            <field name="preoccupation" nolabel="1" widget="radio"/>
-                        </group>
-                        <group>
-                            <field name="preoccupation_list" nolabel="1" widget="radio"/>
-                        </group>
-                        <group string="Somatisation">
-                            <field name="somatisation" nolabel="1"/>
-                        </group>
-                        <group string="Describe hallucinations:">
-                            <field name="thought_sample" nolabel="1"/>
-                        </group>
+                        <field name="delusions_prior" widget="radio"/>
+                        <field name="delusion"/>
+                        <field name="delusion_persecutory" widget="radio" />
+                        <field name="grandiose" widget="radio"/>
+                        <field name="delusion_list"/>
+                        <field name="conviction_validity" widget="radio"/>
+                        <field name="how_affects_life" widget="radio"/>
+                        <field name="depressive_cognition" widget="radio"/>
+                        <newline/>
+                        <field name="depressive_overhauled" widget="radio"/>
+                        <field name="preoccupation" widget="radio"/>
+                        <field name="preoccupation_list" widget="radio"/>
+                        <field name="somatisation" widget="radio"/>
+                        <field name="thought_sample" widget="radio"/>
                     </group>
 
-                    <group string="5.Mood">
-                        <group string="Subjective">
+                    <group string="5.Mood"> 
+                        <group string="Subjective">                                                                                     
                             <field name="subjective" widget="radio" nolabel="1"/>
                         </group>
-                        <group string="Fluctuations of Mood">
+                        <group string="Fluctuations of Mood">                         
                             <field name="fluctuation_of_mood" widget="radio" nolabel="1"/>
                         </group>
                         <group string="Objective">
@@ -640,7 +616,7 @@ Please provide specific details of each of them'/>
                             <field name="range" widget="radio" nolabel="1"/>
                         </group>
                         <group string="Reactivity">
-                            <field name="reactivity" widget="radio" nolabel="1"/>
+                            <field name="reactivity" widget="long_text" nolabel="1"/>
                         </group>
                         <group string="Communicability">
                             <field name="communicability" widget="radio" nolabel="1"/>

@@ -926,18 +926,24 @@ class CaseHistory(models.Model):
     ], string='Possession')
     
     obsession = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('Dirt / contamination', 'Dirt / contamination'),
+        ('ideas', 'ideas'),
+        ('doubts', 'doubts'),
+        ('imagery', 'imagery'),
+        ('impulses and phobias', 'impulses and phobias')
     ], string='Obsessions')
     
     compulsions = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('checking', 'Checking'),
+        ('counting', 'Counting'),
+        ('washing', 'Washing')
     ], string='Compulsions')
     
     thought_alienation = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('Blocking', 'Blocking'),
+        ('Insertion', 'Insertion'),
+        ('Broadcasting', 'Broadcasting'),
+        ('withdrawal', 'withdrawal')
     ], string='Thought Alienation')
     
     # Delusions
@@ -952,17 +958,14 @@ class CaseHistory(models.Model):
     ], string='Delusion Persecutory')
     
     delusion = fields.Selection([
-        ('love', 'Love'),
-        ('control', 'Control'), 
-        ('guilt', 'Guilt'),
-        ('infidelity', 'Infidelity'),
-        ('reference', 'Reference'),
-        ('persecution', 'Persecution'),
-        ('sin_guilt', 'Sin & Guilt'),
-        ('poverty', 'Poverty'),
-        ('grandiose', 'Grandiose'),
-        ('nihilism', 'Nihilism'),
-        ('guilt', 'Guilt')
+        ('love', 'love'),
+        ('control', 'control'), 
+        ('infidelity', 'infidelity'),
+        ('reference', 'reference'),
+        ('persecution', 'persecution'),
+        ('nihilism', 'nihilism'),
+        ('sin & guilt', 'sin & guilt'),
+        ('poverty', 'poverty')
     ], string='Delusion of')
     
     grandiose = fields.Selection([
@@ -971,14 +974,17 @@ class CaseHistory(models.Model):
     ], string='Grandiose')
     
     delusion_list = fields.Selection([
-        ('Primary', 'Primary'),
-        ('Secondary', 'Secondary'),
-        ('Partial', 'Partial'),
-        ('Complete', 'Complete'),
-        ('Systematized', 'Systematized'),
-        ('Non-Systematized', 'Non-Systematized'),
-        ('Mood Congruent', 'Mood Congruent'),
-        ('Mood Incongruent', 'Mood Incongruent')
+        ('Grandiose Identity', 'Grandiose Identity'),
+        ('Ability', 'Ability'),
+        ('Role', 'Role'),
+        ('primary', 'primary'),
+        ('secondary', 'secondary'),
+        ('complete', 'complete'),
+        ('partial', 'partial'),
+        ('systematized', 'systematized'),
+        ('non-systematized', 'non-systematized'),
+        ('mood congruent', 'mood congruent'),
+        ('incongruent', 'incongruent')
     ], string='Delusion List')
     
     conviction_validity = fields.Selection([
@@ -998,10 +1004,16 @@ class CaseHistory(models.Model):
     ], string='Depressive Cognition')
     
     depressive_overhauled = fields.Selection([
-        ('Helplessness', 'Helplessness'),
         ('Hopelessness', 'Hopelessness'),
+        ('Helplessness', 'Helplessness'),
         ('Worthlessness', 'Worthlessness'),
-        ('Guilt', 'Guilt')
+        ('Guilt', 'Guilt'),
+        ('Sin', 'Sin'),
+        ('Nihilism', 'Nihilism'),
+        ('Death wishes', 'Death wishes'),
+        ('Suicidal ideas', 'Suicidal ideas'),       
+        ('Suicidal intent', 'Suicidal intent'),
+        ('Suicidal plans', 'Suicidal plans')    
     ], string='Depressive Overhauled')
     
     # Preoccupation
@@ -1011,44 +1023,42 @@ class CaseHistory(models.Model):
     ], string='Preoccupation')
     
     preoccupation_list = fields.Selection([
-        ('absent', 'Absent'),
-        ('present', 'Present'),
-        ('illness', 'About the Illness'),
-        ('environmental', 'Environmental problems'), 
-        ('obsessions', 'Obsessions'),
-        ('compulsions', 'Compulsions'),
-        ('phobias', 'Phobias'),
-        ('suicide', 'Obsessions or plans about suicide'),
-        ('homicide', 'Homicide'),
-        ('hypochondriacal', 'Hypochondriacal symptoms'),
-        ('antisocial', 'Specific Antisocial urges or impulses')
+        ('about the Illness', 'about the Illness'),
+        ('Environmental problems', 'Environmental problems'), 
+        ('Obsessions', 'Obsessions'),
+        ('Compulsions', 'Compulsions'),
+        ('Phobias', 'Phobias'),
+        ('Obsessions or plans about suicide', 'Obsessions or plans about suicide'),
+        ('Homicide', 'Homicide'),
+        ('Hypochondriacal symptoms', 'Hypochondriacal symptoms'),
+        ('specific Antisocial urges or impulses', 'specific Antisocial urges or impulses')
     ], string='Preoccupation List')
     
     somatisation = fields.Text(string='Somatisation')
     thought_sample = fields.Text(string='Thought Sample')
-    
+
     # Mood
     subjective = fields.Selection([
-        ('depressed', 'Depressed'),
-        ('despairing', 'Despairing'),
-        ('irritable', 'Irritable'), 
-        ('anxious', 'Anxious'),
-        ('terrified', 'Terrified'),
-        ('angry', 'Angry'),
-        ('expansive', 'Expansive'),
-        ('euphoric', 'Euphoric'),
-        ('empty', 'Empty'),
-        ('guilty', 'Guilty'),
-        ('awed', 'Awed'),
-        ('futile', 'Futile'),
-        ('self_contemptuous', 'Self-Contemptuous'),
-        ('anhedonic', 'Anhedonic'),
-        ('alexithymic', 'Alexithymic')
+        # ('Depressed', 'Depressed'),
+        # ('Despairing', 'Despairing'),
+        # ('Irritable', 'Irritable'),
+        # ('Anxious', 'Anxious'),
+        # ('Terrified', 'Terrified'),
+        # ('Angry', 'Angry'),
+        # ('Expansive', 'Expansive'),
+        # ('Euphoric', 'Euphoric'),
+        # ('Empty', 'Empty'),
+        # ('Guilty', 'Guilty'),
+        # ('Awed', 'Awed'),
+        # ('Futile', 'Futile'),
+        # ('Self-Contemptuous', 'Self-Contemptuous'),
+        # ('Anhedonic', 'Anhedonic'),
+        # ('Alexithymic', 'Alexithymic')
     ], string='Subjective')
     
     fluctuation_of_mood = fields.Selection([
-        ('absent', 'Absent'),
-        ('normal_excessive', 'Normal/ Excessive')
+        ('Absent', 'Absent'),
+        ('Normal/ Excessive', 'Normal/ Excessive')
     ], string='Fluctuations of Mood')
     
     objective = fields.Selection([
@@ -1106,12 +1116,7 @@ class CaseHistory(models.Model):
         ('shallow', 'Shallow')
     ], string='Range')
     
-    reactivity = fields.Selection([
-        ('Normal', 'Normal'),
-        ('Increased', 'Increased'),
-        ('Decreased', 'Decreased')
-    ], string='Reactivity')
-    
+    reactivity = fields.Text(string='Reactivity')
     communicability = fields.Selection([
         ('Present', 'Present'),
         ('Absent', 'Absent')
