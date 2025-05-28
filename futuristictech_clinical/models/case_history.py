@@ -1151,8 +1151,10 @@ class CaseHistory(models.Model):
     ], string='Body Image Disturbance')
     
     sense_deception = fields.Selection([
-        ('Present', 'Present'),
-        ('Absent', 'Absent')
+        ('Hallucination', 'Hallucination'),
+        ('Pseudo-Hallucination', 'Pseudo-Hallucination'),
+        ('Imagery', 'Imagery'),
+        ('Illusion', 'Illusion')
     ], string='Sense Deception')
     
     hallucination_illusion = fields.Selection([
