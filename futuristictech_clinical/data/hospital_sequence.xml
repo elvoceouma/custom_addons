@@ -119,7 +119,7 @@
         <!-- Care Plan Sequence -->
         <record id="seq_hospital_care_plan" model="ir.sequence">
             <field name="name">Hospital Care Plan</field>
-            <field name="code">hospital.care.plan</field>
+            <field name="code">care.plan</field>
             <field name="prefix">CP</field>
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>

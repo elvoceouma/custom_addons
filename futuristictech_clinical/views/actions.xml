@@ -137,7 +137,7 @@
     <record id="action_hospital_care_plan" model="ir.actions.act_window">
         <field name="name">Care Plans</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hospital.care.plan</field>
+        <field name="res_model">care.plan</field>
         <field name="view_mode">tree,form</field>
     </record>
 

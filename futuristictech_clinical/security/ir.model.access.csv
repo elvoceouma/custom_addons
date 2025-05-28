@@ -29,8 +29,8 @@ access_hospital_block_duty_report_user,hospital.block.duty.report.user,model_hos
 access_hospital_block_duty_report_manager,hospital.block.duty.report.manager,model_hospital_block_duty_report,base.group_system,1,1,1,1
 access_hospital_capacity_assessment_user,hospital.capacity.assessment.user,model_hospital_capacity_assessment,base.group_user,1,1,1,0
 access_hospital_capacity_assessment_manager,hospital.capacity.assessment.manager,model_hospital_capacity_assessment,base.group_system,1,1,1,1
-access_hospital_care_plan_user,hospital.care.plan.user,model_hospital_care_plan,base.group_user,1,1,1,0
-access_hospital_care_plan_manager,hospital.care.plan.manager,model_hospital_care_plan,base.group_system,1,1,1,1
+access_hospital_care_plan_user,care.plan.user,model_care_plan,base.group_user,1,1,1,0
+access_hospital_care_plan_manager,care.plan.manager,model_care_plan,base.group_system,1,1,1,1
 access_hospital_caretaker_user,hospital.caretaker.user,model_hospital_caretaker,base.group_user,1,1,1,0
 access_hospital_caretaker_manager,hospital.caretaker.manager,model_hospital_caretaker,base.group_system,1,1,1,1
 access_hospital_caretaker_allotment_user,hospital.caretaker.allotment.user,model_hospital_caretaker_allotment,base.group_user,1,1,1,0

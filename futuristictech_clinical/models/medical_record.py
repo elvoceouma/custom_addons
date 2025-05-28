@@ -580,51 +580,6 @@ class MentalStatusExamination(models.Model):
         for record in self:
             record.state = 'in_progress'
 
-class CarePlan(models.Model):
-    _name = 'hospital.care.plan'
-    _description = 'Care Plan'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    
-    name = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
-    admission_id = fields.Many2one('hospital.admission', string='Admission')
-    date_from = fields.Date(string='From Date', default=fields.Date.context_today)
-    date_to = fields.Date(string='To Date')
-    problems = fields.Text(string='Problems')
-    goals = fields.Text(string='Goals')
-    interventions = fields.Text(string='Interventions')
-    evaluation = fields.Text(string='Evaluation')
-    created_by = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user)
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('hospital.care.plan') or _('New')
-        return super(CarePlan, self).create(vals_list)
-    
-    def action_confirm(self):
-        for record in self:
-            record.state = 'confirmed'
-    
-    def action_in_progress(self):
-        for record in self:
-            record.state = 'in_progress'
-    
-    def action_complete(self):
-        for record in self:
-            record.state = 'completed'
-    
-    def action_cancel(self):
-        for record in self:
-            record.state = 'cancelled'
 
 
 class NurseAssessment(models.Model):
