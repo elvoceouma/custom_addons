@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- OP Visits Tree View -->
+        <record id="view_op_visits_tree" model="ir.ui.view">
+            <field name="name">op.visits.tree</field>
+            <field name="model">op.visits</field>
+            <field name="arch" type="xml">
+                <tree string="OP Visits" default_order="visit_date desc">
+                    <field name="name" string="Ref No."/>
+                    <field name="patient_id" string="Patient Name"/>
+                    <field name="visit_date" string="Visit Date"/>
+                    <field name="treating_doctor" string="Treating Doctor"/>
+                    <field name="consultation_type" optional="hide"/>
+                    <field name="free_screening" optional="hide"/>
+                    <field name="tot_amount" string="Total Amount" optional="hide" sum="Total"/>
+                    <field name="state" string="State" decoration-success="state == 'completed'" 
+                           decoration-info="state == 'confirmed'" decoration-muted="state == 'canceled'"/>
+                    <field name="company_id" column_invisible="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- OP Visits Form View -->
+        <record id="view_op_visits_form" model="ir.ui.view">
+            <field name="name">op.visits.form</field>
+            <field name="model">op.visits</field>
+            <field name="arch" type="xml">
+                <form string="OP Visit">
+                    <header>
+                        <button name="action_confirmed" string="Confirm" type="object" 
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_draft" string="Complete" type="object" 
+                                class="oe_highlight" invisible="state != 'confirmed'"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ['completed', 'canceled']"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" 
+                                invisible="state not in ['confirmed', 'canceled']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_prescriptions" type="object" 
+                                    class="oe_stat_button" icon="fa-file-text-o">
+                                <field name="prescription_count" widget="statinfo" 
+                                       string="Prescriptions"/>
+                            </button>
+                            <button name="action_view_invoices" type="object" 
+                                    class="oe_stat_button" icon="fa-file-text">
+                                <field name="invoice_count" widget="statinfo" 
+                                       string="OP Bills"/>
+                            </button>
+                        </div>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="patient_id" string="Patient Name" 
+                                       placeholder="Select Patient" required="1"/>
+                                <field name="partner_id" string="Related Partner" 
+                                       placeholder="Auto-populated from patient"/>
+                                <field name="followup_type_id" string="Type" 
+                                       placeholder="Select Follow-up Type"/>
+                                <field name="consultation_type"/>
+                            </group>
+                            <group>
+                                <field name="visit_date" required="1"/>
+                                <field name="treating_doctor" 
+                                       placeholder="Select Treating Doctor"/>
+                                <field name="free_screening"/>
+                                <!-- <field name="tot_amount" readonly="1" 
+                                       invisible="free_screening"/> -->
+                            </group>
+                        </group>
+                        
+                        <!-- <notebook>
+                            <page string="Medical Information" name="medical_info">
+                                <group>
+                                    <group string="Clinical Details">
+                                        <field name="symptoms" placeholder="Patient symptoms..."/>
+                                        <field name="diagnosis" placeholder="Medical diagnosis..."/>
+                                    </group>
+                                    <group string="Vital Signs">
+                                        <field name="vital_signs" placeholder="Blood pressure, temperature, etc..."/>
+                                    </group>
+                                </group>
+                                <group string="Additional Notes">
+                                    <field name="notes" placeholder="Additional visit notes..." nolabel="1"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Actions" name="actions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button name="action_create_prescription" string="Create Prescription" 
+                                                type="object" class="btn-primary mb-2" 
+                                                invisible="state == 'draft'"/>
+                                        <button name="action_create_invoice" string="Create Invoice" 
+                                                type="object" class="btn-primary mb-2" 
+                                                invisible="state == 'draft' or free_screening"/>
+                                    </div>
+                                </div>
+                            </page>
+                        </notebook> -->
+                    </sheet>
+                    
+                    <!-- Chatter -->
+                    <div class="oe_chatter" invisible="1">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- OP Visits Search View -->
+        <record id="view_op_visits_search" model="ir.ui.view">
+            <field name="name">op.visits.search</field>
+            <field name="model">op.visits</field>
+            <field name="arch" type="xml">
+                <search string="Search OP Visits">
+                    <field name="name" string="Reference" 
+                           filter_domain="[('name','ilike',self)]"/>
+                    <field name="patient_id" string="Patient" 
+                           filter_domain="[('patient_id','ilike',self)]"/>
+                    <field name="treating_doctor" string="Doctor" 
+                           filter_domain="[('treating_doctor','ilike',self)]"/>
+                    <field name="visit_date"/>
+                    
+                    <separator/>
+                    <filter string="Today's Visits" name="today" 
+                            domain="[('visit_date','&gt;=',datetime.datetime.combine(context_today(),datetime.time(0,0,0))), 
+                                   ('visit_date','&lt;=',datetime.datetime.combine(context_today(),datetime.time(23,59,59)))]"/>
+                    <filter string="This Week" name="this_week" 
+                            domain="[('visit_date','&gt;=', (context_today()-datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                   ('visit_date','&lt;', (context_today()+datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="this_month" 
+                            domain="[('visit_date','&gt;=', context_today().strftime('%Y-%m-01')),
+                                   ('visit_date','&lt;', (context_today().replace(day=1) + datetime.timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d'))]"/>
+                            
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                    <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                    <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                    <filter string="Canceled" name="canceled" domain="[('state','=','canceled')]"/>
+                    
+                    <separator/>
+                    <filter string="Free Screening" name="free_screening" 
+                            domain="[('free_screening','=',True)]"/>
+                    <filter string="In Person" name="in_person" 
+                            domain="[('consultation_type','=','in_person')]"/>
+                    <filter string="Virtual" name="virtual" 
+                            domain="[('consultation_type','=','virtual')]"/>
+                    <filter string="Home Based" name="home_based" 
+                            domain="[('consultation_type','=','home_based_consultation')]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="Patient" name="group_patient" 
+                                context="{'group_by':'patient_id'}"/>
+                        <filter string="Doctor" name="group_doctor" 
+                                context="{'group_by':'treating_doctor'}"/>
+                        <filter string="State" name="group_state" 
+                                context="{'group_by':'state'}"/>
+                        <filter string="Consultation Type" name="group_consultation_type" 
+                                context="{'group_by':'consultation_type'}"/>
+                        <filter string="Visit Date" name="group_visit_date" 
+                                context="{'group_by':'visit_date:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- OP Visits Action -->
+        <record id="action_op_visits" model="ir.actions.act_window">
+            <field name="name">OP Visits</field>
+            <field name="res_model">op.visits</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_op_visits_tree"/>
+            <field name="search_view_id" ref="view_op_visits_search"/>
+            <field name="context">{
+                'search_default_today': 1,
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first OP Visit!
+                </p>
+                <p>
+                    Track outpatient visits, manage prescriptions and invoices.
+                </p>
+            </field>
+        </record>
+
+        <!-- <menuitem id="menu_op_visits_root" name="OP Visits" sequence="10"/>
+        
+        <menuitem id="menu_op_visits" name="OP Visits" 
+                  parent="menu_op_visits_root" 
+                  action="action_op_visits" 
+                  sequence="10"/> -->
+
+
+</odoo>

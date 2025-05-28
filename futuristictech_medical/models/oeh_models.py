@@ -105,38 +105,38 @@ class OehMedicalPatient(models.Model):
                 record.age = 0
 
 
-class OPVisits(models.Model):
-    _name = 'op.visits'
-    _description = 'Outpatient Visits'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+# class OPVisits(models.Model):
+#     _name = 'op.visits'
+#     _description = 'Outpatient Visits'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
     
-    name = fields.Char(string='OP Reference', required=True, readonly=True, default=lambda self: _('New'))
-    patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
-    visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, required=True)
-    purpose = fields.Text(string='Purpose of Visit')
-    state = fields.Selection([
-        ('Draft', 'Draft'),
-        ('In Progress', 'In Progress'),
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled')
-    ], string='Status', default='Draft', tracking=True)
-    consultation_ids = fields.One2many('consultation.consultation', 'op_visit_id', string='Consultations')
-    vital_assessment_ids = fields.One2many('vital.physical.assessment', 'op_visit_id', string='Vital Assessments')
+#     name = fields.Char(string='OP Reference', required=True, readonly=True, default=lambda self: _('New'))
+#     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
+#     visit_date = fields.Datetime(string='Visit Date', default=fields.Datetime.now, required=True)
+#     purpose = fields.Text(string='Purpose of Visit')
+#     state = fields.Selection([
+#         ('Draft', 'Draft'),
+#         ('In Progress', 'In Progress'),
+#         ('Completed', 'Completed'),
+#         ('Cancelled', 'Cancelled')
+#     ], string='Status', default='Draft', tracking=True)
+#     consultation_ids = fields.One2many('consultation.consultation', 'op_visit_id', string='Consultations')
+#     vital_assessment_ids = fields.One2many('vital.physical.assessment', 'op_visit_id', string='Vital Assessments')
     
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('op.visits') or _('New')
-        return super(OPVisits, self).create(vals)
+#     @api.model
+#     def create(self, vals):
+#         if vals.get('name', _('New')) == _('New'):
+#             vals['name'] = self.env['ir.sequence'].next_by_code('op.visits') or _('New')
+#         return super(OPVisits, self).create(vals)
     
-    def action_start(self):
-        self.state = 'In Progress'
+#     def action_start(self):
+#         self.state = 'In Progress'
         
-    def action_complete(self):
-        self.state = 'Completed'
+#     def action_complete(self):
+#         self.state = 'Completed'
         
-    def action_cancel(self):
-        self.state = 'Cancelled'
+#     def action_cancel(self):
+#         self.state = 'Cancelled'
 
 
 class VitalPhysicalAssessment(models.Model):

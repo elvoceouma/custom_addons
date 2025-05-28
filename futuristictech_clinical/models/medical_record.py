@@ -229,9 +229,23 @@ class MentalStatusExamination(models.Model):
         ('poor', 'Poor')
     ], string='Rapport')
     attitude_towards_interviewer = fields.Selection([
-        ('cooperative', 'Cooperative'),
-        ('uncooperative', 'Uncooperative'),
-        ('hostile', 'Hostile')
+            ('cooperative', 'Cooperative'),
+        ('uncooperative', 'Uncooperative'), 
+        ('seductive', 'Seductive'),
+        ('hostile', 'Hostile'),
+        ('playful', 'Playful'),
+        ('evasive', 'Evasive'),
+        ('guarded', 'Guarded'),
+        ('ingratiating', 'Ingratiating'),
+        ('attention_seeking', 'Attention seeking'),
+        ('suspicious', 'Suspicious'),
+        ('tense', 'Tense'),
+        ('withdrawn', 'Withdrawn'),
+        ('apathetic', 'Apathetic'),
+        ('perplexed', 'Perplexed'),
+        ('disinhibited', 'Disinhibited'),
+        ('attentive', 'Attentive'),
+        ('frank', 'Frank')
     ], string='Attitude towards Interviewer')
     
     # Psychomotor activity

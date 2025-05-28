@@ -8,7 +8,7 @@ from . import treatment
 from . import pharmacy
 from . import payment
 from . import medical_appointment
-from . import  res_partners
+from . import res_partners
 from . import physical_condition
 from . import language_master
 from . import services_master
@@ -22,7 +22,7 @@ from . import medical_registration_form
 from . import medical_package
 from . import crm_visits
 from . import crm_lead
-from .import crm_tags
+from . import crm_tags
 from . import consultation
 from . import consultation_prescription_line
 from . import cross_consultation

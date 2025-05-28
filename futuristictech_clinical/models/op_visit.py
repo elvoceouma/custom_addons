@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 class OpVisit(models.Model):
     _name = 'op.visits'
     _description = 'OP Visits'
-    # _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'visit_date desc, id desc'
 
     name = fields.Char(

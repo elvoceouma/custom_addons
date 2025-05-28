@@ -54,6 +54,7 @@
         'views/hospital_management_follow_up_sheet_views.xml',
         'views/hospital_appointment_views.xml',
         'views/hospital_medicine_register_views.xml',
+        'views/hospital_op_visit.xml',
         'views/registration_form_views.xml',
         'views/procedure_forms_views.xml',
         'views/hospital_pysician_views.xml',
