@@ -132,7 +132,10 @@ class DrugChartPrescription(models.Model):
     ], string='Status', default='draft')
     action_taken = fields.Char(string='Action Taken')
     action_taken_time = fields.Datetime(string='Action Taken Time')
-
+    type = fields.Selection([
+        ('inpatient', 'Inpatient'),
+        ('outpatient', 'Outpatient'),
+    ], string='Type', default='inpatient', store=True)
     def update_prescription_drug(self):
         """Update prescription drug status"""
         return True
