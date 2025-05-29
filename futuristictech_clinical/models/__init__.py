@@ -38,4 +38,5 @@ from . import nurse_assessment
 from . import hospital_care_plan
 from . import admission_referral_config
 from . import hr_employee
+from .import hospital_drug_chart
 from . import models

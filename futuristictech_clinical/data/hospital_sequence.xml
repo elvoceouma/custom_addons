@@ -13,7 +13,7 @@
         <!-- Patient MRN Sequence -->
         <record id="seq_hospital_patient_mrn" model="ir.sequence">
             <field name="name">Hospital Patient MRN</field>
-            <field name="code">hospital.patient.mrn</field>
+            <field name="code">hospital.patient.mrn_no</field>
             <field name="prefix">MRN</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
@@ -225,5 +225,127 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <!-- Sequence for Drug Chart Reference -->
+        <record id="seq_hospital_drug_chart" model="ir.sequence">
+            <field name="name">Hospital Drug Chart</field>
+            <field name="code">hospital.drug.chart</field>
+            <field name="prefix">DC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Drug Chart Number -->
+        <record id="seq_hospital_drug_chart_number" model="ir.sequence">
+            <field name="name">Hospital Drug Chart Number</field>
+            <field name="code">hospital.drug.chart.seq</field>
+            <field name="prefix">DCN</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Security Rules -->
+        <record id="access_hospital_drug_chart" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart</field>
+            <field name="model_id" ref="model_hospital_drug_chart"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_hospital_drug_chart_prescription" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart.prescription</field>
+            <field name="model_id" ref="model_hospital_drug_chart_prescription"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_hospital_drug_chart_regular" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart.regular</field>
+            <field name="model_id" ref="model_hospital_drug_chart_regular"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_hospital_drug_chart_once" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart.once</field>
+            <field name="model_id" ref="model_hospital_drug_chart_once"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_hospital_drug_chart_variable" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart.variable</field>
+            <field name="model_id" ref="model_hospital_drug_chart_variable"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="access_hospital_drug_chart_line" model="ir.model.access">
+            <field name="name">access.hospital.drug.chart.line</field>
+            <field name="model_id" ref="model_hospital_drug_chart_line"/>
+            <field name="group_id" ref="base.group_user"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!-- Medicine Frequency Master Data (if not exists) -->
+        <record id="freq_once_daily" model="hospital.medicine.frequency">
+            <field name="name">Once Daily</field>
+            <field name="code">OD</field>
+        </record>
+
+        <record id="freq_twice_daily" model="hospital.medicine.frequency">
+            <field name="name">Twice Daily</field>
+            <field name="code">BD</field>
+        </record>
+
+        <record id="freq_thrice_daily" model="hospital.medicine.frequency">
+            <field name="name">Thrice Daily</field>
+            <field name="code">TID</field>
+        </record>
+
+        <record id="freq_four_times_daily" model="hospital.medicine.frequency">
+            <field name="name">Four Times Daily</field>
+            <field name="code">QID</field>
+        </record>
+
+        <!-- Medicine Route Master Data (if not exists) -->
+        <record id="route_oral" model="hospital.medicine.route">
+            <field name="name">Oral</field>
+            <field name="code">PO</field>
+        </record>
+
+        <record id="route_intravenous" model="hospital.medicine.route">
+            <field name="name">Intravenous</field>
+            <field name="code">IV</field>
+        </record>
+
+        <record id="route_intramuscular" model="hospital.medicine.route">
+            <field name="name">Intramuscular</field>
+            <field name="code">IM</field>
+        </record>
+
+        <record id="route_subcutaneous" model="hospital.medicine.route">
+            <field name="name">Subcutaneous</field>
+            <field name="code">SC</field>
+        </record>
+
     </data>
 </odoo>

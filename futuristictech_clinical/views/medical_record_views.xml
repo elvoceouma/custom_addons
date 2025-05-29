@@ -32,7 +32,7 @@
                             <field name="campus_id"/>
                             <field name="history_given_by" readonly="state == 'completed'"/>
                         </group>
-                        
+
                         <group>
                             <field name="date"/>
                             <field name="doctor"/>
@@ -114,14 +114,14 @@
     </record>
 
     <!-- Vital Chart Views -->
-        <record id="view_vital_charts_form" model="ir.ui.view">
+    <record id="view_vital_charts_form" model="ir.ui.view">
         <field name="name">vital.charts.form</field>
         <field name="model">vital.charts</field>
         <field name="arch" type="xml">
             <form string="Vital Charts">
                 <header>
                     <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
-                    <button name="action_inprogress" string="In Progress" type="object" class="oe_highlight" invisible="state != 'draft'"/> 
+                    <button name="action_inprogress" string="In Progress" type="object" class="oe_highlight" invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -130,7 +130,7 @@
                             <field name="name" readonly="1"/>
                         </h2>
                     </div>
-                    <div class="oe_title"> 
+                    <div class="oe_title">
                         <h2>
                             <field name="name_seq" readonly="1"/>
                         </h2>
@@ -389,31 +389,45 @@
         <field name="view_mode">tree,form</field>
     </record>
     <!-- Drug Chart Views -->
-    <record id="view_hospital_drug_chart_form" model="ir.ui.view">
+         <record id="view_hospital_drug_chart_form" model="ir.ui.view">
         <field name="name">hospital.drug.chart.form</field>
         <field name="model">hospital.drug.chart</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Drug Chart">
+                <header>
+                    <button name="action_confirm" string="Confirm" 
+                            invisible="state != 'in_progress'" 
+                            type="object" class="oe_highlight"/>
+                    <button name="action_inprogress" string="In Progress" 
+                            invisible="state != 'draft'" 
+                            type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,confirmed"/>
+                </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
+                    <div class="oe_title" style="text-align:center">
+                        <h2>
                             <field name="name" readonly="1"/>
-                        </h1>
+                        </h2>
+                    </div>
+                    <div class="oe_title"> 
+                        <h2>
+                            <field name="name_seq" readonly="1"/>
+                        </h2>
                     </div>
                     <group>
                         <group>
                             <field name="patient_id"/>
                             <field name="admission_id" domain="[('patient_id', '=', patient_id)]"/>
-                            <field name="ip_number" readonly="1"/>
-                            <field name="patient_name" readonly="1"/>
-                            <field name="age" readonly="1"/>
-                            <field name="mrn_no" readonly="1"/>
-                            <field name="campus_id" readonly="1"/>
-                            <field name="gender" readonly="1"/>
-                            <field name="drug_allergies" string='Drug Hypersensitivity/ Allergies' />
+                            <field name="ip_number"/>
+                            <field name="patient_name"/>
+                            <field name="age"/>
+                            <field name="mrn_no"/>
+                            <field name="campus_id"/>
+                            <field name="patient_gender"/>
+                            <field name="drug_allergies"/>
                         </group>
                         <group>
-                            <field name="start_date"/>
+                            <field name="date"/>
                             <field name="doctor"/>
                             <field name="ward"/>
                             <field name="room"/>
@@ -421,25 +435,118 @@
                             <field name="blood_group"/>
                         </group>
                     </group>
-                    <field name="line_ids">
-                        <tree>
-                            <field name="medicine_id"/>
-                            <field name="dosage"/>
-                            <field name="frequency_id"/>
-                            <field name="route_id"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                            <field name="morning"/>
-                            <field name="noon"/>
-                            <field name="evening"/>
-                            <field name="night"/>
-                        </tree>
-                    </field>
+                    <notebook>
+                        <page string="Prescription">
+                            <group>
+                                <field name="prescription_line_ids" >
+                                    <tree editable="bottom">
+                                        <field name="date"/>
+                                        <field name="drug_name" domain="[('medicine_product', '=', True)]" 
+                                               options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="route"/>
+                                        <field name="frequency" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="type" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="prescription_type"/>
+                                        <field name="take"/>
+                                        <field name="start_presc"/>
+                                        <field name="end_presc"/>
+                                        <field name="approved_doctor" 
+                                              />
+                                        <field name="status"/>
+                                        <button name="update_prescription_drug" type="object" string="Update" 
+                                                invisible="status != 'InProgress'" class="oe_highlight"/>
+                                        <button name="action_stop" type="object" string="Stopped" 
+                                                invisible="status != 'InProgress'" class="oe_highlight"/>
+                                        <field name="action_taken"/>
+                                        <field name="action_taken_time"/>
+                                    </tree>   
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Regular Prescription">
+                            <group>
+                                <field name="regular_prescription_line_ids">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="drug_name"/>
+                                        <field name="mor"/>
+                                        <field name="morning_time" widget="float_time"/>
+                                        <field name="mor_given_by"/>
+                                        <field name="aft"/>
+                                        <field name="afternoon_time" widget="float_time"/>
+                                        <field name="an_given_by"/>
+                                        <field name="nit"/>
+                                        <field name="night_time" widget="float_time"/>
+                                        <field name="nit_given_by"/>
+                                    </tree>   
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Only Once Drug">
+                            <group>
+                                <field name="only_once_drug_chart_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="date"/>
+                                        <field name="drug_name" domain="[('medicine_product', '=', True)]" 
+                                               options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="route"/>
+                                        <field name="approved_doctor"  />
+                                               <!-- domain="[('job_id.name','in',['MEDICAL OFFICER', 'Senior Registrar/ Junior Consultant','Psychiatrist']),('related_doctor_id.active_doctor','=',True)]" -->
+                                              
+                                        <field name="given_time"/>
+                                        <field name="given_time_am_pm" required="1" nolabel="1"/>
+                                        <field name="given_by"/>
+                                        <field name="checked_time"/>
+                                        <field name="check_time_am_pm" required="1" nolabel="1"/>
+                                        <field name="checked_by"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Variable Drug">
+                            <group>
+                                <field name="variable_drug_chart_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="date"/>
+                                        <field name="drug_name" domain="[('medicine_product', '=', True)]" 
+                                               options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="route"/>
+                                        <field name="approved_doctor" />
+                                               <!-- domain="[('job_id.name','in',['MEDICAL OFFICER', 'Senior Registrar/ Junior Consultant','Psychiatrist']),('related_doctor_id.active_doctor','=',True)]" -->
+                                               
+                                        <field name="given_time"/>
+                                        <field name="given_time_am_pm" required="1" nolabel="1"/>
+                                        <field name="given_by"/>
+                                        <field name="checked_time"/>
+                                        <field name="check_time_am_pm" required="1" nolabel="1"/>
+                                        <field name="checked_by"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <!-- Legacy Prescription Tab for backward compatibility -->
+                        <!-- <page name="legacy_prescription" string="Legacy Prescription">
+                            <field name="line_ids">
+                                <tree>
+                                    <field name="medicine_id"/>
+                                    <field name="dosage"/>
+                                    <field name="frequency_id"/>
+                                    <field name="route_id"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="morning"/>
+                                    <field name="noon"/>
+                                    <field name="evening"/>
+                                    <field name="night"/>
+                                </tree>
+                            </field>
+                        </page> -->
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>

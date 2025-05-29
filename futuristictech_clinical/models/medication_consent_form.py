@@ -18,7 +18,7 @@ class MedicationConsentForm(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', tracking=True)
     patient_name = fields.Char(related='patient_id.name', string='Patient Name', store=True)
     age = fields.Integer(related='patient_id.age', string='Age', store=True)
-    mrn_no = fields.Char(related='patient_id.mrn', string='MRN No', store=True)
+    mrn_no = fields.Char(related='patient_id.mrn_no', string='MRN No', store=True)
     campus = fields.Many2one('hospital.hospital', string='Campus')
     
     # Representative information

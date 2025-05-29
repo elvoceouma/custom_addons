@@ -10,7 +10,7 @@ class Patient(models.Model):
     name = fields.Char(string='Name', required=True, tracking=True)
     image = fields.Binary(string='Image')
     reference = fields.Char(string='Reference', readonly=True, default=lambda self: _('New'))
-    mrn = fields.Char(string='MRN', readonly=True)
+    mrn_no = fields.Char(string='MRN', readonly=True)
     
     # Basic information
     gender = fields.Selection([
@@ -93,8 +93,8 @@ class Patient(models.Model):
         for vals in vals_list:
             if vals.get('reference', _('New')) == _('New'):
                 vals['reference'] = self.env['ir.sequence'].next_by_code('hospital.patient') or _('New')
-            if not vals.get('mrn'):
-                vals['mrn'] = self.env['ir.sequence'].next_by_code('hospital.patient.mrn') or 'MRN00000'
+            if not vals.get('mrn_no'):
+                vals['mrn_no'] = self.env['ir.sequence'].next_by_code('hospital.patient.mrn_no') or 'MRN00000'
         return super(Patient, self).create(vals_list)
 
     def action_view_case_history(self):

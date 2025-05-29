@@ -13,7 +13,7 @@ class InpatientAdmission(models.Model):
     name = fields.Char(string='Inpatient #', readonly=True, default=lambda self: (self.env['ir.sequence'].next_by_code('hospital.inpatient.admission') or ''))
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True, tracking=True)
     patient_name = fields.Char(related='patient_id.name', string='Patient Name', store=True)
-    patient_mrn = fields.Char(related='patient_id.mrn', string='MRN', store=True)
+    patient_mrn = fields.Char(related='patient_id.mrn_no', string='MRN', store=True)
     
     # Basic information
     patient_title = fields.Selection([

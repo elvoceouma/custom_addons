@@ -405,7 +405,7 @@
                             <div class="col-4">
                                 <div class="row">
                                     <div class="col-4">MR No.:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.mrn"/></div>
+                                    <div class="col-8 border-bottom"><span t-field="o.mrn_no"/></div>
                                 </div>
                             </div>
                             <div class="col-4">

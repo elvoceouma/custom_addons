@@ -41,7 +41,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="mrn" string="MRN No"/>
+                            <field name="mrn_no" string="MRN No"/>
                             <field name="dob" string="Date of Birth"/>
                             <field name="gender" string="Sex"/>
                         </group>

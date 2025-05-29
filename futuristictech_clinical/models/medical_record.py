@@ -200,7 +200,7 @@ class MentalStatusExamination(models.Model):
     admission_id = fields.Many2one('hospital.inpatient.admission', string='Admission')
     date = fields.Date(string='Date', default=fields.Date.context_today)
     age = fields.Integer(string='Age', related='patient_id.age')
-    mrn_no = fields.Char(string='MRN No', related='patient_id.mrn')
+    mrn_no = fields.Char(string='MRN No', related='patient_id.mrn_no')
     patient_gender = fields.Selection(related='patient_id.gender', string='Sex')
     campus_id = fields.Many2one('hospital.hospital', string='Campus')
     
@@ -656,12 +656,27 @@ class DrugChart(models.Model):
         ('o_negative', 'O-')
     ], string='Blood Group', store=True)
     doctor = fields.Many2one('res.partner', string='Doctor', store=True)
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], string='State', default='draft', tracking=True)
+    
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('hospital.drug.chart') or _('New')
         return super(DrugChart, self).create(vals_list)
+
+    def action_confirm(self):
+        for record in self:
+            record.state = 'completed'
+    
+    def action_inprogress(self):
+        for record in self:
+            record.state = 'in_progress'
 
 
 class DrugChartLine(models.Model):
