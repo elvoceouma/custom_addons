@@ -178,6 +178,7 @@
     <menuitem id="menu_block_duty_config" name="Block Duty" parent="menu_configuration_root" sequence="10"/>
     <menuitem id="menu_block_duty_checklist" name="Checklist" parent="menu_block_duty_config" action="action_hospital_block_duty_checklist" sequence="10"/>
 
+
     <!-- Block Duty Reporting Submenu -->
     <menuitem id="menu_block_duty_reporting" name="Reporting" parent="menu_block_duty_config" sequence="20"/>
     <menuitem id="menu_block_duty_reporting_block" name="Block" parent="menu_block_duty_reporting" action="action_hospital_block_duty_reporting_block" sequence="10"/>

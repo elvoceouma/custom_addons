@@ -1,4 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_futuristictech_nurse" name="Nurse" sequence="10"/>
-</odoo>    
+    <!-- Main Menu -->
+    <menuitem id="menu_futuristictech_nurse_main" name="Nurse Management" web_icon="futuristictech_nurse,static/description/icon.png" sequence="10"/>
+
+    <!-- Patient Management Menu -->
+    <menuitem id="menu_patient_management" name="Patient Management" parent="menu_futuristictech_nurse_main" sequence="10"/>
+
+    <!-- Procedural Forms Menu -->
+    <menuitem id="menu_procedural_forms" name="Procedural Forms" parent="menu_futuristictech_nurse_main" sequence="20"/>
+
+    <!-- Medication Forms Menu -->
+    <menuitem id="menu_medication_forms" name="Medication Forms" parent="menu_futuristictech_nurse_main" sequence="30"/>
+
+    <!-- Procedures Forms Menu -->
+    <menuitem id="menu_procedures_forms" name="Procedures Forms" parent="menu_futuristictech_nurse_main" sequence="40"/>
+
+    <!-- Mental Health Forms Menu -->
+    <menuitem id="menu_mental_health_forms" name="Mental Health Forms" parent="menu_futuristictech_nurse_main" sequence="50"/>
+
+    <!-- Outing Forms Menu -->
+    <menuitem id="menu_outing_forms" name="Outing Forms" parent="menu_futuristictech_nurse_main" sequence="60"/>
+
+    <!-- Investigation Forms Menu -->
+    <menuitem id="menu_investigation_forms" name="Investigation Forms" parent="menu_futuristictech_nurse_main" sequence="70"/>
+
+    <!-- Medication Category Menu -->
+    <menuitem id="menu_medication_category" name="Medication Category" parent="menu_futuristictech_nurse_main" sequence="80"/>
+
+    <!-- Investigation Master Menu -->
+    <menuitem id="menu_investigation_master" name="Investigation Master" parent="menu_futuristictech_nurse_main" sequence="90"/>
+
+    <!-- Clinical Menu -->
+    <menuitem id="menu_clinical" name="Clinical" parent="menu_futuristictech_nurse_main" sequence="100"/>
+
+    <!-- Medicine Register Menu -->
+    <menuitem id="menu_medicine_register" name="Medicine Register" parent="menu_futuristictech_nurse_main" sequence="110"/>
+
+    <!-- Laboratory Menu -->
+    <menuitem id="menu_laboratory" name="Laboratory" parent="menu_futuristictech_nurse_main" sequence="120"/>
+
+    <!-- Requisitions Menu -->
+    <menuitem id="menu_requisitions" name="Requisitions" parent="menu_futuristictech_nurse_main" sequence="130"/>
+
+    <!-- General Reporting Menu -->
+    <menuitem id="menu_general_reporting" name="General Reporting" parent="menu_futuristictech_nurse_main" sequence="140"/>
+
+    <!-- Clinical Reporting Menu -->
+    <menuitem id="menu_clinical_reporting" name="Clinical Reporting" parent="menu_futuristictech_nurse_main" sequence="150"/>
+
+    <!-- Incident Reporting Menu -->
+    <menuitem id="menu_incident_reporting" name="Incident Reporting" parent="menu_futuristictech_nurse_main" sequence="160"/>
+
+    <!-- Patient Discharge Menu -->
+    <menuitem id="menu_patient_discharge" name="Patient Discharge" parent="menu_futuristictech_nurse_main" sequence="170"/>
+
+    <!-- Patient Management Sub-menus -->   
+    <menuitem id="menu_patient" name="Patient" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_patient" sequence="10"/>
+
+    <menuitem id="menu_inpatient_admission" name="In-Patient Admission" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_inpatient_admission" sequence="20"/>
+
+    <!-- Procedural Forms Sub-menus -->
+    <menuitem id="menu_care_plan" name="Care Plan" parent="menu_procedural_forms" action="futuristictech_clinical.action_hospital_care_plan" sequence="10"/>
+
+    <menuitem id="menu_initial_assessment" name="Initial Assessment" parent="menu_procedural_forms" action="futuristictech_clinical.action_hospital_initial_assessment" sequence="20"/>
+
+    <menuitem id="menu_nurse_assessment" name="Nurse Assessment" parent="menu_procedural_forms" action="futuristictech_clinical.action_nurse_assessment" sequence="30"/>
+
+    <!-- Medication Forms Sub-menus -->
+    <menuitem id="menu_medication_form" name="Medication Form" parent="menu_medication_forms" action="futuristictech_clinical.action_hospital_medication_form" sequence="10"/>
+
+    <!-- Procedures Forms Sub-menus -->
+    <menuitem id="menu_informed_consent_forms" name="Informed Consent Forms" parent="menu_procedures_forms" action="futuristictech_clinical.action_hospital_informed_consent_form" sequence="10"/>
+
+    <menuitem id="menu_ect_consent_form" name="ECT Consent Form" parent="menu_procedures_forms" action="futuristictech_clinical.action_hospital_ect_consent_form" sequence="20"/>
+
+    <!-- Mental Health Forms Sub-menus -->
+    <menuitem id="menu_form_c_section_86" name="Form C Section 86" parent="menu_mental_health_forms" action="futuristictech_clinical.action_hospital_form_c_section_86" sequence="10"/>
+
+    <menuitem id="menu_mo_sr_section_86" name="MO/SR Section 86" parent="menu_mental_health_forms" action="futuristictech_clinical.action_hospital_mo_sr_section_86" sequence="20"/>
+
+    <menuitem id="menu_minor_admission" name="Minor Admission" parent="menu_mental_health_forms" action="futuristictech_clinical.action_hospital_minor_admission" sequence="30"/>
+
+    <menuitem id="menu_high_support_admission" name="High Support Admission" parent="menu_mental_health_forms" action="futuristictech_clinical.action_hospital_high_support_admission" sequence="40"/>
+
+    <!-- Outing Forms Sub-menus -->
+    <menuitem id="menu_outing_forms_item" name="Outing Forms" parent="menu_outing_forms" action="futuristictech_clinical.action_hospital_outing_form" sequence="10"/>
+
+    <!-- Investigation Forms Sub-menus -->
+    <menuitem id="menu_investigation_request" name="Investigation Request" parent="menu_investigation_forms" action="futuristictech_clinical.action_hospital_investigation_request" sequence="10"/>
+
+    <!-- Medication Category Sub-menus -->
+    <menuitem id="menu_medication_category_item" name="Medication Category" parent="menu_medication_category" action="futuristictech_clinical.action_hospital_medication_category" sequence="10"/>
+
+    <menuitem id="menu_medication_type" name="Medication Type" parent="menu_medication_category" action="futuristictech_clinical.action_hospital_medication_type" sequence="20"/>
+
+    <!-- Investigation Master Sub-menus -->
+    <menuitem id="menu_hematology" name="Hematology" parent="menu_investigation_master" action="futuristictech_clinical.action_hematology_test" sequence="10"/>
+
+    <menuitem id="menu_biochemistry" name="Biochemistry" parent="menu_investigation_master" action="futuristictech_clinical.action_biochemistry_test" sequence="20"/>
+
+    <menuitem id="menu_hormones" name="Hormones" parent="menu_investigation_master" action="futuristictech_clinical.action_hormones_test" sequence="30"/>
+
+    <menuitem id="menu_microbiology" name="Microbiology" parent="menu_investigation_master" action="futuristictech_clinical.action_microbiology_test" sequence="40"/>
+
+    <menuitem id="menu_immunology" name="Immunology" parent="menu_investigation_master" action="futuristictech_clinical.action_immunology_test" sequence="50"/>
+
+    <menuitem id="menu_urine_chemistry" name="Urine Chemistry" parent="menu_investigation_master" action="futuristictech_clinical.action_urine_chemistry_test" sequence="60"/>
+
+    <menuitem id="menu_urine_screening" name="Urine Screening" parent="menu_investigation_master" action="futuristictech_clinical.action_urine_screening_test" sequence="70"/>
+
+    <menuitem id="menu_drug_assays" name="Drug Assays" parent="menu_investigation_master" action="futuristictech_clinical.action_drug_assays_test" sequence="80"/>
+
+    <!-- Clinical Sub-menus -->
+    <menuitem id="menu_prescription" name="Prescription" parent="menu_clinical" action="futuristictech_clinical.action_hospital_prescription" sequence="10"/>
+
+    <menuitem id="menu_outside_appointments" name="Outside Appointments" parent="menu_clinical" action="futuristictech_clinical.action_hospital_outside_consultation" sequence="20"/>
+
+    <menuitem id="menu_consultation" name="Consultation" parent="menu_clinical" action="futuristictech_medical.action_consultation" sequence="30"/>
+
+    <!-- Medicine Register Sub-menus -->
+    <menuitem id="menu_medicine_register_item" name="Medicine Register" parent="menu_medicine_register" action="futuristictech_clinical.action_medicine_register" sequence="10"/>
+
+    <menuitem id="menu_medicine_consumption" name="Medicine Consumption" parent="menu_medicine_register" action="futuristictech_clinical.action_hospital_medicine_consumption" sequence="20"/>
+
+    <menuitem id="menu_table_capsule_consumption" name="Table/Capsule Consumption" parent="menu_medicine_register" action="futuristictech_clinical.action_hospital_tablet_capsule" sequence="30"/>
+
+    <menuitem id="menu_injection_application_consumption" name="Injection/Application Consumption" parent="menu_medicine_register" action="futuristictech_clinical.action_hospital_injection_application" sequence="40"/>
+
+    <!-- Laboratory Sub-menus -->
+    <menuitem id="menu_lab_test_requisition" name="Lab Test Requisition" parent="menu_laboratory" action="futuristictech_clinical.action_hospital_lab_test_requisition" sequence="10"/>
+
+    <menuitem id="menu_lab_tests" name="Lab Tests" parent="menu_laboratory" action="futuristictech_clinical.action_oeh_medical_lab_test" sequence="20"/>
+
+    <menuitem id="menu_lab_test_types" name="Lab Test Types" parent="menu_laboratory" action="futuristictech_medical.action_medical_labtest_types" sequence="30"/>
+
+    <!-- Requisitions Sub-menus -->
+    <menuitem id="menu_patient_requisition" name="Patient Requisition" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_patient_requisition" sequence="10"/>
+
+    <menuitem id="menu_medical_procedure" name="Medical Procedure" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_medical_procedure" sequence="20"/>
+
+    <menuitem id="menu_special_privileges" name="Special Privileges" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_special_privileges" sequence="30"/>
+
+    <menuitem id="menu_service_requisition" name="Service Requisition" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_service_requisition" sequence="40"/>
+
+    <menuitem id="menu_caretaker_requisition" name="Caretaker Requisition" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_caretaker_requisition" sequence="50"/>
+
+    <menuitem id="menu_food_requisition" name="Food Requisition" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_food_requisition" sequence="60"/>
+
+    <menuitem id="menu_variable_billing" name="Variable Billing" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_variable_billing" sequence="70"/>
+
+    <menuitem id="menu_emergency_medicine" name="Emergency Medicine" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_emergency_medicine" sequence="80"/>
+
+    <menuitem id="menu_outing_expenses" name="Outing Expenses" parent="menu_requisitions" action="futuristictech_clinical.action_hospital_outing_expenses" sequence="90"/>
+
+    <!-- General Reporting Sub-menus -->
+    <menuitem id="menu_room_inspection" name="Room Inspection" parent="menu_general_reporting" action="futuristictech_clinical.action_hospital_room_inspection" sequence="10"/>
+
+    <!-- Clinical Reporting Sub-menus -->
+    <menuitem id="menu_activity_chart" name="Activity Chart" parent="menu_clinical_reporting" action="futuristictech_clinical.action_hospital_follow_up_sheet" sequence="10"/>
+
+    <!-- <menuitem id="menu_ambulance_form" name="Ambulance Form" parent="menu_clinical_reporting" action="futuristictech_clinical.action_hospital_ambulance_form" sequence="20"/> -->
+
+    <!-- Incident Reporting Sub-menus -->
+    <menuitem id="menu_incident_reporting_item" name="Incident Reporting" parent="menu_incident_reporting" action="futuristictech_clinical.action_hospital_incident_report" sequence="10"/>
+
+    <!-- Patient Discharge Sub-menus -->
+    <!-- <menuitem id="menu_clearance_requisitions" name="Clearance (Requisitions)" parent="menu_patient_discharge" action="futuristictech_clinical.action_hospital_clearance_requisitions" sequence="10"/> -->
+
+    <menuitem id="menu_discharge_summary" name="Discharge Summary" parent="menu_patient_discharge" action="futuristictech_clinical.action_hospital_discharge_summary" sequence="20"/>
+
+</odoo>
