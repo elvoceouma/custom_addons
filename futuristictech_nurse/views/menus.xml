@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Main Menu -->
-    <menuitem id="menu_futuristictech_nurse_main" name="Nurse Management" web_icon="futuristictech_nurse,static/description/icon.png" sequence="10"/>
+    <menuitem id="menu_futuristictech_nurse_main" name="Nurse" web_icon="futuristictech_nurse,static/description/icon.png" sequence="10"/>
 
     <!-- Patient Management Menu -->
     <menuitem id="menu_patient_management" name="Patient Management" parent="menu_futuristictech_nurse_main" sequence="10"/>
