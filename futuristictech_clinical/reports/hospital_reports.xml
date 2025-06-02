@@ -11,8 +11,18 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="action_report_informed_consent_medication" model="ir.actions.report">
+        <field name="name">Informed Consent for Medication</field>
+        <field name="model">hospital.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">futuristictech_clinical.report_informed_consent_medication</field>
+        <field name="report_file">futuristictech_clinical.report_informed_consent_medication</field>
+        <field name="binding_model_id" ref="model_hospital_patient"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
     <!-- QWeb Report Template -->
-  <!-- QWeb Report Template -->
     <template id="report_hospital_patient">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -26,7 +36,7 @@
                                 <h3 style="margin-top: 0;">REGISTRATION FORM</h3>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-1">
                             <div class="col-12">
                                 <div class="alert alert-secondary py-1">
@@ -34,12 +44,14 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-1">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4">Patient Name:*</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.name"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.name"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -49,60 +61,75 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-1">
                             <div class="col-4">
                                 <div class="row">
                                     <div class="col-4">Age:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.age"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.age"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="row">
                                     <div class="col-4">DOB:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.dob"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.dob"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="row">
                                     <div class="col-4">Gender:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.gender"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.gender"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-1">
                             <div class="col-2">Address:</div>
                             <div class="col-10 border-bottom">
-                                <span t-field="o.street"/>, <span t-field="o.city"/>, <span t-field="o.state_id"/>
+                                <span t-field="o.street"/>
+,                                <span t-field="o.city"/>
+,                                <span t-field="o.state_id"/>
                             </div>
                         </div>
                         <div class="row mb-1">
                             <div class="col-12 border-bottom">
-                                <span t-field="o.zip"/>, <span t-field="o.country_id"/>
+                                <span t-field="o.zip"/>
+,                                <span t-field="o.country_id"/>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4">Landline No.:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.phone"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.phone"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4">Mobile:*</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.mobile"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.mobile"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4">E-Mail id:*</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.email"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.email"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -112,12 +139,14 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4">Occupation:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.occupation_id.name"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.occupation_id.name"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -127,7 +156,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
@@ -142,7 +171,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-3">Marital Status:</div>
                             <div class="col-9">
@@ -186,7 +215,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-3">Do you have Children:</div>
                             <div class="col-9">
@@ -200,18 +229,18 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-4">
                             <div class="col-3">Number of Children:</div>
                             <div class="col-1 border p-2"></div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-12">
                                 <strong>Emergency Contact:</strong>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
@@ -226,7 +255,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-4">
                             <div class="col-6">
                                 <div class="row">
@@ -241,7 +270,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="row">
@@ -259,7 +288,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="row">
@@ -307,12 +336,12 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-3">Other. Please specify:</div>
                             <div class="col-9 border-bottom"></div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-12">
                                 <div class="row">
@@ -354,12 +383,12 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-2">If yes, Name:</div>
                             <div class="col-10 border-bottom"></div>
                         </div>
-                        
+
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="row">
@@ -377,7 +406,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-4">
                             <div class="col-7">
                                 <div class="row">
@@ -388,13 +417,13 @@
                                 <strong>Thank you for your Co-operation</strong>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-2 text-center">
                             <div class="col-12">
                                 <strong>For OFFICE USE ONLY</strong>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-4">
                                 <div class="row">
@@ -405,7 +434,9 @@
                             <div class="col-4">
                                 <div class="row">
                                     <div class="col-4">MR No.:</div>
-                                    <div class="col-8 border-bottom"><span t-field="o.mrn_no"/></div>
+                                    <div class="col-8 border-bottom">
+                                        <span t-field="o.mrn_no"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
@@ -415,7 +446,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mt-3">
                             <div class="col-12 text-right">
                                 <small>* Mandatory fields for Registration</small>
@@ -426,6 +457,269 @@
             </t>
         </t>
     </template>
-</odoo>
+
+    <!-- QWeb Report Template -->
+    <template id="report_informed_consent_medication">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.internal_layout">
+                    <!-- Page 1 -->
+                    <div class="page" style="font-size: 0.85em; padding: 15px; line-height: 1.3;">
+                        <!-- Header with logos -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height: 80px;" alt="Logo"/>
+                                <div style="margin-top: 5px;">
+                                    <strong>Cadabams.</strong>
+                                    <br/>
+                                    <small>A SPECIALIST IN PSYCHIATRY<br/>
+DE-ADDICTION AND NEURO REHAB</small>
+                                </div>
+                            </div>
+                            <div class="col-6 text-right">
+                                <div style="border: 2px solid #333; border-radius: 50%; width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                                    <strong style="font-size: 18px;">ℌ</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="row mb-3">
+                            <div class="col-12 text-center">
+                                <h4>
+                                    <strong>INFORMED CONSENT FOR MEDICATION</strong>
+                                </h4>
+                            </div>
+                        </div>
+
+                        <!-- Consent text -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p style="text-align: justify;">
+                                    Completion of this form is voluntary. If not completed, the medication cannot be administered without Board Consent or Nominated Representative consent unless in an emergency. This consent is maintained in the client's record and is accessible to authorised users.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Patient Information Table -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <table class="table table-bordered" style="font-size: 0.9em;">
+                                    <tr>
+                                        <td style="width: 25%; background-color: #f8f9fa;">
+                                            <strong>Name of the Patient/Resident</strong>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            <span t-field="o.name"/>
+                                        </td>
+                                        <td style="width: 25%; background-color: #f8f9fa;">
+                                            <strong>MRN NO.:</strong>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            <span t-field="o.mrn_no"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="height: 20px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color: #f8f9fa;">
+                                            <strong>Campus/Center:</strong>
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <table class="table table-bordered" style="font-size: 0.9em;">
+                                    <tr>
+                                        <td style="width: 30%; background-color: #f8f9fa;">
+                                            <strong>Diagnosis: (Use ICD 10 or 11)</strong>
+                                        </td>
+                                        <td style="width: 70%;"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Medication Table -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <table class="table table-bordered" style="font-size: 0.85em;">
+                                    <thead style="background-color: #f8f9fa;">
+                                        <tr>
+                                            <th style="width: 20%;">MEDICATION CATEGORY</th>
+                                            <th style="width: 20%;">MEDICATION</th>
+                                            <th style="width: 30%;">DOSAGE RANGE</th>
+                                            <th style="width: 30%;">PLANNED DOSAGE RANGE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="4" style="vertical-align: middle;">
+                                                <strong>Benzodiazepine</strong>
+                                            </td>
+                                            <td>Lorazepam</td>
+                                            <td>Oral: 0.5 - 10mg / day<br/>
+Inj: 2-4 mg / dose</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Oxazepam</td>
+                                            <td>Oral: 30-120 mg / day</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chlordiazepoxide</td>
+                                            <td>Oral: 15 mg - 300mg / day</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diazepam</td>
+                                            <td>Oral: 4-40 mg / day<br/>
+Inj: 5 mg / dose</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Administration method -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    <strong>This medication will be administered</strong>
+                                </p>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="administration" id="orally"/>
+                                    <label class="form-check-label" for="orally">Orally</label>
+                                </div>
+                                <div class="form-check form-check-inline" style="margin-left: 50px;">
+                                    <input class="form-check-input" type="radio" name="administration" id="injection"/>
+                                    <label class="form-check-label" for="injection">Injection</label>
+                                </div>
+                                <div class="form-check form-check-inline" style="margin-left: 50px;">
+                                    <input class="form-check-input" type="radio" name="administration" id="others"/>
+                                    <label class="form-check-label" for="others">Others - Specify</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer logos -->
+                        <div class="row mt-5">
+                            <div class="col-12 text-center">
+                                <div style="display: flex; justify-content: center; align-items: center; gap: 40px;">
+                                    <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Cadabams"/>
+                                    <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Amitha"/>
+                                    <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Anunitha"/>
+                                    <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Mindtalk"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                                <!-- Page 2 -->
+                                <div class="page" style="font-size: 0.85em; padding: 15px; line-height: 1.3;">
+                                    <!-- Header with logos -->
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height: 80px;" alt="Logo"/>
+                                            <div style="margin-top: 5px;">
+                                                <strong>Cadabams.</strong>
+                                                <br/>
+                                                <small>A SPECIALIST IN PSYCHIATRY<br/>
+DE-ADDICTION AND NEURO REHAB</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <div style="border: 2px solid #333; border-radius: 50%; width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                                                <strong style="font-size: 18px;">ℌ</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Possible Increase in Symptoms -->
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <h5>
+                                                <strong>Possible Increase in Symptoms Leading to Potential:</strong>
+                                            </h5>
+                                            <ul style="margin-left: 20px; line-height: 1.4;">
+                                                <li>Stress on personal relationships, intra familial conflicts and disable social life.</li>
+                                                <li>Absenteeism from work, lost productivity.</li>
+                                                <li>Decreased or loss of ability to understand information and make decisions.</li>
+                                                <li>Self destructive behaviours like reckless driving, drug or alcohol use etc.</li>
+                                                <li>Risk of harm to self or others.</li>
+                                                <li>High risk of attempting and completing suicide.</li>
+                                                <li>Neglected personal care.</li>
+                                                <li>Needing help to complete everyday tasks.</li>
+                                                <li>Admission to hospital.</li>
+                                                <li>Use of restraints.</li>
+                                                <li>Limits on personal Freedom, recreation and leisure.</li>
+                                                <li>Affects your reputation.</li>
+                                                <li>Vulnerable for exploitation.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Others Consequences -->
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <p>
+                                                <strong>Others Consequences:</strong>
+                                            </p>
+                                            <div style="border-bottom: 1px solid #000; height: 20px; margin-bottom: 15px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Common Side Effects -->
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <p>
+                                                <strong>Common Side Effects:</strong>
+                                            </p>
+                                            <p style="text-align: justify;">
+                                    Sedation, fatigue, Dizziness, ataxia, slurred speech, weakness, forgetfulness, confusion, Hyper excitability, nervousness, Pain at injection site.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Rare Side Effects -->
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <p>
+                                                <strong>Rare Side Effects:</strong>
+                                            </p>
+                                            <p style="text-align: justify;">
+                                    Hallucinations (false perceptions), mania, hypotension, Hyper salivation, dry mouth
+                                            </p>
+                                            <p style="text-align: justify;">
+                                    Allergic reactions - rashes, urticaria (raised and itchy areas of skin), photosensitivity, pigmentation changes.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer logos -->
+                                    <div class="row mt-5">
+                                        <div class="col-12 text-center">
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 40px;">
+                                                <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Cadabams"/>
+                                                <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Amitha"/>
+                                                <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Anunitha"/>
+                                                <img src="/web/static/src/img/placeholder.png" style="height: 30px;" alt="Mindtalk"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </t>
+                </template>
+            </odoo>
 
 
