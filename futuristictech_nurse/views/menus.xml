@@ -58,7 +58,7 @@
     <menuitem id="menu_patient" name="Patient" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_patient" sequence="10"/>
 
     <menuitem id="menu_inpatient_admission" name="In-Patient Admission" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_inpatient_admission" sequence="20"/>
-    <menuitem id="menu_concent_form" name="Concent Form" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_concent_form" sequence="30"/>
+    <!-- <menuitem id="menu_concent_form" name="Concent Form" parent="menu_patient_management" action="futuristictech_clinical.action_hospital_concent_form" sequence="30"/> -->
 
     <!-- Procedural Forms Sub-menus -->
     <menuitem id="menu_care_plan" name="Care Plan" parent="menu_procedural_forms" action="futuristictech_clinical.action_hospital_care_plan" sequence="10"/>
