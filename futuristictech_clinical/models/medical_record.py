@@ -54,10 +54,10 @@ class InitialAssessment(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     # Medical Information
     history_present_illness = fields.Text(string='History of Present Illness')
-    present_medication = fields.Text(string='Present Medication')
+    present_medication = fields.Text(string=' Medication History Including Present Medication ')
     family_history = fields.Text(string='Family History')
     personal_history = fields.Text(string='Personal History')
-    relevant_investigation = fields.Text(string='Relevant Investigation')
+    relevant_investigation = fields.Text(string=' Relevant Previous Investigation ')
     
     # Physical Examination
     pulse_rate = fields.Char(string='Pulse Rate')
@@ -67,10 +67,10 @@ class InitialAssessment(models.Model):
     sensorim = fields.Boolean(string='Sensorim')
     pallor = fields.Boolean(string='Pallor')
     clubbing = fields.Boolean(string='Clubbing')
-    lymphadeonopathy = fields.Boolean(string='Lymphadenopathy')
-    other_assessment = fields.Text(string='Other Assessment')
-    systemac_examination = fields.Text(string='Systemic Examination')
-    provisional_diagnosis = fields.Text(string='Provisional Diagnosis')
+    lymphadeonopathy = fields.Boolean(string='Lymphadeonopathy')
+    other_assessment = fields.Text(string='Others')
+    systemac_examination = fields.Text(string='Systemic Examination(CVS/ RS/ CNS/ Abdomen)/ Local Examination')
+    provisional_diagnosis = fields.Text(string='Provisional Diagnosis / Clinical Problems')
     
     # Button Actions
     def action_confirm(self):
