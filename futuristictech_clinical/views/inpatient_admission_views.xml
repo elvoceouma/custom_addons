@@ -236,10 +236,10 @@ Consultation</span>
                                 <group>
                                     <field name="company_id"/>
                                     <field name="clinical_closure_by"/>
+                                    <field name="administrative_closure_by"/>
                                 </group>
                                 <group>
                                     <field name="user_id"/>
-                                    <field name="administrative_closure_by"/>
                                 </group>
                             </group>
                            
