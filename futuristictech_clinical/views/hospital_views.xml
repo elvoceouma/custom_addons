@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Hospital Campus Views -->
+
+    <!-- Hospital/Institution Form View -->
     <record id="view_hospital_hospital_form" model="ir.ui.view">
         <field name="name">hospital.hospital.form</field>
         <field name="model">hospital.hospital</field>
@@ -8,24 +9,52 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <button name="action_view_children" type="object" class="oe_stat_button" icon="fa-sitemap" invisible="not is_parent">
+                            <field name="child_count" widget="statinfo" string="Child Orgs"/>
+                        </button>
+                        <button name="action_view_grades" type="object" class="oe_stat_button" icon="fa-graduation-cap" invisible="is_parent">
+                            <field name="grade_count" widget="statinfo" string="Grades"/>
+                        </button>
+                        <button name="action_view_classrooms" type="object" class="oe_stat_button" icon="fa-users" invisible="is_parent">
+                            <field name="classroom_count" widget="statinfo" string="Classrooms"/>
+                        </button>
                         <button name="action_view_blocks" type="object" class="oe_stat_button" icon="fa-building-o">
                             <field name="block_count" widget="statinfo" string="Blocks"/>
                         </button>
                         <button name="action_view_pharmacies" type="object" class="oe_stat_button" icon="fa-medkit">
                             <field name="pharmacy_count" widget="statinfo" string="Pharmacies"/>
                         </button>
+                        <button name="action_view_psychologists" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <field name="psychologist_count" widget="statinfo" string="Psychologists"/>
+                        </button>
                     </div>
                     <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Campus Name"/>
+                            <field name="name" placeholder="Organization/Institution Name"/>
                         </h1>
+                        <h3 invisible="not parent_id">
+                            <span class="o_form_label">Parent: </span>
+                            <field name="parent_id" class="oe_inline"/>
+                        </h3>
                     </div>
                     <group>
                         <group>
                             <field name="type"/>
                             <field name="code"/>
+                            <field name="parent_id" domain="[('id', '!=', id)]" options="{'no_create': True}"/>
+                            <field name="is_parent" invisible="1"/>
                             <field name="website" placeholder="e.g. www.odoo.com"/>
+                        </group>
+                        <group>
+                            <field name="complete_name" readonly="1"/>
+                            <field name="total_students" readonly="1" invisible="is_parent"/>
+                            <field name="total_teachers" readonly="1" invisible="is_parent"/>
+                            <label for="is_parent" string="Organization Type"/>
+                            <div>
+                                <span invisible="not is_parent" class="badge badge-success">Parent Organization</span>
+                                <span invisible="is_parent" class="badge badge-info">Child Organization</span>
+                            </div>
                         </group>
                     </group>
                     <group>
@@ -44,6 +73,54 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Child Organizations" name="children" invisible="not is_parent">
+                            <field name="child_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="code"/>
+                                    <field name="city"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="is_parent"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Grades &amp; Departments" name="grades" invisible="is_parent">
+                            <field name="grade_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="year"/>
+                                    <field name="classroom_count"/>
+                                    <field name="total_students"/>
+                                    <field name="total_capacity"/>
+                                    <field name="psychologist_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="All Classrooms" name="all_classrooms" invisible="is_parent">
+                            <field name="classroom_ids">
+                                <tree editable="bottom" decoration-warning="is_overcapacity">
+                                    <field name="name"/>
+                                    <field name="grade_id"/>
+                                    <field name="capacity"/>
+                                    <field name="student_count"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="teacher_id"/>
+                                    <field name="is_overcapacity" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Psychologists" name="psychologists">
+                            <field name="psychologist_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="login"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Inventory" name="inventory">
                             <group>
                                 <field name="patient_requisition_picking_type_id"/>
@@ -65,20 +142,173 @@
         </field>
     </record>
 
+    <!-- Hospital/Institution Tree View -->
     <record id="view_hospital_hospital_tree" model="ir.ui.view">
         <field name="name">hospital.hospital.tree</field>
         <field name="model">hospital.hospital</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
+                <field name="complete_name"/>
                 <field name="code"/>
                 <field name="type"/>
+                <field name="parent_id"/>
+                <field name="is_parent"/>
+                <field name="child_count"/>
+                <field name="grade_count"/>
+                <field name="classroom_count"/>
+                <field name="total_students"/>
+                <field name="total_teachers"/>
                 <field name="street"/>
                 <field name="city"/>
                 <field name="state"/>
                 <field name="country"/>
                 <field name="website"/>
+                <field name="psychologist_count"/>
             </tree>
         </field>
     </record>
+
+    <!-- Hospital/Institution Hierarchy Tree View -->
+    <record id="view_hospital_hospital_hierarchy" model="ir.ui.view">
+        <field name="name">hospital.hospital.hierarchy</field>
+        <field name="model">hospital.hospital</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="code"/>
+                <field name="is_parent"/>
+                <field name="child_count"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Hospital/Institution Kanban View -->
+    <record id="view_hospital_hospital_kanban" model="ir.ui.view">
+        <field name="name">hospital.hospital.kanban</field>
+        <field name="model">hospital.hospital</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="is_parent"/>
+                <field name="child_count"/>
+                <field name="image"/>
+                <field name="city"/>
+                <field name="website"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('hospital.hospital', 'image', record.id.raw_value)" alt="Organization" class="o_image_64_cover"/>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <t t-esc="record.name.value"/>
+                                </strong>
+                                <div class="o_kanban_tags_section">
+                                    <span class="badge badge-pill" t-att-class="record.is_parent.raw_value ? 'badge-success' : 'badge-info'">
+                                        <t t-if="record.is_parent.raw_value">Parent Org</t>
+                                        <t t-if="!record.is_parent.raw_value">Child Org</t>
+                                    </span>
+                                    <span class="badge badge-secondary badge-pill">
+                                        <t t-esc="record.type.value"/>
+                                    </span>
+                                </div>
+                                <div t-if="record.city.value" class="text-muted">
+                                    <i class="fa fa-map-marker"/> <t t-esc="record.city.value"/>
+                                </div>
+                                <div t-if="record.child_count.raw_value > 0" class="text-muted">
+                                    <i class="fa fa-sitemap"/> <t t-esc="record.child_count.value"/> Child Organizations
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hospital_hospital_search" model="ir.ui.view">
+        <field name="name">hospital.hospital.search</field>
+        <field name="model">hospital.hospital</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Organization/Institution" filter_domain="['|', ('name', 'ilike', self), ('complete_name', 'ilike', self)]"/>
+                <field name="code"/>
+                <field name="type"/>
+                <field name="parent_id"/>
+                <field name="city"/>
+                <separator/>
+                <filter name="parent_orgs" string="Parent Organizations" domain="[('is_parent', '=', True)]"/>
+                <filter name="child_orgs" string="Child Organizations" domain="[('is_parent', '=', False)]"/>
+                <separator/>
+                <filter name="hospitals" string="Hospitals" domain="[('type', '=', 'hospital')]"/>
+                <filter name="schools" string="Schools" domain="[('type', '=', 'school')]"/>
+                <filter name="universities" string="Universities" domain="[('type', '=', 'university')]"/>
+                <filter name="organizations" string="Organizations" domain="[('type', '=', 'organization')]"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_type" string="Type" domain="[]" context="{'group_by': 'type'}"/>
+                    <filter name="group_by_parent" string="Parent Organization" domain="[]" context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_by_is_parent" string="Organization Level" domain="[]" context="{'group_by': 'is_parent'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Hospital/Institution -->
+    <record id="action_hospital_hospital" model="ir.actions.act_window">
+        <field name="name">Organizations &amp; Institutions</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_hospital_hospital_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first organization or institution!
+            </p>
+            <p>
+                Organizations can be parent entities like education trusts or hospital groups,
+                while institutions are the actual schools, hospitals, or campuses.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Hierarchy View -->
+    <record id="action_hospital_hospital_hierarchy" model="ir.actions.act_window">
+        <field name="name">Organization Hierarchy</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_hospital_hospital_hierarchy"/>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_parent_orgs': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                View your organization hierarchy!
+            </p>
+            <p>
+                This view shows the parent-child relationship between organizations and institutions.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <!-- <menuitem id="menu_hospital_hospital" 
+              name="Organizations" 
+              parent="hospital.menu_hospital_root" 
+              action="action_hospital_hospital" 
+              sequence="10"/>
+              
+    <menuitem id="menu_hospital_hospital_hierarchy" 
+              name="Organization Hierarchy" 
+              parent="hospital.menu_hospital_root" 
+              action="action_hospital_hospital_hierarchy" 
+              sequence="11"/> -->
+
 </odoo>

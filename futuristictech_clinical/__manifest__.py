@@ -33,6 +33,7 @@
         'data/hospital_sequence.xml',
         
         'views/hospital_views.xml',
+        'views/hospital_classes_views.xml',
         'views/admission_views.xml',
         'views/inpatient_admission_views.xml',
         'views/bed_views.xml',

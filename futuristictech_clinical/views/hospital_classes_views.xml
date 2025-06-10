@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== GRADE VIEWS ===== -->
+    
+    <!-- Grade Form View -->
+    <record id="view_hospital_grade_form" model="ir.ui.view">
+        <field name="name">hospital.grade.form</field>
+        <field name="model">hospital.grade</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_classrooms" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="classroom_count" widget="statinfo" string="Classrooms"/>
+                        </button>
+                        <button name="action_view_psychologists" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <field name="psychologist_count" widget="statinfo" string="Psychologists"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Grade/Department Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="school_id" options="{'no_create': True}"/>
+                            <field name="year" placeholder="e.g., 2024-2025"/>
+                        </group>
+                        <group>
+                            <field name="total_students" readonly="1"/>
+                            <field name="total_capacity" readonly="1"/>
+                            <field name="total_teachers" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Curriculum">
+                        <field name="curriculum" nolabel="1" placeholder="Optional curriculum description..."/>
+                    </group>
+                    <notebook>
+                        <page string="Classrooms" name="classrooms">
+                            <field name="classroom_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="capacity"/>
+                                    <field name="student_count"/>
+                                    <field name="utilization_percentage"/>
+                                    <field name="teacher_id"/>
+                                    <field name="is_overcapacity" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Psychologists" name="psychologists">
+                            <field name="psychologist_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="login"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Grade Tree View -->
+    <record id="view_hospital_grade_tree" model="ir.ui.view">
+        <field name="name">hospital.grade.tree</field>
+        <field name="model">hospital.grade</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="year"/>
+                <field name="school_id"/>
+                <field name="classroom_count"/>
+                <field name="total_students"/>
+                <field name="total_capacity"/>
+                <field name="total_teachers"/>
+                <field name="psychologist_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Grade Kanban View -->
+    <record id="view_hospital_grade_kanban" model="ir.ui.view">
+        <field name="name">hospital.grade.kanban</field>
+        <field name="model">hospital.grade</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="year"/>
+                <field name="school_id"/>
+                <field name="classroom_count"/>
+                <field name="total_students"/>
+                <field name="total_capacity"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <t t-esc="record.name.value"/>
+                                    </strong>
+                                    <div t-if="record.year.value" class="text-muted">
+                                        Year: <t t-esc="record.year.value"/>
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fa fa-building"/> <t t-esc="record.school_id.value"/>
+                                    </div>
+                                    <div class="o_kanban_tags_section">
+                                        <span class="badge badge-secondary badge-pill">
+                                            <i class="fa fa-users"/> <t t-esc="record.classroom_count.value"/> Classrooms
+                                        </span>
+                                        <span class="badge badge-info badge-pill">
+                                            <i class="fa fa-user"/> <t t-esc="record.total_students.value"/>/<t t-esc="record.total_capacity.value"/> Students
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Grade Search View -->
+    <record id="view_hospital_grade_search" model="ir.ui.view">
+        <field name="name">hospital.grade.search</field>
+        <field name="model">hospital.grade</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="year"/>
+                <field name="school_id"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_school" string="School" domain="[]" context="{'group_by': 'school_id'}"/>
+                    <filter name="group_by_year" string="Year" domain="[]" context="{'group_by': 'year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===== CLASSROOM VIEWS ===== -->
+
+    <!-- Classroom Form View -->
+    <record id="view_hospital_classroom_form" model="ir.ui.view">
+        <field name="name">hospital.classroom.form</field>
+        <field name="model">hospital.classroom</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-graduation-cap">
+                            <field name="student_count" widget="statinfo" string="Students"/>
+                        </button>
+                        <button name="action_view_psychologists" type="object" class="oe_stat_button" icon="fa-user-md">
+                            <field name="psychologist_count" widget="statinfo" string="Psychologists"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Classroom/Section Name"/>
+                        </h1>
+                    </div>
+                    <div class="alert alert-warning" invisible="not is_overcapacity" role="alert">
+                        <strong>Over Capacity!</strong> This classroom has more students than its capacity allows.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="grade_id" options="{'no_create': True}"/>
+                            <field name="school_id" readonly="1"/>
+                            <field name="capacity"/>
+                            <field name="teacher_id"/>
+                        </group>
+                        <group>
+                            <field name="student_count" readonly="1"/>
+                            <field name="utilization_percentage" readonly="1" widget="percentage"/>
+                            <field name="is_overcapacity" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Students" name="students">
+                            <field name="student_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                    <field name="mobile"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Psychologists" name="psychologists">
+                            <group>
+                                <group string="Classroom Specific">
+                                    <field name="psychologist_ids" nolabel="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="All Available (from Classroom + Grade + School)">
+                                    <field name="all_psychologist_ids" nolabel="1" readonly="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Classroom Tree View -->
+    <record id="view_hospital_classroom_tree" model="ir.ui.view">
+        <field name="name">hospital.classroom.tree</field>
+        <field name="model">hospital.classroom</field>
+        <field name="arch" type="xml">
+            <tree decoration-warning="is_overcapacity">
+                <field name="name"/>
+                <field name="grade_id"/>
+                <field name="school_id"/>
+                <field name="capacity"/>
+                <field name="student_count"/>
+                <field name="utilization_percentage" widget="percentage"/>
+                <field name="teacher_id"/>
+                <field name="psychologist_count"/>
+                <field name="is_overcapacity" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Classroom Kanban View -->
+    <record id="view_hospital_classroom_kanban" model="ir.ui.view">
+        <field name="name">hospital.classroom.kanban</field>
+        <field name="model">hospital.classroom</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="grade_id"/>
+                <field name="capacity"/>
+                <field name="student_count"/>
+                <field name="utilization_percentage"/>
+                <field name="is_overcapacity"/>
+                <field name="teacher_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click" t-att-class="record.is_overcapacity.raw_value ? 'border-warning' : ''">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <t t-esc="record.name.value"/>
+                                    </strong>
+                                    <div class="text-muted">
+                                        <i class="fa fa-layer-group"/> <t t-esc="record.grade_id.value"/>
+                                    </div>
+                                    <div t-if="record.teacher_id.value" class="text-muted">
+                                        <i class="fa fa-user"/> <t t-esc="record.teacher_id.value"/>
+                                    </div>
+                                    <div class="o_kanban_tags_section">
+                                        <span class="badge badge-pill" t-att-class="record.is_overcapacity.raw_value ? 'badge-warning' : 'badge-info'">
+                                            <t t-esc="record.student_count.value"/>/<t t-esc="record.capacity.value"/> Students
+                                        </span>
+                                        <span class="badge badge-secondary badge-pill">
+                                            <t t-esc="Math.round(record.utilization_percentage.raw_value)"/>% Utilization
+                                        </span>
+                                    </div>
+                                    <div t-if="record.is_overcapacity.raw_value" class="text-warning">
+                                        <i class="fa fa-exclamation-triangle"/> Over Capacity
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Classroom Search View -->
+    <record id="view_hospital_classroom_search" model="ir.ui.view">
+        <field name="name">hospital.classroom.search</field>
+        <field name="model">hospital.classroom</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="grade_id"/>
+                <field name="school_id"/>
+                <field name="teacher_id"/>
+                <separator/>
+                <!-- <filter name="overcapacity" string="Over Capacity" domain="[('is_overcapacity', '=', True)]"/> -->
+                <filter name="has_teacher" string="Has Teacher" domain="[('teacher_id', '!=', False)]"/>
+                <filter name="no_teacher" string="No Teacher" domain="[('teacher_id', '=', False)]"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_grade" string="Grade" domain="[]" context="{'group_by': 'grade_id'}"/>
+                    <filter name="group_by_school" string="School" domain="[]" context="{'group_by': 'school_id'}"/>
+                    <filter name="group_by_teacher" string="Teacher" domain="[]" context="{'group_by': 'teacher_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===== ACTIONS ===== -->
+
+    <!-- Grade Actions -->
+    <record id="action_hospital_grade" model="ir.actions.act_window">
+        <field name="name">Grades &amp; Departments</field>
+        <field name="res_model">hospital.grade</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_hospital_grade_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first grade or department!
+            </p>
+            <p>
+                Grades and departments organize students within schools and institutions.
+                Each grade can have multiple classrooms/sections.
+            </p>
+        </field>
+    </record>
+
+    <!-- Classroom Actions -->
+    <record id="action_hospital_classroom" model="ir.actions.act_window">
+        <field name="name">Classrooms &amp; Sections</field>
+        <field name="res_model">hospital.classroom</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="view_hospital_classroom_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first classroom or section!
+            </p>
+            <p>
+                Classrooms organize students within grades and departments.
+                You can assign teachers and track capacity utilization.
+            </p>
+        </field>
+    </record>
+
+    <!-- ===== MENU ITEMS ===== -->
+    
+    <!-- <menuitem id="menu_hospital_grade" 
+              name="Grades &amp; Departments" 
+              parent="hospital.menu_hospital_root" 
+              action="action_hospital_grade" 
+              sequence="20"/>
+              
+    <menuitem id="menu_hospital_classroom" 
+              name="Classrooms &amp; Sections" 
+              parent="hospital.menu_hospital_root" 
+              action="action_hospital_classroom" 
+              sequence="21"/> -->
+
+</odoo>

@@ -5,6 +5,7 @@ from . import admission
 from . import inpatient_admission
 from . import room
 from . import bed
+from . import hospital_grade
 from . import pharmacy
 from . import res_partner
 from . import medicine
