@@ -115,83 +115,83 @@ class MentalHealthAPIController(http.Controller):
 
     # ===== STUDENT/PARENT APP APIs =====
     
-    @http.route('/api/psychologists', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
-    def get_psychologists_for_student(self, **kwargs):
-        """GET /psychologists?student_id=xyz → Returns list of available psychologists"""
-        try:
-            # Handle OPTIONS request for CORS
-            if request.httprequest.method == 'OPTIONS':
-                return self._make_json_response({'message': 'OK'})
+    # @http.route('/api/psychologists', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
+    # def get_psychologists_for_student(self, **kwargs):
+    #     """GET /psychologists?student_id=xyz → Returns list of available psychologists"""
+    #     try:
+    #         # Handle OPTIONS request for CORS
+    #         if request.httprequest.method == 'OPTIONS':
+    #             return self._make_json_response({'message': 'OK'})
                 
-            user = self._authenticate_user()
-            student_id = kwargs.get('student_id')
+    #         user = self._authenticate_user()
+    #         student_id = kwargs.get('student_id')
             
-            if not student_id:
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'student_id parameter is required',
-                    'data': []
-                }, 400)
+    #         if not student_id:
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'student_id parameter is required',
+    #                 'data': []
+    #             }, 400)
             
-            # Get student information
-            student = request.env['res.partner'].sudo().browse(int(student_id))
-            if not student or not student.exists():
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'Student not found',
-                    'data': []
-                }, 404)
+    #         # Get student information
+    #         student = request.env['res.partner'].sudo().browse(int(student_id))
+    #         if not student or not student.exists():
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'Student not found',
+    #                 'data': []
+    #             }, 404)
             
-            # Find student's classroom and get available psychologists
-            classroom = request.env['hospital.classroom'].sudo().search([
-                ('student_ids', 'in', student.id)
-            ], limit=1)
+    #         # Find student's classroom and get available psychologists
+    #         classroom = request.env['hospital.classroom'].sudo().search([
+    #             ('student_ids', 'in', student.id)
+    #         ], limit=1)
             
-            if not classroom:
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'Student not assigned to any classroom',
-                    'data': []
-                }, 404)
+    #         if not classroom:
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'Student not assigned to any classroom',
+    #                 'data': []
+    #             }, 404)
             
-            # Get all available psychologists (classroom + grade + school level)
-            psychologists = classroom.all_psychologist_ids
+    #         # Get all available psychologists (classroom + grade + school level)
+    #         psychologists = classroom.all_psychologist_ids
             
-            psychologist_data = []
-            for psychologist in psychologists:
-                psychologist_data.append({
-                    'id': psychologist.id,
-                    'name': psychologist.name,
-                    'email': psychologist.email or '',
-                    'phone': psychologist.phone or '',
-                    'availability': self._get_psychologist_availability(psychologist.id),
-                    'specializations': [],  # Add if you have specialization field
-                    'rating': 4.5,  # Add if you have rating system
-                    'assignment_level': self._get_assignment_level(psychologist, classroom)
-                })
+    #         psychologist_data = []
+    #         for psychologist in psychologists:
+    #             psychologist_data.append({
+    #                 'id': psychologist.id,
+    #                 'name': psychologist.name,
+    #                 'email': psychologist.email or '',
+    #                 'phone': psychologist.phone or '',
+    #                 'availability': self._get_psychologist_availability(psychologist.id),
+    #                 'specializations': [],  # Add if you have specialization field
+    #                 'rating': 4.5,  # Add if you have rating system
+    #                 'assignment_level': self._get_assignment_level(psychologist, classroom)
+    #             })
             
-            return self._make_json_response({
-                'status': 'success',
-                'message': 'Psychologists retrieved successfully',
-                'data': {
-                    'psychologists': psychologist_data,
-                    'student': {
-                        'id': student.id,
-                        'name': student.name,
-                        'classroom': classroom.name,
-                        'grade': classroom.grade_id.name,
-                        'school': classroom.school_id.name
-                    }
-                }
-            })
+    #         return self._make_json_response({
+    #             'status': 'success',
+    #             'message': 'Psychologists retrieved successfully',
+    #             'data': {
+    #                 'psychologists': psychologist_data,
+    #                 'student': {
+    #                     'id': student.id,
+    #                     'name': student.name,
+    #                     'classroom': classroom.name,
+    #                     'grade': classroom.grade_id.name,
+    #                     'school': classroom.school_id.name
+    #                 }
+    #             }
+    #         })
             
-        except Exception as e:
-            _logger.error(f"Error getting psychologists: {str(e)}")
-            return self._make_json_response({
-                'status': 'error',
-                'message': str(e),
-                'data': []
-            }, 500)
+    #     except Exception as e:
+    #         _logger.error(f"Error getting psychologists: {str(e)}")
+    #         return self._make_json_response({
+    #             'status': 'error',
+    #             'message': str(e),
+    #             'data': []
+    #         }, 500)
     
     @http.route('/api/appointments', type='http', auth='user', methods=['POST'], csrf=False)
     def book_appointment(self, **kwargs):
