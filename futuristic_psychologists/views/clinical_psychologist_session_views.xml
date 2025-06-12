@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Tree View -->
+        <record id="view_clinical_psychologist_session_tree" model="ir.ui.view">
+            <field name="name">clinical.psychologist.session.tree</field>
+            <field name="model">clinical.psychologist.session</field>
+            <field name="arch" type="xml">
+                <tree string="Session">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="session_type_id"/>
+                    <field name="patient_id"/>
+                    <field name="clinical_psychologist_id"/>
+                    <field name="state" decoration-info="state=='draft'" decoration-success="state=='completed'" decoration-warning="state in ('started','Check_Out')"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_clinical_psychologist_session_form" model="ir.ui.view">
+            <field name="name">clinical.psychologist.session.form</field>
+            <field name="model">clinical.psychologist.session</field>
+            <field name="arch" type="xml">
+                <form string="Session">
+                    <header>
+                        <button name="action_start" string="Check In" type="object" 
+                                class="oe_highlight" invisible="[('state','!=','draft')]"/>
+                        <button name="action_end" string="Check Out" type="object" 
+                                class="oe_highlight" invisible="[('state','!=','started')]"/>
+                        <button name="action_complete" string="Complete" type="object" 
+                                class="oe_highlight" invisible="[('state','!=','Check_Out')]"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="buttons">
+                            <button type="object" class="oe_stat_button" string="Doctor Consultation" 
+                                    name="view_doctor_consultation" icon="fa-pencil-square-o"/>
+                            <button type="object" class="oe_stat_button" string="CP Consultation" 
+                                    name="view_cp_consultation" icon="fa-pencil-square-o"/>
+                            <!-- Changed to type="object" and use method name from Python model -->
+                            <button type="object" class="oe_stat_button" string="Screening" 
+                                    name="action_clinical_psychologist_screening" 
+                                    context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <!-- Changed to type="object" -->
+                            <button type="object" class="oe_stat_button" string="Counsellor Session" 
+                                    name="action_counsellor_session" 
+                                    context="{'search_default_resident_id': [patient_id],'default_resident_id': patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <!-- Changed to type="object" -->
+                            <button type="object" class="oe_stat_button" string="Lab Tests" 
+                                    name="action_lab_tests" 
+                                    context="{'search_default_patient': [patient_id],'default_patient': patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <!-- Changed to type="object" -->
+                            <button type="object" class="oe_stat_button" string="Cross Consultation" 
+                                    name="action_cross_consultation" 
+                                    context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <button type="object" class="oe_stat_button" string="Psychiatrist Evaluation" 
+                                    name="view_psychiatrist_evaluation_form" 
+                                    context="{'default_type':type,'default_inpatient_admission_id':inpatient_admission_id,'default_op_visit_id':op_visit_id,'default_patient_id':patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <!-- Changed to type="object" -->
+                            <button type="object" class="oe_stat_button" string="CRM Notes" 
+                                    name="action_crm_notes" 
+                                    context="{'search_default_patient_id': [patient_id], 'default_patient_id': patient_id}" 
+                                    icon="fa-pencil-square-o"/>
+                            <button type="object" class="oe_stat_buttonk" string="Patient Documents" 
+                                    name="view_patient_documents" icon="fa-pencil-square-o"/>
+                            <button type="object" class="oe_stat_button" string="Feedback Form" 
+                                    name="view_feedback_form" icon="fa-pencil-square-o"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="type" readonly="[('state','=','completed')]"/>
+                                <field name="inpatient_admission_id" 
+                                       readonly="[('state','=','completed')]"
+                                       column_invisible="[('parent.type','=','op')]"
+                                       required="[('type','=','ip')]" 
+                                       string="IP Number"/>
+                                <field name="op_visit_id" 
+                                       readonly="[('state','=','completed')]"
+                                       column_invisible="[('parent.type','=','ip')]"
+                                       required="[('type','=','op')]"/>
+                                <field name="patient_id" 
+                                       options="{'no_create':True,'no_open':True}" 
+                                       readonly="1"/>
+                                <field name="patient_age" readonly="1"/>
+                                <field name="sex" readonly="1"/>
+                                <field name="followup_type_id" string="Type" 
+                                       readonly="[('state','=','completed')]" 
+                                       options="{'no_create':True}"/>
+                                <field name="team_role" invisible="1"/>
+                                <field name="consultation_type" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="[('state','=','completed')]"/>
+                                <field name="clinical_psychologist_id" string="Psychologist/Family Therapist" 
+                                       readonly="[('state','=','completed')]"/>
+                                <field name="session_type_id" required="1" 
+                                       readonly="[('state','=','completed')]" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="session_subtype_id" 
+                                       readonly="[('state','=','completed')]" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="check_in_datetime" string="Check-In" readonly="1"/>
+                                <field name="check_out_datetime" string="Check-Out" readonly="1"/>
+                                <field name="virtual_consultation_url" 
+                                       column_invisible="[('parent.consultation_type', '!=', 'Virtual Consultation')]" 
+                                       readonly="1" widget="url"/>
+                                <field name="geo_location" 
+                                       column_invisible="[('parent.consultation_type', '!=', 'Home-Based Consultation')]" 
+                                       readonly="1" widget="url"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Sarathy AI">
+                                <div style="position: relative; width: 100%; padding-bottom: 62.5%; height: 0; overflow: hidden;">
+                                    <iframe src="https://copilot.sarathy.ai/" allow="microphone" style="position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; border: none;"/>
+                                </div>
+                            </page>
+                            <page string="Target of the Session" name="objective">
+                                <group>
+                                    <field name="session_target_ids" 
+                                           options="{'no_create':True,'no_open':True}" 
+                                           widget="many2many_tags" 
+                                           readonly="[('state','=','completed')]"/>
+                                </group>
+                                <group>
+                                    <field name="objective" readonly="[('state','=','completed')]"/>
+                                </group>
+                            </page>
+                            <page string="Session Description" name="notes">
+                                <field name="note" readonly="[('state','=','completed')]"/>
+                            </page>
+                            <page string="Outcome of Session" name="outcome">
+                                <field name="outcome" readonly="[('state','=','completed')]"/>
+                            </page>
+                            <page string="Home/Work Assignment" name="assignment">
+                                <field name="assignment_ids" readonly="[('state','=','completed')]">
+                                    <tree editable="top">
+                                        <field name="name"/>
+                                        <field name="session_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Plan" name="plan">
+                                <field name="plan" readonly="[('state','=','completed')]"/>
+                            </page>
+                            <page string="Consultant Comments" name="consultant_comments">
+                                <field name="consultant_comments"/>
+                            </page>
+                            <page string="Next Follow-up" column_invisible="[('parent.next_followup','=',False)]">
+                                <group>
+                                    <field name="is_sos" readonly="1" column_invisible="[('parent.is_sos','=',False)]"/>
+                                    <field name="next_followup_date" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
+                                    <field name="doctor_advice" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
+                                    <field name="precautions" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
+                                    <field name="todo" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
+                                    <field name="next_followup" invisible="1"/>
+                                </group>
+                            </page>
+                            <page string="Other" name="other">
+                                <group>
+                                    <field name="user_id" options="{'no_create':True,'no_open':True}"/>
+                                    <field name="company_id" options="{'no_create':True,'no_open':True}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_clinical_psychologist_session_search" model="ir.ui.view">
+            <field name="name">clinical.psychologist.session.search</field>
+            <field name="model">clinical.psychologist.session</field>
+            <field name="arch" type="xml">
+                <search string="Session">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="clinical_psychologist_id"/>
+                    <field name="date"/>
+                    <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                    <filter string="Started" name="started" domain="[('state','=','started')]"/>
+                    <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                    <filter string="Today" name="today" domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="week" domain="[('date','&gt;=',context_today()-datetime.timedelta(days=7))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_state" context="{'group_by':'state'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by':'date'}"/>
+                        <filter string="Psychologist" name="group_psychologist" context="{'group_by':'clinical_psychologist_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_clinical_psychologist_session" model="ir.actions.act_window">
+            <field name="name">Session</field>
+            <field name="res_model">clinical.psychologist.session</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_clinical_psychologist_session_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new session record
+                </p>
+                <p>
+                    Clinical psychology sessions help track therapy progress and patient outcomes.
+                </p>
+            </field>
+        </record>
+
+</odoo>

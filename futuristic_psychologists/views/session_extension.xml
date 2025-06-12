@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extension for Session Form - Adding Feedback Form functionality -->
+        <record id="view_clinical_psychologist_session_form_inherit" model="ir.ui.view">
+            <field name="name">clinical.psychologist.session.form.inherit</field>
+            <field name="model">clinical.psychologist.session</field>
+            <field name="inherit_id" ref="view_clinical_psychologist_session_form"/>
+            <field name="arch" type="xml">
+                <!-- Add Feedback Form button after Patient Documents button -->
+                <xpath expr="//button[@name='view_patient_documents']" position="after">
+                    <button type="object" class="oe_stat_button" string="Feedback Form" 
+                            name="view_feedback_form" icon="fa-pencil-square-o"/>                    
+                </xpath>
+                
+                <!-- Add Send Feedback Form button after Check In button -->
+                <xpath expr="//button[@name='action_start']" position="after">                   
+                    <button name="send_feedback_form_psychologist" string="Send Feedback Form" 
+                            type="object" class="oe_highlight" 
+                            invisible="[('state','!=','completed')]"/>  
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

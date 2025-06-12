@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ 
+        <!-- Main Menu -->
+        <menuitem id="menu_clinical_psychology_root" 
+                  name="Clinical Psychology" 
+                  sequence="10"/>
+
+        <!-- Sub Menus -->
+        <menuitem id="menu_clinical_psychology_screening" 
+                  name="Screening" 
+                  parent="menu_clinical_psychology_root" 
+                  action="action_clinical_psychologist_screening" 
+                  sequence="10"/>
+
+        <menuitem id="menu_clinical_psychology_session" 
+                  name="Session" 
+                  parent="menu_clinical_psychology_root" 
+                  action="action_clinical_psychologist_session" 
+                  sequence="20"/>
+
+        <menuitem id="menu_psychometric_assessment" 
+                  name="Psychometric Assessments" 
+                  parent="menu_clinical_psychology_root" 
+                  action="action_psychometric_assessment" 
+                  sequence="30"/>
+
+        <menuitem id="menu_advice_clinical_psychologist" 
+                  name="Advice to Clinical Psychologist" 
+                  parent="menu_clinical_psychology_root" 
+                  action="action_advice_clinical_psychologist" 
+                  sequence="40"/>
+
+        <menuitem id="menu_discharge_summary" 
+                  name="Discharge Summary" 
+                  parent="menu_clinical_psychology_root" 
+                  action="action_discharge_summary" 
+                  sequence="50"/>
+
+</odoo>

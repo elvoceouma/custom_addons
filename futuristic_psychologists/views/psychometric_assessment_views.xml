@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="view_psychometric_assessment_tree" model="ir.ui.view">
+            <field name="name">psychometric.assessment.tree</field>
+            <field name="model">psychometric.assessment</field>
+            <field name="arch" type="xml">
+                <tree string="Psychometric Assessments">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="patient_id"/>
+                    <field name="psychiatrist_id"/>
+                    <field name="assessment_type_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_psychometric_assessment_form" model="ir.ui.view">
+            <field name="name">psychometric.assessment.form</field>
+            <field name="model">psychometric.assessment</field>
+            <field name="arch" type="xml">
+                <form string="Psychometric Assessment">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="inpatient_admission_id" 
+                                       options="{'no_create':True,'no_open':True}" 
+                                       string="IP Number"/>
+                                <field name="patient_id" 
+                                       options="{'no_create':True,'no_open':True}" 
+                                       readonly="1"/>
+                                <field name="patient_age"/>
+                                <field name="sex"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="psychiatrist_id" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="assessment_type_id" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="note"/>
+                            </page>
+                            <page string="Other" name="other">
+                                <group>
+                                    <field name="user_id" 
+                                           options="{'no_create':True,'no_open':True}"/>
+                                    <field name="company_id" 
+                                           options="{'no_create':True,'no_open':True}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_psychometric_assessment_search" model="ir.ui.view">
+            <field name="name">psychometric.assessment.search</field>
+            <field name="model">psychometric.assessment</field>
+            <field name="arch" type="xml">
+                <search string="Psychometric Assessments">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="psychiatrist_id"/>
+                    <field name="date"/>
+                    <filter string="Today" name="today" domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="week" domain="[('date','&gt;=',context_today()-datetime.timedelta(days=7))]"/>
+                    <filter string="This Month" name="month" domain="[('date','&gt;=',context_today().replace(day=1))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Date" name="group_date" context="{'group_by':'date'}"/>
+                        <filter string="Psychiatrist" name="group_psychiatrist" context="{'group_by':'psychiatrist_id'}"/>
+                        <filter string="Assessment Type" name="group_type" context="{'group_by':'assessment_type_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_psychometric_assessment" model="ir.actions.act_window">
+            <field name="name">Psychometric Assessments</field>
+            <field name="res_model">psychometric.assessment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_psychometric_assessment_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new psychometric assessment
+                </p>
+                <p>
+                    Psychometric assessments help evaluate psychological aspects and cognitive abilities of patients.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

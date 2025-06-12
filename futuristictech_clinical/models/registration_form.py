@@ -379,7 +379,7 @@ class PatientRequisitionLine(models.Model):
 
     patient_requisition_id = fields.Char(string='Requisition Number', readonly=True, copy=False, default=lambda self: _('New'))
     patient_id = fields.Many2one('res.partner', string='Patient', required=True)
-    inpatient_admission_id = fields.Many2one('inpatient.admission', string='Admission')
+    inpatient_admission_id = fields.Many2one('hospital.inpatient.admission', string='Admission')
     
     # Location fields
     campus_id = fields.Many2one('hospital.hospital', string='Campus')

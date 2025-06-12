@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+        <!-- Security Groups -->
+           <record id="module_category_clinical_psychology" model="ir.module.category">
+            <field name="name">Clinical Psychology</field>
+            <field name="description">Clinical Psychology Management</field>
+            <field name="sequence">50</field>
+        </record>
+        
+        <!-- Security Groups -->
+        <record id="group_clinical_psychology_user" model="res.groups">
+            <field name="name">Clinical Psychology User</field>
+            <field name="category_id" ref="module_category_clinical_psychology"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_clinical_psychology_manager" model="res.groups">
+            <field name="name">Clinical Psychology Manager</field>
+            <field name="category_id" ref="module_category_clinical_psychology"/>
+            <field name="implied_ids" eval="[(4, ref('group_clinical_psychology_user'))]"/>
+        </record>
+
+        <record id="group_discharge_psychologist" model="res.groups">
+            <field name="name">Discharge Summary - Clinical Psychologist</field>
+            <field name="category_id" ref="module_category_clinical_psychology"/>
+            <field name="implied_ids" eval="[(4, ref('group_clinical_psychology_user'))]"/>
+        </record>
+
+        <record id="group_discharge_psychiatrist" model="res.groups">
+            <field name="name">Discharge Summary - Psychiatrist</field>
+            <field name="category_id" ref="module_category_clinical_psychology"/>
+            <field name="implied_ids" eval="[(4, ref('group_clinical_psychology_user'))]"/>
+        </record>
+
+        <record id="group_discharge_registrar" model="res.groups">
+            <field name="name">Discharge Summary - Registrar</field>
+            <field name="category_id" ref="module_category_clinical_psychology"/>
+            <field name="implied_ids" eval="[(4, ref('group_clinical_psychology_user'))]"/>
+        </record>
+
+</odoo>

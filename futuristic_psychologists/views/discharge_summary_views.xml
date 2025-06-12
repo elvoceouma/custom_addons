@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Tree View -->
+        <record id="view_discharge_summary_tree" model="ir.ui.view">
+            <field name="name">discharge.summary.tree</field>
+            <field name="model">discharge.summary</field>
+            <field name="arch" type="xml">
+                <tree string="Discharge Summary">
+                    <field name="name"/>
+                    <field name="inpatient_admission_id"/>
+                    <field name="patient_id"/>
+                    <field name="state" decoration-info="state=='draft'" decoration-warning="state=='inprogress'" decoration-success="state=='approve'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_discharge_summary_form" model="ir.ui.view">
+            <field name="name">discharge.summary.form</field>
+            <field name="model">discharge.summary</field>
+            <field name="arch" type="xml">
+                <form string="Discharge Summary">
+                    <header>
+                        <button name="action_confirm" string="Confirm" invisible="[('state','!=','draft')]" type="object" class="oe_highlight"/>
+                        <button name="action_approve_clinical_psychologist" string="Approve" type="object" 
+                                class="oe_highlight" groups="clinical_psychology.group_discharge_psychologist" 
+                                invisible="[('clinical_psychologist_bool','=',True),('state','!=','inprogress')]"/>
+                        <button name="action_approve_psychiatrist" string="Approve" type="object" 
+                                class="oe_highlight" groups="clinical_psychology.group_discharge_psychiatrist" 
+                                invisible="[('psychiatrist_bool','=',True),('state','!=','inprogress')]"/>
+                        <button name="action_approve_registrar" string="Approve" type="object" 
+                                class="oe_highlight" groups="clinical_psychology.group_discharge_registrar" 
+                                invisible="[('registrar_bool','=',True),('state','!=','inprogress')]"/>
+                        <field name="state" statusbar_visible="draft,inprogress,approve" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_left" style="width: 500px;">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="inpatient_admission_id"/>
+                                <field name="patient_id"/>
+                                <field name="campus"/>
+                                <field name="company_id"/>
+                            </group>
+                            <group>
+                                <field name="clinical_psychologist"/>
+                                <field name="psychiatrist"/>
+                                <field name="registrar"/>
+                                <field name="clinical_psychologist_bool" invisible="1"/>
+                                <field name="psychiatrist_bool" invisible="1"/>
+                                <field name="registrar_bool" invisible="1"/>
+                            </group>
+                        </group>
+                        <field name="description" placeholder="Description..."/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_discharge_summary_search" model="ir.ui.view">
+            <field name="name">discharge.summary.search</field>
+            <field name="model">discharge.summary</field>
+            <field name="arch" type="xml">
+                <search string="Discharge Summary">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="inpatient_admission_id"/>
+                    <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                    <filter string="In Progress" name="inprogress" domain="[('state','=','inprogress')]"/>
+                    <filter string="Approved" name="approved" domain="[('state','=','approve')]"/>
+                    <filter string="Waiting for Clinical Psychologist" name="waiting_cp" domain="[('clinical_psychologist_bool','=',False),('state','=','inprogress')]"/>
+                    <filter string="Waiting for Psychiatrist" name="waiting_psychiatrist" domain="[('psychiatrist_bool','=',False),('state','=','inprogress')]"/>
+                    <filter string="Waiting for Registrar" name="waiting_registrar" domain="[('registrar_bool','=',False),('state','=','inprogress')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_state" context="{'group_by':'state'}"/>
+                        <filter string="Clinical Psychologist" name="group_cp" context="{'group_by':'clinical_psychologist'}"/>
+                        <filter string="Psychiatrist" name="group_psychiatrist" context="{'group_by':'psychiatrist'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_discharge_summary" model="ir.actions.act_window">
+            <field name="name">Discharge Summary</field>
+            <field name="res_model">discharge.summary</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_discharge_summary_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new discharge summary
+                </p>
+                <p>
+                    Discharge summaries provide comprehensive patient information for care continuity after discharge.
+                </p>
+            </field>
+        </record>
+
+</odoo>

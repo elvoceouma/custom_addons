@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Tree View -->
+        <record id="view_advice_clinical_psychologist_tree" model="ir.ui.view">
+            <field name="name">advice.clinical.psychologist.tree</field>
+            <field name="model">advice.clinical.psychologist</field>
+            <field name="arch" type="xml">
+                <tree string="Advice to Clinical Psychologist">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="patient_id"/>
+                    <field name="clinical_psychologist_id"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_advice_clinical_psychologist_form" model="ir.ui.view">
+            <field name="name">advice.clinical.psychologist.form</field>
+            <field name="model">advice.clinical.psychologist</field>
+            <field name="arch" type="xml">
+                <form string="Advice to Clinical Psychologist">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="clinical_psychologist_id" required="1" 
+                                       options="{'no_create':True,'no_open':True}" 
+                                       />
+                                <field name="followup_type_id" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="type"/>
+                                <field name="inpatient_admission_id" 
+                                       column_invisible="[('parent.type','=','op')]"
+                                       required="[('type','=','ip')]" 
+                                     
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="op_visit_id" 
+                                       column_invisible="[('parent.type','=','ip')]"
+                                       required="[('type','=','op')]" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="patient_id" 
+                                       options="{'no_create':True,'no_open':True}"/>
+                                <field name="date"/>
+                            </group>
+                        </group>
+                        <group string="Advice">
+                            <field name="note" nolabel="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Others">
+                                <group>
+                                    <field name="company_id" 
+                                           options="{'no_create':True,'no_open':True}"/>
+                                    <field name="user_id" 
+                                           options="{'no_create':True,'no_open':True}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_advice_clinical_psychologist_search" model="ir.ui.view">
+            <field name="name">advice.clinical.psychologist.search</field>
+            <field name="model">advice.clinical.psychologist</field>
+            <field name="arch" type="xml">
+                <search string="Advice to Clinical Psychologist">
+                    <field name="name"/>
+                    <field name="patient_id"/>
+                    <field name="clinical_psychologist_id"/>
+                    <field name="date"/>
+                    <filter string="Today" name="today" domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="week" domain="[('date','&gt;=',context_today()-datetime.timedelta(days=7))]"/>
+                    <filter string="This Month" name="month" domain="[('date','&gt;=',context_today().replace(day=1))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Date" name="group_date" context="{'group_by':'date'}"/>
+                        <filter string="Clinical Psychologist" name="group_psychologist" context="{'group_by':'clinical_psychologist_id'}"/>
+                        <filter string="Type" name="group_type" context="{'group_by':'type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_advice_clinical_psychologist" model="ir.actions.act_window">
+            <field name="name">Advice to Clinical Psychologist</field>
+            <field name="res_model">advice.clinical.psychologist</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_advice_clinical_psychologist_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new advice record
+                </p>
+                <p>
+                    Provide professional advice and recommendations to clinical psychologists for patient care.
+                </p>
+            </field>
+        </record>
+
+</odoo>
