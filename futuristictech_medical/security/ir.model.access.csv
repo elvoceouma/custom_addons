@@ -72,8 +72,6 @@ access_oeh_medical_inpatient_user,oeh.medical.inpatient user,model_oeh_medical_i
 access_oeh_medical_inpatient_admin,oeh.medical.inpatient admin,model_oeh_medical_inpatient,base.group_system,1,1,1,1
 access_oeh_medical_patient_user,oeh.medical.patient user,model_oeh_medical_patient,base.group_user,1,1,1,1
 access_oeh_medical_patient_admin,oeh.medical.patient admin,model_oeh_medical_patient,base.group_system,1,1,1,1
-access_op_visits_user,op.visits user,model_op_visits,base.group_user,1,1,1,1
-access_op_visits_admin,op.visits admin,model_op_visits,base.group_system,1,1,1,1
 access_vital_physical_assessment_user,vital.physical.assessment user,model_vital_physical_assessment,base.group_user,1,1,1,1
 access_vital_physical_assessment_admin,vital.physical.assessment admin,model_vital_physical_assessment,base.group_system,1,1,1,1
 access_cp_purpose_user,cp.purpose user,model_cp_purpose,base.group_user,1,1,1,1

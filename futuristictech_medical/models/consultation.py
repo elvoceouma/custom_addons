@@ -47,6 +47,7 @@ class Consultation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
     
+    
    
     name = fields.Char(string='Name', required=True, default='New', tracking=True)
     psychiatrist_id = fields.Many2one('hr.employee', string='Consultant', tracking=True)
