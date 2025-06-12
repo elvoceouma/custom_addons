@@ -91,20 +91,56 @@ class Hospital(models.Model):
     
     medicine_register_ids = fields.One2many('medicine.register', 'campus_id', string='Medicine Registers')
     
-    # Psychologist assignment (for mental health platform)
+    # FIXED: Changed from res.users to res.partner and fixed column names
+    # Enhanced psychologist assignment with role-based domain
     psychologist_ids = fields.Many2many(
-        'res.users',
+        'res.partner',
         'hospital_psychologist_rel',
         'hospital_id',
-        'user_id',
+        'psychologist_id',  # Changed from partner_id to psychologist_id
         string='Assigned Psychologists',
-        # domain="[('groups_id', 'in', %(base.group_user)d)]",
+        domain="[('contact_role', '=', 'psychologist'), ('is_company', '=', False)]",
         help="Psychologists assigned to this organization/institution"
     )
     psychologist_count = fields.Integer(
         compute='_compute_psychologist_count',
         string='Psychologists'
     )
+    
+    # Staff relationships with role-based domains
+    teacher_ids = fields.Many2many(
+        'res.partner',
+        'hospital_teacher_rel',
+        'hospital_id',
+        'teacher_id',  # Changed from partner_id to teacher_id
+        string='Teachers',
+        domain="[('contact_role', '=', 'teacher'), ('is_company', '=', False)]",
+        help="Teachers working at this institution"
+    )
+    teacher_count = fields.Integer(compute='_compute_teacher_count', string='Teachers')
+    
+    employee_ids = fields.Many2many(
+        'res.partner',
+        'hospital_employee_rel',
+        'hospital_id',
+        'employee_id',  # Changed from partner_id to employee_id
+        string='Employees',
+        domain="[('contact_role', 'in', ['employee', 'manager']), ('is_company', '=', False)]",
+        help="Employees working at this institution"
+    )
+    employee_count = fields.Integer(compute='_compute_employee_count', string='Employees')
+    
+    # Student enrollment (for direct institution enrollment)
+    enrolled_student_ids = fields.Many2many(
+        'res.partner',
+        'hospital_student_rel',
+        'hospital_id',
+        'student_id',  # Changed from partner_id to student_id
+        string='Enrolled Students',
+        domain="[('contact_role', '=', 'student'), ('is_company', '=', False)]",
+        help="Students directly enrolled at this institution"
+    )
+    enrolled_student_count = fields.Integer(compute='_compute_enrolled_student_count', string='Enrolled Students')
     
     # Inventory-related fields
     patient_requisition_picking_type_id = fields.Many2one('stock.picking.type', string='Patient Requisition Picking Type')
@@ -159,6 +195,21 @@ class Hospital(models.Model):
     def _compute_psychologist_count(self):
         for record in self:
             record.psychologist_count = len(record.psychologist_ids)
+    
+    @api.depends('teacher_ids')
+    def _compute_teacher_count(self):
+        for record in self:
+            record.teacher_count = len(record.teacher_ids)
+    
+    @api.depends('employee_ids')
+    def _compute_employee_count(self):
+        for record in self:
+            record.employee_count = len(record.employee_ids)
+    
+    @api.depends('enrolled_student_ids')
+    def _compute_enrolled_student_count(self):
+        for record in self:
+            record.enrolled_student_count = len(record.enrolled_student_ids)
     
     @api.constrains('parent_id')
     def _check_hierarchy(self):
@@ -254,9 +305,61 @@ class Hospital(models.Model):
         return {
             'name': _('Assigned Psychologists'),
             'view_mode': 'tree,form',
-            'res_model': 'res.users',
+            'res_model': 'res.partner',
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', self.psychologist_ids.ids)],
+            'context': {'default_contact_role': 'psychologist'},
+        }
+    
+    def action_view_teachers(self):
+        """Smart button action to view teachers"""
+        self.ensure_one()
+        return {
+            'name': _('Teachers'),
+            'view_mode': 'tree,form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', self.teacher_ids.ids)],
+            'context': {'default_contact_role': 'teacher'},
+        }
+    
+    def action_view_employees(self):
+        """Smart button action to view employees"""
+        self.ensure_one()
+        return {
+            'name': _('Employees'),
+            'view_mode': 'tree,form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', self.employee_ids.ids)],
+            'context': {'default_contact_role': 'employee'},
+        }
+    
+    def action_view_enrolled_students(self):
+        """Smart button action to view enrolled students"""
+        self.ensure_one()
+        return {
+            'name': _('Enrolled Students'),
+            'view_mode': 'tree,form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', self.enrolled_student_ids.ids)],
+            'context': {'default_contact_role': 'student'},
+        }
+    
+    def action_view_all_students(self):
+        """View all students (enrolled + in classrooms)"""
+        self.ensure_one()
+        classroom_student_ids = self.classroom_ids.mapped('student_ids').ids
+        all_student_ids = list(set(self.enrolled_student_ids.ids + classroom_student_ids))
+        
+        return {
+            'name': _('All Students'),
+            'view_mode': 'tree,form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', all_student_ids)],
+            'context': {'default_contact_role': 'student'},
         }
         
     def action_hospital_room(self):
@@ -283,3 +386,17 @@ class Hospital(models.Model):
         if not self.parent_id:
             return self
         return self.parent_id.get_root_parent()
+    
+    def get_institution_summary(self):
+        """Get summary data for dashboard"""
+        self.ensure_one()
+        return {
+            'total_students': self.total_students + self.enrolled_student_count,
+            'total_teachers': self.teacher_count,
+            'total_psychologists': self.psychologist_count,
+            'total_employees': self.employee_count,
+            'total_grades': self.grade_count,
+            'total_classrooms': self.classroom_count,
+            'overcapacity_classrooms': len(self.classroom_ids.filtered('is_overcapacity')),
+            'average_classroom_utilization': sum(self.classroom_ids.mapped('utilization_percentage')) / max(len(self.classroom_ids), 1)
+        }

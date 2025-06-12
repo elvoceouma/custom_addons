@@ -33,14 +33,14 @@ class HospitalGrade(models.Model):
     total_teachers = fields.Integer(compute='_compute_totals', string='Total Teachers')
     total_capacity = fields.Integer(compute='_compute_totals', string='Total Capacity')
     
-    # Psychologist assignment
+    # FIXED: Enhanced psychologist assignment with role-based domain
     psychologist_ids = fields.Many2many(
-        'res.users',
+        'res.partner',
         'grade_psychologist_rel',
         'grade_id',
-        'user_id',
+        'psychologist_id',  # Changed from partner_id to psychologist_id
         string='Assigned Psychologists',
-        # domain="[('groups_id', 'in', %(base.group_user)d)]",
+        domain="[('contact_role', '=', 'psychologist'), ('is_company', '=', False)]",
         help="Psychologists assigned to this grade/department"
     )
     psychologist_count = fields.Integer(compute='_compute_psychologist_count', string='Psychologists')
@@ -100,9 +100,10 @@ class HospitalGrade(models.Model):
         return {
             'name': _('Assigned Psychologists'),
             'view_mode': 'tree,form',
-            'res_model': 'res.users',
+            'res_model': 'res.partner',
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', self.psychologist_ids.ids)],
+            'context': {'default_contact_role': 'psychologist'},
         }
 
 
@@ -134,23 +135,23 @@ class HospitalClassroom(models.Model):
         readonly=True
     )
     
-    # Teacher assignment
+    # Enhanced teacher assignment with role-based domain
     teacher_id = fields.Many2one(
-        'res.users',
+        'res.partner',
         string='Assigned Teacher',
-        # domain="[('groups_id', 'in', %(base.group_user)d)]",
+        domain="[('contact_role', '=', 'teacher'), ('is_company', '=', False)]",
         tracking=True,
         help="Teacher assigned to this classroom"
     )
     
-    # Students assignment (Many2many with res.partner or create custom student model)
+    # Enhanced student assignment with role-based domain
     student_ids = fields.Many2many(
         'res.partner',
         'classroom_student_rel',
         'classroom_id',
         'student_id',
         string='Assigned Students',
-        domain="[('is_company', '=', False)]",
+        domain="[('contact_role', '=', 'student'), ('is_company', '=', False)]",
         help="Students assigned to this classroom"
     )
     student_count = fields.Integer(compute='_compute_student_count', string='Students')
@@ -159,21 +160,21 @@ class HospitalClassroom(models.Model):
     utilization_percentage = fields.Float(compute='_compute_utilization', string='Utilization %')
     is_overcapacity = fields.Boolean(compute='_compute_utilization', string='Over Capacity')
     
-    # Psychologist assignment (inherited from grade or specific)
+    # FIXED: Enhanced psychologist assignment with role-based domain
     psychologist_ids = fields.Many2many(
-        'res.users',
+        'res.partner',
         'classroom_psychologist_rel',
         'classroom_id',
-        'user_id',
+        'psychologist_id',  # Changed from partner_id to psychologist_id
         string='Assigned Psychologists',
-        # domain="[('groups_id', 'in', %(base.group_user)d)]",
+        domain="[('contact_role', '=', 'psychologist'), ('is_company', '=', False)]",
         help="Psychologists assigned specifically to this classroom"
     )
     psychologist_count = fields.Integer(compute='_compute_psychologist_count', string='Psychologists')
     
     # Get all psychologists (from classroom + grade + school)
     all_psychologist_ids = fields.Many2many(
-        'res.users',
+        'res.partner',
         compute='_compute_all_psychologists',
         string='All Available Psychologists',
         help="All psychologists available to this classroom (from classroom, grade, and school level)"
@@ -238,6 +239,7 @@ class HospitalClassroom(models.Model):
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', self.student_ids.ids)],
             'context': {
+                'default_contact_role': 'student',
                 'default_is_company': False,
             }
         }
@@ -248,7 +250,34 @@ class HospitalClassroom(models.Model):
         return {
             'name': _('Available Psychologists'),
             'view_mode': 'tree,form',
-            'res_model': 'res.users',
+            'res_model': 'res.partner',
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', self.all_psychologist_ids.ids)],
+            'context': {'default_contact_role': 'psychologist'},
+        }
+    
+    def action_view_student_parents(self):
+        """Action to view all parents of students in this classroom"""
+        self.ensure_one()
+        parent_ids = []
+        for student in self.student_ids:
+            parent_ids.extend(student.parent_ids.ids)
+        
+        return {
+            'name': _('Student Parents'),
+            'view_mode': 'tree,form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', parent_ids)],
+            'context': {'default_contact_role': 'parent'},
+        }
+    
+    @api.model
+    def get_classroom_summary(self):
+        """Get summary statistics for dashboards"""
+        return {
+            'total_classrooms': self.search_count([]),
+            'overcapacity_classrooms': self.search_count([('is_overcapacity', '=', True)]),
+            'total_students': sum(self.search([]).mapped('student_count')),
+            'average_utilization': sum(self.search([]).mapped('utilization_percentage')) / max(self.search_count([]), 1)
         }

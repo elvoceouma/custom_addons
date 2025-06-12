@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Enhanced Contact Form View -->
+    <record id="view_partner_form_enhanced" model="ir.ui.view">
+        <field name="name">res.partner.form.enhanced</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Add smart buttons -->
+            <div name="button_box" position="inside">
+                <button name="action_view_children" type="object" class="oe_stat_button" icon="fa-child" invisible="contact_role != 'parent'">
+                    <field name="child_count" widget="statinfo" string="Children"/>
+                </button>
+                <button name="action_view_parents" type="object" class="oe_stat_button" icon="fa-users" invisible="contact_role != 'student'">
+                    <field name="parent_count" widget="statinfo" string="Parents"/>
+                </button>
+            </div>
+            
+            <!-- Add role field after name -->
+            <field name="name" position="after">
+                <field name="contact_role" widget="radio" options="{'horizontal': true}"/>
+            </field>
+            
+            <!-- Add role-specific fields after the main contact group -->
+            <group position="after">
+                <group string="Role Information" name="role_info">
+                    <!-- Student-specific fields -->
+                    <group invisible="contact_role != 'student'" string="Student Information">
+                        <field name="student_id"/>
+                        <field name="enrollment_date"/>
+                        <field name="graduation_date"/>
+                    </group>
+                    
+                    <!-- Teacher-specific fields -->
+                    <group invisible="contact_role != 'teacher'" string="Teacher Information">
+                        <field name="teacher_subject"/>
+                        <field name="teacher_qualification" widget="text"/>
+                    </group>
+                    
+                    <!-- Employee/Manager fields -->
+                    <group invisible="contact_role not in ['employee', 'manager']" string="Employee Information">
+                        <field name="employee_id"/>
+                        <field name="department"/>
+                    </group>
+                    
+                    <!-- Psychologist-specific fields -->
+                    <group invisible="contact_role != 'psychologist'" string="Psychologist Information">
+                        <field name="license_number"/>
+                        <field name="specialization" widget="text"/>
+                    </group>
+                </group>
+            </group>
+            
+            <!-- Add notebook pages for relationships -->
+            <notebook position="inside">
+                <!-- Parent-Child Relationships -->
+                <page string="Family Relationships" name="family" invisible="contact_role not in ['parent', 'student']">
+                    <group>
+                        <group string="Children" invisible="contact_role != 'parent'">
+                            <field name="child_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="student_id"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                    <field name="contact_role" readonly="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                        
+                        <group string="Parents/Guardians" invisible="contact_role != 'student'">
+                            <field name="parent_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                    <field name="mobile"/>
+                                    <field name="contact_role" readonly="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+                
+                <!-- Classroom Assignment for Students -->
+                <page string="Classroom Assignment" name="classrooms" invisible="contact_role != 'student'">
+                    <field name="classroom_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="grade_id"/>
+                            <field name="school_id"/>
+                            <field name="teacher_id"/>
+                            <field name="capacity"/>
+                            <field name="student_count"/>
+                        </tree>
+                    </field>
+                </page>
+                
+                <!-- Institution Assignment -->
+                <page string="Institutions" name="institutions">
+                    <field name="institution_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="city"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Enhanced Contact Tree View -->
+    <record id="view_partner_tree_enhanced" model="ir.ui.view">
+        <field name="name">res.partner.tree.enhanced</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="display_name" position="after">
+                <field name="contact_role"/>
+                <field name="student_id" optional="hide"/>
+                <field name="employee_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Contact Search View with Role Filters -->
+    <record id="view_res_partner_filter_enhanced" model="ir.ui.view">
+        <field name="name">res.partner.search.enhanced</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="supplier" position="after">
+                <separator/>
+                <filter name="students" string="Students" domain="[('contact_role', '=', 'student')]"/>
+                <filter name="teachers" string="Teachers" domain="[('contact_role', '=', 'teacher')]"/>
+                <filter name="parents" string="Parents" domain="[('contact_role', '=', 'parent')]"/>
+                <filter name="managers" string="Managers" domain="[('contact_role', '=', 'manager')]"/>
+                <filter name="employees" string="Employees" domain="[('contact_role', '=', 'employee')]"/>
+                <filter name="psychologists" string="Psychologists" domain="[('contact_role', '=', 'psychologist')]"/>
+            </filter>
+            
+            <filter name="inactive" position="after">
+                <separator/>
+                <filter name="group_by_role" string="Role" domain="[]" context="{'group_by': 'contact_role'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Student-specific views -->
+    <record id="action_students" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('contact_role', '=', 'student'), ('is_company', '=', False)]</field>
+        <field name="context">{'default_contact_role': 'student', 'default_is_company': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student record!
+            </p>
+            <p>
+                Students can be assigned to classrooms and linked to parent/guardian contacts.
+            </p>
+        </field>
+    </record>
+
+    <!-- Teacher-specific views -->
+    <record id="action_teachers" model="ir.actions.act_window">
+        <field name="name">Teachers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('contact_role', '=', 'teacher'), ('is_company', '=', False)]</field>
+        <field name="context">{'default_contact_role': 'teacher', 'default_is_company': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first teacher record!
+            </p>
+            <p>
+                Teachers can be assigned to classrooms and manage student groups.
+            </p>
+        </field>
+    </record>
+
+    <!-- Parent-specific views -->
+    <record id="action_parents" model="ir.actions.act_window">
+        <field name="name">Parents and Guardians</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('contact_role', '=', 'parent'), ('is_company', '=', False)]</field>
+        <field name="context">{'default_contact_role': 'parent', 'default_is_company': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first parent/guardian record!
+            </p>
+            <p>
+                Parents can be linked to multiple student children and receive communications about their progress.
+            </p>
+        </field>
+    </record>
+
+    <!-- Psychologist-specific views -->
+    <record id="action_psychologists" model="ir.actions.act_window">
+        <field name="name">Psychologists</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('contact_role', '=', 'psychologist'), ('is_company', '=', False)]</field>
+        <field name="context">{'default_contact_role': 'psychologist', 'default_is_company': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first psychologist record!
+            </p>
+            <p>
+                Psychologists can be assigned to institutions, grades, and classrooms for mental health support.
+            </p>
+        </field>
+    </record>
+
+</odoo>

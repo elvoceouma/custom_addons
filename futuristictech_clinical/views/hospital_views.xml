@@ -9,6 +9,7 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <!-- Original buttons -->
                         <button name="action_view_children" type="object" class="oe_stat_button" icon="fa-sitemap" invisible="not is_parent">
                             <field name="child_count" widget="statinfo" string="Child Orgs"/>
                         </button>
@@ -26,6 +27,20 @@
                         </button>
                         <button name="action_view_psychologists" type="object" class="oe_stat_button" icon="fa-user-md">
                             <field name="psychologist_count" widget="statinfo" string="Psychologists"/>
+                        </button>
+                        
+                        <!-- New enhanced buttons for role-based relationships -->
+                        <button name="action_view_teachers" type="object" class="oe_stat_button" icon="fa-chalkboard-teacher" invisible="is_parent">
+                            <field name="teacher_count" widget="statinfo" string="Teachers"/>
+                        </button>
+                        <button name="action_view_employees" type="object" class="oe_stat_button" icon="fa-id-card" invisible="is_parent">
+                            <field name="employee_count" widget="statinfo" string="Employees"/>
+                        </button>
+                        <button name="action_view_enrolled_students" type="object" class="oe_stat_button" icon="fa-user-graduate" invisible="is_parent">
+                            <field name="enrolled_student_count" widget="statinfo" string="Enrolled Students"/>
+                        </button>
+                        <button name="action_view_all_students" type="object" class="oe_stat_button" icon="fa-graduation-cap" invisible="is_parent">
+                            <field name="total_students" widget="statinfo" string="All Students"/>
                         </button>
                     </div>
                     <field name="image" widget="image" class="oe_avatar"/>
@@ -73,6 +88,7 @@
                         </group>
                     </group>
                     <notebook>
+                        <!-- Child Organizations Page -->
                         <page string="Child Organizations" name="children" invisible="not is_parent">
                             <field name="child_ids">
                                 <tree editable="bottom">
@@ -86,6 +102,8 @@
                                 </tree>
                             </field>
                         </page>
+                        
+                        <!-- Grades & Departments Page -->
                         <page string="Grades &amp; Departments" name="grades" invisible="is_parent">
                             <field name="grade_ids">
                                 <tree editable="bottom">
@@ -98,6 +116,8 @@
                                 </tree>
                             </field>
                         </page>
+                        
+                        <!-- All Classrooms Page -->
                         <page string="All Classrooms" name="all_classrooms" invisible="is_parent">
                             <field name="classroom_ids">
                                 <tree editable="bottom" decoration-warning="is_overcapacity">
@@ -111,16 +131,82 @@
                                 </tree>
                             </field>
                         </page>
+                        
+                        <!-- Staff Management Page -->
+                        <page string="Staff Management" name="staff" invisible="is_parent">
+                            <group>
+                                <group string="Teachers">
+                                    <field name="teacher_ids" nolabel="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="teacher_subject"/>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                            <field name="teacher_qualification"/>
+                                            <field name="contact_role" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Employees">
+                                    <field name="employee_ids" nolabel="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="employee_id"/>
+                                            <field name="department"/>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                            <field name="contact_role"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Student Management Page -->
+                        <page string="Student Management" name="students" invisible="is_parent">
+                            <group>
+                                <group string="Direct Enrollment">
+                                    <field name="enrolled_student_ids" nolabel="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="student_id"/>
+                                            <field name="email"/>
+                                            <field name="phone"/>
+                                            <field name="enrollment_date"/>
+                                            <field name="parent_count"/>
+                                            <field name="contact_role" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                            <separator string="Students in Classrooms"/>
+                            <field name="classroom_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="grade_id"/>
+                                    <field name="student_count"/>
+                                    <field name="capacity"/>
+                                    <field name="utilization_percentage" widget="percentage"/>
+                                    <field name="teacher_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <!-- Psychologists Page -->
                         <page string="Psychologists" name="psychologists">
                             <field name="psychologist_ids">
                                 <tree>
                                     <field name="name"/>
-                                    <field name="login"/>
                                     <field name="email"/>
                                     <field name="phone"/>
+                                    <field name="license_number"/>
+                                    <field name="specialization"/>
+                                    <field name="contact_role" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
+                        
+                        <!-- Inventory Page -->
                         <page string="Inventory" name="inventory">
                             <group>
                                 <field name="patient_requisition_picking_type_id"/>
@@ -128,8 +214,26 @@
                                 <field name="medicine_packing_picking_type_id"/>
                             </group>
                         </page>
+                        
+                        <!-- Extra Information Page -->
                         <page string="Extra Information" name="extra_info">
-                            <group></group>
+                            <group>
+                                <group string="Statistics" invisible="is_parent">
+                                    <field name="total_students" readonly="1"/>
+                                    <field name="total_teachers" readonly="1"/>
+                                    <field name="teacher_count" readonly="1"/>
+                                    <field name="employee_count" readonly="1"/>
+                                    <field name="psychologist_count" readonly="1"/>
+                                    <field name="enrolled_student_count" readonly="1"/>
+                                </group>
+                                <group string="Organization Info">
+                                    <field name="child_count" readonly="1" invisible="not is_parent"/>
+                                    <field name="grade_count" readonly="1" invisible="is_parent"/>
+                                    <field name="classroom_count" readonly="1" invisible="is_parent"/>
+                                    <field name="block_count" readonly="1"/>
+                                    <field name="pharmacy_count" readonly="1"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -158,6 +262,9 @@
                 <field name="classroom_count"/>
                 <field name="total_students"/>
                 <field name="total_teachers"/>
+                <field name="teacher_count"/>
+                <field name="employee_count"/>
+                <field name="enrolled_student_count"/>
                 <field name="street"/>
                 <field name="city"/>
                 <field name="state"/>
@@ -179,6 +286,10 @@
                 <field name="code"/>
                 <field name="is_parent"/>
                 <field name="child_count"/>
+                <field name="total_students" invisible="context.get('hide_student_info', False)"/>
+                <field name="teacher_count" invisible="context.get('hide_staff_info', False)"/>
+                <field name="employee_count" invisible="context.get('hide_staff_info', False)"/>
+                <field name="psychologist_count"/>
                 <field name="city"/>
                 <field name="phone"/>
                 <field name="email"/>
@@ -199,6 +310,10 @@
                 <field name="image"/>
                 <field name="city"/>
                 <field name="website"/>
+                <field name="total_students"/>
+                <field name="teacher_count"/>
+                <field name="employee_count"/>
+                <field name="psychologist_count"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -224,6 +339,15 @@
                                 <div t-if="record.child_count.raw_value > 0" class="text-muted">
                                     <i class="fa fa-sitemap"/> <t t-esc="record.child_count.value"/> Child Organizations
                                 </div>
+                                <div t-if="!record.is_parent.raw_value and record.total_students.raw_value > 0" class="text-muted">
+                                    <i class="fa fa-graduation-cap"/> <t t-esc="record.total_students.value"/> Students
+                                </div>
+                                <div t-if="!record.is_parent.raw_value and record.teacher_count.raw_value > 0" class="text-muted">
+                                    <i class="fa fa-chalkboard-teacher"/> <t t-esc="record.teacher_count.value"/> Teachers
+                                </div>
+                                <div t-if="record.psychologist_count.raw_value > 0" class="text-muted">
+                                    <i class="fa fa-user-md"/> <t t-esc="record.psychologist_count.value"/> Psychologists
+                                </div>
                             </div>
                         </div>
                     </t>
@@ -232,8 +356,8 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_hospital_hospital_search" model="ir.ui.view">
+    <!-- Enhanced Search View -->
+    <!-- <record id="view_hospital_hospital_search" model="ir.ui.view">
         <field name="name">hospital.hospital.search</field>
         <field name="model">hospital.hospital</field>
         <field name="arch" type="xml">
@@ -243,6 +367,9 @@
                 <field name="type"/>
                 <field name="parent_id"/>
                 <field name="city"/>
+                <field name="teacher_ids" string="Teachers" filter_domain="[('teacher_ids.name', 'ilike', self)]"/>
+                <field name="psychologist_ids" string="Psychologists" filter_domain="[('psychologist_ids.name', 'ilike', self)]"/>
+                <field name="employee_ids" string="Employees" filter_domain="[('employee_ids.name', 'ilike', self)]"/>
                 <separator/>
                 <filter name="parent_orgs" string="Parent Organizations" domain="[('is_parent', '=', True)]"/>
                 <filter name="child_orgs" string="Child Organizations" domain="[('is_parent', '=', False)]"/>
@@ -252,23 +379,29 @@
                 <filter name="universities" string="Universities" domain="[('type', '=', 'university')]"/>
                 <filter name="organizations" string="Organizations" domain="[('type', '=', 'organization')]"/>
                 <separator/>
+                <filter name="has_students" string="Has Students" />
+                <filter name="has_teachers" string="Has Teachers"/>
+                <filter name="has_psychologists" string="Has Psychologists" domain="[('psychologist_count', '>', 0)]"/>
+                <filter name="has_employees" string="Has Employees" domain="[('employee_count', '>', 0)]"/>
+                <separator/>
                 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
                 <filter name="inactive" string="Inactive" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By">
                     <filter name="group_by_type" string="Type" domain="[]" context="{'group_by': 'type'}"/>
                     <filter name="group_by_parent" string="Parent Organization" domain="[]" context="{'group_by': 'parent_id'}"/>
                     <filter name="group_by_is_parent" string="Organization Level" domain="[]" context="{'group_by': 'is_parent'}"/>
+                    <filter name="group_by_city" string="City" domain="[]" context="{'group_by': 'city'}"/>
                 </group>
             </search>
         </field>
-    </record>
+    </record> -->
 
     <!-- Action for Hospital/Institution -->
     <record id="action_hospital_hospital" model="ir.actions.act_window">
         <field name="name">Organizations &amp; Institutions</field>
         <field name="res_model">hospital.hospital</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="search_view_id" ref="view_hospital_hospital_search"/>
+        <!-- <field name="search_view_id" ref="view_hospital_hospital_search"/> -->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first organization or institution!
@@ -276,6 +409,7 @@
             <p>
                 Organizations can be parent entities like education trusts or hospital groups,
                 while institutions are the actual schools, hospitals, or campuses.
+                You can manage staff, students, and their relationships from here.
             </p>
         </field>
     </record>
@@ -293,22 +427,64 @@
                 View your organization hierarchy!
             </p>
             <p>
-                This view shows the parent-child relationship between organizations and institutions.
+                This view shows the parent-child relationship between organizations and institutions,
+                along with staff and student counts for each level.
             </p>
         </field>
     </record>
 
-    <!-- Menu Items -->
-    <!-- <menuitem id="menu_hospital_hospital" 
-              name="Organizations" 
-              parent="hospital.menu_hospital_root" 
-              action="action_hospital_hospital" 
-              sequence="10"/>
-              
-    <menuitem id="menu_hospital_hospital_hierarchy" 
-              name="Organization Hierarchy" 
-              parent="hospital.menu_hospital_root" 
-              action="action_hospital_hospital_hierarchy" 
-              sequence="11"/> -->
+    <!-- New Action for Schools Dashboard -->
+    <record id="action_hospital_schools_dashboard" model="ir.actions.act_window">
+        <field name="name">Schools Dashboard</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('type', 'in', ['school', 'university', 'college']), ('is_parent', '=', False)]</field>
+        <field name="context">{'search_default_has_students': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to the Schools Dashboard!
+            </p>
+            <p>
+                View all educational institutions with student and staff information.
+                You can manage grades, classrooms, and staff assignments from here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Hospitals Dashboard -->
+    <record id="action_hospital_hospitals_dashboard" model="ir.actions.act_window">
+        <field name="name">Hospitals Dashboard</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('type', 'in', ['hospital', 'clinic', 'nursing_home', 'community_health_center', 'military_hospital']), ('is_parent', '=', False)]</field>
+        <field name="context">{'search_default_has_psychologists': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to the Hospitals Dashboard!
+            </p>
+            <p>
+                View all healthcare institutions with staff and service information.
+                You can manage medical staff, psychologists, and facilities from here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Staff Overview Action -->
+    <record id="action_hospital_staff_overview" model="ir.actions.act_window">
+        <field name="name">Staff Overview</field>
+        <field name="res_model">hospital.hospital</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('is_parent', '=', False)]</field>
+        <field name="context">{'hide_student_info': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Staff Overview
+            </p>
+            <p>
+                View staff distribution across all institutions.
+                This includes teachers, employees, and psychologists.
+            </p>
+        </field>
+    </record>
 
 </odoo>

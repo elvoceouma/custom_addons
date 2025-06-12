@@ -79,6 +79,7 @@
         'views/nurse_assessment_view.xml',
         'views/care_plan_view.xml',
         'views/admission_referral_config_view.xml',
+        'views/res_partners_views.xml',
         'views/actions.xml',  
         'views/menu.xml',     
         
