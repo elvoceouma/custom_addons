@@ -3,6 +3,22 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+ 
+    # Role field to define the type of contact
+    contact_role = fields.Selection([
+        ('student', 'Student'),
+        ('teacher', 'Teacher'),
+        ('parent', 'Parent'),
+        ('manager', 'Manager'),
+        ('employee', 'Employee'),
+        ('psychologist', 'Psychologist'),
+        ('other', 'Other'),
+    ], string='Role', default='other', tracking=True, 
+       help="Define the role of this contact in the institution")
 class Hospital(models.Model):
     _name = 'hospital.hospital'
     _description = 'Hospital/Institution'
