@@ -351,7 +351,6 @@ class TestAPI(http.Controller):
             )
         
 
-    # Add this endpoint to your main.py file
 
     @http.route('/api/psychologists', type='http', auth='none', methods=['GET'], csrf=False)
     def get_psychologists(self, hospital_id=None, grade_id=None, classroom_id=None, **kwargs):
