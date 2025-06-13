@@ -191,19 +191,19 @@
     </record>
 
     <!-- Advice Clinical Psychologist Rules -->
-    <record id="advice_clinical_psychologist_rule_user" model="ir.rule">
+    <!-- <record id="advice_clinical_psychologist_rule_user" model="ir.rule">
         <field name="name">Advice Clinical Psychologist: User can see own records</field>
         <field name="model_id" ref="model_advice_clinical_psychologist"/>
         <field name="domain_force">[('clinical_psychologist_id.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_consultation_user'))]"/>
-    </record>
+    </record> -->
 
-    <record id="advice_clinical_psychologist_rule_manager" model="ir.rule">
+    <!-- <record id="advice_clinical_psychologist_rule_manager" model="ir.rule">
         <field name="name">Advice Clinical Psychologist: Manager can see all records</field>
         <field name="model_id" ref="model_advice_clinical_psychologist"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_consultation_manager'))]"/>
-    </record>
+    </record> -->
 
     <record id="medical_group_laboratory" model="res.groups">
         <field name="name">Medical / Laboratory</field>

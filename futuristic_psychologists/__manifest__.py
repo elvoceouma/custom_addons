@@ -23,7 +23,6 @@ This module provides comprehensive management for:
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'security/security.xml',
         'data/data.xml',
         'views/clinical_psychologist_screening_views.xml',
         'views/clinical_psychologist_session_views.xml', 

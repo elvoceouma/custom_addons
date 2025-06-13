@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
  
         <!-- Main Menu -->
         <menuitem id="menu_clinical_psychology_root" 
@@ -37,4 +38,5 @@
                   action="action_discharge_summary" 
                   sequence="50"/>
 
+    </data>
 </odoo>

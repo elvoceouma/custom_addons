@@ -66,7 +66,7 @@
         </record>
 
         <!-- Search View -->
-        <record id="view_psychometric_assessment_search" model="ir.ui.view">
+        <!-- <record id="view_psychometric_assessment_search" model="ir.ui.view">
             <field name="name">psychometric.assessment.search</field>
             <field name="model">psychometric.assessment</field>
             <field name="arch" type="xml">
@@ -85,14 +85,14 @@
                     </group>
                 </search>
             </field>
-        </record>
+        </record> -->
 
         <!-- Action -->
         <record id="action_psychometric_assessment" model="ir.actions.act_window">
             <field name="name">Psychometric Assessments</field>
             <field name="res_model">psychometric.assessment</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_psychometric_assessment_search"/>
+            <!-- <field name="search_view_id" ref="view_psychometric_assessment_search"/> -->
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new psychometric assessment

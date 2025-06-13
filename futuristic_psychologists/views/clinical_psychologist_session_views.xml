@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 
         <!-- Tree View -->
         <record id="view_clinical_psychologist_session_tree" model="ir.ui.view">
@@ -38,22 +39,18 @@
                                     name="view_doctor_consultation" icon="fa-pencil-square-o"/>
                             <button type="object" class="oe_stat_button" string="CP Consultation" 
                                     name="view_cp_consultation" icon="fa-pencil-square-o"/>
-                            <!-- Changed to type="object" and use method name from Python model -->
                             <button type="object" class="oe_stat_button" string="Screening" 
                                     name="action_clinical_psychologist_screening" 
                                     context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" 
                                     icon="fa-pencil-square-o"/>
-                            <!-- Changed to type="object" -->
                             <button type="object" class="oe_stat_button" string="Counsellor Session" 
                                     name="action_counsellor_session" 
                                     context="{'search_default_resident_id': [patient_id],'default_resident_id': patient_id}" 
                                     icon="fa-pencil-square-o"/>
-                            <!-- Changed to type="object" -->
                             <button type="object" class="oe_stat_button" string="Lab Tests" 
                                     name="action_lab_tests" 
                                     context="{'search_default_patient': [patient_id],'default_patient': patient_id}" 
                                     icon="fa-pencil-square-o"/>
-                            <!-- Changed to type="object" -->
                             <button type="object" class="oe_stat_button" string="Cross Consultation" 
                                     name="action_cross_consultation" 
                                     context="{'search_default_patient_id': [patient_id],'default_patient_id': patient_id}" 
@@ -62,12 +59,11 @@
                                     name="view_psychiatrist_evaluation_form" 
                                     context="{'default_type':type,'default_inpatient_admission_id':inpatient_admission_id,'default_op_visit_id':op_visit_id,'default_patient_id':patient_id}" 
                                     icon="fa-pencil-square-o"/>
-                            <!-- Changed to type="object" -->
                             <button type="object" class="oe_stat_button" string="CRM Notes" 
                                     name="action_crm_notes" 
                                     context="{'search_default_patient_id': [patient_id], 'default_patient_id': patient_id}" 
                                     icon="fa-pencil-square-o"/>
-                            <button type="object" class="oe_stat_buttonk" string="Patient Documents" 
+                            <button type="object" class="oe_stat_button" string="Patient Documents" 
                                     name="view_patient_documents" icon="fa-pencil-square-o"/>
                             <button type="object" class="oe_stat_button" string="Feedback Form" 
                                     name="view_feedback_form" icon="fa-pencil-square-o"/>
@@ -82,12 +78,12 @@
                                 <field name="type" readonly="[('state','=','completed')]"/>
                                 <field name="inpatient_admission_id" 
                                        readonly="[('state','=','completed')]"
-                                       column_invisible="[('parent.type','=','op')]"
+                                       invisible="[('type','=','op')]"
                                        required="[('type','=','ip')]" 
                                        string="IP Number"/>
                                 <field name="op_visit_id" 
                                        readonly="[('state','=','completed')]"
-                                       column_invisible="[('parent.type','=','ip')]"
+                                       invisible="[('type','=','ip')]"
                                        required="[('type','=','op')]"/>
                                 <field name="patient_id" 
                                        options="{'no_create':True,'no_open':True}" 
@@ -113,10 +109,10 @@
                                 <field name="check_in_datetime" string="Check-In" readonly="1"/>
                                 <field name="check_out_datetime" string="Check-Out" readonly="1"/>
                                 <field name="virtual_consultation_url" 
-                                       column_invisible="[('parent.consultation_type', '!=', 'Virtual Consultation')]" 
+                                       invisible="[('consultation_type', '!=', 'Virtual Consultation')]" 
                                        readonly="1" widget="url"/>
                                 <field name="geo_location" 
-                                       column_invisible="[('parent.consultation_type', '!=', 'Home-Based Consultation')]" 
+                                       invisible="[('consultation_type', '!=', 'Home-Based Consultation')]" 
                                        readonly="1" widget="url"/>
                             </group>
                         </group>
@@ -157,13 +153,13 @@
                             <page string="Consultant Comments" name="consultant_comments">
                                 <field name="consultant_comments"/>
                             </page>
-                            <page string="Next Follow-up" column_invisible="[('parent.next_followup','=',False)]">
+                            <page string="Next Follow-up" invisible="[('next_followup','=',False)]">
                                 <group>
-                                    <field name="is_sos" readonly="1" column_invisible="[('parent.is_sos','=',False)]"/>
-                                    <field name="next_followup_date" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
-                                    <field name="doctor_advice" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
-                                    <field name="precautions" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
-                                    <field name="todo" readonly="1" column_invisible="[('parent.is_sos','=',True)]"/>
+                                    <field name="is_sos" readonly="1" invisible="[('is_sos','=',False)]"/>
+                                    <field name="next_followup_date" readonly="1" invisible="[('is_sos','=',True)]"/>
+                                    <field name="doctor_advice" readonly="1" invisible="[('is_sos','=',True)]"/>
+                                    <field name="precautions" readonly="1" invisible="[('is_sos','=',True)]"/>
+                                    <field name="todo" readonly="1" invisible="[('is_sos','=',True)]"/>
                                     <field name="next_followup" invisible="1"/>
                                 </group>
                             </page>
@@ -184,7 +180,7 @@
         </record>
 
         <!-- Search View -->
-        <record id="view_clinical_psychologist_session_search" model="ir.ui.view">
+        <!-- <record id="view_clinical_psychologist_session_search" model="ir.ui.view">
             <field name="name">clinical.psychologist.session.search</field>
             <field name="model">clinical.psychologist.session</field>
             <field name="arch" type="xml">
@@ -205,14 +201,14 @@
                     </group>
                 </search>
             </field>
-        </record>
+        </record> -->
 
         <!-- Action -->
         <record id="action_clinical_psychologist_session" model="ir.actions.act_window">
             <field name="name">Session</field>
             <field name="res_model">clinical.psychologist.session</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_clinical_psychologist_session_search"/>
+            <!-- <field name="search_view_id" ref="view_clinical_psychologist_session_search"/> -->
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new session record
@@ -223,4 +219,5 @@
             </field>
         </record>
 
+    </data>
 </odoo>

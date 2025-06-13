@@ -40,8 +40,12 @@ class AdviceClinicalPsychologist(models.Model):
         string='OP Visit',
         tracking=True
     )
-    patient_id = fields.Many2one('hospital.patient', string='Patient')
-
+    patient_id = fields.Many2one(
+        'res.partner', 
+        string='Patient',
+        required=True,
+        tracking=True
+    )
 
     date = fields.Date(
         string='Date',

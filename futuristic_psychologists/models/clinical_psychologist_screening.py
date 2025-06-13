@@ -9,6 +9,12 @@ class ClinicalPsychologistScreening(models.Model):
     _order = 'date desc'
 
     name = fields.Char(string='Reference', default='New', readonly=True)
+    user_id = fields.Many2one(
+        'res.users', 
+        string='Created By', 
+        default=lambda self: self.env.user,
+        readonly=True
+    )
     type = fields.Selection([
         ('ip', 'Inpatient'),
         ('op', 'Outpatient')
@@ -38,36 +44,33 @@ class ClinicalPsychologistScreening(models.Model):
     )
     sex = fields.Selection(
         [('male', 'Male'),
-            ('Female', 'Female'),
-            ('other', 'Other')],
+         ('female', 'Female'),
+         ('other', 'Other')],
         string='Sex',
         readonly=True
     )
+    
     date = fields.Date(
-        string='Date', 
-        default=fields.Date.context_today,
-        required=True,
+        string='Screening Date', 
+        default=fields.Date.context_today, 
+        required=True, 
         tracking=True
     )
+    
     note = fields.Html(string='Notes', required=True)
     
-    user_id = fields.Many2one(
-        'res.users', 
-        string='Created By', 
-        default=lambda self: self.env.user,
-        readonly=True
-    )
     company_id = fields.Many2one(
         'res.company', 
         string='Company', 
         default=lambda self: self.env.company,
         readonly=True
     )
-    # patient_age = fields.Integer(
-    #     string='Age',
-    #     related='patient_id.age',
-    #     readonly=True
-    # )
+    psychologist_id = fields.Many2one(
+        'res.users',
+        string='Psychologist',
+        required=True,
+        tracking=True
+    )
 
     @api.model
     def create(self, vals):

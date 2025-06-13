@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 
         <!-- Tree View -->
         <record id="view_clinical_psychologist_screening_tree" model="ir.ui.view">
@@ -11,7 +12,7 @@
                     <field name="date"/>
                     <field name="patient_id"/>
                     <field name="type"/>
-                    <field name="user_id"/>
+                    <field name="psychologist_id"/>
                 </tree>
             </field>
         </record>
@@ -28,12 +29,12 @@
                                 <field name="type"/>
                                 <field name="inpatient_admission_id" 
                                        options="{'no_create':True,'no_open':True}" 
-                                       column_invisible="[('parent.type','=','op')]"
+                                       invisible="[('type','=','op')]"
                                        required="[('type','=','ip')]" 
                                        string="IP Number"/>
                                 <field name="op_visit_id" 
                                        options="{'no_create':True,'no_open':True}" 
-                                       column_invisible="[('parent.type','=','ip')]"
+                                       invisible="[('type','=','ip')]"
                                        required="[('type','=','op')]"/>
                                 <field name="patient_id" 
                                        options="{'no_create':True,'no_open':True}" 
@@ -43,14 +44,13 @@
                             <group>
                                 <field name="date"/>
                                 <field name="sex" readonly="1"/>
+                                <field name="psychologist_id" options="{'no_create':True,'no_open':True}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Sarathy AI">
                                 <div style="position: relative; width: 100%; padding-bottom: 62.5%; height: 0; overflow: hidden;">
                                     <iframe src="https://copilot.sarathy.ai/" allow="microphone" style="position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; border: none;"/>
-                                    <!-- staging instance -->
-                                    <!-- <iframe src="https://staging-doc-note.web.app/" allow="microphone" style="position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; border: none;"></iframe> -->
                                 </div>
                             </page>
                             <page string="Notes" name="notes">
@@ -73,7 +73,7 @@
         </record>
 
         <!-- Search View -->
-        <record id="view_clinical_psychologist_screening_search" model="ir.ui.view">
+        <!-- <record id="view_clinical_psychologist_screening_search" model="ir.ui.view">
             <field name="name">clinical.psychologist.screening.search</field>
             <field name="model">clinical.psychologist.screening</field>
             <field name="arch" type="xml">
@@ -81,24 +81,28 @@
                     <field name="name"/>
                     <field name="patient_id"/>
                     <field name="date"/>
-                    <filter string="Today" name="today" domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="This Week" name="week" domain="[('date','&gt;=',context_today()-datetime.timedelta(days=7))]"/>
-                    <filter string="This Month" name="month" domain="[('date','&gt;=',context_today().replace(day=1))]"/>
+                    <field name="type"/>
+                    <field name="psychologist_id"/>
+                    <filter string="Today" name="today" domain="[('date','=',context_today())]"/>
+                    <filter string="This Week" name="week" domain="[('date','&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="month" domain="[('date','&gt;=', context_today().replace(day=1).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Inpatient" name="inpatient" domain="[('type','=','ip')]"/>
+                    <filter string="Outpatient" name="outpatient" domain="[('type','=','op')]"/>
                     <group expand="0" string="Group By">
                         <filter string="Date" name="group_date" context="{'group_by':'date'}"/>
                         <filter string="Type" name="group_type" context="{'group_by':'type'}"/>
-                        <filter string="Created By" name="group_user" context="{'group_by':'user_id'}"/>
+                        <filter string="Psychologist" name="group_psychologist" context="{'group_by':'psychologist_id'}"/>
                     </group>
                 </search>
             </field>
-        </record>
+        </record> -->
 
         <!-- Action -->
         <record id="action_clinical_psychologist_screening" model="ir.actions.act_window">
             <field name="name">Screening</field>
             <field name="res_model">clinical.psychologist.screening</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_clinical_psychologist_screening_search"/>
+            <!-- <field name="search_view_id" ref="view_clinical_psychologist_screening_search"/> -->
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new screening record
@@ -109,4 +113,5 @@
             </field>
         </record>
 
+    </data>
 </odoo>

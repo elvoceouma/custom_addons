@@ -109,6 +109,7 @@ class APIAuthController(http.Controller):
                         'data': None
                     }, 404)
                 
+                
                 # Generate API token
                 api_token = self._generate_api_token(uid)
                 
