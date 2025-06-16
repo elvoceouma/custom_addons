@@ -1896,6 +1896,299 @@ class ConsultationsAPI(http.Controller):
             _logger.error(f"Error in _get_consultations: {str(e)}")
             return self._error_response('Internal server error', 500, 'INTERNAL_ERROR')
 
+
+        # special API routes for custom 
+    @http.route('/api/psychologist/patients', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
+    def get_psychologist_patients(self, **kwargs):
+        """
+        Get all patients/persons linked to a psychologist
+        Parameters:
+        - psychologist_id: ID of the psychologist (required)
+        - include_roles: Comma-separated roles to include (optional, default: all)
+        - limit: Number of records (default: 100)
+        - offset: Records to skip (default: 0)
+        - search: Search in name, email, phone (optional)
+        """
+        try:
+            # Handle OPTIONS request for CORS
+            if request.httprequest.method == 'OPTIONS':
+                return self._make_response({'message': 'OK'})
+            
+            # Get and validate psychologist_id
+            psychologist_id = kwargs.get('psychologist_id')
+            if not psychologist_id:
+                return self._error_response('psychologist_id is required', 400, 'MISSING_PSYCHOLOGIST_ID')
+            
+            try:
+                psychologist_id = int(psychologist_id)
+            except ValueError:
+                return self._error_response('Invalid psychologist_id format', 400, 'INVALID_PSYCHOLOGIST_ID')
+            
+            # Verify psychologist exists and has correct role
+            psychologist = request.env['res.partner'].sudo().search([
+                ('id', '=', psychologist_id),
+                ('contact_role', '=', 'psychologist'),
+                ('is_company', '=', False)
+            ], limit=1)
+            
+            if not psychologist:
+                return self._error_response('Psychologist not found or invalid role', 404, 'PSYCHOLOGIST_NOT_FOUND')
+            
+            # Get filter parameters
+            include_roles = kwargs.get('include_roles', 'student,teacher,parent').split(',')
+            include_roles = [role.strip() for role in include_roles if role.strip()]
+            
+            search_query = kwargs.get('search', '').strip()
+            
+            try:
+                limit = int(kwargs.get('limit', 100))
+                offset = int(kwargs.get('offset', 0))
+            except ValueError:
+                return self._error_response('Invalid limit or offset', 400, 'INVALID_PAGINATION')
+            
+            # Collect all linked persons
+            all_persons = request.env['res.partner']
+            
+            # Method 1: Get students through hospital assignments
+            hospitals = request.env['hospital.hospital'].sudo().search([
+                ('psychologist_ids', 'in', [psychologist_id])
+            ])
+            for hospital in hospitals:
+                # Get enrolled students
+                if 'student' in include_roles:
+                    all_persons |= hospital.enrolled_student_ids
+                # Get teachers
+                if 'teacher' in include_roles:
+                    all_persons |= hospital.teacher_ids
+                # Get students from classrooms
+                if 'student' in include_roles:
+                    for classroom in hospital.classroom_ids:
+                        all_persons |= classroom.student_ids
+                # Get parents of students
+                if 'parent' in include_roles:
+                    for classroom in hospital.classroom_ids:
+                        for student in classroom.student_ids:
+                            all_persons |= student.parent_ids
+            
+            # Method 2: Get students through grade assignments
+            grades = request.env['hospital.grade'].sudo().search([
+                ('psychologist_ids', 'in', [psychologist_id])
+            ])
+            for grade in grades:
+                for classroom in grade.classroom_ids:
+                    if 'student' in include_roles:
+                        all_persons |= classroom.student_ids
+                    if 'parent' in include_roles:
+                        for student in classroom.student_ids:
+                            all_persons |= student.parent_ids
+            
+            # Method 3: Get students through classroom assignments
+            classrooms = request.env['hospital.classroom'].sudo().search([
+                ('psychologist_ids', 'in', [psychologist_id])
+            ])
+            for classroom in classrooms:
+                if 'student' in include_roles:
+                    all_persons |= classroom.student_ids
+                if 'parent' in include_roles:
+                    for student in classroom.student_ids:
+                        all_persons |= student.parent_ids
+            
+            # Apply role filter
+            if include_roles and 'all' not in include_roles:
+                all_persons = all_persons.filtered(lambda p: p.contact_role in include_roles)
+            
+            # Apply search filter
+            if search_query:
+                all_persons = all_persons.filtered(
+                    lambda p: search_query.lower() in (p.name or '').lower() or
+                            search_query.lower() in (p.email or '').lower() or
+                            search_query.lower() in (p.phone or '').lower() or
+                            search_query.lower() in (p.mobile or '').lower()
+                )
+            
+            # Get total count before pagination
+            total_count = len(all_persons)
+            
+            # Apply pagination
+            all_persons = all_persons[offset:offset + limit]
+            
+            # Serialize person data
+            persons_data = []
+            for person in all_persons:
+                # Get associated institutions
+                associated_hospitals = hospitals.filtered(lambda h: person in h.enrolled_student_ids or 
+                                                                person in h.teacher_ids or
+                                                                any(person in c.student_ids for c in h.classroom_ids))
+                
+                # Get associated classrooms
+                associated_classrooms = classrooms.filtered(lambda c: person in c.student_ids)
+                if not associated_classrooms and person.contact_role == 'student':
+                    # Check through parent relationship
+                    for classroom in classrooms:
+                        if person in classroom.student_ids:
+                            associated_classrooms |= classroom
+                
+                # Get associated grades
+                associated_grades = grades.filtered(lambda g: any(person in c.student_ids for c in g.classroom_ids))
+                
+                # Get children if person is a parent
+                children_info = []
+                if person.contact_role == 'parent':
+                    for child in person.child_ids:
+                        if child in all_persons or any(child in c.student_ids for c in classrooms):
+                            child_classrooms = classrooms.filtered(lambda c: child in c.student_ids)
+                            children_info.append({
+                                'id': child.id,
+                                'name': child.name,
+                                'student_id': child.student_id or '',
+                                'classrooms': [{'id': c.id, 'name': c.name, 'grade': c.grade_id.name if c.grade_id else ''} 
+                                            for c in child_classrooms]
+                            })
+                
+                # Get parents if person is a student
+                parents_info = []
+                if person.contact_role == 'student':
+                    for parent in person.parent_ids:
+                        parents_info.append({
+                            'id': parent.id,
+                            'name': parent.name,
+                            'phone': parent.phone or parent.mobile or '',
+                            'email': parent.email or '',
+                            'relationship': 'parent'  # Could be enhanced with specific relationship
+                        })
+                
+                person_data = {
+                    'id': person.id,
+                    'name': person.name or '',
+                    'email': person.email or '',
+                    'phone': person.phone or '',
+                    'mobile': person.mobile or '',
+                    'contact_role': person.contact_role,
+                    'active': person.active,
+                    
+                    # Role-specific information
+                    'role_specific_info': self._get_role_specific_info(person),
+                    
+                    # Relationships
+                    'children': children_info,
+                    'parents': parents_info,
+                    
+                    # Institutional associations
+                    'associations': {
+                        'hospitals': [{'id': h.id, 'name': h.name, 'type': h.type} for h in associated_hospitals],
+                        'grades': [{'id': g.id, 'name': g.name, 'year': g.year or '', 'school': g.school_id.name if g.school_id else ''} 
+                                for g in associated_grades],
+                        'classrooms': [{'id': c.id, 'name': c.name, 'grade': c.grade_id.name if c.grade_id else '', 
+                                    'school': c.school_id.name if c.school_id else '', 'capacity': c.capacity, 
+                                    'student_count': c.student_count} for c in associated_classrooms]
+                    },
+                    
+                    # Address information
+                    'address': {
+                        'street': person.street or '',
+                        'city': person.city or '',
+                        'state': person.state_id.name if person.state_id else '',
+                        'country': person.country_id.name if person.country_id else '',
+                        'zip': person.zip or ''
+                    },
+                    
+                    # Additional contact info
+                    'contact_info': {
+                        'website': person.website or '',
+                        'is_company': person.is_company,
+                        'supplier_rank': getattr(person, 'supplier_rank', 0),
+                        'customer_rank': getattr(person, 'customer_rank', 0)
+                    }
+                }
+                
+                persons_data.append(person_data)
+            
+            # Get psychologist summary
+            psychologist_summary = {
+                'id': psychologist.id,
+                'name': psychologist.name,
+                'email': psychologist.email or '',
+                'phone': psychologist.phone or psychologist.mobile or '',
+                'license_number': getattr(psychologist, 'license_number', '') or '',
+                'specialization': getattr(psychologist, 'specialization', '') or '',
+                'total_associations': {
+                    'hospitals': len(hospitals),
+                    'grades': len(grades),
+                    'classrooms': len(classrooms)
+                }
+            }
+            
+            # Summary by role
+            role_summary = {}
+            for role in ['student', 'teacher', 'parent']:
+                role_count = len([p for p in all_persons if p.contact_role == role])
+                role_summary[role] = role_count
+            
+            response_data = {
+                'psychologist': psychologist_summary,
+                'persons': persons_data,
+                'summary': {
+                    'total_persons': total_count,
+                    'returned_count': len(persons_data),
+                    'by_role': role_summary,
+                    'associations': {
+                        'total_hospitals': len(hospitals),
+                        'total_grades': len(grades),
+                        'total_classrooms': len(classrooms)
+                    }
+                },
+                'pagination': {
+                    'limit': limit,
+                    'offset': offset,
+                    'has_more': offset + limit < total_count
+                },
+                'filters': {
+                    'include_roles': include_roles,
+                    'search_query': search_query
+                }
+            }
+            
+            return self._success_response(response_data, 'Patients retrieved successfully')
+            
+        except Exception as e:
+            _logger.error(f"Error in get_psychologist_patients: {str(e)}")
+            return self._error_response('Internal server error', 500, 'INTERNAL_ERROR')
+
+    def _get_role_specific_info(self, person):
+        """Get role-specific information for a person"""
+        role_info = {}
+        
+        if person.contact_role == 'student':
+            role_info = {
+                'student_id': getattr(person, 'student_id', '') or '',
+                'enrollment_date': person.enrollment_date.strftime('%Y-%m-%d') if getattr(person, 'enrollment_date', None) else '',
+                'graduation_date': person.graduation_date.strftime('%Y-%m-%d') if getattr(person, 'graduation_date', None) else '',
+                'login': getattr(person, 'login', '') or ''
+            }
+        elif person.contact_role == 'teacher':
+            role_info = {
+                'teacher_subject': getattr(person, 'teacher_subject', '') or '',
+                'teacher_qualification': getattr(person, 'teacher_qualification', '') or '',
+                'employee_id': getattr(person, 'employee_id', '') or ''
+            }
+        elif person.contact_role == 'parent':
+            role_info = {
+                'child_count': getattr(person, 'child_count', 0),
+                'children_names': [child.name for child in getattr(person, 'child_ids', [])]
+            }
+        elif person.contact_role == 'psychologist':
+            role_info = {
+                'license_number': getattr(person, 'license_number', '') or '',
+                'specialization': getattr(person, 'specialization', '') or ''
+            }
+        elif person.contact_role in ['employee', 'manager']:
+            role_info = {
+                'employee_id': getattr(person, 'employee_id', '') or '',
+                'department': getattr(person, 'department', '') or ''
+            }
+        
+        return role_info
+
     @http.route('/api/consultation', type='http', auth='none', methods=['GET', 'PUT', 'DELETE'], csrf=False)
     def manage_single_consultation(self, **kwargs):
         """
@@ -3956,3 +4249,5 @@ class AnalyticsAPI(http.Controller):
             'by_payment_mode': payment_modes,
             'by_consultation_type': consultation_types
         }
+
+
