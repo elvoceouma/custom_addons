@@ -71,6 +71,7 @@ class APIAuthController(http.Controller):
             _logger.error(f"Token validation error: {str(e)}")
             return None
     
+    
     @http.route('/api/auth/login', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False)
     def api_login(self, **kwargs):
         """API Login endpoint - authenticate and get token"""
