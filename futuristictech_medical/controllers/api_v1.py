@@ -1900,6 +1900,7 @@ class ConsultationsAPI(http.Controller):
         # special API routes for custom 
     @http.route('/api/psychologist/patients', type='http', auth='public', methods=['GET', 'OPTIONS'], csrf=False)
     def get_psychologist_patients(self, **kwargs):
+        
         """
         Get all patients/persons linked to a psychologist
         Parameters:
@@ -1909,6 +1910,7 @@ class ConsultationsAPI(http.Controller):
         - offset: Records to skip (default: 0)
         - search: Search in name, email, phone (optional)
         """
+
         try:
             # Handle OPTIONS request for CORS
             if request.httprequest.method == 'OPTIONS':
