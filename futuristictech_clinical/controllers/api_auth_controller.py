@@ -71,6 +71,36 @@ class APIAuthController(http.Controller):
             _logger.error(f"Token validation error: {str(e)}")
             return None
     
+    def _get_user_partner_record(self, user):
+        """Get the partner record associated with the user"""
+        try:
+            # First try to find partner record by user relationship
+            partner = user.partner_id
+            if partner:
+                return partner
+            
+            # If no direct partner relationship, try to find by email
+            if user.email:
+                partner = request.env['res.partner'].sudo().search([
+                    ('email', '=', user.email),
+                    ('is_company', '=', False)
+                ], limit=1)
+                if partner:
+                    return partner
+            
+            # If still no partner found, try by login/name
+            partner = request.env['res.partner'].sudo().search([
+                '|',
+                ('login', '=', user.login),
+                ('name', '=', user.name),
+                ('is_company', '=', False)
+            ], limit=1)
+            
+            return partner
+            
+        except Exception as e:
+            _logger.error(f"Error getting partner record: {str(e)}")
+            return None
     
     @http.route('/api/auth/login', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False)
     def api_login(self, **kwargs):
@@ -110,25 +140,40 @@ class APIAuthController(http.Controller):
                         'data': None
                     }, 404)
                 
+                # Get the partner record associated with this user
+                partner = self._get_user_partner_record(user)
                 
                 # Generate API token
                 api_token = self._generate_api_token(uid)
                 
                 # Get user context and permissions
-                context = self._get_user_context(user)
+                context = self._get_user_context(user, partner)
+                
+                # Prepare user data - use partner data if available, fallback to user data
+                user_data = {
+                    'id': user.id,
+                    'name': partner.name if partner else user.name,
+                    'email': partner.email if partner and partner.email else user.email,
+                    'phone': partner.phone if partner and partner.phone else (user.phone if hasattr(user, 'phone') else ''),
+                    'avatar': f'/web/image/res.users/{user.id}/image_128'
+                }
+                
+                # Add partner-specific fields if partner exists
+                if partner:
+                    user_data.update({
+                        'partner_id': partner.id,
+                        'contact_role': partner.contact_role,
+                        'student_id': partner.student_id if partner.contact_role == 'student' else None,
+                        'employee_id': partner.employee_id if partner.contact_role in ['employee', 'manager'] else None,
+                        'license_number': partner.license_number if partner.contact_role == 'psychologist' else None,
+                    })
                 
                 # Prepare response
                 response_data = {
                     'status': 'success',
                     'message': 'Login successful',
                     'data': {
-                        'user': {
-                            'id': user.id,
-                            'name': user.name,
-                            'email': user.email,
-                            'phone': user.phone or '',
-                            'avatar': f'/web/image/res.users/{user.id}/image_128'
-                        },
+                        'user': user_data,
                         'authentication': {
                             'api_token': api_token,
                             'session_id': request.session.sid,
@@ -185,18 +230,28 @@ class APIAuthController(http.Controller):
                 }, 401)
             
             user = request.env['res.users'].browse(uid)
-            context = self._get_user_context(user)
+            partner = self._get_user_partner_record(user)
+            context = self._get_user_context(user, partner)
+            
+            # Prepare user data
+            user_data = {
+                'id': user.id,
+                'name': partner.name if partner else user.name,
+                'email': partner.email if partner and partner.email else user.email
+            }
+            
+            if partner:
+                user_data.update({
+                    'partner_id': partner.id,
+                    'contact_role': partner.contact_role
+                })
             
             # Return session ID as token
             return self._make_json_response({
                 'status': 'success',
                 'message': 'Session login successful',
                 'data': {
-                    'user': {
-                        'id': user.id,
-                        'name': user.name,
-                        'email': user.email
-                    },
+                    'user': user_data,
                     'session_token': f"session_{request.session.sid}",
                     'session_id': request.session.sid,
                     'permissions': context
@@ -239,17 +294,26 @@ class APIAuthController(http.Controller):
         """Verify if current session/token is valid"""
         try:
             user = request.env.user
-            context = self._get_user_context(user)
+            partner = self._get_user_partner_record(user)
+            context = self._get_user_context(user, partner)
+            
+            user_data = {
+                'id': user.id,
+                'name': partner.name if partner else user.name,
+                'email': partner.email if partner and partner.email else user.email
+            }
+            
+            if partner:
+                user_data.update({
+                    'partner_id': partner.id,
+                    'contact_role': partner.contact_role
+                })
             
             return self._make_json_response({
                 'status': 'success',
                 'message': 'Token is valid',
                 'data': {
-                    'user': {
-                        'id': user.id,
-                        'name': user.name,
-                        'email': user.email
-                    },
+                    'user': user_data,
                     'session_id': request.session.sid,
                     'permissions': context,
                     'verified_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -264,12 +328,12 @@ class APIAuthController(http.Controller):
                 'data': None
             }, 401)
     
-    def _get_user_context(self, user):
-        """Get user context including roles and permissions"""
+    def _get_user_context(self, user, partner=None):
+        """Get user context including roles and permissions based on contact_role"""
         context = {
             'user_id': user.id,
-            'user_name': user.name,
-            'user_email': user.email,
+            'user_name': partner.name if partner else user.name,
+            'user_email': partner.email if partner and partner.email else user.email,
             'is_student': False,
             'is_parent': False,
             'is_teacher': False,
@@ -281,26 +345,131 @@ class APIAuthController(http.Controller):
             'classrooms': []
         }
         
-        # Check if user is a psychologist
-        psychologist_assignments = request.env['hospital.hospital'].sudo().search([
-            ('psychologist_ids', 'in', user.id)
-        ])
-        if psychologist_assignments:
+        # If no partner record found, return basic context
+        if not partner:
+            _logger.warning(f"No partner record found for user {user.login}")
+            return context
+        
+        # Set role flags based on contact_role
+        contact_role = partner.contact_role
+        if contact_role == 'student':
+            context['is_student'] = True
+            # Get student's classrooms
+            if partner.classroom_ids:
+                context['classrooms'] = [{
+                    'id': cls.id, 
+                    'name': cls.name, 
+                    'grade_id': cls.grade_id.id,
+                    'grade_name': cls.grade_id.name,
+                    'school_id': cls.grade_id.school_id.id,
+                    'school_name': cls.grade_id.school_id.name
+                } for cls in partner.classroom_ids]
+                
+                # Get unique grades and schools
+                grades = partner.classroom_ids.mapped('grade_id')
+                schools = grades.mapped('school_id')
+                context['grades'] = [{'id': grade.id, 'name': grade.name} for grade in grades]
+                context['schools'] = [{'id': school.id, 'name': school.name} for school in schools]
+        
+        elif contact_role == 'parent':
+            context['is_parent'] = True
+            # Get children and their schools/classrooms
+            if partner.child_ids:
+                children_data = []
+                for child in partner.child_ids:
+                    child_data = {
+                        'id': child.id,
+                        'name': child.name,
+                        'classrooms': []
+                    }
+                    if child.classroom_ids:
+                        child_data['classrooms'] = [{
+                            'id': cls.id,
+                            'name': cls.name,
+                            'grade_name': cls.grade_id.name,
+                            'school_name': cls.grade_id.school_id.name
+                        } for cls in child.classroom_ids]
+                    children_data.append(child_data)
+                context['children'] = children_data
+        
+        elif contact_role == 'teacher':
+            context['is_teacher'] = True
+            # Get teacher's assigned classrooms
+            assigned_classrooms = request.env['hospital.classroom'].sudo().search([
+                ('teacher_id', '=', partner.id)
+            ])
+            if assigned_classrooms:
+                context['classrooms'] = [{
+                    'id': cls.id, 
+                    'name': cls.name, 
+                    'grade_id': cls.grade_id.id,
+                    'grade_name': cls.grade_id.name,
+                    'school_id': cls.grade_id.school_id.id,
+                    'school_name': cls.grade_id.school_id.name,
+                    'student_count': cls.student_count
+                } for cls in assigned_classrooms]
+                
+                # Get unique grades and schools
+                grades = assigned_classrooms.mapped('grade_id')
+                schools = grades.mapped('school_id')
+                context['grades'] = [{'id': grade.id, 'name': grade.name} for grade in grades]
+                context['schools'] = [{'id': school.id, 'name': school.name} for school in schools]
+        
+        elif contact_role == 'psychologist':
             context['is_psychologist'] = True
-            context['organizations'] = [{'id': org.id, 'name': org.name} for org in psychologist_assignments]
+            
+            # Get organizations where psychologist is assigned
+            organization_assignments = request.env['hospital.hospital'].sudo().search([
+                ('psychologist_ids', 'in', partner.id)
+            ])
+            if organization_assignments:
+                context['organizations'] = [{
+                    'id': org.id, 
+                    'name': org.name,
+                    'type': org.type
+                } for org in organization_assignments]
+            
+            # Get grade assignments
+            grade_assignments = request.env['hospital.grade'].sudo().search([
+                ('psychologist_ids', 'in', partner.id)
+            ])
+            if grade_assignments:
+                context['grades'] = [{
+                    'id': grade.id, 
+                    'name': grade.name, 
+                    'school_id': grade.school_id.id,
+                    'school_name': grade.school_id.name
+                } for grade in grade_assignments]
+            
+            # Get classroom assignments
+            classroom_assignments = request.env['hospital.classroom'].sudo().search([
+                ('psychologist_ids', 'in', partner.id)
+            ])
+            if classroom_assignments:
+                context['classrooms'] = [{
+                    'id': cls.id, 
+                    'name': cls.name, 
+                    'grade_id': cls.grade_id.id,
+                    'grade_name': cls.grade_id.name,
+                    'school_id': cls.grade_id.school_id.id,
+                    'school_name': cls.grade_id.school_id.name,
+                    'student_count': cls.student_count
+                } for cls in classroom_assignments]
         
-        # Check if user is assigned to any grades
-        grade_assignments = request.env['hospital.grade'].sudo().search([
-            ('psychologist_ids', 'in', user.id)
-        ])
-        if grade_assignments:
-            context['grades'] = [{'id': grade.id, 'name': grade.name, 'school_id': grade.school_id.id} for grade in grade_assignments]
-        
-        # Check if user is assigned to any classrooms
-        classroom_assignments = request.env['hospital.classroom'].sudo().search([
-            ('psychologist_ids', 'in', user.id)
-        ])
-        if classroom_assignments:
-            context['classrooms'] = [{'id': cls.id, 'name': cls.name, 'grade_id': cls.grade_id.id} for cls in classroom_assignments]
+        # Get institution associations for any role
+        if partner.institution_ids:
+            institutions = [{
+                'id': inst.id,
+                'name': inst.name,
+                'type': inst.type
+            } for inst in partner.institution_ids]
+            if 'organizations' not in context or not context['organizations']:
+                context['organizations'] = institutions
+            else:
+                # Merge with existing organizations, avoiding duplicates
+                existing_ids = [org['id'] for org in context['organizations']]
+                for inst in institutions:
+                    if inst['id'] not in existing_ids:
+                        context['organizations'].append(inst)
         
         return context
