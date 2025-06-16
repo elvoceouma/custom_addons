@@ -1898,7 +1898,7 @@ class ConsultationsAPI(http.Controller):
 
 
         # special API routes for custom 
-    @http.route('/api/psychologist/patients', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
+    @http.route('/api/psychologist/patients', type='http', auth='public', methods=['GET', 'OPTIONS'], csrf=False)
     def get_psychologist_patients(self, **kwargs):
         """
         Get all patients/persons linked to a psychologist
