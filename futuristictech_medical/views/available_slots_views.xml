@@ -33,7 +33,7 @@
                         <group>
                             <field name="user_id" readonly="1"/>
                             <field name="doctor_id" readonly="state != 'draft'" 
-                                   domain="[('active_doctor','=',True),('is_company','=',False),('doctor','=',True),('book_appointments','=',True)]" 
+                                    
                                    options="{'no_open': True}"/>
                             <field name="create_type" readonly="state != 'draft'"/>
                             <field name="campus_id" readonly="state != 'draft'" 
