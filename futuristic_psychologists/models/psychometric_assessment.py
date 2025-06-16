@@ -47,7 +47,7 @@ class PsychometricAssessment(models.Model):
         tracking=True
     )
     assessment_type_id = fields.Many2one(
-        'assessment.type',
+        'hospital.assessment.type',
         string='Assessment Type',
         tracking=True
     )
@@ -67,13 +67,13 @@ class PsychometricAssessment(models.Model):
         readonly=True
     )
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('psychometric.assessment') or 'New'
-        return super().create(vals)
+    # @api.model
+    # def create(self, vals):
+    #     if vals.get('name', 'New') == 'New':
+    #         vals['name'] = self.env['ir.sequence'].next_by_code('psychometric.assessment') or 'New'
+    #     return super().create(vals)
 
-    @api.onchange('inpatient_admission_id')
-    def _onchange_inpatient_admission_id(self):
-        if self.inpatient_admission_id:
-            self.patient_id = self.inpatient_admission_id.patient_id
+    # @api.onchange('inpatient_admission_id')
+    # def _onchange_inpatient_admission_id(self):
+    #     if self.inpatient_admission_id:
+    #         self.patient_id = self.inpatient_admission_id.patient_id

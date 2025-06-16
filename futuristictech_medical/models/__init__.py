@@ -35,3 +35,4 @@ from . import hr_employee
 from . import oeh_models    
 from . import sales_order
 from . import sale_report
+from . import slot_booking

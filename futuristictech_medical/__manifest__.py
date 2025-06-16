@@ -51,6 +51,7 @@
 
         # Wizards
         'wizard/create_hospital_sale_wizard_views.xml',
+        'views/wizards.xml',
         
         # Actions and menus
         'views/menu_views.xml',

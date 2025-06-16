@@ -156,3 +156,10 @@ access_medical_labtest_types_laboratory,medical.labtest.types laboratory,model_m
 access_medical_labtest_types_doctor,medical.labtest.types doctor,model_medical_labtest_types,medical_group_doctor,1,1,0,0
 access_medical_labtest_types_manager,medical.labtest.types manager,model_medical_labtest_types,medical_group_manager,1,1,1,1
 
+access_visits_activities,visits.activities user,model_visits_activities,base.group_user,1,1,1,1
+access_customer_activity,customer.activity user,model_customer_activity,base.group_user,1,1,1,1
+access_appointment_slot_link,appointment.slot.link user,model_appointment_slot_link,base.group_user,1,1,1,1
+access_slot_booking,slot.booking user,model_slot_booking,base.group_user,1,1,1,1
+acccess_crm_visits,crm.visits user,model_crm_visits,base.group_user,1,1,1,1
+access_appointment_booking_wizard,appointment.booking.wizard user,model_appointment_booking_wizard,base.group_user,1,1,1,1
+access_medical_package,medical.package user,model_medical_package,base.group_user,1,1,1,1

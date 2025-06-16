@@ -19,7 +19,7 @@ class CrmLead(models.Model):
     ], string='Status', default='lead', tracking=True)
     fold = fields.Boolean(string='Folded in Kanban', default=False)
     # Statistics
-    appointment_count = fields.Integer(compute='_compute_appointment_count', string='Appointment Count')
+    appointment_count = fields.Integer(string='Appointment Count', compute='_compute_appointment_count')
     visit_count = fields.Integer(compute='_compute_visit_count', string='Visit Count')
     
     
@@ -221,7 +221,7 @@ class CrmLead(models.Model):
     latest_consulting_doctor = fields.Many2one('res.partner', string='Latest Consulting Doctor', domain="[('is_doctor', '=', True)]")
 
     # Relationship fields
-    campus_id = fields.Many2one('campus.master', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     clinical_trail_ids = fields.One2many('medical.clinical.trail', 'lead_id', string='Clinical Trails')
     visit_activities_ids = fields.One2many('visits.activities', 'lead_id', string='Activities')
     customer_activity_ids = fields.One2many('customer.activity', 'lead_id', string='Customer Activities')
@@ -253,9 +253,6 @@ class CrmLead(models.Model):
             if lead.is_new_patient and lead.patient_name and not lead.patient_id:
                 lead.create_patient_from_lead()
         return res
-    
-   
-
 
     def create_patient_from_lead(self):
         """Create a new patient record from the lead information"""
@@ -414,7 +411,6 @@ class CrmLead(models.Model):
                         }
                     }
 
-
     def _prepare_patient_values(self):
         """Prepare values for creating new patient record"""
         # First create or find partner
@@ -450,26 +446,11 @@ class CrmLead(models.Model):
             'lead_id': self.id,
         }
 
-
     # Action methods for buttons
     def action_proceed_to_admission(self):
         self.ensure_one()
         self.state = 'opportunity'
         return True
-
-    def action_book_appointment(self):
-        self.ensure_one()
-        return {
-            'name': _('Book Appointment'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'medical.appointment',
-            'view_mode': 'form',
-            'context': {
-                'default_patient_id': self.patient_id.id if self.patient_id else False,
-                'default_lead_id': self.id
-            },
-            'target': 'new',
-        }
 
     def action_book_package(self):
         self.ensure_one()
@@ -484,18 +465,6 @@ class CrmLead(models.Model):
             },
             'target': 'new',
         }
-
-    # Methods for smart buttons
-    def action_view_appointments(self):
-        self.ensure_one()
-        return {
-            'name': _('Appointments'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'medical.appointment',
-            'view_mode': 'tree,form',
-            'domain': [('lead_id', '=', self.id)],
-        }
-
     def action_view_registration_form(self):
         self.ensure_one()
         if self.registration_form_id:
@@ -545,12 +514,7 @@ class CrmLead(models.Model):
             'domain': [('lead_id', '=', self.id)],
         }
 
-    # Compute methods
-    def _compute_appointment_count(self):
-        for lead in self:
-            lead.appointment_count = self.env['medical.appointment'].search_count([
-                ('lead_id', '=', lead.id)
-            ])
+   
 
     def _compute_visit_count(self):
         for lead in self:
@@ -558,6 +522,45 @@ class CrmLead(models.Model):
                 ('lead_id', '=', lead.id)
             ])
 
-
-                
-
+    def _compute_appointment_count(self):
+        """Compute the number of appointments for this lead"""
+        for lead in self:
+            lead.appointment_count = self.env['slot.booking'].search_count([
+                ('lead_id', '=', lead.id)
+            ])
+    
+    def action_book_appointment(self):
+        """Open the appointment booking wizard"""
+        self.ensure_one()
+        
+        return {
+            'name': _('Book Appointment'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'appointment.booking.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_lead_id': self.id,
+                'active_id': self.id,
+                'active_model': 'crm.lead',
+            }
+        }
+    
+    def action_view_appointments(self):
+        """View all appointments for this lead"""
+        self.ensure_one()
+        
+        appointments = self.env['slot.booking'].search([('lead_id', '=', self.id)])
+        
+        return {
+            'name': _('Appointments'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'slot.booking',
+            'view_mode': 'tree,form',
+            'domain': [('lead_id', '=', self.id)],
+            'context': {
+                'default_lead_id': self.id,
+                'search_default_group_by_availability': 1,
+            },
+            'target': 'current',
+        }
