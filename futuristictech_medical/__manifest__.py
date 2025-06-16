@@ -48,6 +48,8 @@
         'views/op_visit_views.xml',
         'views/session_assesment_views.xml',
         'views/vitals_specification_views.xml',
+        'views/available_slots_views.xml',
+        'views/slot_booking_view.xml',
 
         # Wizards
         'wizard/create_hospital_sale_wizard_views.xml',

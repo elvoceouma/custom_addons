@@ -8,7 +8,7 @@ class AppointmentSlotLink(models.Model):
     lead_id = fields.Many2one('crm.lead', string='Lead')
     appointment_subject = fields.Char(string='Appointment Subject')
     doctor_id = fields.Many2one('res.partner', string='Doctor', domain="[('is_doctor', '=', True)]")
-    campus_id = fields.Many2one('campus.master', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     speciality = fields.Char(string='Speciality')
     consultation_type = fields.Selection([
         ('in_person', 'In-Person'),

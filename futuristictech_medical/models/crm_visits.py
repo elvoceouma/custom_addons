@@ -8,7 +8,7 @@ class CrmVisits(models.Model):
     name = fields.Char(string='Reference', readonly=True, default='/')
     lead_id = fields.Many2one('crm.lead', string='Lead', domain="[('type','=','lead')]", required=True)
     date = fields.Date(string='Date', tracking=True, required=True)
-    campus_id = fields.Many2one('campus.master', string='Campus', tracking=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', tracking=True)
     visitor = fields.Selection([
         ('Caller', 'Caller'),
         ('Patient', 'Patient'),

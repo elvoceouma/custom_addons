@@ -40,6 +40,15 @@ class ScaleType(models.Model):
     consultation_id = fields.Many2one('consultation.consultation', string='Consultation')
     scale_type = fields.Selection(SCALES, string='Scale Type', required=True)
 
+class ConsultationType(models.Model):
+    _name = 'consultation.type'
+    _description = 'Consultation Type'
+    _order = 'name'
+
+    name = fields.Char(string='Name', required=True, help='Name of the consultation type')
+    description = fields.Text(string='Description', help='Description of the consultation type')
+    active = fields.Boolean(string='Active', default=True, help='Is this consultation type active?')
+
 
 class Consultation(models.Model):
     _name = 'consultation.consultation'

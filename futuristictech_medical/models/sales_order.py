@@ -8,7 +8,7 @@ class SaleOrder(models.Model):
     # Fields related to hospital management
     patient_id = fields.Many2one('medical.patient', string='Patient')
     doctor_id = fields.Many2one('medical.doctor', string='Doctor')
-    campus_id = fields.Many2one('campus.master', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     is_hospital_sale = fields.Boolean(string='Is Hospital Sale', default=False)
     appointment_id = fields.Many2one('medical.appointment', string='Appointment')
     case_id = fields.Many2one('medical.case', string='Medical Case')

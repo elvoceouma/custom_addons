@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Slot Booking Form View -->
+    <record id="view_slot_booking_form" model="ir.ui.view">
+        <field name="name">slot.booking.form</field>
+        <field name="model">slot.booking</field>
+        <field name="arch" type="xml">
+            <form string="Book Appointments">
+                <link rel="stylesheet" href="/futuristictech_medical/static/src/css/custom_styles.css"/>
+                <header>
+                    <button string="Book Appointment" name="book_slot" type="object" class="btn-primary" invisible="availability != 'open'"/>
+                    <button string="Mark as Inactive" name="action_inactive" type="object" class="btn-secondary" invisible="availability != 'open'"/>
+                    <button name="act_confirm" string="Confirm" type="object" class="btn-primary" invisible="availability != 'booked'"/>
+                    <button string="Check In" name="check_in" type="object" class="btn-primary" invisible="availability not in ['booked','confirm']"/>
+                    <button string="Start Consultation" name="start_consultation" type="object" class="btn-primary" invisible="availability != 'checked_in'"/>
+                    <button string="Finish Consultation" name="finish_consultation" type="object" class="btn-primary" invisible="availability != 'consulting'"/>
+                    <button string="Re-schedule Appointment" name="re_schedule_appointment" type="object" class="btn-secondary" invisible="availability not in ['booked','confirm']"/>
+                    <button name="act_no_show" string="No Show" type="object" class="btn-warning" invisible="availability not in ['booked','confirm']"/>
+                    <button string="Cancel Appointment" name="335" type="action" invisible="availability not in ['booked','confirm']" class="btn-danger"/>
+                    <button string="Set to Open" name="reset_to_draft" type="object" class="btn-secondary" invisible="availability != 'cancelled' or not set_open_bool"/>
+                    <field name="availability" widget="statusbar" statusbar_visible="open,booked,confirm,rescheduled,checked_in,consulting,completed,inactive,no_show,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_registration" class="oe_stat_button" icon="fa-file-text" invisible="availability in ['open','booked','inactive']">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="registration_count"/>
+                                </span>
+                                <span class="o_stat_text">Registration Form</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="available_slot_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="lead_id" readonly="availability != 'open'" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="caller_name" readonly="availability in ['completed','cancelled']"/>
+                            <field name="patient_name" readonly="availability in ['completed','cancelled']"/>
+                        </group>
+                        <group>
+                            <field name="campus_id" options="{'no_open': True, 'no_create': True}" required="1" readonly="availability in ['booked','checked_in','completed','cancelled']"/>
+                            <field name="sub_campus_id" options="{'no_open': True, 'no_create': True}" readonly="availability in ['booked','checked_in','completed','cancelled']"/>	
+                            <field name="doctor_id" options="{'no_open': True, 'no_create': True}" readonly="availability != 'open'" domain="[('active_doctor','=',True),('is_company','=',False),('doctor','=',True),('book_appointments','=',True)]"/>
+                            <field name="doctor_external_id" invisible="1"/>
+                            <field name="speciality_id" options="{'no_open': True, 'no_create': True}" readonly="availability != 'open'"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="start_datetime" readonly="1"/>
+                            <field name="stop_datetime" readonly="1"/>
+                            <field name="duration" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="consultation_type_ids" widget="many2many_tags"/>
+                            <field name="consultation_type" invisible="1"/>
+                            <field name="latitude" invisible="1"/>
+                            <field name="longitude" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="virtual_consultation_url" class="virtual-consultation-url" invisible="consultation_type != 'Virtual Consultation'" readonly="1" widget="url"/>
+                            <field name="geo_location" invisible="consultation_type != 'Home-Based Consultation'"/>
+                            <field name="zegocloud_uuid" invisible="1"/>		
+                        </group>
+                        <group>
+                            <field name="payment_mode" invisible="free_screening" readonly="1"/>
+                            <field name="online_payment_url" invisible="payment_mode != 'online' or free_screening" readonly="1" widget="url"/>
+                            <field name="free_screening" readonly="1"/>	
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="consultation_feedback_score_new" invisible="availability != 'completed'"/>	
+                            <field name="notes" readonly="availability in ['completed','cancelled']"/>
+                            <field name="slot_booking_user_id" readonly="1"/>
+                            <field name="patient_indication_ids" widget="many2many_tags" readonly="1" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="slot_booked_at"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Payment Details">
+                        <group>
+                            <field name="customer"/>
+                            <field name="payment_date"/>
+                        </group>
+                        <group>
+                            <field name="payment_method"/>
+                            <label for="amount"/>
+                            <div name="amount_div" class="o_row">
+                                <field name="amount" required="1"/>
+                                <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
+                            </div>
+                        </group>
+                    </group>
+                    
+                    <group string="Cancellation Details" invisible="availability != 'cancelled'">
+                        <group>
+                            <field name="medium_id" readonly="1"/>
+                            <field name="cancel_reason" readonly="1"/>
+                            <field name="set_open_bool" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Slot Booking Tree View -->
+    <record id="view_slot_booking_tree" model="ir.ui.view">
+        <field name="name">slot.booking.tree</field>
+        <field name="model">slot.booking</field>
+        <field name="arch" type="xml">
+            <tree string="Appointments" decoration-success="availability == 'completed'" 
+                  decoration-info="availability == 'booked'" decoration-warning="availability == 'no_show'"
+                  decoration-danger="availability == 'cancelled'">
+                <field name="name"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="patient_name"/>
+                <field name="caller_name"/>
+                <field name="start_datetime"/>
+                <field name="stop_datetime"/>
+                <field name="consultation_type"/>
+                <field name="availability"/>
+                <field name="amount" widget="monetary"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Slot Booking Search View -->
+    <record id="view_slot_booking_search" model="ir.ui.view">
+        <field name="name">slot.booking.search</field>
+        <field name="model">slot.booking</field>
+        <field name="arch" type="xml">
+            <search string="Appointments">
+                <field name="name"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="patient_name"/>
+                <field name="caller_name"/>
+                <field name="lead_id"/>
+                <field name="start_datetime"/>
+                <filter string="Open" name="open" domain="[('availability', '=', 'open')]"/>
+                <filter string="Booked" name="booked" domain="[('availability', '=', 'booked')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('availability', '=', 'confirm')]"/>
+                <filter string="Completed" name="completed" domain="[('availability', '=', 'completed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('availability', '=', 'cancelled')]"/>
+                <filter string="Today" name="today" domain="[('start_datetime', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                                                               ('start_datetime', '&lt;', (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="This Week" name="this_week" domain="[('start_datetime', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=datetime.datetime.now().weekday())).strftime('%Y-%m-%d 00:00:00')),
+                                                                      ('start_datetime', '&lt;', (datetime.datetime.now() + datetime.timedelta(days=7-datetime.datetime.now().weekday())).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Free Screening" name="free_screening" domain="[('free_screening', '=', True)]"/>
+                <filter string="Virtual Consultation" name="virtual" domain="[('consultation_type', '=', 'Virtual Consultation')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Campus" name="group_by_campus" context="{'group_by': 'campus_id'}"/>
+                    <filter string="Availability" name="group_by_availability" context="{'group_by': 'availability'}"/>
+                    <filter string="Consultation Type" name="group_by_consultation_type" context="{'group_by': 'consultation_type'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'start_datetime:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+
+    <!-- Consultation Type Views -->
+    <record id="view_consultation_type_tree" model="ir.ui.view">
+        <field name="name">consultation.type.tree</field>
+        <field name="model">consultation.type</field>
+        <field name="arch" type="xml">
+            <tree string="Consultation Types">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_consultation_type_form" model="ir.ui.view">
+        <field name="name">consultation.type.form</field>
+        <field name="model">consultation.type</field>
+        <field name="arch" type="xml">
+            <form string="Consultation Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_consultation_type" model="ir.actions.act_window">
+        <field name="name">Consultation Types</field>
+        <field name="res_model">consultation.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first consultation type!
+            </p>
+            <p>
+                Define different types of consultations (In-person, Virtual, Home-based, etc.)
+            </p>
+        </field>
+    </record>
+</odoo>

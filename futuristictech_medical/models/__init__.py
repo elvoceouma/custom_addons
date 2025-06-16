@@ -36,3 +36,6 @@ from . import oeh_models
 from . import sales_order
 from . import sale_report
 from . import slot_booking
+from . import available_slot
+from . import cancellation_policy
+from . import cancellation_wizard

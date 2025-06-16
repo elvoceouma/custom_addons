@@ -55,7 +55,7 @@ class ResPartner(models.Model):
     speciality_id = fields.Many2one('doctor.speciality', string="Speciality") 
     # speciality = fields.Many2one('medical.speciality', string='Speciality', required=True)
     doctor_external_id = fields.Char('Doctor External ID')
-    campus_ids = fields.Many2many('campus.master','res_partner_campus_rel','partner_id','campus_id',string="Campus")
+    campus_ids = fields.Many2many('hospital.hospital','res_partner_campus_rel','partner_id','campus_id',string="Campus")
     lead_id = fields.Many2one('crm.lead','Lead')
     track_uid = fields.Char("Track UID", store=True)
     illness_treated = fields.Many2many(

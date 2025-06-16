@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cancellation Policy Form View -->
+    <record id="view_cancellation_policy_form" model="ir.ui.view">
+        <field name="name">cancellation.policy.form</field>
+        <field name="model">cancellation.policy</field>
+        <field name="arch" type="xml">
+            <form string="Cancellation Policy">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Add any stat buttons here if needed -->
+                    </div>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Policy Name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="policy_type"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Policy Configuration">
+                        <group>
+                            <field name="hours_before" invisible="policy_type != 'time_based'" required="policy_type == 'time_based'"/>
+                            <field name="cancellation_fee" invisible="policy_type in ['no_refund', 'percentage']"/>
+                            <field name="refund_percentage" invisible="policy_type not in ['percentage', 'time_based']"/>
+                        </group>
+                        <group>
+                            <field name="allow_rescheduling"/>
+                            <field name="max_reschedules" invisible="not allow_rescheduling"/>
+                            <field name="reschedule_fee" invisible="not allow_rescheduling"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Description">
+                        <field name="description" nolabel="1" placeholder="Describe the policy details..."/>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Applicability">
+                            <group>
+                                <group>
+                                    <field name="consultation_type_ids" widget="many2many_tags"/>
+                                    <field name="campus_ids" widget="many2many_tags"/>
+                                </group>
+                                <group>
+                                    <field name="doctor_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Terms and Conditions">
+                            <field name="terms_and_conditions" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Cancellation Policy Tree View -->
+    <record id="view_cancellation_policy_tree" model="ir.ui.view">
+        <field name="name">cancellation.policy.tree</field>
+        <field name="model">cancellation.policy</field>
+        <field name="arch" type="xml">
+            <tree string="Cancellation Policies">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="policy_type"/>
+                <field name="hours_before" invisible="1"/>
+                <field name="cancellation_fee" widget="monetary"/>
+                <field name="refund_percentage"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Cancellation Request Form View -->
+    <record id="view_cancellation_request_form" model="ir.ui.view">
+        <field name="name">cancellation.request.form</field>
+        <field name="model">cancellation.request</field>
+        <field name="arch" type="xml">
+            <form string="Cancellation Request">
+                <header>
+                    <button string="Submit" name="action_submit" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button string="Approve" name="action_approve" type="object" class="btn-success" invisible="state != 'submitted'" groups="futuristictech_medical.group_medical_manager"/>
+                    <button string="Reject" name="action_reject" type="object" class="btn-danger" invisible="state != 'submitted'" groups="futuristictech_medical.group_medical_manager"/>
+                    <button string="Process Cancellation" name="action_process" type="object" class="btn-primary" invisible="state != 'approved'" groups="futuristictech_medical.group_medical_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,processed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="appointment_id" readonly="state != 'draft'"/>
+                            <field name="policy_id" readonly="1"/>
+                            <field name="requested_by" readonly="1"/>
+                            <field name="request_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="hours_before_appointment" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Financial Details">
+                        <group>
+                            <field name="original_amount" readonly="1"/>
+                            <field name="cancellation_fee" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="refund_amount" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Cancellation Reason">
+                        <field name="cancellation_reason" nolabel="1" readonly="state not in ['draft', 'submitted']"/>
+                    </group>
+                    
+                    <group string="Approval Details" invisible="state in ['draft', 'submitted']">
+                        <group>
+                            <field name="approved_by" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="rejection_reason" readonly="1" invisible="state != 'rejected'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Cancellation Request Tree View -->
+    <record id="view_cancellation_request_tree" model="ir.ui.view">
+        <field name="name">cancellation.request.tree</field>
+        <field name="model">cancellation.request</field>
+        <field name="arch" type="xml">
+            <tree string="Cancellation Requests" decoration-info="state == 'draft'" 
+                  decoration-warning="state == 'submitted'" decoration-success="state == 'processed'"
+                  decoration-danger="state == 'rejected'">
+                <field name="display_name"/>
+                <field name="appointment_id"/>
+                <field name="requested_by"/>
+                <field name="request_date"/>
+                <field name="original_amount" widget="monetary"/>
+                <field name="refund_amount" widget="monetary"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search Views -->
+    <record id="view_cancellation_policy_search" model="ir.ui.view">
+        <field name="name">cancellation.policy.search</field>
+        <field name="model">cancellation.policy</field>
+        <field name="arch" type="xml">
+            <search string="Cancellation Policies">
+                <field name="name"/>
+                <field name="policy_type"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Policy Type" name="group_policy_type" context="{'group_by': 'policy_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cancellation_request_search" model="ir.ui.view">
+        <field name="name">cancellation.request.search</field>
+        <field name="model">cancellation.request</field>
+        <field name="arch" type="xml">
+            <search string="Cancellation Requests">
+                <field name="appointment_id"/>
+                <field name="requested_by"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Processed" name="processed" domain="[('state', '=', 'processed')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                <filter string="My Requests" name="my_requests" domain="[('requested_by', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Requested By" name="group_requested_by" context="{'group_by': 'requested_by'}"/>
+                    <filter string="Request Date" name="group_request_date" context="{'group_by': 'request_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_cancellation_policy" model="ir.actions.act_window">
+        <field name="name">Cancellation Policies</field>
+        <field name="res_model">cancellation.policy</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_active": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first cancellation policy!
+            </p>
+            <p>
+                Set up policies for appointment cancellations and refunds.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_cancellation_request" model="ir.actions.act_window">
+        <field name="name">Cancellation Requests</field>
+        <field name="res_model">cancellation.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_submitted": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No cancellation requests yet!
+            </p>
+            <p>
+                Appointment cancellation requests will appear here.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -17,7 +17,7 @@
 
             <xpath expr="//form" position="inside">
                 <field name="type" invisible="1"/>
-                 <field name="probability" invisible="1"/>
+                <field name="probability" invisible="1"/>
             </xpath>
 
             <!-- Replace the original header -->
@@ -156,7 +156,7 @@
                         <field name="description" placeholder="Add a description..." nolabel="1"/>
                     </page>
                     <page string="Extra Information" name="extra_information">
-                                <group>
+                        <group>
                             <group string="Customer Information">
                                 <field name="partner_id"/>
                                 <field name="email_from" widget="email"/>
@@ -216,7 +216,7 @@
                             </tree>
                         </field>
                     </page>
-                    
+
                     <page string="Activities" name="activities">
                         <field name="visit_activities_ids">
                             <tree editable="bottom">
@@ -576,6 +576,34 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="action_slot_booking" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">slot.booking</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_available_slot" model="ir.actions.act_window">
+        <field name="name">Create Time Slots</field>
+        <field name="res_model">available.slot</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_cancellation_policy" model="ir.actions.act_window">
+        <field name="name">Cancellation Policy</field>
+        <field name="res_model">cancellation.policy</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_cancellation_request" model="ir.actions.act_window">
+        <field name="name">Cancellation Requests</field>
+        <field name="res_model">cancellation.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_consultation_type" model="ir.actions.act_window">
+        <field name="name">Consultation Types</field>
+        <field name="res_model">consultation.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
     <!-- Menu Items -->
     <menuitem id="menu_medical_clinical_trail" name="Clinical Trails" parent="crm.crm_menu_root" action="action_medical_clinical_trail" sequence="15"/>
 
@@ -584,4 +612,24 @@
     <menuitem id="menu_customer_activity" name="Customer Activities" parent="crm.crm_menu_root" action="action_customer_activity" sequence="17"/>
 
     <menuitem id="menu_appointment_slot_link" name="Appointment Slot Links" parent="crm.crm_menu_root" action="action_appointment_slot_link" sequence="18"/>
+
+    <menuitem id="menu_appointment_root" name="Appointments" parent="crm.crm_menu_root" sequence="5"/>
+
+    <!-- Appointments Submenu -->
+    <menuitem id="menu_appointments" name="Appointments" parent="menu_appointment_root" action="action_slot_booking" sequence="10"/>
+
+    <!-- Create Time Slots Submenu -->
+    <menuitem id="menu_create_time_slots" name="Create Time Slots" parent="menu_appointment_root" action="action_available_slot" sequence="20"/>
+
+    <!-- Cancellation Policy Submenu -->
+    <menuitem id="menu_cancellation_policy" name="Cancellation Policy" parent="menu_appointment_root" action="action_cancellation_policy" sequence="30"/>
+
+    <!-- Cancellation Requests Submenu -->
+    <menuitem id="menu_cancellation_requests" name="Cancellation Requests" parent="menu_appointment_root" action="action_cancellation_request" sequence="40"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_appointment_config" name="Configuration" parent="menu_appointment_root" sequence="100"/>
+
+    <!-- Consultation Types under Configuration -->
+    <menuitem id="menu_consultation_types" name="Consultation Types" parent="menu_appointment_config" action="action_consultation_type" sequence="10"/>
 </odoo>

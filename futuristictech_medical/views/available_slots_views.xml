@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Available Slot Form View -->
+    <record id="view_available_slot_form" model="ir.ui.view">
+        <field name="name">available.slot.form</field>
+        <field name="model">available.slot</field>
+        <field name="arch" type="xml">
+            <form string="Create Time Slots">
+                <header>
+                    <button string="Generate Time Slots" name="generate" invisible="state != 'draft'" type="object" class="btn-primary"/>
+                    <button string="Reset to Draft" name="action_reset_to_draft" invisible="state == 'draft'" type="object" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,booked"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_slots" icon="fa-calendar">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="slot_count"/>
+                                </span>
+                                <span class="o_stat_text">Slots</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="doctor_id" readonly="state != 'draft'" 
+                                   domain="[('active_doctor','=',True),('is_company','=',False),('doctor','=',True),('book_appointments','=',True)]" 
+                                   options="{'no_open': True}"/>
+                            <field name="create_type" readonly="state != 'draft'"/>
+                            <field name="campus_id" readonly="state != 'draft'" 
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="show_sub_campus" invisible="1"/>
+                            <field name="sub_campus_id" invisible="not show_sub_campus" 
+                                   required="show_sub_campus" readonly="state != 'draft'"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="from_date" readonly="state != 'draft'"/>
+                            <field name="to_date" readonly="state != 'draft'"/>
+                            <field name="duration" invisible="create_type != 'Date'" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Day Selection for 'Days' type -->
+                    <group string="Select Days" invisible="create_type != 'Days'">
+                        <div class="o_row">
+                            <field name="monday" readonly="state == 'booked'"/>
+                            <label for="monday" string="Monday"/>
+                            <field name="tuesday" readonly="state == 'booked'"/>
+                            <label for="tuesday" string="Tuesday"/>
+                            <field name="wednesday" readonly="state == 'booked'"/>
+                            <label for="wednesday" string="Wednesday"/>
+                            <field name="thursday" readonly="state == 'booked'"/>
+                            <label for="thursday" string="Thursday"/>
+                            <field name="friday" readonly="state == 'booked'"/>
+                            <label for="friday" string="Friday"/>
+                            <field name="saturday" readonly="state == 'booked'"/>
+                            <label for="saturday" string="Saturday"/>
+                            <field name="sunday" readonly="state == 'booked'"/>
+                            <label for="sunday" string="Sunday"/>
+                        </div>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Working Time">
+                            <field name="shift_line" readonly="state != 'draft'">
+                                <tree string="Working Time" editable="bottom">
+                                    <field name="from_time" widget="float_time"/>
+                                    <field name="to_time" widget="float_time"/>
+                                    <field name="interval" string="Mins / Slot"/>
+                                    <field name="consultation_type_ids" string="Consultation type" widget="many2many_tags" required="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Generated Slots">
+                            <field name="slot_line" readonly="1">
+                                <tree string="Slots">
+                                    <field name="caller_name"/>
+                                    <field name="patient_name"/>
+                                    <field name="start_datetime"/>
+                                    <field name="stop_datetime"/>
+                                    <field name="duration"/>
+                                    <field name="availability"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Available Slot Tree View -->
+    <record id="view_available_slot_tree" model="ir.ui.view">
+        <field name="name">available.slot.tree</field>
+        <field name="model">available.slot</field>
+        <field name="arch" type="xml">
+            <tree string="Time Slots Configuration">
+                <field name="display_name"/>
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="from_date"/>
+                <field name="to_date"/>
+                <field name="slot_count"/>
+                <field name="state" decoration-success="state == 'generated'" decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Available Slot Search View -->
+    <record id="view_available_slot_search" model="ir.ui.view">
+        <field name="name">available.slot.search</field>
+        <field name="model">available.slot</field>
+        <field name="arch" type="xml">
+            <search string="Time Slots">
+                <field name="doctor_id"/>
+                <field name="campus_id"/>
+                <field name="from_date"/>
+                <field name="to_date"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Generated" name="generated" domain="[('state', '=', 'generated')]"/>
+                <filter string="This Week" name="this_week" 
+                        domain="[('from_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                 ('from_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" 
+                        domain="[('from_date', '&gt;=', context_today().strftime('%Y-%m-01')),
+                                 ('from_date', '&lt;', (context_today().replace(day=1) + datetime.timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Doctor" name="group_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Campus" name="group_campus" context="{'group_by': 'campus_id'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="From Date" name="group_from_date" context="{'group_by': 'from_date:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Available Slot Shift Form View -->
+    <record id="view_available_slot_shift_form" model="ir.ui.view">
+        <field name="name">available.slot.shift.form</field>
+        <field name="model">available.slot.shift</field>
+        <field name="arch" type="xml">
+            <form string="Working Time">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="from_time" widget="float_time"/>
+                            <field name="to_time" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="interval"/>
+                            <field name="consultation_type_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_available_slot" model="ir.actions.act_window">
+        <field name="name">Create Time Slots</field>
+        <field name="res_model">available.slot</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_available_slot_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first time slot configuration!
+            </p>
+            <p>
+                Configure working hours and generate appointment slots for doctors.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_slot_booking" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">slot.booking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_group_by_availability": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No appointments scheduled yet!
+            </p>
+            <p>
+                Appointments will appear here once time slots are generated and booked.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -7,15 +7,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class ConsultationType(models.Model):
-    _name = 'consultation.type'
-    _description = 'Consultation Type'
-    _order = 'name'
-
-    name = fields.Char(string='Name', required=True, help='Name of the consultation type')
-    description = fields.Text(string='Description', help='Description of the consultation type')
-    active = fields.Boolean(string='Active', default=True, help='Is this consultation type active?')
-
 class SlotBooking(models.Model):
     _name = 'slot.booking'
     _description = 'Appointment Slot Booking'
@@ -26,20 +17,21 @@ class SlotBooking(models.Model):
     # Basic Information
     name = fields.Char(string='Appointment Reference', required=True, copy=False, readonly=True, 
                        default=lambda self: _('New'))
-    lead_id = fields.Many2one('crm.lead', string='Lead', required=True, tracking=True,
+    available_slot_id = fields.Many2one('available.slot', string='Available Slot', 
+                                        help='Reference to the time slot configuration that generated this slot')
+    lead_id = fields.Many2one('crm.lead', string='Lead', tracking=True,
                               domain="[('active', '=', True)]")
     caller_name = fields.Char(string='Caller Name', tracking=True)
     patient_name = fields.Char(string='Patient Name', tracking=True)
     
     # Doctor and Campus Information
-    campus_id = fields.Many2one('campus.master', string='Campus', required=True, tracking=True)
-    sub_campus_id = fields.Many2one('campus.master', string='Sub Campus', tracking=True,
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', required=True, tracking=True)
+    sub_campus_id = fields.Many2one('hospital.hospital', string='Sub Campus', tracking=True,
                                     domain="[('parent_id', '=', campus_id)]")
     doctor_id = fields.Many2one('res.partner', string='Doctor', required=True, tracking=True,
                                 domain="[('active_doctor', '=', True), ('is_company', '=', False), "
                                        "('doctor', '=', True), ('book_appointments', '=', True)]")
     doctor_external_id = fields.Char(string='Doctor External ID', related='doctor_id.doctor_external_id', readonly=True)
-    # speciality_id = fields.Many2one('doctor.speciality', string='Speciality', required=True, tracking=True)
     
     speciality_id = fields.Many2one('hospital.physician.speciality', string='Speciality')
     
@@ -131,6 +123,18 @@ class SlotBooking(models.Model):
     
     # Registration Form
     registration_count = fields.Integer(string='Registration Count', compute='_compute_registration_count')
+    
+    # Duration field for display
+    duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
+    
+    @api.depends('start_datetime', 'stop_datetime')
+    def _compute_duration(self):
+        for record in self:
+            if record.start_datetime and record.stop_datetime:
+                delta = record.stop_datetime - record.start_datetime
+                record.duration = delta.total_seconds() / 3600  # Convert to hours
+            else:
+                record.duration = 0.0
     
     @api.depends('lead_id')
     def _compute_registration_count(self):
@@ -280,8 +284,8 @@ class SlotBooking(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'medical.registration.form',
             'view_mode': 'tree,form',
-            'domain': [('lead_id', '=', self.lead_id.id)],
-            'context': {'default_lead_id': self.lead_id.id}
+            'domain': [('lead_id', '=', self.lead_id.id)] if self.lead_id else [],
+            'context': {'default_lead_id': self.lead_id.id} if self.lead_id else {}
         }
     
     def unlink(self):
@@ -290,3 +294,24 @@ class SlotBooking(models.Model):
             if record.availability not in ['open', 'cancelled']:
                 raise UserError(_("You cannot delete appointments that are not in open or cancelled state."))
         return super(SlotBooking, self).unlink()
+    
+
+
+class PatientIndication(models.Model):
+    _name = 'patient.indication'
+    _description = 'Patient Indication'
+    _rec_name = 'name'
+
+    name = fields.Char(string='Indication Name', required=True, help='Name of the patient indication')
+    description = fields.Text(string='Description', help='Detailed description of the indication')
+
+    slot_booking_ids = fields.Many2many(
+        'slot.booking',
+        'slot_patient_indication_rel',  # Explicit table name
+        'indication_id',
+        'slot_id',
+        string='Slot Bookings'
+    )
+    _sql_constraints = [
+        ('name_unique', 'unique(name)', 'The indication name must be unique.')
+    ]

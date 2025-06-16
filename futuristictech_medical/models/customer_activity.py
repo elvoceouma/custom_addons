@@ -8,7 +8,7 @@ class CustomerActivity(models.Model):
     lead_id = fields.Many2one('crm.lead', string='Lead')
     reference_id = fields.Char(string='Reference ID')
     patient_internal_id = fields.Char(string='Patient Internal ID')
-    campus_id = fields.Many2one('campus.master', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     reference = fields.Char(string='Reference')
     date = fields.Date(string='Date')
     mrn_no = fields.Char(string='MRN No')

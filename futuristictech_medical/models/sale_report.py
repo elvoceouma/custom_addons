@@ -7,7 +7,7 @@ class SaleReport(models.Model):
     # Add hospital-specific fields to the sales report
     patient_id = fields.Many2one('medical.patient', string='Patient', readonly=True)
     doctor_id = fields.Many2one('medical.doctor', string='Doctor', readonly=True)
-    campus_id = fields.Many2one('campus.master', string='Campus', readonly=True)
+    campus_id = fields.Many2one('hospital.hospital', string='Campus', readonly=True)
     service_type = fields.Selection([
         ('consultation', 'Consultation'),
         ('treatment', 'Treatment'),

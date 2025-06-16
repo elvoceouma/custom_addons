@@ -10,7 +10,7 @@ class CreateHospitalSaleWizard(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)
     patient_id = fields.Many2one('medical.patient', string='Patient')
     doctor_id = fields.Many2one('medical.doctor', string='Doctor')
-    campus_id = fields.Many2one('campus.master', string='Campus')
+    campus_id = fields.Many2one('hospital.hospital', string='Campus')
     service_type = fields.Selection([
         ('consultation', 'Consultation'),
         ('treatment', 'Treatment'),

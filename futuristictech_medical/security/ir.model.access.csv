@@ -163,3 +163,19 @@ access_slot_booking,slot.booking user,model_slot_booking,base.group_user,1,1,1,1
 acccess_crm_visits,crm.visits user,model_crm_visits,base.group_user,1,1,1,1
 access_appointment_booking_wizard,appointment.booking.wizard user,model_appointment_booking_wizard,base.group_user,1,1,1,1
 access_medical_package,medical.package user,model_medical_package,base.group_user,1,1,1,1
+
+access_available_slot_user,available.slot.user,model_available_slot,base.group_user,1,1,1,0
+access_available_slot_manager,available.slot.manager,model_available_slot,base.group_system,1,1,1,1
+access_available_slot_shift_user,available.slot.shift.user,model_available_slot_shift,base.group_user,1,1,1,0
+access_available_slot_shift_manager,available.slot.shift.manager,model_available_slot_shift,base.group_system,1,1,1,1
+access_consultation_type_user,consultation.type.user,model_consultation_type,base.group_user,1,0,0,0
+access_consultation_type_manager,consultation.type.manager,model_consultation_type,base.group_system,1,1,1,1
+access_slot_booking_user,slot.booking.user,model_slot_booking,base.group_user,1,1,1,0
+access_slot_booking_manager,slot.booking.manager,model_slot_booking,base.group_system,1,1,1,1
+access_cancellation_policy_user,cancellation.policy.user,model_cancellation_policy,base.group_user,1,0,0,0
+access_cancellation_policy_manager,cancellation.policy.manager,model_cancellation_policy,base.group_system,1,1,1,1
+access_cancellation_request_user,cancellation.request.user,model_cancellation_request,base.group_user,1,1,1,0
+access_cancellation_request_manager,cancellation.request.manager,model_cancellation_request,base.group_system,1,1,1,1
+access_cancellation_rejection_wizard_user,cancellation.rejection.wizard.user,model_cancellation_rejection_wizard,base.group_user,1,1,1,1
+access_appointment_reschedule_wizard_user,appointment.reschedule.wizard.user,model_appointment_reschedule_wizard,base.group_user,1,1,1,1
+acess_medical_registration_form,medical.registration.form user,model_medical_registration_form,base.group_user,1,1,1,1

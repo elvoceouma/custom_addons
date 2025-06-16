@@ -13,7 +13,7 @@
                             <field name="appointment_type"/>
                             <field name="package_name" options="{'no_open': True, 'no_create': True}"/>
                             <field name="speciality" required="1" />
-                            <field name="time_slots" required="1" widget="selection"/>
+                            <field name="time_slots" required="1" options="{'no_create': True, 'no_open': True}"/>
                             <field name="free_screening"/>
                         </group>
                         <group>
@@ -46,6 +46,89 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="view_id" ref="view_appointment_booking_wizard_form"/>
+    </record>
+
+      <!-- Cancellation Rejection Wizard -->
+    <record id="view_cancellation_rejection_wizard_form" model="ir.ui.view">
+        <field name="name">cancellation.rejection.wizard.form</field>
+        <field name="model">cancellation.rejection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Cancellation Request">
+                <sheet>
+                    <group>
+                        <field name="cancellation_request_id" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="rejection_reason" nolabel="1" placeholder="Please provide a reason for rejecting this cancellation request..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Reject Request" name="action_reject" type="object" class="btn-danger"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Appointment Reschedule Wizard -->
+    <record id="view_appointment_reschedule_wizard_form" model="ir.ui.view">
+        <field name="name">appointment.reschedule.wizard.form</field>
+        <field name="model">appointment.reschedule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reschedule Appointment">
+                <sheet>
+                    <group>
+                        <field name="appointment_id" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    
+                    <group string="Current Appointment">
+                        <group>
+                            <label for="appointment_id" string="Current Appointment"/>
+                            <div name="current_appointment_info">
+                                <field name="appointment_id" readonly="1" nolabel="1"/>
+                            </div>
+                        </group>
+                    </group>
+                    
+                    <group string="New Appointment Time">
+                        <group>
+                            <field name="new_start_datetime"/>
+                            <field name="new_stop_datetime"/>
+                        </group>
+                        <group>
+                            <field name="apply_reschedule_fee"/>
+                            <field name="reschedule_fee" invisible="not apply_reschedule_fee"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Reschedule Reason">
+                        <field name="reschedule_reason" nolabel="1" placeholder="Please provide a reason for rescheduling..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Reschedule" name="action_reschedule" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions for Wizards -->
+    <record id="action_cancellation_rejection_wizard" model="ir.actions.act_window">
+        <field name="name">Reject Cancellation Request</field>
+        <field name="res_model">cancellation.rejection.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_cancellation_rejection_wizard_form"/>
+    </record>
+
+    <record id="action_appointment_reschedule_wizard" model="ir.actions.act_window">
+        <field name="name">Reschedule Appointment</field>
+        <field name="res_model">appointment.reschedule.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_appointment_reschedule_wizard_form"/>
     </record>
 
 </odoo>
