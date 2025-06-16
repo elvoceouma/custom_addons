@@ -18,6 +18,7 @@ class AvailableSlot(models.Model):
     display_name = fields.Char(string='Name', compute='_compute_display_name', store=True)
     user_id = fields.Many2one('res.users', string='Created By', required=True, 
                               default=lambda self: self.env.user, readonly=True)
+    # Fix later if needed
     doctor_id = fields.Many2one('res.partner', string='Doctor', required=True, tracking=True,
                                 # domain="[('active_doctor', '=', True), ('is_company', '=', False), "
                                 #        "('doctor', '=', True), ('book_appointments', '=', True)]"

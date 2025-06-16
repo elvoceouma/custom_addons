@@ -26,6 +26,12 @@ class ClinicalPsychologistSession(models.Model):
         string='IP Number',
         tracking=True
     )
+    date = fields.Datetime(
+        string='Admission Date',
+        default=fields.Datetime.now,
+        required=True,
+        tracking=True
+    )
     op_visit_id = fields.Many2one(
         'op.visit',
         string='OP Visit',
