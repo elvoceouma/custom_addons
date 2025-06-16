@@ -127,6 +127,9 @@ class SlotBooking(models.Model):
     # Duration field for display
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
     
+    # Link to created clinical psychologist session
+    clinical_session_id = fields.Many2one('clinical.psychologist.session', string='Clinical Session', readonly=True)
+    
     @api.depends('start_datetime', 'stop_datetime')
     def _compute_duration(self):
         for record in self:
@@ -214,12 +217,112 @@ class SlotBooking(models.Model):
         return True
     
     def check_in(self):
-        """Check in the patient"""
+        """Check in the patient and create clinical psychologist session"""
         self.ensure_one()
         if self.availability not in ['booked', 'confirm']:
             raise UserError(_("Only confirmed appointments can be checked in."))
+        
+        # Update availability to checked_in
         self.availability = 'checked_in'
-        return True
+        
+        # Create clinical psychologist session
+        session_vals = self._prepare_clinical_session_values()
+        clinical_session = self.env['clinical.psychologist.session'].create(session_vals)
+        
+        # Link the created session to this slot booking
+        self.clinical_session_id = clinical_session.id
+        
+        # Log the check-in and session creation
+        self.message_post(
+            body=_("Patient checked in. Clinical Psychologist Session created: %s") % clinical_session.name,
+            subtype_xmlid="mail.mt_note"
+        )
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Clinical Psychologist Session'),
+            'res_model': 'clinical.psychologist.session',
+            'res_id': clinical_session.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+    
+    def _prepare_clinical_session_values(self):
+        """Prepare values for creating clinical psychologist session"""
+        self.ensure_one()
+        
+        # Get patient from lead or create if needed
+        patient_id = False
+        if self.lead_id:
+            # Try to find existing patient partner
+            patient_partner = self.env['res.partner'].search([
+                ('name', '=', self.patient_name),
+                ('is_company', '=', False)
+            ], limit=1)
+            
+            if not patient_partner:
+                # Create patient partner if not exists
+                patient_partner = self.env['res.partner'].create({
+                    'name': self.patient_name,
+                    'is_company': False,
+                    'customer_rank': 1,
+                    'phone': getattr(self.lead_id, 'phone', False),
+                    'email': getattr(self.lead_id, 'email_from', False),
+                })
+            
+            patient_id = patient_partner.id
+        
+        # Determine consultation type based on slot consultation type
+        consultation_type_mapping = {
+            'In-person Consultation': 'clinic',
+            'Virtual Consultation': 'virtual',
+            'Home-Based Consultation': 'home'
+        }
+        
+        consultation_type = consultation_type_mapping.get(self.consultation_type, 'clinic')
+        
+        # Determine type (ip/op) - assuming outpatient by default
+        # You can modify this logic based on your business rules
+        session_type = 'op'
+        
+        session_vals = {
+            'type': session_type,
+            'patient_id': patient_id,
+            'date': self.start_datetime.date(),
+            'consultation_type': consultation_type,
+            'check_in_datetime': fields.Datetime.now(),
+            'state': 'started',  # Auto start the session upon check-in
+            # Map doctor to clinical psychologist if applicable
+            'clinical_psychologist_id': self._get_clinical_psychologist(),
+            # Add virtual consultation URL if applicable
+            'virtual_consultation_url': self.virtual_consultation_url if consultation_type == 'virtual' else False,
+            'geo_location': self.geo_location if consultation_type == 'home' else False,
+        }
+        
+        # Add inpatient/outpatient specific fields if available
+        if session_type == 'ip':
+            # Add inpatient admission logic here if needed
+            pass
+        else:
+            # For outpatient, you might want to create or link to an OP visit
+            # session_vals['op_visit_id'] = self._get_or_create_op_visit()
+            pass
+        
+        return session_vals
+    
+    def _get_clinical_psychologist(self):
+        """Get the clinical psychologist user ID"""
+        # If the doctor is a clinical psychologist, return their user
+        if self.doctor_id:
+            # Try to find user associated with the doctor
+            user = self.env['res.users'].search([
+                ('partner_id', '=', self.doctor_id.id)
+            ], limit=1)
+            if user:
+                return user.id
+        
+        # Return current user as fallback
+        return self.env.user.id
     
     def start_consultation(self):
         """Start the consultation"""
@@ -235,6 +338,11 @@ class SlotBooking(models.Model):
         if self.availability != 'consulting':
             raise UserError(_("Consultation must be started before finishing."))
         self.availability = 'completed'
+        
+        # Complete the linked clinical session if exists
+        if self.clinical_session_id and self.clinical_session_id.state != 'completed':
+            self.clinical_session_id.action_complete()
+        
         return True
     
     def re_schedule_appointment(self):
@@ -288,13 +396,27 @@ class SlotBooking(models.Model):
             'context': {'default_lead_id': self.lead_id.id} if self.lead_id else {}
         }
     
+    def action_view_clinical_session(self):
+        """View the linked clinical psychologist session"""
+        self.ensure_one()
+        if not self.clinical_session_id:
+            raise UserError(_("No clinical session has been created for this appointment."))
+        
+        return {
+            'name': _('Clinical Psychologist Session'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'clinical.psychologist.session',
+            'res_id': self.clinical_session_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+    
     def unlink(self):
         """Prevent deletion of non-draft appointments"""
         for record in self:
             if record.availability not in ['open', 'cancelled']:
                 raise UserError(_("You cannot delete appointments that are not in open or cancelled state."))
         return super(SlotBooking, self).unlink()
-    
 
 
 class PatientIndication(models.Model):
