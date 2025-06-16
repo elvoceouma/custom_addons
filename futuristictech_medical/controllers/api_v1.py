@@ -102,105 +102,105 @@ class SimplifiedAuthenticationAPI(http.Controller):
             }
         })
 
-    @http.route('/api/auth/login', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False)
-    def api_login(self, **kwargs):
-        """API Login endpoint - authenticate and get token"""
-        try:
-            # Handle OPTIONS request for CORS
-            if request.httprequest.method == 'OPTIONS':
-                return self._make_json_response({'message': 'OK'})
+    # @http.route('/api/auth/login', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False)
+    # def api_login(self, **kwargs):
+    #     """API Login endpoint - authenticate and get token"""
+    #     try:
+    #         # Handle OPTIONS request for CORS
+    #         if request.httprequest.method == 'OPTIONS':
+    #             return self._make_json_response({'message': 'OK'})
             
-            # Get login credentials
-            login = kwargs.get('login') or kwargs.get('email')
-            password = kwargs.get('password')
+    #         # Get login credentials
+    #         login = kwargs.get('login') or kwargs.get('email')
+    #         password = kwargs.get('password')
             
-            if not login or not password:
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'Email and password are required',
-                    'data': None
-                }, 400)
+    #         if not login or not password:
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'Email and password are required',
+    #                 'data': None
+    #             }, 400)
             
-            # Authenticate user using Odoo's authentication
-            try:
-                uid = request.session.authenticate(request.session.db, login, password)
-                if not uid:
-                    return self._make_json_response({
-                        'status': 'error',
-                        'message': 'Invalid email or password',
-                        'data': None
-                    }, 401)
+    #         # Authenticate user using Odoo's authentication
+    #         try:
+    #             uid = request.session.authenticate(request.session.db, login, password)
+    #             if not uid:
+    #                 return self._make_json_response({
+    #                     'status': 'error',
+    #                     'message': 'Invalid email or password',
+    #                     'data': None
+    #                 }, 401)
                 
-                # Get user information
-                user = request.env['res.users'].sudo().browse(uid)
-                if not user.exists():
-                    return self._make_json_response({
-                        'status': 'error',
-                        'message': 'User not found',
-                        'data': None
-                    }, 404)
+    #             # Get user information
+    #             user = request.env['res.users'].sudo().browse(uid)
+    #             if not user.exists():
+    #                 return self._make_json_response({
+    #                     'status': 'error',
+    #                     'message': 'User not found',
+    #                     'data': None
+    #                 }, 404)
                 
-                # Generate API token
-                api_token = self._generate_api_token(uid)
+    #             # Generate API token
+    #             api_token = self._generate_api_token(uid)
                 
-                # Get user context and permissions
-                context = self._get_user_context(user)
+    #             # Get user context and permissions
+    #             context = self._get_user_context(user)
                 
-                # Prepare response
-                response_data = {
-                    'status': 'success',
-                    'message': 'Login successful',
-                    'data': {
-                        'user': {
-                            'id': user.id,
-                            'name': user.name,
-                            'email': user.email,
-                            'phone': user.phone or '',
-                            'avatar': f'/web/image/res.users/{user.id}/image_128',
-                            'active': user.active,
-                            'last_login': user.login_date.strftime('%Y-%m-%d %H:%M:%S') if user.login_date else None
-                        },
-                        'authentication': {
-                            'api_token': api_token,
-                            'session_id': request.session.sid,
-                            'expires_at': (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S'),
-                            'token_type': 'Bearer'
-                        },
-                        'permissions': context,
-                        'session_info': {
-                            'is_authenticated': True,
-                            'login_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                            'ip_address': request.httprequest.remote_addr
-                        }
-                    }
-                }
+    #             # Prepare response
+    #             response_data = {
+    #                 'status': 'success',
+    #                 'message': 'Login successful',
+    #                 'data': {
+    #                     'user': {
+    #                         'id': user.id,
+    #                         'name': user.name,
+    #                         'email': user.email,
+    #                         'phone': user.phone or '',
+    #                         'avatar': f'/web/image/res.users/{user.id}/image_128',
+    #                         'active': user.active,
+    #                         'last_login': user.login_date.strftime('%Y-%m-%d %H:%M:%S') if user.login_date else None
+    #                     },
+    #                     'authentication': {
+    #                         'api_token': api_token,
+    #                         'session_id': request.session.sid,
+    #                         'expires_at': (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S'),
+    #                         'token_type': 'Bearer'
+    #                     },
+    #                     'permissions': context,
+    #                     'session_info': {
+    #                         'is_authenticated': True,
+    #                         'login_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    #                         'ip_address': request.httprequest.remote_addr
+    #                     }
+    #                 }
+    #             }
                 
-                # Log successful login
-                _logger.info(f"Successful login for user: {user.email} (ID: {user.id})")
+    #             # Log successful login
+    #             _logger.info(f"Successful login for user: {user.email} (ID: {user.id})")
                 
-                return self._make_json_response(response_data)
+    #             return self._make_json_response(response_data)
                 
-            except AccessDenied:
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'Invalid email or password',
-                    'data': None
-                }, 401)
-            except Exception as auth_error:
-                _logger.error(f"Authentication error: {str(auth_error)}")
-                return self._make_json_response({
-                    'status': 'error',
-                    'message': 'Authentication failed',
-                    'data': None
-                }, 401)
+    #         except AccessDenied:
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'Invalid email or password',
+    #                 'data': None
+    #             }, 401)
+    #         except Exception as auth_error:
+    #             _logger.error(f"Authentication error: {str(auth_error)}")
+    #             return self._make_json_response({
+    #                 'status': 'error',
+    #                 'message': 'Authentication failed',
+    #                 'data': None
+    #             }, 401)
                 
-        except Exception as e:
-            _logger.error(f"API login error: {str(e)}")
-            return self._make_json_response({
-                'status': 'error',
-                'message': 'Internal server error',
-                'data': None
-            }, 500)
+    #     except Exception as e:
+    #         _logger.error(f"API login error: {str(e)}")
+    #         return self._make_json_response({
+    #             'status': 'error',
+    #             'message': 'Internal server error',
+    #             'data': None
+    #         }, 500)
 
     @http.route('/api/auth/register', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False)
     def api_register(self, **kwargs):
